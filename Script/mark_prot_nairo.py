@@ -1,12 +1,14 @@
 from Bio import SeqIO
 from Bio.Seq import Seq
+
 import subprocess
+
 from All_Function import compt_ali_nucl,compt_alignement,mark_sequence
+
 path ="/home/seannacharles/Documents/Nairoviridae/"
 target = "haemorrha"
-print('mark prot nairoviridae')
-pos_align=[]
 
+pos_align=[]
 debseq=93
 
 # prot

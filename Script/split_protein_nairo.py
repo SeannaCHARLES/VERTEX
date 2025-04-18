@@ -10,14 +10,7 @@ study="Nairoviridae"
 Protname=["MLD","GP38","Gn","NSm","Gc"]
 
 
-            
-
-print('split prot Nairoviridae')
-
-
-
 Extract_data("M_prot_all_align_marke_prot.fasta","prot",Protname,study)
-
 Extract_data("M_nucl_all_align_marke.fasta","nucl",Protname,study)
 
 

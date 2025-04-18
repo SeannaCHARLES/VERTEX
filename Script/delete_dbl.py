@@ -7,18 +7,14 @@ path ="/home/seannacharles/Documents/"
 
 
 study=str(sys.argv[1])
-ths=float(sys.argv[3])
 target=str(sys.argv[2])
-
+ths=float(sys.argv[3])
+#Ajouter prot list en sys.argv[4]
 if study!="Perybunyaviridae":
     Prot_list=["MLD","GP38","Gn","NSm","Gc"]
 else : 
     Prot_list=["Gn","NSm","Gc"]
   
-
-
-
-
 final_dbl=[]
 old_col_names=[]
 
@@ -27,7 +23,7 @@ for protein in Prot_list :
     Doublon,name_colonnes=select_doublon(protein,study,target,ths)
     old_col_names=col_name(old_col_names,name_colonnes,protein)
 
-    if len(final_dbl)> len(Doublon) or len(final_dbl)==0 :
+    if len(final_dbl)> len(Doublon) or len(final_dbl)==0 : 
         final_dbl=Doublon
 
 for protein in Prot_list : 

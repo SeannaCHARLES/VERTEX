@@ -1,12 +1,15 @@
 from Bio import SeqIO
 from Bio.Seq import Seq
-import subprocess
-from All_Function import compt_ali_nucl,compt_alignement,mark_sequence
-path ="/home/seannacharles/Documents/Perybunyaviridae/"
 
+import subprocess
+
+from All_Function import compt_ali_nucl,compt_alignement,mark_sequence
+
+path ="/home/seannacharles/Documents/Perybunyaviridae/"
 
 debseq=57
 target ="bunyamwer"
+
 #All peri prot
 pos_prot=[22,302,303,476,509,1372]
 
@@ -44,6 +47,7 @@ for record in SeqIO.parse(f"{path}M_nucl_all_align_.aln-fasta","fasta") :
 
 
 pos_prot=[22,302,303,476,509,1372]
+
 #hedwig prot
 for record in SeqIO.parse(f"{path}M_prot_all_align_hedwig.aln-fasta","fasta"):
     if target in record.description:
@@ -57,6 +61,7 @@ file.close()
 for record in SeqIO.parse(f"{path}M_prot_all_align_hedwig.aln-fasta","fasta") :
     mark_sequence(record.seq,pos_align,name,record.description)
 pos_prot=[22,302,303,476,509,1372]
+
 #hedwig nucl
 for record in SeqIO.parse(f"{path}M_nucl_all_align_hedwig.aln-fasta","fasta"):
     if target in record.description:
@@ -87,6 +92,7 @@ debseq=34
 for record in SeqIO.parse(f"{path}LEIV-Ast01-5_YP_010840266.1_khurdunyp.fasta","fasta") :
     mark_sequence(record.seq,pos_align,name,record.description)
 pos_prot=[23,292,526,944]   
+
 #khurdun nucl
 for record in SeqIO.parse(f"{path}LEIV-Ast01-5_NC_078560.1_khurdunyp.fasta","fasta") :
     pos_align=compt_ali_nucl(record.seq,debseq,pos_prot)

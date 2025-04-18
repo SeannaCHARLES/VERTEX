@@ -3,7 +3,6 @@
 
 ##CCHFV
 Type_seq=("nucl")
-echo Trimal CCHFV 
 path="/home/seannacharles/Documents/CCHFV/seg_M_phylo/"
 pwd
 

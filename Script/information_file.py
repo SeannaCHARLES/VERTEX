@@ -52,6 +52,7 @@ def extract_prot_data(ID_prot) :
         else : 
             output+=f"\t\t"
     return output
+
 def modif_name_prot(name_prot) : 
     name_prot=name_prot.upper()
     if "HANTA_G2" in name_prot  : 
@@ -63,10 +64,11 @@ def modif_name_prot(name_prot) :
     name_prot=name_prot.replace("NSM","NSm")
     name_prot=name_prot.replace("DUF5585","MLD")
     name_prot=name_prot.replace("NAIROVIRUSM","GP38+Gn")
-    
     return name_prot
+
 df = pd.read_csv(f"{path}Serogroup.txt", delimiter="|",header=0)
 df.iloc[:, 1:]=df.iloc[:, 1:].astype(str)
+
 def find_serogroup(organism) : 
     global df
     end_line=df.shape[0]
@@ -76,7 +78,6 @@ def find_serogroup(organism) :
             return str(df.iloc[line,1])
 output=extract_prot_data("XCY99298.1")
 
-print(output)
 
 
 
