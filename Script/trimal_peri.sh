@@ -1,7 +1,5 @@
 #!/bin/bash
 
-
-echo Trimal Perybunyaviridae 
 path="/home/seannacharles/Documents/Perybunyaviridae/seg_M_phylo/"
 pwd
 
@@ -52,24 +50,5 @@ done
 study="Perybunyaviridae" 
 ths=0.01
 target="bunyamwer"
-# Convertir la liste en une chaîne séparée par des virgules
-
 
 /usr/bin/python3 /home/seannacharles/Documents/Script/delete_dbl.py "$study"  "$target" "$ths"
-# echo prottest peri
-
-
-# echo NSmGn : >/home/seannacharles/Documents/Perybunyaviridae/seg_M_phylo/Best_model_peri.txt
-# prottest -i /home/seannacharles/Documents/Perybunyaviridae/seg_M_phylo/NSmGn_trimal.fasta -all -DT -F |grep "Best model according to DT:" >> /home/seannacharles/Documents/Perybunyaviridae/seg_M_phylo/Best_model_peri.txt
-
-# echo NSm : >> /home/seannacharles/Documents/Perybunyaviridae/seg_M_phylo/Best_model_peri.txt
-# prottest -i /home/seannacharles/Documents/Perybunyaviridae/seg_M_phylo/NSm_trimal.fasta -all -DT -F |grep "Best model according to DT:" >> /home/seannacharles/Documents/Perybunyaviridae/seg_M_phylo/Best_model_peri.txt
-
-# echo Gn : >> /home/seannacharles/Documents/Perybunyaviridae/seg_M_phylo/Best_model_peri.txt
-# prottest -i /home/seannacharles/Documents/Perybunyaviridae/seg_M_phylo/Gn_trimal.fasta -all  -DT -F |grep "Best model according to DT:" >> /home/seannacharles/Documents/Perybunyaviridae/seg_M_phylo/Best_model_peri.txt
-
-# echo Gc : >> /home/seannacharles/Documents/Perybunyaviridae/seg_M_phylo/Best_model_peri.txt
-# prottest -i /home/seannacharles/Documents/Perybunyaviridae/seg_M_phylo/Gc_trimal.fasta -all  -DT -F  |grep "Best model according to DT:">> /home/seannacharles/Documents/Perybunyaviridae/seg_M_phylo/Best_model_peri.txt
-
-# sudo  mv /usr/bin/phyml /usr/bin/phyml_3.1 
-# sudo  mv /usr/bin/phyml_3.3 /usr/bin/phyml 

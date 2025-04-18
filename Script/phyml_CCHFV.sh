@@ -3,10 +3,6 @@
 
 
 
-
-echo Protdist CCHFV
-
-
 { sed '1d' outfile | awk '$1 ~ /[a-zA-Z]/ {print $1}' | while read i; do
     echo -ne "\t${i}"
 done

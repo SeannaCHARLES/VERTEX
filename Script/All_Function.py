@@ -1,4 +1,5 @@
 #Creation by CHARLES Seanna seanna.charles@univ-lyon1.fr
+#Import
 import matplotlib.pyplot as plt
 
 import numpy as np
@@ -22,13 +23,19 @@ import requests
 from geopy.geocoders import Nominatim
 
 import time
+
+#The path may need to change
 path = "/home/seannacharles/Documents/"
+
 #######Function for the Script Genbank extract##################
+#This part create a set of 100 random colors to create the itol legends 
 cmap=plt.get_cmap("hsv")
-colors=[cmap(i/100)for i in range(100)]
-couleur=['#%02x%02x%02x'%(int(r*255),int(g*255),int(b*255))for r,g,b,_ in colors]
-random.shuffle(couleur)
-metadata={}
+Rcolor=[cmap(i/100)for i in range(100)]
+colors=['#%02x%02x%02x'%(int(r*255),int(g*255),int(b*255))for r,g,b,_ in Rcolor]
+random.shuffle(colors)
+
+
+#This is the diffent type of legends
 type_files=["Geolocalisation","Host","Serogroup"]
 
 ### Function Modif_ID 
@@ -52,16 +59,18 @@ def Modif_ID(ID) :
 # A colour is assigned to each parameter that may appear in a legend
 # The colours are chosen at random 
 # All families will have the same captions
+#Legencolors save for each legend label the associated colors to have the same color for the same label 
+legencolors={}
 
 def colour_choice (region):
-    global couleur
-    if region not in metadata : 
-        choix=couleur[0]
-        couleur.remove(choix)
-        metadata[region]=[choix]
-        return(choix)
+    global colors
+    if region not in legencolors : 
+        choice=colors[0]
+        colors.remove(choice)
+        legencolors[region]=[choice]
+        return(choice)
     else : 
-        return(metadata[region][0])
+        return(legencolors[region][0])
 
 ### Function modif_localisation
 # For each geographical region, it is important to keep only those elements that identify the host's country of origin.
@@ -116,20 +125,27 @@ def modif_host(host) :
 
 def deforder(species) : 
     Entrez.email="charles.seanna@outlook.fr"
+
     if "tick" in species.lower() : 
         return "Ixodida"
+
     try : 
         search= Entrez.esearch(db="taxonomy",term=species)
         record=Entrez.read(search)
+
         if not record["IdList"]:
             return species
+
         tax_id = record["IdList"][0]
         tax_info= Entrez.efetch(db="taxonomy",id=tax_id,retmode="xml")
         data=Entrez.read(tax_info)[0]
+
         for rank, name in zip(data["LineageEx"],data["LineageEx"]):
             if rank["Rank"]=="order" :
                 return name["ScientificName"]
+
         return data["ScientificName"]
+
     except Exception as e : 
     
         return species
@@ -141,6 +157,7 @@ def deforder(species) :
 def write_file(Description_nu,Description_prot,Sequence_aa,Sequence_nu,localisation,region,region_color,order,order_color,host,strain,Nu,ID_prot,study,organism,ID,sp,serogroup,color_sero) : 
     global type_files
     global path
+
     organism.replace(" ","")
     name_geol=f"{path}{study}/{type_files[0]}_{study}_itol.txt"
     name_host=f"{path}{study}/{type_files[1]}_{study}_itol.txt"
@@ -280,6 +297,7 @@ def linux_line(sp,study) :
 
 ### Function extract_id
 # This function extracts the following information: Host, Host country, Strain, Nucleic identifier, Protein identifier for each genbank file.
+
 name=f"{path}Metadata_studies.txt"
 allmetadata=open(name,'w')
 head=f"Virus name\tID itol tree\tTaxonomy\tSerogroup\tProtein accesion number\tSize Proteique sequence\tStart MLD\tEnd MLD\tSart GP38\tEnd GP38\tStart Gn\tEnd Gn\tStart NSm\tEnd NSm\tStart Gc\tEnd Gc\tNucleique accession number\tSize Nucelique sequence\tStrand\tStrain\tGeographical region\tHost\tHost source\tReferences\n"
@@ -289,12 +307,6 @@ allmetadata.close()
 def extract_id(Datas,study,sp) :
     global allmetadata
     for record in SeqIO.parse(Datas,"genbank"): 
-        Nu= record.id
-        Sequence_nu = record.seq
-        sizenu=len(Sequence_nu)
-        organism= record.annotations.get('organism',"Inconnu")
-        organism=organism.replace('virus','')
-        fullorga=organism
         host="_Na_"
         localisation="_Na_"
         strain="_Na_" 
@@ -302,23 +314,39 @@ def extract_id(Datas,study,sp) :
         region="_Na_"
         ID=''
         serogroup='_Na_'
+
+        Nu= record.id
+        Sequence_nu = record.seq
+        sizenu=len(Sequence_nu)
+
+        organism= record.annotations.get('organism',"Inconnu")
+        organism=organism.replace('virus','')
+        fullorga=organism
+
         taxonomy=record.annotations.get('taxonomy')[7:]
+        taxonomy=' : '.join(taxonomy)
+
         for feature in record.features : 
             if "host" in feature.qualifiers : 
                 host = feature.qualifiers['host'][0]
                 host=modif_host(host)
-                #host= host.split()[0]
+
             if "country" in feature.qualifiers :
                 localisation = feature.qualifiers['country'][0]
+
             elif "geo_loc_name" in feature.qualifiers :
                 localisation = feature.qualifiers['geo_loc_name'][0]
+
             if "strain" in feature.qualifiers :
                 strain = re.sub(r"[/\\?%*:|\"<>]","|",feature.qualifiers['strain'][0])
+
             elif "isolate" in feature.qualifiers :
                 strain = re.sub(r"[/\\?%*:|\"<>]","|",feature.qualifiers['isolate'][0])
+
             if feature.type == "CDS" and "translation" in feature.qualifiers :
                 Sequence_aa=feature.qualifiers["translation"][0] 
-                sizeprot=len(Sequence_aa)                
+                sizeprot=len(Sequence_aa)    
+                            
             if "protein_id" in feature.qualifiers :
                 ID_prot = feature.qualifiers['protein_id'][0]
 
@@ -351,7 +379,6 @@ def extract_id(Datas,study,sp) :
         color_sero=colour_choice(serogroup)
         write_file(Description_nu,Description_prot,Sequence_aa,Sequence_nu,localisation,region,region_color,order,order_color,host,strain,Nu,ID_prot,study,organism,ID,sp,serogroup,color_sero)
         
-        print(f"{organism}_{strain} : end")
         
         line=f"{fullorga}\t{ID}\t{taxonomy}\t{serogroup}\t{ID_prot}\t{sizeprot}\t{output_prot}{Nu}\t{sizenu}\t\t{strain}\t{region}: {localisation}\t{order}: {host}\t\t\t\n"
         name=f"{path}Metadata_studies.txt"
@@ -408,6 +435,7 @@ def extract_prot_data(ID_prot,study) :
 
 df = pd.read_csv(f"{path}Serogroup.txt", delimiter="|",header=0)
 df.iloc[:, 1:]=df.iloc[:, 1:].astype(str)
+
 def find_serogroup(organism) : 
     global df
     end_line=df.shape[0]
@@ -543,7 +571,7 @@ def Extract_data(file,sp,Protname,study) :
                     
             Data[record.description]=seq
     write_file_prot(Data,sp,Protname,study)
- ## Function write_file_prot
+
 
 ## Function write_file_prot
 # This function writes a file for each protein with all the sequences studied.  
@@ -559,6 +587,9 @@ def write_file_prot(Data,sp,Protname,study) :
             file.close()
             
 #######Function for the Script delete_dbl##################
+##Function select_doublon
+#This function identified all the possible duplicate sequences
+#The possible duplicates are identified using a specific threshold; this threshold was found using the dnadist file and the visible rake of the phylogenetic tree (specific to each study and not provided by this script). 
 
 def select_doublon(protein,study,target,ths) :
     global path
@@ -593,6 +624,26 @@ def select_doublon(protein,study,target,ths) :
     return Doublon,noms_colonnes
     #delete_dbl(Doublon,study,protein) 
 
+##Function col_name
+#This function delete the duplicate sequence name 
+    
+def col_name(old_col_names,col_name,Protein) :
+
+    if len(old_col_names) >0 :
+        if Protein=="NSmGn" : 
+            col_name=[element[-9:] for element in col_name]
+
+            old_col_names = [element for element in old_col_names if element in col_name]
+        else :
+            old_col_names = [element for element in old_col_names if element in col_name]
+    else : 
+        old_col_names=col_name
+
+    return old_col_names
+
+##Function delete_dbl
+#This function delete the identified duplicates for each protein for each study
+
 def delete_dbl(Doublon,study,protein,old_col_names):
     global path
     
@@ -620,9 +671,10 @@ def delete_dbl(Doublon,study,protein,old_col_names):
     subprocess.run(f" mafft --auto {name} > {path}{study}/seg_M_phylo/{protein}nucl_sdbl.aln-fasta ",shell=True)
     alignment = AlignIO.read(f"{path}{study}/seg_M_phylo/{protein}nucl_sdbl.aln-fasta", "fasta")
     AlignIO.write(alignment, output_phylip, "phylip")
+
+
     name=f"{path}{study}/seg_M_phylo/{protein}prot_sdbl.fasta"
     subprocess.run(f" rm {name}",shell=True)
-    
     
     for record in SeqIO.parse(f"{file_prot}","fasta") :
         
@@ -631,27 +683,10 @@ def delete_dbl(Doublon,study,protein,old_col_names):
             text=str (">"+record.description+'\n'+record.seq+'\n')
             file.write(text)
             file.close()
-    print(protein)
+
     output_phylip=f"{path}{study}/seg_M_phylo/{protein}prot_sdbl.phy"
     subprocess.run(f" mafft --auto {name} > {path}{study}/seg_M_phylo/{protein}prot_sdbl.aln-fasta ",shell=True)
     alignment = AlignIO.read(f"{path}{study}/seg_M_phylo/{protein}prot_sdbl.aln-fasta", "fasta")
     AlignIO.write(alignment, output_phylip, "phylip")
     
-
-    
-def col_name(old_col_names,col_name,Protein) :
-
-    if len(old_col_names) >0 :
-        if Protein=="NSmGn" : 
-            col_name=[element[-9:] for element in col_name]
-
-            old_col_names = [element for element in old_col_names if element in col_name]
-        else :
-            old_col_names = [element for element in old_col_names if element in col_name]
-    else : 
-        old_col_names=col_name
-
-    return old_col_names
-
-
 

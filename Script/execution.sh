@@ -2,21 +2,36 @@
 SECONDS=0
 path="/home/seannacharles/Documents/"
 
-#./Documents/Script/download_sequences.sh
+#Common scripts for all studies
+echo The sequences are currently being downloaded ...
+./Phylogenetic/Script/download_sequences.sh
+
+echo The captions, metadata files and files containing all the sequences are currently being created.
 /usr/bin/python3 "${path}"Script/genbank_extract.py
 
-Perybunyaviridae
-echo Start Perybunyaviridae
 study="Perybunyaviridae"
+echo Start of treatment for"${study}" : 
+
+echo The position of the proteins of the "${study}" are being marked ...
 /usr/bin/python3 "${path}"Script/mark_prot.py
+
+echo The proteins are being splited for the "${study}" ...
 /usr/bin/python3 "${path}"Script/split_protein_peri.py
 
+echo The NSm and Gn protein identifiers are currently being modified to avoid duplicate identifiers for the "${study}"...
 { sed 's/^>/>N/' "${path}""${study}"/seg_M_phylo/NSmprotSH.fasta; sed 's/^>/>G/' "${path}""${study}"/seg_M_phylo/GnprotKhurdun.fasta;sed 's/^>/>G/' "${path}""${study}"/seg_M_phylo/GnprotSH.fasta ; } > "${path}""${study}"/seg_M_phylo/NSmGnprot.fasta
 { sed 's/^>/>N/' "${path}""${study}"/seg_M_phylo/NSmnuclSH.fasta; sed 's/^>/>G/' "${path}""${study}"/seg_M_phylo/GnnuclKhurdun.fasta;sed 's/^>/>G/' "${path}""${study}"/seg_M_phylo/GnnuclSH.fasta ;} > "${path}""${study}"/seg_M_phylo/NSmGnnucl.fasta
+
 mafft --auto "${path}""${study}"/seg_M_phylo/NSmGnprot.fasta > "${path}""${study}"/seg_M_phylo/NSmGnprot_align.aln-fasta
 mafft --auto "${path}""${study}"/seg_M_phylo/NSmGnnucl.fasta > "${path}""${study}"/seg_M_phylo/NSmGnnucl_align.aln-fasta
-./Documents/Script/trimal_peri.sh
 
+echo Non-informative regions are being removed and sequences that are too close will be deleted for the "${study}"...
+./Phylogenetic/Script/trimal_peri.sh
+
+echo Identification of the best phylogenetic model is underway for the "${study}"
+
+echo For the proteique sequences...
+echo this operation will take a few tens of minutes...
 echo NSmGnprot : > "${path}""${study}"/seg_M_phylo/Best_model_Perybunyaviridae.txt
 prottest -i "${path}""${study}"/seg_M_phylo/NSmGnprot_sdbl.aln-fasta -all  -DT -F |grep 'Best model according to DT:' >> "${path}""${study}"/seg_M_phylo/Best_model_Perybunyaviridae.txt
 
@@ -29,7 +44,8 @@ prottest -i "${path}""${study}"/seg_M_phylo/Gnprot_sdbl.aln-fasta -all  -DT -F |
 echo Gcprot : >> "${path}""${study}"/seg_M_phylo/Best_model_Perybunyaviridae.txt
 prottest -i "${path}""${study}"/seg_M_phylo/Gcprot_sdbl.aln-fasta -all  -DT -F |grep 'Best model according to DT:' >> "${path}""${study}"/seg_M_phylo/Best_model_Perybunyaviridae.txt
 
-
+echo for the nucleic sequences...
+echo this operation will take a few tens of minutes...
 echo NSmGnnucl : >> "${path}""${study}"/seg_M_phylo/Best_model_Perybunyaviridae.txt
 iqtree2 -s "${path}""${study}"/seg_M_phylo/NSmGnnucl_sdbl.aln-fasta -m MFP -nt AUTO|grep 'Best-fit model:' >> "${path}""${study}"/seg_M_phylo/Best_model_Perybunyaviridae.txt
 
@@ -43,22 +59,34 @@ echo Gcnucl : >> "${path}""${study}"/seg_M_phylo/Best_model_Perybunyaviridae.txt
 iqtree2 -s "${path}""${study}"/seg_M_phylo/Gcnucl_sdbl.aln-fasta -m MFP -nt AUTO|grep 'Best-fit model:' >> "${path}""${study}"/seg_M_phylo/Best_model_Perybunyaviridae.txt
 
 
-echo End Perybunyaviridae
+echo End of treatment for"${study}" :
 
 #CCHFV
-echo Start CCHFV
 study="CCHFV"
+
+echo Start of treatment for"${study}" : 
+
+echo The position of the proteins of the "${study}" are being marked ...
 /usr/bin/python3 "${path}"Script/mark_prot_CCHFV.py
+
+echo The proteins are being splited for the "${study}" ...
 /usr/bin/python3 "${path}"Script/split_protein_CCHFV.py
+
+echo The NSm and Gn protein identifiers are currently being modified to avoid duplicate identifiers for the "${study}"...
 { sed 's/^>/>N/' "${path}""${study}"/seg_M_phylo/NSmprot.fasta; sed 's/^>/>G/' "${path}""${study}"/seg_M_phylo/Gnprot.fasta; } > "${path}""${study}"/seg_M_phylo/NSmGnprot.fasta
 { sed 's/^>/>N/' "${path}""${study}"/seg_M_phylo/NSmnucl.fasta; sed 's/^>/>G/' "${path}""${study}"/seg_M_phylo/Gnnucl.fasta; } > "${path}""${study}"/seg_M_phylo/NSmGnnucl.fasta
+
 mafft --auto "${path}""${study}"/seg_M_phylo/NSmGnprot.fasta > "${path}""${study}"/seg_M_phylo/NSmGnprot.aln-fasta
 mafft --auto "${path}""${study}"/seg_M_phylo/NSmGnnucl.fasta > "${path}""${study}"/seg_M_phylo/NSmGnnucl.aln-fasta
 
-./Documents/Script/trimal_CCHFV.sh
+echo Non-informative regions are being removed and sequences that are too close will be deleted for the "${study}"...
+./Phylogenetic/Script/trimal_CCHFV.sh
 
+echo Identification of the best phylogenetic model is underway for the "${study}"
+
+echo For the proteique sequences...
+echo this operation will take a few tens of minutes...
 echo NSmGnprot : > "${path}"CCHFV/seg_M_phylo/Best_model_CCHFV.txt
-
 prottest -i "${path}"CCHFV/seg_M_phylo/NSmGnprot_sdbl.aln-fasta -all  -DT -F |grep 'Best model according to DT:' >> "${path}"CCHFV/seg_M_phylo/Best_model_CCHFV.txt
 
 echo NSmprot : >> "${path}"CCHFV/seg_M_phylo/Best_model_CCHFV.txt
@@ -77,11 +105,9 @@ echo Gcprot : >> "${path}"CCHFV/seg_M_phylo/Best_model_CCHFV.txt
 prottest -i "${path}"CCHFV/seg_M_phylo/Gcprot_sdbl.aln-fasta -all  -DT -F |grep 'Best model according to DT:' >> "${path}"CCHFV/seg_M_phylo/Best_model_CCHFV.txt
 
 
-
-
-
+echo for the nucleic sequences...
+echo this operation will take a few tens of minutes...
 echo NSmGnnucl : >> "${path}"CCHFV/seg_M_phylo/Best_model_CCHFV.txt
-
 iqtree2 -s "${path}""${study}"/seg_M_phylo/NSmGnnucl_sdbl.aln-fasta -m MFP -nt AUTO|grep 'Best-fit model:' >> "${path}"CCHFV/seg_M_phylo/Best_model_CCHFV.txt
 
 echo NSmnucl : >> "${path}"CCHFV/seg_M_phylo/Best_model_CCHFV.txt
@@ -100,22 +126,34 @@ echo Gcnucl : >> "${path}"CCHFV/seg_M_phylo/Best_model_CCHFV.txt
 iqtree2 -s "${path}""${study}"/seg_M_phylo/Gcnucl_sdbl.aln-fasta -m MFP -nt AUTO|grep 'Best-fit model:' >> "${path}"CCHFV/seg_M_phylo/Best_model_CCHFV.txt
 
 
-echo End CCHFV
+echo End of treatment for"${study}" :
 
 #Nairoviridae
-echo Start Nairoviridae
 study="Nairoviridae"
+
+echo Start of treatment for"${study}" : 
+
+echo The position of the proteins of the "${study}" are being marked ...
 /usr/bin/python3 "${path}"Script/mark_prot_nairo.py
+
+echo The position of the proteins of the "${study}" are being marked ...
 /usr/bin/python3 "${path}"Script/split_protein_nairo.py
+
+echo The NSm and Gn protein identifiers are currently being modified to avoid duplicate identifiers for the "${study}"...
 { sed 's/^>/>N/' "${path}""${study}"/seg_M_phylo/NSmprot.fasta; sed 's/^>/>G/' "${path}""${study}"/seg_M_phylo/Gnprot.fasta; } > "${path}""${study}"/seg_M_phylo/NSmGnprot.fasta
 { sed 's/^>/>N/' "${path}""${study}"/seg_M_phylo/NSmnucl.fasta; sed 's/^>/>G/' "${path}""${study}"/seg_M_phylo/Gnnucl.fasta; } > "${path}""${study}"/seg_M_phylo/NSmGnnucl.fasta
 mafft --auto "${path}""${study}"/seg_M_phylo/NSmGnprot.fasta > "${path}""${study}"/seg_M_phylo/NSmGnprot_align.aln-fasta
 mafft --auto "${path}""${study}"/seg_M_phylo/NSmGnnucl.fasta > "${path}""${study}"/seg_M_phylo/NSmGnnucl_align.aln-fasta
 
-./Documents/Script/trimal_nairo.sh
+echo Non-informative regions are being removed and sequences that are too close will be deleted for the "${study}"...
+./Phylogenetic/Script/trimal_nairo.sh
 
+
+echo Identification of the best phylogenetic model is underway for the "${study}"
+
+echo For the proteique sequences...
+echo this operation will take a few tens of minutes...
 echo NSmGnprot : > "${path}"Nairoviridae/seg_M_phylo/Best_model_Nairoviridae.txt
-
 prottest -i "${path}"Nairoviridae/seg_M_phylo/NSmGnprot_sdbl.aln-fasta -all  -DT -F |grep 'Best model according to DT:' >> "${path}"Nairoviridae/seg_M_phylo/Best_model_Nairoviridae.txt
 
 echo NSmprot : >> "${path}"Nairoviridae/seg_M_phylo/Best_model_Nairoviridae.txt
@@ -133,9 +171,8 @@ prottest -i "${path}"Nairoviridae/seg_M_phylo/Gnprot_sdbl.aln-fasta -all  -DT -F
 echo Gcprot : >> "${path}"Nairoviridae/seg_M_phylo/Best_model_Nairoviridae.txt
 prottest -i "${path}"Nairoviridae/seg_M_phylo/Gcprot_sdbl.aln-fasta -all  -DT -F |grep 'Best model according to DT:' >> "${path}"Nairoviridae/seg_M_phylo/Best_model_Nairoviridae.txt
 
-
-
-
+echo for the nucleic sequences...
+echo this operation will take a few tens of minutes...
 echo NSmGnnucl : >> "${path}"Nairoviridae/seg_M_phylo/Best_model_Nairoviridae.txt
 
 iqtree2 -s "${path}""${study}"/seg_M_phylo/NSmGnnucl_sdbl.aln-fasta -m MFP -nt AUTO|grep 'Best-fit model:' >> "${path}"Nairoviridae/seg_M_phylo/Best_model_Nairoviridae.txt
@@ -155,10 +192,13 @@ iqtree2 -s "${path}""${study}"/seg_M_phylo/Gnnucl_sdbl.aln-fasta -m MFP -nt AUTO
 echo Gcnucl : >> "${path}"Nairoviridae/seg_M_phylo/Best_model_Nairoviridae.txt
 iqtree2 -s "${path}""${study}"/seg_M_phylo/Gcnucl_sdbl.aln-fasta -m MFP -nt AUTO|grep 'Best-fit model:' >> "${path}"Nairoviridae/seg_M_phylo/Best_model_Nairoviridae.txt
 
-echo End Nairoviridae
+echo End of treatment for"${study}" :
+
+echo The phylogenetic trees are currently being created. This operation may take a few DAYS depending on the number of sequences.
+./Phylogenetic/Script/phyml_execution.sh
 
 Hours=$(("${SECONDS}" / 3600))
 Minutes=$((("${SECONDS}" % 3600) / 60))
 Sec=$(("${SECONDS}" % 60))
 
-echo "execution time : '${Hours}' : '${Minutes}' : '${Sec}' "
+echo "It is finally over excution time : '${Hours}' : '${Minutes}' : '${Sec}' "

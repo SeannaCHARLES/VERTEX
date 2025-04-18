@@ -1,7 +1,7 @@
-# Script qui sépare les différentes proteines du segement M
+
 from Bio import SeqIO
 import re
-# IL FAUT SUPPRIMER LES FICHIERS CRÉE PAR LE SCRIPT AVANT DE LE RELANCER
+
 AA_L=["A","R","N","D","C","E","Q","G","H","I","L","K","M","F","P","S","T","W","Y","V","-","|"]
 Protname=["MLD_M","GP38_M","Gn_M","NSm_M","Gc_M"]
 vi=["M","L","S"]

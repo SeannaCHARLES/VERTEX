@@ -4,9 +4,6 @@ import subprocess
 from All_Function import compt_ali_nucl,compt_alignement,mark_sequence
 path ="/home/seannacharles/Documents/Perybunyaviridae/"
 
-print('mark prot peribunyaviridae')
-
-
 
 debseq=57
 target ="bunyamwer"
