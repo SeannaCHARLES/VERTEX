@@ -201,6 +201,7 @@ screen -S Phyml_scripts -X screen bash -c './Phylogenetic/Script/phyml_execution
 screen -S Phyml_scripts -X screen bash -c './Phylogenetic/Script/phyml_execution_Nairoviridae.sh'
 screen -S Phyml_scripts -X screen bash -c './Phylogenetic/Script/phyml_execution_Perybunyaviridae.sh'
 screen -ls
+screen -r Phyml_scripts
 #./Phylogenetic/Script/phyml_execution.sh
 
 Hours=$(("${SECONDS}" / 3600))
