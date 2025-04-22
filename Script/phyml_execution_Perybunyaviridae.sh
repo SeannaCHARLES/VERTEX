@@ -44,3 +44,4 @@ path="/home/seannacharles/Documents/"
         fi
     done
 
+echo "done" > /home/seannacharles/Documents/scriptPerybunaviridae_done
