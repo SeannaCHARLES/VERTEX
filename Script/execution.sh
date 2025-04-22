@@ -194,14 +194,16 @@ iqtree2 -s "${path}""${study}"/seg_M_phylo/Gcnucl_sdbl.aln-fasta -m MFP -nt AUTO
 
 echo End of treatment for"${study}" :
 
-echo The phylogenetic trees are currently being created. This operation may take a few DAYS depending on the number of sequences.
+echo The phylogenetic trees are currently being created. This operation may take a few DAYS depending on the number of sequences. 
+echo For this step you will need to install GNU Screen
 
 screen -dmS Phyml_scripts
 screen -S Phyml_scripts -X screen bash -c './Phylogenetic/Script/phyml_execution_CCHFV.sh'
 screen -S Phyml_scripts -X screen bash -c './Phylogenetic/Script/phyml_execution_Nairoviridae.sh'
 screen -S Phyml_scripts -X screen bash -c './Phylogenetic/Script/phyml_execution_Perybunyaviridae.sh'
 screen -ls
-screen -r Phyml_scripts
+#screen -r Phyml_scripts
+#./Phylogenetic/Script/phyml_execution_CCHFV.sh && ./Phylogenetic/Script/phyml_execution_Nairoviridae.sh &&./Phylogenetic/Script/phyml_execution_Perybunyaviridae.sh &
 #./Phylogenetic/Script/phyml_execution.sh
 
 Hours=$(("${SECONDS}" / 3600))
