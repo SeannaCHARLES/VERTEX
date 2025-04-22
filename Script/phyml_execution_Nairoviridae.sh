@@ -43,5 +43,5 @@ path="/home/seannacharles/Documents/"
             
         fi
     done
-echo "done" > /home/seannacharles/Documents/scriptNairoviridae_done
+echo "done" > /home/seannacharles/Documents/scriptNairoviridae_done.txt
 

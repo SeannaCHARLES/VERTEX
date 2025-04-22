@@ -202,7 +202,7 @@ screen -S Phyml_scripts -X screen bash -c './Phylogenetic/Script/phyml_execution
 screen -S Phyml_scripts -X screen bash -c './Phylogenetic/Script/phyml_execution_Nairoviridae.sh'
 screen -S Phyml_scripts -X screen bash -c './Phylogenetic/Script/phyml_execution_Perybunyaviridae.sh'
 screen -ls
-while [ ! -f /home/seannacharles/Documents/scriptCCHFV_done ] || [ ! -f /home/seannacharles/Documents/scriptNairoviridae_done ] || [ ! -f /home/seannacharles/Documents/scriptPerybunaviridae_done ]; do
+while [ ! -f /home/seannacharles/Documents/scriptCCHFV_done.txt ] || [ ! -f /home/seannacharles/Documents/scriptNairoviridae_done.txt ] || [ ! -f /home/seannacharles/Documents/scriptPerybunaviridae_done.txt ]; do
     sleep 1
 done
 

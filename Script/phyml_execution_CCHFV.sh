@@ -44,4 +44,4 @@ path="/home/seannacharles/Documents/"
         fi
     done
 
-echo "done" > /home/seannacharles/Documents/scriptCCHFV_done
+echo "done" > /home/seannacharles/Documents/scriptCCHFV_done.txt
