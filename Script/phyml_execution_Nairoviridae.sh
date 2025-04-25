@@ -16,9 +16,9 @@ path="/home/seannacharles/Documents/"
         
         
         if [[ -n "$model" ]]; then
-            echo Execution of phyml for the protein "${protein}" of the study Nairoviridae with the model "${model}"
-            echo i-"${path}"Nairoviridae/seg_M_phylo/"${protein}"_sdbl.phy d- aa m-"${model}" f- e a- e c- 4 b- 100
-            phyml -i "${path}"Nairoviridae/seg_M_phylo/"${protein}"_sdbl.phy -d aa -m"${model}" -f e -a e -c 4 -b 100
+            echo Execution of iqtree2 for the protein "${protein}" of the study Nairoviridae with the model "${model}"
+            echo s-"${path}"Nairoviridae/seg_M_phylo/"${protein}"_sdbl.phy d- aa m-"${model}" f- e a- e c- 4 b- 100 '\n'
+            iqtree2 -s "${path}"Nairoviridae/seg_M_phylo/"${protein}"_sdbl.phy -d aa -m "${model}"+F -a e -c 4 -b 100
             model=""
 
         fi
@@ -36,10 +36,10 @@ path="/home/seannacharles/Documents/"
         
         
         if [[ -n "$model" ]]; then
-            echo Execution of phyml for the protein "${protein}" of the study Nairoviridae with the model "${model}" 
-            echo i-"${path}"Nairoviridae/seg_M_phylo/"${protein}"_sdbl.phy d- nt m-"${model}" f- e a- e c- 4 b- 100
+            echo Execution of iqtree2 for the protein "${protein}" of the study Nairoviridae with the model "${model}" 
+            echo s-"${path}"Nairoviridae/seg_M_phylo/"${protein}"_sdbl.phy d- nt m-"${model}" f- e a- e c- 4 b- 100 '\n'
             #phyml -i "${path}"Nairoviridae/seg_M_phylo/"${protein}"_sdbl.phy -d nt -m"${model}" -f e -a e -c 4 -b 100 
-            iqtree2 -s "${path}"CCHFV/seg_M_phylo/"${protein}"_sdbl.phy -d nt -m"${model}" -f e -a e -c 3 -b 100
+            iqtree2 -s "${path}"CCHFV/seg_M_phylo/"${protein}"_sdbl.phy -d nt -m "${model}"+F -a e -c 3 -b 100
             model=""
             
         fi
