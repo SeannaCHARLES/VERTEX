@@ -418,6 +418,7 @@ def modif_name_prot(name_prot) :
     return name_prot
 
 def extract_prot_data(ID_prot,study) : 
+
     all_proteins=["MLD","GP38","Gn","NSm","Gc"]
     Entrez.email = "charles.seanna@outlook.fr"  
     handle = Entrez.efetch(db="protein", id=ID_prot, rettype="gp", retmode="text")
@@ -446,6 +447,7 @@ def extract_prot_data(ID_prot,study) :
             output+=f'GP38+Gn: {str(proteins["GP38+Gn"][0])}\tGP38+Gn: {str(proteins["GP38+Gn"][1])}\t'
         else : 
             output+=f"\t\t"
+    subprocess.run(f"rm {path}{study}/M_prot/{ID_prot}.gp",shell=True)
     return output
 
 df = pd.read_csv(f"{path}Serogroup.txt", delimiter="|",header=0)
