@@ -127,7 +127,7 @@ def modif_host(host) :
     host.split(";")[0]
     host.replace("sp.",'')
     host.replace("sentinel.",'')
-    host=re.sub(r"\([^)]*\)", "", host)
+    host=re.sub(r"\([^)]*\)", "", host) #replace all the text betwenn ()
 
     return host
 

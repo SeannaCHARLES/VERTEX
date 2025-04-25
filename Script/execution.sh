@@ -4,7 +4,7 @@ path="/home/seannacharles/Documents/"
 
 #Common scripts for all studies
 echo The sequences are currently being downloaded ...
-#./Phylogenetic/Script/download_sequences.sh
+./Phylogenetic/Script/download_sequences.sh
 
 echo The captions, metadata files and files containing all the sequences are currently being created.
 /usr/bin/python3 /home/seannacharles/Phylogenetic/Script/genbank_extract.py
