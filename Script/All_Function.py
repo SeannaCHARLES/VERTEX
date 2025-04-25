@@ -30,8 +30,8 @@ path = "/home/seannacharles/Documents/"
 #######Function for the Script Genbank extract##################
 #This part create a set of 100 random colors to create the itol legends 
 cmap=plt.get_cmap("hsv")
-Rcolor=[cmap(i/100)for i in range(100)]
-colors=['#%02x%02x%02x'%(int(r*255),int(g*255),int(b*255))for r,g,b,_ in Rcolor]
+Rcolor=[cmap(i/100)for i in range(100)] #Colors in rgb format
+colors=['#%02x%02x%02x'%(int(r*255),int(g*255),int(b*255))for r,g,b,_ in Rcolor] #Colors in hexa format
 random.shuffle(colors)
 
 
@@ -45,6 +45,8 @@ type_files=["Geolocalisation","Host","Serogroup"]
 # It is important to remove terms that do not allow the different organisms to be differentiated (Add the terms you want in this function)
 
 def Modif_ID(ID) : 
+    #These changes are necessary to ensure the uniformity of the identifiers used by the various organisations.
+    #Add you own modification if you feel the need
     ID=ID.lower()
     ID=ID.replace(" ","")
     ID=ID.replace("_","")
@@ -52,6 +54,7 @@ def Modif_ID(ID) :
     ID=ID.replace("'","")
     ID=ID.replace("orthobunya","")
     ID=ID.replace("orthonairo","")
+    ID=ID.replace("nairovirid","")
     ID=ID[:9]
     return ID
 
@@ -84,6 +87,7 @@ def modif_localisation(localisation) :
 # If the geographical region can't be find the country will be kept
 
 def geographic_region(pays) : 
+
     geolocator = Nominatim(user_agent=f"{pays}continentcharles.seanna@outlook.fr")
     location = geolocator.geocode(pays,timeout=10)
 
@@ -111,23 +115,29 @@ def geographic_region(pays) :
 # For each host, it is important to keep only those elements that allow the species to be identified
 
 def modif_host(host) : 
-    if "culex" in host or "Culex" in host: 
+    if "culex" in host.lower() : 
         host ="Culex"
+    elif "homo sapiens" in host.lower():
+        host="Homo sapiens"
+    elif "midge" in host.lower() :
+        host="Midges"
+    elif "tick" in host.lower() : 
+        host="Tick"
+
     host.split(";")[0]
     host.replace("sp.",'')
     host.replace("sentinel.",'')
     host=re.sub(r"\([^)]*\)", "", host)
+
     return host
 
 ### Function deforder 
 # For the captions, each species is replaced by its order
 # If the order can't be find the species will be kept
+# This function send a request to the NCBI database
 
 def deforder(species) : 
     Entrez.email="charles.seanna@outlook.fr"
-
-    if "tick" in species.lower() : 
-        return "Ixodida"
 
     try : 
         search= Entrez.esearch(db="taxonomy",term=species)
@@ -196,10 +206,10 @@ def write_file(Description_nu,Description_prot,Sequence_aa,Sequence_nu,localisat
     nom_nucl_file.replace(" ","")
 
 
-    name_geol=f"{path}{study}/{type_files[0]}_{study}_NSmGn_itol.txt"
-    name_host=f"{path}{study}/{type_files[1]}_{study}_NSmGn_itol.txt"
-    name_label=f"{path}{study}/Label_{study}_NSmGn_itol.txt"
-    name_sero=f"{path}{study}/{type_files[2]}_{study}_NSmGn_itol.txt"
+    name_geol=f"{path}{study}/{type_files[0]}_{study}NSmGn_itol.txt"
+    name_host=f"{path}{study}/{type_files[1]}_{study}NSmGn_itol.txt"
+    name_label=f"{path}{study}/Label_{study}NSmGn_itol.txt"
+    name_sero=f"{path}{study}/{type_files[2]}_{study}NSmGn_itol.txt"
 
     geoloc=open(name_geol,'a')
     geoloc.write(f"##{localisation}\n")
@@ -305,23 +315,25 @@ allmetadata.write(head)
 allmetadata.close()
 
 def extract_id(Datas,study,sp) :
+
     global allmetadata
+
     for record in SeqIO.parse(Datas,"genbank"): 
-        host="_Na_"
-        localisation="_Na_"
-        strain="_Na_" 
-        order="_Na_"
-        region="_Na_"
+        #Variable initialisation 
+        host="Na"
+        localisation="Na"
+        strain="Na" 
+        order="Na"
+        region="Na"
         ID=''
-        serogroup='_Na_'
+        serogroup='Na'
 
         Nu= record.id
         Sequence_nu = record.seq
         sizenu=len(Sequence_nu)
-
         organism= record.annotations.get('organism',"Inconnu")
         organism=organism.replace('virus','')
-        fullorga=organism
+        fullorganisme=organism
 
         taxonomy=record.annotations.get('taxonomy')[7:]
         taxonomy=' : '.join(taxonomy)
@@ -330,12 +342,17 @@ def extract_id(Datas,study,sp) :
             if "host" in feature.qualifiers : 
                 host = feature.qualifiers['host'][0]
                 host=modif_host(host)
+                order = deforder(host) 
 
             if "country" in feature.qualifiers :
                 localisation = feature.qualifiers['country'][0]
+                localisation=modif_localisation(localisation)
+                region = geographic_region(localisation)
 
             elif "geo_loc_name" in feature.qualifiers :
                 localisation = feature.qualifiers['geo_loc_name'][0]
+                localisation=modif_localisation(localisation)
+                region = geographic_region(localisation)
 
             if "strain" in feature.qualifiers :
                 strain = re.sub(r"[/\\?%*:|\"<>]","|",feature.qualifiers['strain'][0])
@@ -351,17 +368,12 @@ def extract_id(Datas,study,sp) :
                 ID_prot = feature.qualifiers['protein_id'][0]
 
         output_prot=extract_prot_data(ID_prot,study)
-        
-        if host !='_Na_' : 
-            host=modif_host(host)
-            order = deforder(host)  
-
-        if localisation !="_Na_" : 
-            localisation=modif_localisation(localisation)
-            region = geographic_region(localisation)
 
         order_color=colour_choice(order)
         region_color=colour_choice(region)
+        serogroup=find_serogroup(fullorganisme)
+        color_sero=colour_choice(serogroup)
+
         if study=="CCHFV" : 
             ID=Modif_ID(str(ID_prot+strain))
             Description_nu = f"{ID}"
@@ -375,13 +387,15 @@ def extract_id(Datas,study,sp) :
         
         Description_nu.replace(" ","")
         Description_prot.replace(" ","")
-        serogroup=find_serogroup(fullorga)
-        color_sero=colour_choice(serogroup)
+
+
+
         write_file(Description_nu,Description_prot,Sequence_aa,Sequence_nu,localisation,region,region_color,order,order_color,host,strain,Nu,ID_prot,study,organism,ID,sp,serogroup,color_sero)
         
         
-        line=f"{fullorga}\t{ID}\t{taxonomy}\t{serogroup}\t{ID_prot}\t{sizeprot}\t{output_prot}{Nu}\t{sizenu}\t\t{strain}\t{region}: {localisation}\t{order}: {host}\t\t\t\n"
+        line=f"{fullorganisme}\t{ID}\t{taxonomy}\t{serogroup}\t{ID_prot}\t{sizeprot}\t{output_prot}{Nu}\t{sizenu}\t\t{strain}\t{region}: {localisation}\t{order}: {host}\t\t\t\n"
         name=f"{path}Metadata_studies.txt"
+
         allmetadata=open(name,'a')
         allmetadata.write(line)
         allmetadata.close()
