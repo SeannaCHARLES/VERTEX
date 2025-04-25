@@ -31,7 +31,7 @@ echo Non-informative regions are being removed and sequences that are too close 
 echo Identification of the best phylogenetic model is underway for the "${study}"
 
 echo For the proteique sequences...
-echo this operation will take a few tens of minutes...
+echo this operation may take up to ten minutes ...
 echo NSmGnprot : > "${path}""${study}"/seg_M_phylo/Best_model_Perybunyaviridae.txt
 prottest -i "${path}""${study}"/seg_M_phylo/NSmGnprot_sdbl.aln-fasta -all  -DT -F |grep 'Best model according to DT:' >> "${path}""${study}"/seg_M_phylo/Best_model_Perybunyaviridae.txt
 
@@ -45,7 +45,7 @@ echo Gcprot : >> "${path}""${study}"/seg_M_phylo/Best_model_Perybunyaviridae.txt
 prottest -i "${path}""${study}"/seg_M_phylo/Gcprot_sdbl.aln-fasta -all  -DT -F |grep 'Best model according to DT:' >> "${path}""${study}"/seg_M_phylo/Best_model_Perybunyaviridae.txt
 
 echo for the nucleic sequences...
-echo this operation will take a few tens of minutes...
+echo this operation may take up to ten minutes ...
 echo NSmGnnucl : >> "${path}""${study}"/seg_M_phylo/Best_model_Perybunyaviridae.txt
 iqtree2 -s "${path}""${study}"/seg_M_phylo/NSmGnnucl_sdbl.aln-fasta -m MFP -nt AUTO|grep 'Best-fit model:' >> "${path}""${study}"/seg_M_phylo/Best_model_Perybunyaviridae.txt
 
@@ -85,7 +85,7 @@ echo Non-informative regions are being removed and sequences that are too close 
 echo Identification of the best phylogenetic model is underway for the "${study}"
 
 echo For the proteique sequences...
-echo this operation will take a few tens of minutes...
+echo this operation may take up to ten minutes ...
 echo NSmGnprot : > "${path}"CCHFV/seg_M_phylo/Best_model_CCHFV.txt
 prottest -i "${path}"CCHFV/seg_M_phylo/NSmGnprot_sdbl.aln-fasta -all  -DT -F |grep 'Best model according to DT:' >> "${path}"CCHFV/seg_M_phylo/Best_model_CCHFV.txt
 
@@ -106,7 +106,7 @@ prottest -i "${path}"CCHFV/seg_M_phylo/Gcprot_sdbl.aln-fasta -all  -DT -F |grep 
 
 
 echo for the nucleic sequences...
-echo this operation will take a few tens of minutes...
+echo this operation may take up to ten minutes ...
 echo NSmGnnucl : >> "${path}"CCHFV/seg_M_phylo/Best_model_CCHFV.txt
 iqtree2 -s "${path}""${study}"/seg_M_phylo/NSmGnnucl_sdbl.aln-fasta -m MFP -nt AUTO|grep 'Best-fit model:' >> "${path}"CCHFV/seg_M_phylo/Best_model_CCHFV.txt
 
@@ -152,7 +152,7 @@ echo Non-informative regions are being removed and sequences that are too close 
 echo Identification of the best phylogenetic model is underway for the "${study}"
 
 echo For the proteique sequences...
-echo this operation will take a few tens of minutes...
+echo this operation may take up to ten minutes ...
 echo NSmGnprot : > "${path}"Nairoviridae/seg_M_phylo/Best_model_Nairoviridae.txt
 prottest -i "${path}"Nairoviridae/seg_M_phylo/NSmGnprot_sdbl.aln-fasta -all  -DT -F |grep 'Best model according to DT:' >> "${path}"Nairoviridae/seg_M_phylo/Best_model_Nairoviridae.txt
 
@@ -172,7 +172,7 @@ echo Gcprot : >> "${path}"Nairoviridae/seg_M_phylo/Best_model_Nairoviridae.txt
 prottest -i "${path}"Nairoviridae/seg_M_phylo/Gcprot_sdbl.aln-fasta -all  -DT -F |grep 'Best model according to DT:' >> "${path}"Nairoviridae/seg_M_phylo/Best_model_Nairoviridae.txt
 
 echo for the nucleic sequences...
-echo this operation will take a few tens of minutes...
+echo this operation may take up to ten minutes ...
 echo NSmGnnucl : >> "${path}"Nairoviridae/seg_M_phylo/Best_model_Nairoviridae.txt
 
 iqtree2 -s "${path}""${study}"/seg_M_phylo/NSmGnnucl_sdbl.aln-fasta -m MFP -nt AUTO|grep 'Best-fit model:' >> "${path}"Nairoviridae/seg_M_phylo/Best_model_Nairoviridae.txt
@@ -197,17 +197,17 @@ echo End of treatment for"${study}" :
 echo The phylogenetic trees are currently being created. This operation may take a few DAYS depending on the number of sequences. 
 echo For this step you will need to install GNU Screen
 
-screen -dmS Phyml_scripts
-screen -S Phyml_scripts -X screen bash -c './Phylogenetic/Script/phyml_execution_CCHFV.sh'
-screen -S Phyml_scripts -X screen bash -c './Phylogenetic/Script/phyml_execution_Nairoviridae.sh'
-screen -S Phyml_scripts -X screen bash -c './Phylogenetic/Script/phyml_execution_Perybunyaviridae.sh'
-screen -ls
-while [ ! -f /home/seannacharles/Documents/scriptCCHFV_done.txt ] || [ ! -f /home/seannacharles/Documents/scriptNairoviridae_done.txt ] || [ ! -f /home/seannacharles/Documents/scriptPerybunaviridae_done.txt ]; do
-    sleep 1
-done
+# screen -dmS Phyml_scripts
+# screen -S Phyml_scripts -X screen bash -c './Phylogenetic/Script/phyml_execution_CCHFV.sh'
+# screen -S Phyml_scripts -X screen bash -c './Phylogenetic/Script/phyml_execution_Nairoviridae.sh'
+# screen -S Phyml_scripts -X screen bash -c './Phylogenetic/Script/phyml_execution_Perybunyaviridae.sh'
+# screen -ls
+# while [ ! -f /home/seannacharles/Documents/scriptCCHFV_done.txt ] || [ ! -f /home/seannacharles/Documents/scriptNairoviridae_done.txt ] || [ ! -f /home/seannacharles/Documents/scriptPerybunaviridae_done.txt ]; do
+#     sleep 1
+# done
 
 #screen -r Phyml_scripts
-#./Phylogenetic/Script/phyml_execution_CCHFV.sh && ./Phylogenetic/Script/phyml_execution_Nairoviridae.sh &&./Phylogenetic/Script/phyml_execution_Perybunyaviridae.sh &
+./Phylogenetic/Script/phyml_execution_CCHFV.sh && ./Phylogenetic/Script/phyml_execution_Nairoviridae.sh &&./Phylogenetic/Script/phyml_execution_Perybunyaviridae.sh &
 #./Phylogenetic/Script/phyml_execution.sh
 
 Hours=$(("${SECONDS}" / 3600))

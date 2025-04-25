@@ -226,7 +226,7 @@ def write_file(Description_nu,Description_prot,Sequence_aa,Sequence_nu,localisat
 
     label=open(name_label,'a')
     label.write(f"##{organism}\n")
-    text=str (f"N{ID}\t{organism}\nG{ID}\t{organism}\n{ID}\t{organism}\n")
+    text=str (f"N{ID}\tN{organism}\nG{ID}\tG{organism}\n{ID}\t{organism}\n")
     label.write(text)
     label.close() 
 

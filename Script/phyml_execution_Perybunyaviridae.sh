@@ -11,14 +11,14 @@ path="/home/seannacharles/Documents/"
         if [[ -z "$ap" ]]; then
             protein=$(awk -F":" -v i="$i" 'NR==i {print $1}' "${path}Perybunyaviridae/seg_M_phylo/Best_model_Perybunyaviridae.txt" | awk '{print $1}' )
         else
-            model=$(awk -F":" -v i="$i" 'NR==i{print $2}' "${path}Perybunyaviridae/seg_M_phylo/Best_model_Perybunyaviridae.txt" | awk -F"+" '{print $1}' | awk '{print $1}')
+            model=$(awk -F":" -v i="$i" 'NR==i{print $2}' "${path}Perybunyaviridae/seg_M_phylo/Best_model_Perybunyaviridae.txt"| awk '{print $1}')
         fi
         
         
         if [[ -n "$model" ]]; then
             echo Execution of iqtree2 for the protein "${protein}" of the study Perybunyaviridae with the model "${model}"
-            echo s-"${path}"Perybunyaviridae/seg_M_phylo/"${protein}"_sdbl.phy d- aa m-"${model}" f- e a- e c- 4 b- 100 '\n'
-            iqtree2 -s "${path}"Perybunyaviridae/seg_M_phylo/"${protein}"_sdbl.phy -d aa -m "${model}"+F -a e -c 4 -b 100
+            echo s-"${path}"Perybunyaviridae/seg_M_phylo/"${protein}"_sdbl.phy d- aa m-"${model}" f- e a- e c- 4 b- 100 
+            iqtree2 -s "${path}"Perybunyaviridae/seg_M_phylo/"${protein}"_sdbl.phy -d aa -m "${model}" -B 1000
             model=""
 
         fi
@@ -31,15 +31,15 @@ path="/home/seannacharles/Documents/"
         if [[ -z "$ap" ]]; then
             protein=$(awk -F":" -v i="$i" 'NR==i {print $1}' "${path}Perybunyaviridae/seg_M_phylo/Best_model_Perybunyaviridae.txt" | awk '{print $1}' )
         else
-            model=$(awk -F":" -v i="$i" 'NR==i{print $2}' "${path}Perybunyaviridae/seg_M_phylo/Best_model_Perybunyaviridae.txt" | awk -F"+" '{print $1}' | awk '{print $1}')
+            model=$(awk -F":" -v i="$i" 'NR==i{print $2}' "${path}Perybunyaviridae/seg_M_phylo/Best_model_Perybunyaviridae.txt"| awk '{print $1}')
         fi
         
         
         if [[ -n "$model" ]]; then
             echo Execution of iqtree2 for the protein "${protein}" of the study Perybunyaviridae with the model "${model}" 
-            echo s-"${path}"Perybunyaviridae/seg_M_phylo/"${protein}"_sdbl.phy d- nt m-"${model}" f- e a- e c- 4 b- 100 '\n'
+            echo s-"${path}"Perybunyaviridae/seg_M_phylo/"${protein}"_sdbl.phy d- nt m-"${model}" f- e a- e c- 4 b- 100 
             #phyml -i "${path}"Perybunyaviridae/seg_M_phylo/"${protein}"_sdbl.phy -d nt -m"${model}" -f e -a e -c 4 -b 100 
-            iqtree2 -s "${path}"Perybunyaviridae/seg_M_phylo/"${protein}"_sdbl.phy -d nt -m "${model}"+F -a e -c 4 -b 100
+            iqtree2 -s "${path}"Perybunyaviridae/seg_M_phylo/"${protein}"_sdbl.phy -d nt -m "${model}" -B 1000
             model=""
             
         fi
