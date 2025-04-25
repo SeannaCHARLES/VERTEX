@@ -4,7 +4,7 @@ from Bio.Seq import Seq
 
 import subprocess
 
-from All_Function import compt_ali_nucl,compt_alignement,mark_sequence
+from All_Functions import compt_ali_nucl,compt_alignement,mark_sequence
 
 pos_prot=[23,248,249,520,521,843,844,996,997,1684]
 path="/home/seannacharles/Documents/CCHFV/"

@@ -4,19 +4,19 @@ path="/home/seannacharles/Documents/"
 
 #Common scripts for all studies
 echo The sequences are currently being downloaded ...
-./Phylogenetic/Script/download_sequences.sh
+#./Phylogenetic/Script/download_sequences.sh
 
 echo The captions, metadata files and files containing all the sequences are currently being created.
-/usr/bin/python3 "${path}"Script/genbank_extract.py
+/usr/bin/python3 /home/seannacharles/Phylogenetic/Script/genbank_extract.py
 
 study="Perybunyaviridae"
 echo Start of treatment for"${study}" : 
 
 echo The position of the proteins of the "${study}" are being marked ...
-/usr/bin/python3 "${path}"Script/mark_prot.py
+/usr/bin/python3 /home/seannacharles/Phylogenetic/Script/mark_prot.py
 
 echo The proteins are being splited for the "${study}" ...
-/usr/bin/python3 "${path}"Script/split_protein_peri.py
+/usr/bin/python3 /home/seannacharles/Phylogenetic/Script/split_protein_peri.py
 
 echo The NSm and Gn protein identifiers are currently being modified to avoid duplicate identifiers for the "${study}"...
 { sed 's/^>/>N/' "${path}""${study}"/seg_M_phylo/NSmprotSH.fasta; sed 's/^>/>G/' "${path}""${study}"/seg_M_phylo/GnprotKhurdun.fasta;sed 's/^>/>G/' "${path}""${study}"/seg_M_phylo/GnprotSH.fasta ; } > "${path}""${study}"/seg_M_phylo/NSmGnprot.fasta
@@ -67,10 +67,10 @@ study="CCHFV"
 echo Start of treatment for"${study}" : 
 
 echo The position of the proteins of the "${study}" are being marked ...
-/usr/bin/python3 "${path}"Script/mark_prot_CCHFV.py
+/usr/bin/python3 /home/seannacharles/Phylogenetic/Script/mark_prot_CCHFV.py
 
 echo The proteins are being splited for the "${study}" ...
-/usr/bin/python3 "${path}"Script/split_protein_CCHFV.py
+/usr/bin/python3 /home/seannacharles/Phylogenetic/Script/split_protein_CCHFV.py
 
 echo The NSm and Gn protein identifiers are currently being modified to avoid duplicate identifiers for the "${study}"...
 { sed 's/^>/>N/' "${path}""${study}"/seg_M_phylo/NSmprot.fasta; sed 's/^>/>G/' "${path}""${study}"/seg_M_phylo/Gnprot.fasta; } > "${path}""${study}"/seg_M_phylo/NSmGnprot.fasta
@@ -134,10 +134,10 @@ study="Nairoviridae"
 echo Start of treatment for"${study}" : 
 
 echo The position of the proteins of the "${study}" are being marked ...
-/usr/bin/python3 "${path}"Script/mark_prot_nairo.py
+/usr/bin/python3 /home/seannacharles/Phylogenetic/Script/mark_prot_nairo.py
 
 echo The position of the proteins of the "${study}" are being marked ...
-/usr/bin/python3 "${path}"Script/split_protein_nairo.py
+/usr/bin/python3 /home/seannacharles/Phylogenetic/Script/split_protein_nairo.py
 
 echo The NSm and Gn protein identifiers are currently being modified to avoid duplicate identifiers for the "${study}"...
 { sed 's/^>/>N/' "${path}""${study}"/seg_M_phylo/NSmprot.fasta; sed 's/^>/>G/' "${path}""${study}"/seg_M_phylo/Gnprot.fasta; } > "${path}""${study}"/seg_M_phylo/NSmGnprot.fasta

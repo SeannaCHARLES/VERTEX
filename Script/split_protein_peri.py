@@ -3,7 +3,7 @@ import re
 import subprocess
 from Bio.Seq import Seq
 from Bio import AlignIO
-from All_Function import Extract_data, write_file
+from All_Functions import Extract_data, write_file
 path = "/home/seannacharles/Documents/Perybunyaviridae/"
 study="Perybunyaviridae"
 

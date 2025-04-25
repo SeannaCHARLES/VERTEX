@@ -2,7 +2,7 @@
 
 import subprocess
 
-from All_Function import Extract_data, write_file
+from All_Functions import Extract_data, write_file
 
 print('split prot CCHFV')
 path = "/home/seannacharles/Documents/CCHFV/"

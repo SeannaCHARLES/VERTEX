@@ -1,7 +1,7 @@
 
 import sys
 
-from All_Function import select_doublon,delete_dbl,col_name
+from All_Functions import select_doublon,delete_dbl,col_name
 
 path ="/home/seannacharles/Documents/"
 
@@ -11,7 +11,7 @@ target=str(sys.argv[2])
 ths=float(sys.argv[3])
 Prot_list=list(sys.argv[4])
 print(Prot_list) 
- 
+
 final_dbl=[]
 old_col_names=[]
 

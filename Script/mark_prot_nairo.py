@@ -3,7 +3,7 @@ from Bio.Seq import Seq
 
 import subprocess
 
-from All_Function import compt_ali_nucl,compt_alignement,mark_sequence
+from All_Functions import compt_ali_nucl,compt_alignement,mark_sequence
 
 path ="/home/seannacharles/Documents/Nairoviridae/"
 target = "haemorrha"
