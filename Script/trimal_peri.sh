@@ -50,5 +50,7 @@ done
 study="Perybunyaviridae" 
 ths=0.01
 target="bunyamwer"
+proteins=("Gn" "NSm" "Gc")
+list_proteins=$(IFS=, ; echo "${proteins[*]}")
 
-/usr/bin/python3 /home/seannacharles/Documents/Script/delete_dbl.py "$study"  "$target" "$ths"
+/usr/bin/python3 /home/seannacharles/Documents/Script/delete_dbl.py "$study"  "$target" "$ths" "$list_proteins"

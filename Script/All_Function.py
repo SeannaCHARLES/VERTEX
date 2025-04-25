@@ -264,6 +264,7 @@ def write_file(Description_nu,Description_prot,Sequence_aa,Sequence_nu,localisat
             nu.write(f">{ID}\n{Sequence_nu}\n")
         with open (f"{path}{study}/M_prot/{nom_prot_file}.fasta","w") as aa : 
             aa.write(f">{ID}\n{Sequence_aa}\n")
+            
     else :
         with open (f"{path}{study}/{nom_nucl_file}.fasta","w") as nu : 
             nu.write(f">{ID}\n{Sequence_nu}\n")

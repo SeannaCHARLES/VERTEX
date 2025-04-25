@@ -9,12 +9,9 @@ path ="/home/seannacharles/Documents/"
 study=str(sys.argv[1])
 target=str(sys.argv[2])
 ths=float(sys.argv[3])
-#Ajouter prot list en sys.argv[4]
-if study!="Perybunyaviridae":
-    Prot_list=["MLD","GP38","Gn","NSm","Gc"]
-else : 
-    Prot_list=["Gn","NSm","Gc"]
-  
+Prot_list=list(sys.argv[4])
+print(Prot_list) 
+ 
 final_dbl=[]
 old_col_names=[]
 

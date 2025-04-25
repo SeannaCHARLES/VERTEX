@@ -3,8 +3,8 @@
 
 echo Trimal Nairoviridae 
 path="/home/seannacharles/Documents/Nairoviridae/seg_M_phylo/"
-pwd
 Type_seq=("nucl" "prot")
+
 for type in "${Type_seq[@]}"; do
         echo "Traitement des sequence ${type}"
                 File=("Gc${type}" "Gn${type}" "NSm${type}" "NSmGn${type}" "GP38${type}" "MLD${type}")
@@ -51,32 +51,8 @@ done
 study="Nairoviridae"     
 target="haemorrha"
 ths=0.005
-# Convertir la liste en une chaîne séparée par des virgules
+proteins=("MLD" "GP38" "Gn" "NSm" "Gc")
+list_proteins=$(IFS=, ; echo "${proteins[*]}")
 
 
-/usr/bin/python3 /home/seannacharles/Documents/Script/delete_dbl.py "$study"  "$target" "$ths"
-# echo prottest nairo
-
-
- 
-
-# echo NSmGn : >/home/seannacharles/Documents/Nairoviridae/seg_M_phylo/Best_model_nairo.txt
-# prottest -i /home/seannacharles/Documents/Nairoviridae/seg_M_phylo/NSmGn_trimal.fasta -all -DT -F |grep "Best model according to DT:" >> /home/seannacharles/Documents/Nairoviridae/seg_M_phylo/Best_model_nairo.txt
-
-# echo NSm : >> /home/seannacharles/Documents/Nairoviridae/seg_M_phylo/Best_model_nairo.txt
-# prottest -i /home/seannacharles/Documents/Nairoviridae/seg_M_phylo/NSm_trimal.fasta -all -DT -F |grep "Best model according to DT:" >> /home/seannacharles/Documents/Nairoviridae/seg_M_phylo/Best_model_nairo.txt
-
-# echo Gn : >> /home/seannacharles/Documents/Nairoviridae/seg_M_phylo/Best_model_nairo.txt
-# prottest -i /home/seannacharles/Documents/Nairoviridae/seg_M_phylo/Gn_trimal.fasta -all  -DT -F |grep "Best model according to DT:" >> /home/seannacharles/Documents/Nairoviridae/seg_M_phylo/Best_model_nairo.txt
-
-# echo Gc : >> /home/seannacharles/Documents/Nairoviridae/seg_M_phylo/Best_model_nairo.txt
-# prottest -i /home/seannacharles/Documents/Nairoviridae/seg_M_phylo/Gc_trimal.fasta -all  -DT -F  |grep "Best model according to DT:">> /home/seannacharles/Documents/Nairoviridae/seg_M_phylo/Best_model_nairo.txt
-
-# echo GP38 : >> /home/seannacharles/Documents/Nairoviridae/seg_M_phylo/Best_model_nairo.txt
-# prottest -i /home/seannacharles/Documents/Nairoviridae/seg_M_phylo/GP38_trimal.fasta -all  -DT -F |grep "Best model according to DT:" >> /home/seannacharles/Documents/Nairoviridae/seg_M_phylo/Best_model_nairo.txt
-
-# echo MLD : >> /home/seannacharles/Documents/Nairoviridae/seg_M_phylo/Best_model_nairo.txt
-# prottest -i /home/seannacharles/Documents/Nairoviridae/seg_M_phylo/MLD_trimal.fasta -all  -DT -F  |grep "Best model according to DT:">> /home/seannacharles/Documents/Nairoviridae/seg_M_phylo/Best_model_nairo.txt
-
-# sudo  mv /usr/bin/phyml /usr/bin/phyml_3.1 
-# sudo  mv /usr/bin/phyml_3.3 /usr/bin/phyml 
+/usr/bin/python3 /home/seannacharles/Documents/Script/delete_dbl.py "$study"  "$target" "$ths" "$list_proteins"

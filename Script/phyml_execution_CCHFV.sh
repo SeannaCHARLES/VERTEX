@@ -17,8 +17,8 @@ path="/home/seannacharles/Documents/"
         
         if [[ -n "$model" ]]; then
             echo Execution of phyml for the protein "${protein}" of the study CCHFV with the model "${model}"
-            echo i-"${path}"CCHFV/seg_M_phylo/"${protein}"_sdbl.phy d- aa m-"${model}" f- e a- e c- 4 b- 100
-            phyml -i "${path}"CCHFV/seg_M_phylo/"${protein}"_sdbl.phy -d aa -m"${model}" -f e -a e -c 4 -b 100
+            echo i-"${path}"CCHFV/seg_M_phylo/"${protein}"_sdbl.phy d- aa m-"${model}" f- e a- e c- 3 b- 100
+            phyml -i "${path}"CCHFV/seg_M_phylo/"${protein}"_sdbl.phy -d aa -m"${model}" -f e -a e -c 3 -b 100
             model=""
 
         fi
@@ -38,7 +38,8 @@ path="/home/seannacharles/Documents/"
         if [[ -n "$model" ]]; then
             echo Execution of phyml for the protein "${protein}" of the study CCHFV with the model "${model}" 
             echo i-"${path}"CCHFV/seg_M_phylo/"${protein}"_sdbl.phy d- nt m-"${model}" f- e a- e c- 4 b- 100
-            phyml -i "${path}"CCHFV/seg_M_phylo/"${protein}"_sdbl.phy -d nt -m"${model}" -f e -a e -c 4 -b 100 
+            #phyml -i "${path}"CCHFV/seg_M_phylo/"${protein}"_sdbl.phy -d nt -m"${model}" -f e -a e -c 4 -b 100 
+            iqtree2 -s "${path}"CCHFV/seg_M_phylo/"${protein}"_sdbl.phy -d nt -m"${model}" -f e -a e -c 3 -b 100
             model=""
             
         fi

@@ -40,10 +40,10 @@ done
 
 
 echo Prottest CCHFV
-
-
 study="CCHFV"     
 target="np950235."
 ths=0.009
+proteins=("MLD" "GP38" "Gn" "NSm" "Gc")
+list_proteins=$(IFS=, ; echo "${proteins[*]}")
 
-/usr/bin/python3 /home/seannacharles/Documents/Script/delete_dbl.py "$study"  "$target" "$ths"
+/usr/bin/python3 /home/seannacharles/Documents/Script/delete_dbl.py "$study"  "$target" "$ths" "$list_proteins"
