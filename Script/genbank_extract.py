@@ -8,9 +8,9 @@ path = "/home/seannacharles/Documents/"
 study= "CCHFV"
 print(f"Data extraction from genbank files for {study}")
 
-with open(f"{path}{study}/sequence_CCHFV_segM.gb","r") as Datas:
+with open(f"{path}{study}/sequence_{study}_segM.gb","r") as Datas:
     
-    sp="CCHFV"
+    sp=f"{study}"
 
     first_call(study)
     extract_id(Datas,study,sp)
@@ -23,7 +23,7 @@ subprocess.run(f"mafft --auto {path}{study}/M_nucl_all_{sp}.fasta > {path}{study
 study= "Perybunyaviridae"
 
 print(f"Data extraction from genbank files for {study}")
-with open(f"{path}{study}/sequences_peri_segM.gb","r") as Datas:
+with open(f"{path}{study}/sequences_{study}_segM.gb","r") as Datas:
     
     sp=""
 
@@ -57,8 +57,8 @@ with open(f"{path}{study}/NC_078560.1.gb","r") as Datas:
 
 study= "Nairoviridae"
 print(f"Data extraction from genbank files for {study}")
-with open(f"{path}{study}/sequences_nairo_segM.gb","r") as Datas:
-    sp="Nairoviridae"
+with open(f"{path}{study}/sequences_{study}_segM.gb","r") as Datas:
+    sp=f"{study}"
 
     first_call(study)
     extract_id(Datas,study,sp)
