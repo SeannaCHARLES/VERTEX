@@ -197,17 +197,17 @@ echo End of treatment for"${study}" :
 echo The phylogenetic trees are currently being created. This operation may take a few DAYS depending on the number of sequences. 
 echo For this step you will need to install GNU Screen
 
-# screen -dmS Phyml_scripts
-# screen -S Phyml_scripts -X screen bash -c './Phylogenetic/Script/phyml_execution_CCHFV.sh'
-# screen -S Phyml_scripts -X screen bash -c './Phylogenetic/Script/phyml_execution_Nairoviridae.sh'
-# screen -S Phyml_scripts -X screen bash -c './Phylogenetic/Script/phyml_execution_Perybunyaviridae.sh'
-# screen -ls
-# while [ ! -f /home/seannacharles/Documents/scriptCCHFV_done.txt ] || [ ! -f /home/seannacharles/Documents/scriptNairoviridae_done.txt ] || [ ! -f /home/seannacharles/Documents/scriptPerybunaviridae_done.txt ]; do
-#     sleep 1
-# done
+screen -dmS Phyml_scripts
+screen -S Phyml_scripts -X screen bash -c './Phylogenetic/Script/phyml_execution_CCHFV.sh'
+screen -S Phyml_scripts -X screen bash -c './Phylogenetic/Script/phyml_execution_Nairoviridae.sh'
+screen -S Phyml_scripts -X screen bash -c './Phylogenetic/Script/phyml_execution_Perybunyaviridae.sh'
+screen -ls
+while [ ! -f /home/seannacharles/Documents/scriptCCHFV_done.txt ] || [ ! -f /home/seannacharles/Documents/scriptNairoviridae_done.txt ] || [ ! -f /home/seannacharles/Documents/scriptPerybunaviridae_done.txt ]; do
+    sleep 1
+done
 
 #screen -r Phyml_scripts
-./Phylogenetic/Script/phyml_execution_CCHFV.sh && ./Phylogenetic/Script/phyml_execution_Nairoviridae.sh &&./Phylogenetic/Script/phyml_execution_Perybunyaviridae.sh &
+#./Phylogenetic/Script/phyml_execution_CCHFV.sh && ./Phylogenetic/Script/phyml_execution_Nairoviridae.sh &&./Phylogenetic/Script/phyml_execution_Perybunyaviridae.sh &
 #./Phylogenetic/Script/phyml_execution.sh
 
 Hours=$(("${SECONDS}" / 3600))

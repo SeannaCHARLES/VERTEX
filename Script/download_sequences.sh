@@ -1,52 +1,100 @@
 #!/bin/bash
 path="/home/seannacharles/Documents/"
-#Peri
-echo Download "${study}" sequences
-study="Perybunyaviridae"
-NUID=("NC_077940.1"	"NC_078978.1"	"NC_018459.1"	"NC_077926.1"	"NC_078974.1"	"MK896640.1"	"MH017282.1"	"NC_078970.1"	"MK896631.1"	"MK896628.1"	"NC_078966.1"	"NC_078962.1"	"MK896619.1"	"NC_078961.1"	"NC_078956.1"	"NC_043652.1"	"NC_079015.1"	"NC_078954.1"	"NC_043653.1"	"NC_077984.1"	"NC_001926.1"	"NC_078952.1"	"NC_043599.1"	"NC_055410.1"	"MK896590.1"	"NC_034477.1"	"NC_043612.1"	"NC_043615.1"	"NC_038730.1"	"NC_038733.1"	"NC_078949.1"	"NC_078945.1"	"MK896559.1"	"MK896556.1"	"NC_078935.1"	"MH484298.1"	"NC_038739.1"	"NC_078933.1"	"NC_078929.1"	"NC_078882.1"	"MG820264.1"	"NC_038718.1"	"NC_034505.1"	"NC_077833.1"	"NC_034504.1"	"NC_078924.1"	"NC_077929.1"	"MK896520.1"	"NC_078926.1"	"MK896517.1"	"NC_077981.1"	"NC_078918.1"	"NC_078005.1"	"NC_078915.1"	"NC_034488.1"	"NC_078911.1"	"MK896496.1"	"NC_043691.1"	"NC_043551.1"	"NC_043645.1"	"MK896485.1"	"MK896479.1"	"MK896476.1"	"NC_078903.1"	"MH484325.1"	"MK896470.1"	"NC_078275.1"	"NC_077970.1"	"NC_043694.1"	"NC_078901.1"	"NC_043608.1"	"NC_078898.1"	"NC_043548.1"	"NC_078894.1"	"NC_077829.1"	"NC_078893.1"	"MH484340.1"	"MH484343.1"	"NC_078890.1"	"MK896440.1"	"MK896434.1"	"MK896431.1"	"NC_039187.1"	"NC_077899.1"	"NC_043688.1"	"KC608153.1"	"NC_079004.1"	"NC_043586.1"	"NC_005775.1"	"NC_009895.1"	"KM225261.1"	"NC_055118.1"	"NC_077809.1"	"NC_043579.1"	"NC_078880.1"	"NC_043675.1")
+studies=("Perybunyaviridae" "CCHFV" "Nairoviridae")
+NUID=(
+    "NC_077940.1	NC_078978.1	NC_018459.1	NC_077926.1	NC_078974.1	MK896640.1	MH017282.1	NC_078970.1	MK896631.1	MK896628.1	NC_078966.1	NC_078962.1	MK896619.1	NC_078961.1	NC_078956.1	NC_043652.1	NC_079015.1	NC_078954.1	NC_043653.1	NC_077984.1	NC_001926.1	NC_078952.1	NC_043599.1	NC_055410.1	MK896590.1	NC_034477.1	NC_043612.1	NC_043615.1	NC_038730.1	NC_038733.1	NC_078949.1	NC_078945.1	MK896559.1	MK896556.1	NC_078935.1	MH484298.1	NC_038739.1	NC_078933.1	NC_078929.1	NC_078882.1	MG820264.1	NC_038718.1	NC_034505.1	NC_077833.1	NC_034504.1	NC_078924.1	NC_077929.1	MK896520.1	NC_078926.1	MK896517.1	NC_077981.1	NC_078918.1	NC_078005.1	NC_078915.1	NC_034488.1	NC_078911.1	MK896496.1	NC_043691.1	NC_043551.1	NC_043645.1	MK896485.1	MK896479.1	MK896476.1	NC_078903.1	MH484325.1	MK896470.1	NC_078275.1	NC_077970.1	NC_043694.1	NC_078901.1	NC_043608.1	NC_078898.1	NC_043548.1	NC_078894.1	NC_077829.1	NC_078893.1	MH484340.1	MH484343.1	NC_078890.1	MK896440.1	MK896434.1	MK896431.1	NC_039187.1	NC_077899.1	NC_043688.1	KC608153.1	NC_079004.1	NC_043586.1	NC_005775.1	NC_009895.1	KM225261.1	NC_055118.1	NC_077809.1	NC_043579.1	NC_078880.1	NC_043675.1"
+    "NC_005300.2	PQ031235.1	PP729065.1	PP116319.1	OR964932.1	OR964933.1	OR964934.1	OR964935.1	OR964936.1	OR964937.1	OR964938.1	OR964939.1	OR964940.1	OR964941.1	OR964942.1	OQ441061.1	ON668033.1	ON668034.1	ON668035.1	OL774841.1	OL774850.1	OL741592.1	OL741595.1	OL741598.1	MN901926.1	MN832722.1	MN135943.1	MH396641.1	MH396643.1	MH396647.1	MH396650.1	MH396653.1	MH396656.1	MH396659.1	MH396662.1	MH396665.1	MH396668.1	MH396671.1	MH396674.1	MG659723.1	MG659726.1	MH461098.1	KY982866.1	KY982867.1	MF547416.1	KY213713.1	KY484026.1	KY484029.1	KY484032.1	KY484035.1	KY484038.1	KY484042.1	KY484045.1	KY484047.1	KY362518.1	KY362519.1	KY354081.1	KU161584.1	KU161585.1	KR814856.1	KR814857.1	KR814858.1	KR814859.1	KR814860.1	KR814861.1	KR814862.1	KR814863.1	KR814864.1	KR814865.1	KR814866.1	KR814867.1	KR814868.1	KR814869.1	KR814870.1	KR814871.1	KR814872.1	KR814873.1	KR814874.1	KR092380.1	KR092379.1	KC867273.1	KJ682805.1	KJ682806.1	KJ682807.1	KJ682808.1	KJ682809.1	KJ682810.1	KJ682811.1	KJ682812.1	KJ682813.1	KJ682814.1	JN572083.1	JN572084.1	JN572085.1	JN572086.1	GU477490.1	GU477493.1	DQ019222.1	DQ206448.1	AY900141.1	AY900142.1	AY900143.1	AY900144.1	AY900145.1	AY223476.1	KX013466.1	AB069670.1	MH133278.1	KC344856.1	KX013445.1	AF467769.2	HQ378185.1	HQ378187.1	MF287637.1	DQ211634.1	MN689740.1	AJ538197.2	HM452306.1	DQ211628.1	DQ211626.1	DQ211627.1	DQ211637.1	FJ562094.1"
+    "KU925435	KU925438	KU925441	KU925447	NC_034554	KX013484	KU925453	KU925456	JF911698	MK896578	KU925462	KU925465	NC_078144	KU925468	KP406724	MW721867	KU925471	MT279044	NC_034388	NC_078128	NC_025832	MN972595	EU697950	KU933933	KU925474	KU925477	KU925480	KU925483	NC_031142	KU925486	NC_031218	KU925489	NC_079000	NC_078997	NC_031285	KU925492	MT815993	KR537451	KU925495	NC_029123	KU925498	KP792742	MF176882	MK896437	NC_031288	LC790675	MK896428	KU925501"
+    )
+for i in "${!NUID[@]}"; do   
+    study="${studies[$i]}"
+    echo Download "${study}" sequences
+    
+    if [ -d "${path}""${study}" ]; then
+        rm "${path}""${study}"/M_nucl/*
+        rm "${path}""${study}"/M_prot/*
+        rm "${path}""${study}"/seg_M_phylo/*
+    
+    else
+        cd "${path}" ||
+     mkdir "${study}"/M_nucl "${study}"/M_prot "${study}"/seg_M_phylo
+    fi
 
-pwd
-
-
-for ID in "${NUID[@]}"; do 
-    echo $ID
-    esearch -db nucleotide -query "$ID" |efetch -format gb > "${path}""${study}"/M_nucl/"$ID".gb
-    cat "${path}""${study}"/M_nucl/"$ID".gb >> "${path}""${study}"/sequences_peri_segM.gb
-    rm "${path}""${study}"/M_nucl/"$ID".gb
+    for ID in ${NUID[$i]}; do 
+        echo "$ID"
+        esearch -db nucleotide -query "$ID" |efetch -format gb > "${path}""${study}"/M_nucl/"$ID".gb
+        cat "${path}""${study}"/M_nucl/"$ID".gb >> "${path}""${study}"/sequences_"${study}"_segM.gb
+        rm "${path}""${study}"/M_nucl/"$ID".gb
+    done
 done
 
+#Peribunyaviridae special outgroup
 esearch -db nucleotide -query NC_078560.1 |efetch -format gb > "${path}""${study}"/NC_078560.1.gb
 esearch -db nucleotide -query OV054446.1 |efetch -format gb > "${path}""${study}"/OV054446.1.gb
 
 
 
-
-echo Download "${study}" sequences
-study="CCHFV"
-#ID sequence nucleic
-NUID=("NC_005300.2"	"PQ031235.1"	"PP729065.1"	"PP116319.1"	"OR964932.1"	"OR964933.1"	"OR964934.1"	"OR964935.1"	"OR964936.1"	"OR964937.1"	"OR964938.1"	"OR964939.1"	"OR964940.1"	"OR964941.1"	"OR964942.1"	"OQ441061.1"	"ON668033.1"	"ON668034.1"	"ON668035.1"	"OL774841.1"	"OL774850.1"	"OL741592.1"	"OL741595.1"	"OL741598.1"	"MN901926.1"	"MN832722.1"	"MN135943.1"	"MH396641.1"	"MH396643.1"	"MH396647.1"	"MH396650.1"	"MH396653.1"	"MH396656.1"	"MH396659.1"	"MH396662.1"	"MH396665.1"	"MH396668.1"	"MH396671.1"	"MH396674.1"	"MG659723.1"	"MG659726.1"	"MH461098.1"	"KY982866.1"	"KY982867.1"	"MF547416.1"	"KY213713.1"	"KY484026.1"	"KY484029.1"	"KY484032.1"	"KY484035.1"	"KY484038.1"	"KY484042.1"	"KY484045.1"	"KY484047.1"	"KY362518.1"	"KY362519.1"	"KY354081.1"	"KU161584.1"	"KU161585.1"	"KR814856.1"	"KR814857.1"	"KR814858.1"	"KR814859.1"	"KR814860.1"	"KR814861.1"	"KR814862.1"	"KR814863.1"	"KR814864.1"	"KR814865.1"	"KR814866.1"	"KR814867.1"	"KR814868.1"	"KR814869.1"	"KR814870.1"	"KR814871.1"	"KR814872.1"	"KR814873.1"	"KR814874.1"	"KR092380.1"	"KR092379.1"	"KC867273.1"	"KJ682805.1"	"KJ682806.1"	"KJ682807.1"	"KJ682808.1"	"KJ682809.1"	"KJ682810.1"	"KJ682811.1"	"KJ682812.1"	"KJ682813.1"	"KJ682814.1"	"JN572083.1"	"JN572084.1"	"JN572085.1"	"JN572086.1"	"GU477490.1"	"GU477493.1"	"DQ019222.1"	"DQ206448.1"	"AY900141.1"	"AY900142.1"	"AY900143.1"	"AY900144.1"	"AY900145.1"	"AY223476.1"	"KX013466.1"	"AB069670.1"	"MH133278.1"	"KC344856.1"	"KX013445.1"	"AF467769.2"	"HQ378185.1"	"HQ378187.1"	"MF287637.1"	"DQ211634.1"	"MN689740.1"	"AJ538197.2"	"HM452306.1"	"DQ211628.1"	"DQ211626.1"	"DQ211627.1"	"DQ211637.1"	"FJ562094.1")
-
-pwd
+# study="Perybunyaviridae"
 
 
-for ID in "${NUID[@]}"; do 
-    echo $ID
-    esearch -db nucleotide -query "$ID" |efetch -format gb > "${path}""${study}"/M_nucl/"$ID".gb
-    cat "${path}""${study}"/M_nucl/"$ID".gb >> "${path}""${study}"/sequence_"${study}"_segM.gb
-    rm "${path}""${study}"/M_nucl/"$ID".gb
+
+
+# for ID in "${NUID[@]}"; do 
+#     echo $ID
+#     esearch -db nucleotide -query "$ID" |efetch -format gb > "${path}""${study}"/M_nucl/"$ID".gb
+#     cat "${path}""${study}"/M_nucl/"$ID".gb >> "${path}""${study}"/sequences_peri_segM.gb
+#     rm "${path}""${study}"/M_nucl/"$ID".gb
+# done
+
+
+
+
+
+
+# echo Download "${study}" sequences
+# study="CCHFV"
+# if [ -d "${path}""${study}" ]; then
+#     rm "${path}""${study}"/M_nucl/*
+#     rm "${path}""${study}"/M_prot/*
+#     rm "${path}""${study}"/seg_M_phylo/*
     
-done
+# else
+#     cd "${path}" ||
+#     mkdir "${study}"/M_nucl "${study}"/M_prot "${study}"/seg_M_phylo
+# fi
+# #ID sequence nucleic
+# NUID=()
 
-NUID=("KU925435"	"KU925438"	"KU925441"	"KU925447"	"NC_034554"	"KX013484"	"KU925453"	"KU925456"	"JF911698"	"MK896578"	"KU925462"	"KU925465"	"NC_078144"	"KU925468"	"KP406724"	"MW721867"	"KU925471"	"MT279044"	"NC_034388"	"NC_078128"	"NC_025832"	"MN972595"	"EU697950"	"KU933933"	"KU925474"	"KU925477"	"KU925480"	"KU925483"	"NC_031142"	"KU925486"	"NC_031218"	"KU925489"	"NC_079000"	"NC_078997"	"NC_031285"	"KU925492"	"MT815993"	"KR537451"	"KU925495"	"NC_029123"	"KU925498"	"KP792742"	"MF176882"	"MK896437"	"NC_031288"	"LC790675"	"MK896428"	"KU925501")
 
-pwd
 
-echo Download "${study}" sequences
-study="Nairoviridae"
-for ID in "${NUID[@]}"; do 
-    echo $ID
-    esearch -db nucleotide -query "$ID" |efetch -format gb > "${path}""${study}"/M_nucl/"$ID".gb
-    cat "${path}""${study}"/M_nucl/"$ID".gb >> "${path}""${study}"/sequences_nairo_segM.gb
-    rm "${path}""${study}"/M_nucl/"$ID".gb
-done
+
+# for ID in "${NUID[@]}"; do 
+#     echo $ID
+#     esearch -db nucleotide -query "$ID" |efetch -format gb > "${path}""${study}"/M_nucl/"$ID".gb
+#     cat "${path}""${study}"/M_nucl/"$ID".gb >> "${path}""${study}"/sequence_"${study}"_segM.gb
+#     rm "${path}""${study}"/M_nucl/"$ID".gb
+    
+# done
+
+# NUID=()
+
+
+
+# echo Download "${study}" sequences
+# study="Nairoviridae"
+# if [ -d "${path}""${study}" ]; then
+#     rm "${path}""${study}"/M_nucl/*
+#     rm "${path}""${study}"/M_prot/*
+#     rm "${path}""${study}"/seg_M_phylo/*
+    
+# else
+#     cd "${path}" ||
+#     mkdir "${study}"/M_nucl "${study}"/M_prot "${study}"/seg_M_phylo
+# fi
+# for ID in "${NUID[@]}"; do 
+#     echo $ID
+#     esearch -db nucleotide -query "$ID" |efetch -format gb > "${path}""${study}"/M_nucl/"$ID".gb
+#     cat "${path}""${study}"/M_nucl/"$ID".gb >> "${path}""${study}"/sequences_nairo_segM.gb
+#     rm "${path}""${study}"/M_nucl/"$ID".gb
+# done
 
