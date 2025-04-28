@@ -283,7 +283,7 @@ def first_call(study) :
         file.write(f"TREE_COLORS\nSEPARATOR TAB\nDATA\n")       
         file.close()
     for name in type_files : 
-        name_files = f"{path}{study}/{name}_{study}_NSmGn_itol.txt"
+        name_files = f"{path}{study}/{name}_{study}NSmGn_itol.txt"
         file = open(name_files,"w")
         file.write(f"TREE_COLORS\nSEPARATOR TAB\nDATA\n")       
         file.close()
@@ -291,7 +291,7 @@ def first_call(study) :
     file = open(name_files,"w")
     file.write(f"LABELS\nSEPARATOR TAB\nDATA\n")       
     file.close()
-    name_files = f"{path}{study}/Label_{study}_NSmGn_itol.txt"
+    name_files = f"{path}{study}/Label_{study}NSmGn_itol.txt"
     file = open(name_files,"w")
     file.write(f"LABELS\nSEPARATOR TAB\nDATA\n")       
     file.close()

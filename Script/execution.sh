@@ -6,14 +6,14 @@ Type_seq=("prot" "nucl")
 proteins=("NSm" "Gn" "Gc" "NSmGn")
 #Common scripts for all studies
 echo The sequences are currently being downloaded ...
-./Phylogenetic/Script/download_sequences.sh
+#./Phylogenetic/Script/download_sequences.sh
 
 echo The captions, metadata files and files containing all the sequences are currently being created.
 /usr/bin/python3 /home/seannacharles/Phylogenetic/Script/genbank_extract.py
 
 
 
-for study in "${!studies[@]}"; do
+for study in "${studies[@]}"; do
     echo Start treatment for"${study}" : 
 
     echo The position of the proteins of the "${study}" are being marked ...
@@ -33,8 +33,8 @@ for study in "${!studies[@]}"; do
 
     fi
     
-    mafft --auto "${path}""${study}"/seg_M_phylo/NSmGnprot.fasta > "${path}""${study}"/seg_M_phylo/NSmGnprot.aln-fasta
-    mafft --auto "${path}""${study}"/seg_M_phylo/NSmGnnucl.fasta > "${path}""${study}"/seg_M_phylo/NSmGnnucl.aln-fasta
+    mafft --auto "${path}""${study}"/seg_M_phylo/NSmGnprot.fasta > "${path}""${study}"/seg_M_phylo/NSmGnprot_align.aln-fasta
+    mafft --auto "${path}""${study}"/seg_M_phylo/NSmGnnucl.fasta > "${path}""${study}"/seg_M_phylo/NSmGnnucl_align.aln-fasta
 
     echo Non-informative regions are being removed and sequences that are too close will be deleted for the "${study}"...
     ./Phylogenetic/Script/trimal_"${study}".sh
@@ -42,27 +42,12 @@ for study in "${!studies[@]}"; do
     echo Identification of the best phylogenetic model is underway for the "${study}"
     echo The phylogenetic trees are also being created. This operation may take a few hours depending on the number of sequences. 
 
-   for type in "${!Type_seq[@]}" ; do
+   for type in "${Type_seq[@]}" ; do
         echo for the "${type}" sequences...
-        for name in "${!proteins[@]}";do
+        for name in "${proteins[@]}";do
     echo "${name}""${type}" : > "${path}""${study}"/seg_M_phylo/Best_model_"${study}".txt
     iqtree2 -s "${path}""${study}"/seg_M_phylo/"${name}""${type}"_sdbl.aln-fasta -m MFP -bb 1000 -alrt 1000 -nt AUTO |grep 'Best-fit model:' >> "${path}""${study}"/seg_M_phylo/Best_model_"${study}".txt
 
-    echo "${name}""${type}" : >> "${path}""${study}"/seg_M_phylo/Best_model_"${study}".txt
-    iqtree2 -s "${path}""${study}"/seg_M_phylo/"${name}""${type}"_sdbl.aln-fasta -m MFP -bb 1000 -alrt 1000 -nt AUTO|grep 'Best-fit model:' >> "${path}""${study}"/seg_M_phylo/Best_model_"${study}".txt
-
-    echo "${name}""${type}" : >> "${path}""${study}"/seg_M_phylo/Best_model_"${study}".txt
-    iqtree2 -s "${path}""${study}"/seg_M_phylo/"${name}""${type}"_sdbl.aln-fasta -m MFP -bb 1000 -alrt 1000 -nt AUTO |grep 'Best-fit model:' >> "${path}""${study}"/seg_M_phylo/Best_model_"${study}".txt
-
-    echo "${name}""${type}" : >> "${path}""${study}"/seg_M_phylo/Best_model_"${study}".txt
-    iqtree2 -s "${path}""${study}"/seg_M_phylo/"${name}""${type}"_sdbl.aln-fasta -m MFP -bb 1000 -alrt 1000 -nt AUTO |grep 'Best-fit model:' >> "${path}""${study}"/seg_M_phylo/Best_model_"${study}".txt
-
-    echo "${name}""${type}" : >> "${path}""${study}"/seg_M_phylo/Best_model_"${study}".txt
-    iqtree2 -s "${path}""${study}"/seg_M_phylo/"${name}""${type}"_sdbl.aln-fasta -m MFP -bb 1000 -alrt 1000 -nt AUTO|grep 'Best-fit model:' >> "${path}""${study}"/seg_M_phylo/Best_model_"${study}".txt
-
-    echo "${name}""${type}" : >> "${path}""${study}"/seg_M_phylo/Best_model_"${study}".txt
-    iqtree2 -s "${path}""${study}"/seg_M_phylo/"${name}""${type}"_sdbl.aln-fasta -m MFP -bb 1000 -alrt 1000 -nt AUTO |grep 'Best-fit model:' >> "${path}""${study}"/seg_M_phylo/Best_model_"${study}".txt
-    
     if [ "$study" != "Perybunyaviridae" ] ;then 
         echo MLD"${type}": >> "${path}""${study}"seg_M_phylo/Best_model_CCHFV.txt
         iqtree2 -s "${path}""${study}"/seg_M_phylo/MLD"${type}"_sdbl.aln-fasta -m MFP -bb 1000 -alrt 1000 -nt AUTO|grep 'Best-fit model:' >> "${path}""${study}"seg_M_phylo/Best_model_"${study}".txt
