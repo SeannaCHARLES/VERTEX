@@ -6,9 +6,8 @@ from All_Functions import Modif_ID,colour_choice,modif_localisation,geographic_r
 path = "/home/seannacharles/Documents/"
 
 study= "CCHFV"
-print(f"Data extraction from genbank files for {study}")
 
-with open(f"{path}{study}/sequence_{study}_segM.gb","r") as Datas:
+with open(f"{path}{study}/sequences_{study}_segM.gb","r") as Datas:
     
     sp=f"{study}"
 
@@ -22,7 +21,7 @@ subprocess.run(f"mafft --auto {path}{study}/M_nucl_all_{sp}.fasta > {path}{study
 
 study= "Perybunyaviridae"
 
-print(f"Data extraction from genbank files for {study}")
+
 with open(f"{path}{study}/sequences_{study}_segM.gb","r") as Datas:
     
     sp=""

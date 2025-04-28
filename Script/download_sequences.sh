@@ -8,20 +8,16 @@ NUID=(
     )
 for i in "${!NUID[@]}"; do   
     study="${studies[$i]}"
-    echo Download "${study}" sequences
-    
+    echo "${study}"
     if [ -d "${path}""${study}" ]; then
-        rm "${path}""${study}"/M_nucl/*
-        rm "${path}""${study}"/M_prot/*
-        rm "${path}""${study}"/seg_M_phylo/*
-    
+        rm "${path}""${study}"/M_nucl/* "${path}""${study}"/M_prot/* "${path}""${study}"/seg_M_phylo/* "${path}""${study}"/sequences_"${study}"_segM.gb
+
     else
         cd "${path}" ||
-     mkdir "${study}"/M_nucl "${study}"/M_prot "${study}"/seg_M_phylo
+        mkdir "${study}"/M_nucl "${study}"/M_prot "${study}"/seg_M_phylo
     fi
 
     for ID in ${NUID[$i]}; do 
-        echo "$ID"
         esearch -db nucleotide -query "$ID" |efetch -format gb > "${path}""${study}"/M_nucl/"$ID".gb
         cat "${path}""${study}"/M_nucl/"$ID".gb >> "${path}""${study}"/sequences_"${study}"_segM.gb
         rm "${path}""${study}"/M_nucl/"$ID".gb
@@ -29,8 +25,8 @@ for i in "${!NUID[@]}"; do
 done
 
 #Peribunyaviridae special outgroup
-esearch -db nucleotide -query NC_078560.1 |efetch -format gb > "${path}""${study}"/NC_078560.1.gb
-esearch -db nucleotide -query OV054446.1 |efetch -format gb > "${path}""${study}"/OV054446.1.gb
+esearch -db nucleotide -query NC_078560.1 |efetch -format gb > "${path}"Perybunyaviridae/NC_078560.1.gb
+esearch -db nucleotide -query OV054446.1 |efetch -format gb > "${path}"Perybunyaviridae/OV054446.1.gb
 
 
 

@@ -1,7 +1,9 @@
 #!/bin/bash
 SECONDS=0
 path="/home/seannacharles/Documents/"
-
+studies=("Perybunyaviridae" "CCHFV" "Nairoviridae")
+Type_seq=("prot" "nucl")
+proteins=("NSm" "Gn" "Gc" "NSmGn")
 #Common scripts for all studies
 echo The sequences are currently being downloaded ...
 ./Phylogenetic/Script/download_sequences.sh
@@ -9,7 +11,8 @@ echo The sequences are currently being downloaded ...
 echo The captions, metadata files and files containing all the sequences are currently being created.
 /usr/bin/python3 /home/seannacharles/Phylogenetic/Script/genbank_extract.py
 
-studies=("Perybunyaviridae" "CCHFV" "Nairoviridae")
+
+
 for study in "${!studies[@]}"; do
     echo Start treatment for"${study}" : 
 
@@ -20,7 +23,7 @@ for study in "${!studies[@]}"; do
     /usr/bin/python3 /home/seannacharles/Phylogenetic/Script/split_protein_"${study}".py
 
     echo The NSm and Gn protein identifiers are currently being modified to avoid duplicate identifiers for the "${study}"...
-    if [ "$study" = "Perybunyaviridae" ] ;then 
+    if [ "$study" == "Perybunyaviridae" ] ;then 
         { sed 's/^>/>N/' "${path}""${study}"/seg_M_phylo/NSmprotSH.fasta; sed 's/^>/>G/' "${path}""${study}"/seg_M_phylo/GnprotKhurdun.fasta;sed 's/^>/>G/' "${path}""${study}"/seg_M_phylo/GnprotSH.fasta ; } > "${path}""${study}"/seg_M_phylo/NSmGnprot.fasta
         { sed 's/^>/>N/' "${path}""${study}"/seg_M_phylo/NSmnuclSH.fasta; sed 's/^>/>G/' "${path}""${study}"/seg_M_phylo/GnnuclKhurdun.fasta;sed 's/^>/>G/' "${path}""${study}"/seg_M_phylo/GnnuclSH.fasta ;} > "${path}""${study}"/seg_M_phylo/NSmGnnucl.fasta
 
@@ -37,49 +40,58 @@ for study in "${!studies[@]}"; do
     ./Phylogenetic/Script/trimal_"${study}".sh
 
     echo Identification of the best phylogenetic model is underway for the "${study}"
+    echo The phylogenetic trees are also being created. This operation may take a few hours depending on the number of sequences. 
 
-    echo For the proteique sequences...
-    echo this operation may take up to ten minutes ...
-    echo NSmGnprot : > "${path}""${study}"/seg_M_phylo/Best_model_"${study}".txt
-    prottest -i "${path}""${study}"/seg_M_phylo/NSmGnprot_sdbl.aln-fasta -all  -DT -F |grep 'Best model according to DT:' >> "${path}""${study}"/seg_M_phylo/Best_model_"${study}".txt
+   for type in "${!Type_seq[@]}" ; do
+        echo for the "${type}" sequences...
+        for name in "${!proteins[@]}";do
+    echo "${name}""${type}" : > "${path}""${study}"/seg_M_phylo/Best_model_"${study}".txt
+    iqtree2 -s "${path}""${study}"/seg_M_phylo/"${name}""${type}"_sdbl.aln-fasta -m MFP -bb 1000 -alrt 1000 -nt AUTO |grep 'Best-fit model:' >> "${path}""${study}"/seg_M_phylo/Best_model_"${study}".txt
 
-    echo NSmprot : >> "${path}""${study}"/seg_M_phylo/Best_model_"${study}".txt
-    prottest -i "${path}""${study}"/seg_M_phylo/NSmprot_sdbl.aln-fasta -all  -DT -F |grep 'Best model according to DT:' >> "${path}""${study}"/seg_M_phylo/Best_model_"${study}".txt
+    echo "${name}""${type}" : >> "${path}""${study}"/seg_M_phylo/Best_model_"${study}".txt
+    iqtree2 -s "${path}""${study}"/seg_M_phylo/"${name}""${type}"_sdbl.aln-fasta -m MFP -bb 1000 -alrt 1000 -nt AUTO|grep 'Best-fit model:' >> "${path}""${study}"/seg_M_phylo/Best_model_"${study}".txt
 
-    echo MLDprot : >> "${path}""${study}"/seg_M_phylo/Best_model_"${study}".txt
-    prottest -i "${path}""${study}"/seg_M_phylo/MLDprot_sdbl.aln-fasta -all  -DT -F |grep 'Best model according to DT:' >> "${path}""${study}"/seg_M_phylo/Best_model_"${study}".txt
+    echo "${name}""${type}" : >> "${path}""${study}"/seg_M_phylo/Best_model_"${study}".txt
+    iqtree2 -s "${path}""${study}"/seg_M_phylo/"${name}""${type}"_sdbl.aln-fasta -m MFP -bb 1000 -alrt 1000 -nt AUTO |grep 'Best-fit model:' >> "${path}""${study}"/seg_M_phylo/Best_model_"${study}".txt
 
-    echo GP38prot : >> "${path}""${study}"/seg_M_phylo/Best_model_"${study}".txt
-    prottest -i "${path}""${study}"/seg_M_phylo/GP38prot_sdbl.aln-fasta -all  -DT -F |grep 'Best model according to DT:' >> "${path}""${study}"/seg_M_phylo/Best_model_"${study}".txt
+    echo "${name}""${type}" : >> "${path}""${study}"/seg_M_phylo/Best_model_"${study}".txt
+    iqtree2 -s "${path}""${study}"/seg_M_phylo/"${name}""${type}"_sdbl.aln-fasta -m MFP -bb 1000 -alrt 1000 -nt AUTO |grep 'Best-fit model:' >> "${path}""${study}"/seg_M_phylo/Best_model_"${study}".txt
 
-    echo Gnprot : >> "${path}""${study}"/seg_M_phylo/Best_model_"${study}".txt
-    prottest -i "${path}""${study}"/seg_M_phylo/Gnprot_sdbl.aln-fasta -all  -DT -F |grep 'Best model according to DT:' >> "${path}""${study}"/seg_M_phylo/Best_model_"${study}".txt
+    echo "${name}""${type}" : >> "${path}""${study}"/seg_M_phylo/Best_model_"${study}".txt
+    iqtree2 -s "${path}""${study}"/seg_M_phylo/"${name}""${type}"_sdbl.aln-fasta -m MFP -bb 1000 -alrt 1000 -nt AUTO|grep 'Best-fit model:' >> "${path}""${study}"/seg_M_phylo/Best_model_"${study}".txt
 
-    echo Gcprot : >> "${path}""${study}"/seg_M_phylo/Best_model_"${study}".txt
-    prottest -i "${path}""${study}"/seg_M_phylo/Gcprot_sdbl.aln-fasta -all  -DT -F |grep 'Best model according to DT:' >> "${path}""${study}"/seg_M_phylo/Best_model_"${study}".txt
+    echo "${name}""${type}" : >> "${path}""${study}"/seg_M_phylo/Best_model_"${study}".txt
+    iqtree2 -s "${path}""${study}"/seg_M_phylo/"${name}""${type}"_sdbl.aln-fasta -m MFP -bb 1000 -alrt 1000 -nt AUTO |grep 'Best-fit model:' >> "${path}""${study}"/seg_M_phylo/Best_model_"${study}".txt
+    
+    if [ "$study" != "Perybunyaviridae" ] ;then 
+        echo MLD"${type}": >> "${path}""${study}"seg_M_phylo/Best_model_CCHFV.txt
+        iqtree2 -s "${path}""${study}"/seg_M_phylo/MLD"${type}"_sdbl.aln-fasta -m MFP -bb 1000 -alrt 1000 -nt AUTO|grep 'Best-fit model:' >> "${path}""${study}"seg_M_phylo/Best_model_"${study}".txt
 
+        echo GP38"${type}": >> "${path}""${study}"seg_M_phylo/Best_model_CCHFV.txt
+        iqtree2 -s "${path}""${study}"/seg_M_phylo/GP38"${type}"_sdbl.aln-fasta -m MFP -bb 1000 -alrt 1000 -nt AUTO|grep 'Best-fit model:' >> "${path}""${study}"seg_M_phylo/Best_model_"${study}".txt
+    fi
 
-    echo for the nucleic sequences...
-    echo this operation may take up to ten minutes ...
-    echo NSmGnnucl : >> "${path}""${study}"/seg_M_phylo/Best_model_"${study}".txt
-    iqtree2 -s "${path}""${study}"/seg_M_phylo/NSmGnnucl_sdbl.aln-fasta -m MFP -nt AUTO|grep 'Best-fit model:' >> "${path}""${study}"/seg_M_phylo/Best_model_"${study}".txt
+    # echo for the nucleic sequences...
+    # echo this operation may take up to ten minutes ...
+    # echo NSmGnnucl : >> "${path}""${study}"/seg_M_phylo/Best_model_"${study}".txt
+    # iqtree2 -s "${path}""${study}"/seg_M_phylo/NSmGnnucl_sdbl.aln-fasta -m MFP -bb 1000 -alrt 1000 -nt AUTO|grep 'Best-fit model:' >> "${path}""${study}"/seg_M_phylo/Best_model_"${study}".txt
 
-    echo NSmnucl : >> "${path}""${study}"/seg_M_phylo/Best_model_"${study}".txt
-    iqtree2 -s "${path}""${study}"/seg_M_phylo/NSmnucl_sdbl.aln-fasta -m MFP -nt AUTO|grep 'Best-fit model:' >> "${path}""${study}"/seg_M_phylo/Best_model_"${study}".txt
+    # echo NSmnucl : >> "${path}""${study}"/seg_M_phylo/Best_model_"${study}".txt
+    # iqtree2 -s "${path}""${study}"/seg_M_phylo/NSmnucl_sdbl.aln-fasta -m MFP -bb 1000 -alrt 1000 -nt AUTO|grep 'Best-fit model:' >> "${path}""${study}"/seg_M_phylo/Best_model_"${study}".txt
 
-    echo MLDnucl: >> "${path}""${study}"/seg_M_phylo/Best_model_"${study}".txt
-    iqtree2 -s "${path}""${study}"/seg_M_phylo/MLDnucl_sdbl.aln-fasta -m MFP -nt AUTO|grep 'Best-fit model:' >> "${path}""${study}"/seg_M_phylo/Best_model_"${study}".txt
+    # echo MLDnucl: >> "${path}""${study}"/seg_M_phylo/Best_model_"${study}".txt
+    # iqtree2 -s "${path}""${study}"/seg_M_phylo/MLDnucl_sdbl.aln-fasta -m MFP -bb 1000 -alrt 1000 -nt AUTO|grep 'Best-fit model:' >> "${path}""${study}"/seg_M_phylo/Best_model_"${study}".txt
 
-    echo GP38nucl: >> "${path}""${study}"/seg_M_phylo/Best_model_"${study}".txt
-    iqtree2 -s "${path}""${study}"/seg_M_phylo/GP38nucl_sdbl.aln-fasta -m MFP -nt AUTO |grep 'Best-fit model:' >> "${path}""${study}"/seg_M_phylo/Best_model_"${study}".txt
+    # echo GP38nucl: >> "${path}""${study}"/seg_M_phylo/Best_model_"${study}".txt
+    # iqtree2 -s "${path}""${study}"/seg_M_phylo/GP38nucl_sdbl.aln-fasta -m MFP -bb 1000 -alrt 1000 -nt AUTO |grep 'Best-fit model:' >> "${path}""${study}"/seg_M_phylo/Best_model_"${study}".txt
 
-    echo Gnnucl : >> "${path}""${study}"/seg_M_phylo/Best_model_"${study}".txt
-    iqtree2 -s "${path}""${study}"/seg_M_phylo/Gnnucl_sdbl.aln-fasta -m MFP -nt AUTO|grep 'Best-fit model:' >> "${path}""${study}"/seg_M_phylo/Best_model_"${study}".txt
+    # echo Gnnucl : >> "${path}""${study}"/seg_M_phylo/Best_model_"${study}".txt
+    # iqtree2 -s "${path}""${study}"/seg_M_phylo/Gnnucl_sdbl.aln-fasta -m MFP -bb 1000 -alrt 1000 -nt AUTO|grep 'Best-fit model:' >> "${path}""${study}"/seg_M_phylo/Best_model_"${study}".txt
 
-    echo Gcnucl : >> "${path}""${study}"/seg_M_phylo/Best_model_"${study}".txt
-    iqtree2 -s "${path}""${study}"/seg_M_phylo/Gcnucl_sdbl.aln-fasta -m MFP -nt AUTO|grep 'Best-fit model:' >> "${path}""${study}"/seg_M_phylo/Best_model_"${study}".txt
-
-
+    # echo Gcnucl : >> "${path}""${study}"/seg_M_phylo/Best_model_"${study}".txt
+    # iqtree2 -s "${path}""${study}"/seg_M_phylo/Gcnucl_sdbl.aln-fasta -m MFP -bb 1000 -alrt 1000 -nt AUTO|grep 'Best-fit model:' >> "${path}""${study}"/seg_M_phylo/Best_model_"${study}".txt
+        done
+    done
     echo End of treatment for"${study}" :
 done
 
@@ -288,17 +300,17 @@ done
 
 # echo End of treatment for"${study}" :
 
-echo The phylogenetic trees are currently being created. This operation may take a few DAYS depending on the number of sequences. 
-echo For this step you will need to install GNU Screen
 
-screen -dmS Phyml_scripts
-screen -S Phyml_scripts -X screen bash -c './Phylogenetic/Script/phyml_execution_CCHFV.sh'
-screen -S Phyml_scripts -X screen bash -c './Phylogenetic/Script/phyml_execution_Nairoviridae.sh'
-screen -S Phyml_scripts -X screen bash -c './Phylogenetic/Script/phyml_execution_Perybunyaviridae.sh'
-screen -ls
-while [ ! -f /home/seannacharles/Documents/scriptCCHFV_done.txt ] || [ ! -f /home/seannacharles/Documents/scriptNairoviridae_done.txt ] || [ ! -f /home/seannacharles/Documents/scriptPerybunaviridae_done.txt ]; do
-    sleep 1
-done
+#echo For this step you will need to install GNU Screen
+
+# screen -dmS Phyml_scripts
+# screen -S Phyml_scripts -X screen bash -c './Phylogenetic/Script/phyml_execution_CCHFV.sh'
+# screen -S Phyml_scripts -X screen bash -c './Phylogenetic/Script/phyml_execution_Nairoviridae.sh'
+# screen -S Phyml_scripts -X screen bash -c './Phylogenetic/Script/phyml_execution_Perybunyaviridae.sh'
+# screen -ls
+# while [ ! -f /home/seannacharles/Documents/scriptCCHFV_done.txt ] || [ ! -f /home/seannacharles/Documents/scriptNairoviridae_done.txt ] || [ ! -f /home/seannacharles/Documents/scriptPerybunaviridae_done.txt ]; do
+#     sleep 1
+# done
 
 #screen -r Phyml_scripts
 #./Phylogenetic/Script/phyml_execution_CCHFV.sh && ./Phylogenetic/Script/phyml_execution_Nairoviridae.sh &&./Phylogenetic/Script/phyml_execution_Perybunyaviridae.sh &
