@@ -277,6 +277,7 @@ def write_file(Description_nu,Description_prot,Sequence_aa,Sequence_nu,localisat
 def first_call(study) : 
     global type_files
     global path
+    global allmetadata
     for name in type_files : 
         name_files = f"{path}{study}/{name}_{study}_itol.txt"
         file = open(name_files,"w")
@@ -295,7 +296,11 @@ def first_call(study) :
     file = open(name_files,"w")
     file.write(f"LABELS\nSEPARATOR TAB\nDATA\n")       
     file.close()
-
+    name=f"{path}Metadata_studies.txt"
+    allmetadata=open(name,'w')
+    head=f"Virus name\tID itol tree\tTaxonomy\tSerogroup\tProtein accesion number\tSize Proteique sequence\tStart MLD\tEnd MLD\tSart GP38\tEnd GP38\tStart Gn\tEnd Gn\tStart NSm\tEnd NSm\tStart Gc\tEnd Gc\tNucleique accession number\tSize Nucelique sequence\tStrand\tStrain\tGeographical region\tHost\tHost source\tReferences\n"
+    allmetadata.write(head)
+    allmetadata.close()
 ### Function linux_line 
 # This function concatenates all the species for each study into one file 
 
@@ -309,11 +314,7 @@ def linux_line(sp,study) :
 ### Function extract_id
 # This function extracts the following information: Host, Host country, Strain, Nucleic identifier, Protein identifier for each genbank file.
 
-name=f"{path}Metadata_studies.txt"
-allmetadata=open(name,'w')
-head=f"Virus name\tID itol tree\tTaxonomy\tSerogroup\tProtein accesion number\tSize Proteique sequence\tStart MLD\tEnd MLD\tSart GP38\tEnd GP38\tStart Gn\tEnd Gn\tStart NSm\tEnd NSm\tStart Gc\tEnd Gc\tNucleique accession number\tSize Nucelique sequence\tStrand\tStrain\tGeographical region\tHost\tHost source\tReferences\n"
-allmetadata.write(head)
-allmetadata.close()
+
 
 def extract_id(Datas,study,sp) :
 
