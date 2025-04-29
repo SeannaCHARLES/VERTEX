@@ -10,7 +10,7 @@ study=str(sys.argv[1])
 target=str(sys.argv[2])
 ths=float(sys.argv[3])
 Prot_list=list(sys.argv[4])
-print(Prot_list) 
+
 
 final_dbl=[]
 old_col_names=[]

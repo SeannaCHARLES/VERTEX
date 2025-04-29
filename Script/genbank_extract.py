@@ -4,66 +4,47 @@ import subprocess
 from All_Functions import Modif_ID,colour_choice,modif_localisation,geographic_region,modif_host,deforder,write_file,first_call,linux_line,extract_id
 
 path = "/home/seannacharles/Documents/"
+studies=["CCHFV","Nairoviridae","Peribunyaviridae","hedwig","khurdun"]
 
-study= "CCHFV"
+for study in studies :
+    sp= study
+    print(f"Data extraction from genbank files for {study}")
+    if study=="Peribunyaviridae" :
+            
+        sp=""
 
-with open(f"{path}{study}/sequences_{study}_segM.gb","r") as Datas:
+        first_call(study)
+        extract_id(Datas,study,sp)
+        linux_line(sp,study)
+
+        subprocess.run(f"mafft --auto {path}{study}/M_prot_all_.fasta > {path}{study}/M_prot_all_align_{sp}.aln-fasta",shell=True)
+        subprocess.run(f"mafft --auto {path}{study}/M_nucl_all_.fasta > {path}{study}/M_nucl_all_align_{sp}.aln-fasta",shell=True)
+
+    elif study=="hedwig" :
+        study="Peribunyaviridae"
+        with open(f"{path}{study}/OV054446.1.gb","r") as Datas:
+
+            extract_id(Datas,study,sp)
+
+            subprocess.run(f"cat {path}{study}/M_prot_all_.fasta {path}{study}/ED-I-079-18_CAH0473050.1_hedwigcah.fasta >{path}{study}/M_prot_all_align_{sp}.fasta",shell=True)
+            subprocess.run(f"cat {path}{study}/M_nucl_all_.fasta {path}{study}/ED-I-079-18_OV054446.1_hedwigcah.fasta >{path}{study}/M_nucl_all_align_{sp}.fasta",shell=True)
+            subprocess.run(f"mafft --auto {path}{study}/M_prot_all_align_{sp}.fasta > {path}{study}/M_prot_all_align_{sp}.aln-fasta",shell=True)
+            subprocess.run(f"mafft --auto {path}{study}/M_nucl_all_align_{sp}.fasta > {path}{study}/M_nucl_all_align_{sp}.aln-fasta",shell=True)
+
+    elif study=="khurdun" : 
+        study="Peribunyaviridae"
+        with open(f"{path}{study}/NC_078560.1.gb","r") as Datas:
+
+            extract_id(Datas,study,sp)
+    else : 
+        with open(f"{path}{study}/sequences_{study}_segM.gb","r") as Datas:
     
-    sp=f"{study}"
+            sp=f"{study}"
 
-    first_call(study)
-    extract_id(Datas,study,sp)
-    linux_line(sp,study)
+            first_call(study)
+            extract_id(Datas,study,sp)
+            linux_line(sp,study)
 
-subprocess.run(f"mafft --auto {path}{study}/M_prot_all_{sp}.fasta > {path}{study}/M_prot_all_align_{sp}.aln-fasta",shell=True)
-subprocess.run(f"mafft --auto {path}{study}/M_nucl_all_{sp}.fasta > {path}{study}/M_nucl_all_align_{sp}.aln-fasta",shell=True)
-
-
-study= "Perybunyaviridae"
-
-
-with open(f"{path}{study}/sequences_{study}_segM.gb","r") as Datas:
+        subprocess.run(f"mafft --auto {path}{study}/M_prot_all_{sp}.fasta > {path}{study}/M_prot_all_align_{sp}.aln-fasta",shell=True)
+        subprocess.run(f"mafft --auto {path}{study}/M_nucl_all_{sp}.fasta > {path}{study}/M_nucl_all_align_{sp}.aln-fasta",shell=True)
     
-    sp=""
-
-    first_call(study)
-    extract_id(Datas,study,sp)
-    linux_line(sp,study)
-
-    subprocess.run(f"mafft --auto {path}{study}/M_prot_all_.fasta > {path}{study}/M_prot_all_align_{sp}.aln-fasta",shell=True)
-    subprocess.run(f"mafft --auto {path}{study}/M_nucl_all_.fasta > {path}{study}/M_nucl_all_align_{sp}.aln-fasta",shell=True)
-
-
-with open(f"{path}{study}/OV054446.1.gb","r") as Datas:
-    
-    sp="hedwig"
-
-    extract_id(Datas,study,sp)
-
-    subprocess.run(f"cat {path}{study}/M_prot_all_.fasta {path}{study}/ED-I-079-18_CAH0473050.1_hedwigcah.fasta >{path}{study}/M_prot_all_align_{sp}.fasta",shell=True)
-    subprocess.run(f"cat {path}{study}/M_nucl_all_.fasta {path}{study}/ED-I-079-18_OV054446.1_hedwigcah.fasta >{path}{study}/M_nucl_all_align_{sp}.fasta",shell=True)
-    subprocess.run(f"mafft --auto {path}{study}/M_prot_all_align_{sp}.fasta > {path}{study}/M_prot_all_align_{sp}.aln-fasta",shell=True)
-    subprocess.run(f"mafft --auto {path}{study}/M_nucl_all_align_{sp}.fasta > {path}{study}/M_nucl_all_align_{sp}.aln-fasta",shell=True)
-
-with open(f"{path}{study}/NC_078560.1.gb","r") as Datas:
-    
-    sp="kurdun"
-    extract_id(Datas,study,sp)
-
-
-
-
-
-study= "Nairoviridae"
-print(f"Data extraction from genbank files for {study}")
-with open(f"{path}{study}/sequences_{study}_segM.gb","r") as Datas:
-    sp=f"{study}"
-
-    first_call(study)
-    extract_id(Datas,study,sp)
-    linux_line(sp,study)
-
-    subprocess.run(f"mafft --auto {path}{study}/M_prot_all_{sp}.fasta > {path}{study}/M_prot_all_align_{sp}.aln-fasta",shell=True)
-    subprocess.run(f"mafft --auto {path}{study}/M_nucl_all_{sp}.fasta > {path}{study}/M_nucl_all_align_{sp}.aln-fasta",shell=True)
-
-

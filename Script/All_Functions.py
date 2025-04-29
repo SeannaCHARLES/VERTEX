@@ -296,24 +296,19 @@ def first_call(study) :
     file = open(name_files,"w")
     file.write(f"LABELS\nSEPARATOR TAB\nDATA\n")       
     file.close()
-    name=f"{path}Metadata_studies.txt"
-    allmetadata=open(name,'w')
-    head=f"Virus name\tID itol tree\tTaxonomy\tSerogroup\tProtein accesion number\tSize Proteique sequence\tStart MLD\tEnd MLD\tSart GP38\tEnd GP38\tStart Gn\tEnd Gn\tStart NSm\tEnd NSm\tStart Gc\tEnd Gc\tNucleique accession number\tSize Nucelique sequence\tStrand\tStrain\tGeographical region\tHost\tHost source\tReferences\n"
-    allmetadata.write(head)
-    allmetadata.close()
+   
 ### Function linux_line 
 # This function concatenates all the species for each study into one file 
 
 def linux_line(sp,study) :
-    subprocess.run(f"rm {path}{study}/M_prot_all_{sp}.fasta",shell=True)
-    subprocess.run(f"rm {path}{study}/M_nucl_all_{sp}.fasta",shell=True)
-
+    subprocess.run(['rm', f'{path}{study}/M_prot_all_{sp}.fasta'],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+    subprocess.run(['rm', f'{path}{study}/M_nucl_all_{sp}.fasta'],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+    
     subprocess.run(f"cat {path}{study}/M_prot/* >> {path}{study}/M_prot_all_{sp}.fasta",shell=True)
     subprocess.run(f"cat {path}{study}/M_nucl/* >> {path}{study}/M_nucl_all_{sp}.fasta",shell=True)
 
 ### Function extract_id
 # This function extracts the following information: Host, Host country, Strain, Nucleic identifier, Protein identifier for each genbank file.
-
 
 
 def extract_id(Datas,study,sp) :
@@ -396,8 +391,8 @@ def extract_id(Datas,study,sp) :
         
         
         line=f"{fullorganisme}\t{ID}\t{taxonomy}\t{serogroup}\t{ID_prot}\t{sizeprot}\t{output_prot}{Nu}\t{sizenu}\t\t{strain}\t{region}: {localisation}\t{order}: {host}\t\t\t\n"
+        
         name=f"{path}Metadata_studies.txt"
-
         allmetadata=open(name,'a')
         allmetadata.write(line)
         allmetadata.close()
@@ -448,7 +443,8 @@ def extract_prot_data(ID_prot,study) :
             output+=f'GP38+Gn: {str(proteins["GP38+Gn"][0])}\tGP38+Gn: {str(proteins["GP38+Gn"][1])}\t'
         else : 
             output+=f"\t\t"
-    subprocess.run(f"rm {path}{study}/M_prot/{ID_prot}.gp",shell=True)
+    subprocess.run(['rm', f'{path}{study}/M_prot/{ID_prot}.gp'],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+
     return output
 
 df = pd.read_csv(f"{path}Serogroup.txt", delimiter="|",header=0)
@@ -668,8 +664,7 @@ def delete_dbl(Doublon,study,protein,old_col_names):
     
     name=f"{path}{study}/seg_M_phylo/{protein}nucl_sdbl.fasta"
     
-    subprocess.run(f"rm {name}",shell=True)
-
+    subprocess.run(['rm', f'{name}'],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
     if study!="CCHFV" :
         file_nucl=f"{path}{study}/seg_M_phylo/{protein}nucl_trimal.fasta"
         file_prot=f"{path}{study}/seg_M_phylo/{protein}prot_trimal.fasta"
@@ -692,8 +687,7 @@ def delete_dbl(Doublon,study,protein,old_col_names):
 
 
     name=f"{path}{study}/seg_M_phylo/{protein}prot_sdbl.fasta"
-    subprocess.run(f" rm {name}",shell=True)
-    
+    subprocess.run(['rm', f'{name}'],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
     for record in SeqIO.parse(f"{file_prot}","fasta") :
         
         if record.description not in Doublon and record.description in old_col_names :
