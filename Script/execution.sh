@@ -6,6 +6,9 @@ studies=("Peribunyaviridae" "CCHFV" "Nairoviridae")
 Type_seq=("prot" "nucl")
 proteins=("NSm" "Gn" "Gc" "NSmGn")
 
+for study in "${studies[@]}"; do
+mkdir -p "${path}""${study}"/M_nucl "${path}""${study}"/M_prot "${path}""${study}"/seg_M_phylo
+done
 #Common scripts for all studies
 echo The sequences are currently being downloaded ...
 ./Phylogenetic/Script/download_sequences.sh
@@ -53,10 +56,10 @@ for study in "${studies[@]}"; do
             iqtree2 -s "${path}""${study}"/seg_M_phylo/"${name}""${type}"_sdbl.aln-fasta -m MFP -bb 1000 -alrt 1000 -nt AUTO |grep 'Best-fit model:' >> "${path}""${study}"/seg_M_phylo/Best_model_"${study}".txt
         done
         if [ "$study" != "Peribunyaviridae" ] ;then 
-            echo MLD"${type}": >> "${path}""${study}"seg_M_phylo/Best_model_"${study}".txt
+            echo MLD"${type}": >> "${path}""${study}"/seg_M_phylo/Best_model_"${study}".txt
             iqtree2 -s "${path}""${study}"/seg_M_phylo/MLD"${type}"_sdbl.aln-fasta -m MFP -bb 1000 -alrt 1000 -nt AUTO |grep 'Best-fit model:' >> "${path}""${study}"/seg_M_phylo/Best_model_"${study}".txt
 
-            echo GP38"${type}": >> "${path}""${study}"seg_M_phylo/Best_model_"${study}".txt
+            echo GP38"${type}": >> "${path}""${study}"/seg_M_phylo/Best_model_"${study}".txt
             iqtree2 -s "${path}""${study}"/seg_M_phylo/GP38"${type}"_sdbl.aln-fasta -m MFP -bb 1000 -alrt 1000 -nt AUTO |grep 'Best-fit model:' >> "${path}""${study}"/seg_M_phylo/Best_model_"${study}".txt
         fi
 

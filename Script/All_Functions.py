@@ -23,6 +23,8 @@ import requests
 from geopy.geocoders import Nominatim
 
 import time
+#You email addresse for NCBI request
+mail="charles.seanna@outlook.fr"
 
 #The path may need to change
 path = "/home/seannacharles/Documents/"
@@ -81,6 +83,7 @@ def colour_choice (region):
 def modif_localisation(localisation) :
     localisation=localisation.split(":")[0]
     return localisation
+
 ### Function geographic_region
 # For the captions, each country is replaced by its geographical region.
 # At the moment I can't get pycountry_convert to work, which would simplify this function.
@@ -110,7 +113,6 @@ def geographic_region(pays) :
     else:
         return(pays)
    
-
 ### Function modif host
 # For each host, it is important to keep only those elements that allow the species to be identified
 
@@ -137,7 +139,8 @@ def modif_host(host) :
 # This function send a request to the NCBI database
 
 def deforder(species) : 
-    Entrez.email="charles.seanna@outlook.fr"
+    global mail
+    Entrez.email=mail
 
     try : 
         search= Entrez.esearch(db="taxonomy",term=species)
@@ -310,7 +313,6 @@ def linux_line(sp,study) :
 ### Function extract_id
 # This function extracts the following information: Host, Host country, Strain, Nucleic identifier, Protein identifier for each genbank file.
 
-
 def extract_id(Datas,study,sp) :
 
     global allmetadata
@@ -398,6 +400,8 @@ def extract_id(Datas,study,sp) :
         allmetadata.close()
     return strain,ID_prot,Nu
 
+###Function modif_name_prot
+#The purpose of this function is to identify the protein present in the gp
 
 def modif_name_prot(name_prot) : 
     name_prot=name_prot.upper()
@@ -413,10 +417,13 @@ def modif_name_prot(name_prot) :
     
     return name_prot
 
-def extract_prot_data(ID_prot,study) : 
+##Function extract_prot_data
+#This function extract the position of each proteins of each organism in order to save everything in the metadatafiles
 
+def extract_prot_data(ID_prot,study) : 
+    global mail
     all_proteins=["MLD","GP38","Gn","NSm","Gc"]
-    Entrez.email = "charles.seanna@outlook.fr"  
+    Entrez.email = mail
     handle = Entrez.efetch(db="protein", id=ID_prot, rettype="gp", retmode="text")
     record = SeqIO.read(handle, "genbank")
     handle.close()
@@ -447,9 +454,12 @@ def extract_prot_data(ID_prot,study) :
 
     return output
 
+#The serogroup file 
 df = pd.read_csv(f"{path}Serogroup.txt", delimiter="|",header=0)
 df.iloc[:, 1:]=df.iloc[:, 1:].astype(str)
 
+##Function find_serogroup 
+#This function 
 def find_serogroup(organism) : 
     global df
     end_line=df.shape[0]
