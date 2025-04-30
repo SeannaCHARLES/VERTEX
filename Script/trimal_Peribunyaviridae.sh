@@ -43,7 +43,7 @@ for ID in "${File[@]}"; do
         for (i=1; i<=NF; i++) {
         printf "%s\t", $i;
         count++;
-        if (count % max == 0) print "";  # Nouvelle ligne après 10 valeurs
+        if (count % max == 0) print "";  
         }
         }
         END { if (count % max != 0) print ""; }' >> "${path}${study}${phylofile}${ID}_dnadist.txt"
@@ -54,7 +54,7 @@ done
 
 ths=0.01
 target="bunyamwer"
-proteins=("Gn" "NSm" "Gc")
-list_proteins=$(IFS=, ; echo "${proteins[*]}")
-
-/usr/bin/python3 /home/seannacharles/Documents/Script/delete_dbl.py "$study"  "$target" "$ths" "$list_proteins"
+proteins=('"Gn"' '"NSm"' '"Gc"')
+list_proteins=$(IFS=, ; echo ["${proteins[*]}"])
+echo "$list_proteins"
+/usr/bin/python3 delete_dbl.py "$study"  "$target" "$ths" "$list_proteins"

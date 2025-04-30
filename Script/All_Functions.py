@@ -281,6 +281,7 @@ def first_call(study) :
     global type_files
     global path
     global allmetadata
+
     for name in type_files : 
         name_files = f"{path}{study}/{name}_{study}_itol.txt"
         file = open(name_files,"w")
@@ -291,6 +292,7 @@ def first_call(study) :
         file = open(name_files,"w")
         file.write(f"TREE_COLORS\nSEPARATOR TAB\nDATA\n")       
         file.close()
+
     name_files = f"{path}{study}/Label_{study}_itol.txt"
     file = open(name_files,"w")
     file.write(f"LABELS\nSEPARATOR TAB\nDATA\n")       
@@ -304,6 +306,7 @@ def first_call(study) :
 # This function concatenates all the species for each study into one file 
 
 def linux_line(sp,study) :
+    global path
     subprocess.run(['rm', f'{path}{study}/M_prot_all_{sp}.fasta'],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
     subprocess.run(['rm', f'{path}{study}/M_nucl_all_{sp}.fasta'],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
     
@@ -617,6 +620,7 @@ def write_file_prot(Data,sp,Protname,study) :
 
 def select_doublon(protein,study,target,ths) :
     global path
+    print (protein)
     df = pd.read_csv(f"{path}{study}/seg_M_phylo/{protein}nucl_dnadist.txt", delimiter="\t",header=0,index_col=0)
     df.iloc[:, 1:]=df.iloc[:, 1:].astype(float)
     

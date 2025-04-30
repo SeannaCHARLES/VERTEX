@@ -18,17 +18,28 @@ Concraitement ce script permet de  :
     one file for each proteins.
 * Identified the best model (using iqtree2)
 
-* Create the phylogenetic tree using the best model 
+* Create the phylogenetic tree using the best model (using iqtree2)
 
 * 
 ## Instructions to use 
 ## Instructions to adapt the code to your needs
-This scripts is currently working for the peribunyaviridae the nairoviridae and CCHFV strains if you want to use this script on other organism you need to modifiy the following points
+This scripts is currently working for the peribunyaviridae the nairoviridae the CCHFV strains and the oropouche strains if you want to use this script on other organism you need to modifiy the following points : 
+### Path and folders names
+#### Modify
+You need to change the original path and also the folders names.
+To do so all you have to do is to change the variable *path* and the variable in the list *studies* in the *execution.sh* file.
+#### Add species
+If you want to add another species add the name to that species in the *studies* list in the file **execution.sh**
+
 ### Mark proteins
 
-For this step it is important to change the different position of each sequences and to change the target ID.
-You also need to change the startseq 
-The startseq was found by using blast and align the proteic sequences to the nucleic sequences 
+For this step it is important to change the different position of each sequences.and to change the target ID.
+You also need to change the startseq.
+The startseq was found by using blast and align the proteic sequences to the nucleic sequences. 
+
+
+
+**If you want to add another species it is recommanded to rerun the entire script in order to have the same caption for all your studied species**
 
 ### If you you are not using the serogroup 
 ### If you want to use these script for other species

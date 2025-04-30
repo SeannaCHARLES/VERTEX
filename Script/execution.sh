@@ -21,7 +21,7 @@ echo The captions, metadata files and files containing all the sequences are cur
 
 
 for study in "${studies[@]}"; do
-    echo Start treatment for"${study}" : 
+    echo Start treatment for "${study}" : 
 
     echo The position of the proteins of the "${study}" are being marked ...
     /usr/bin/python3 /home/seannacharles/Phylogenetic/Script/mark_prot_"${study}".py

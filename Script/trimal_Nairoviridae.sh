@@ -5,11 +5,11 @@ study="Nairoviridae"
 phylofile="/seg_M_phylo/"
 
 Type_seq=("nucl" "prot")
-File=("Gc${type}" "Gn${type}" "NSm${type}" "NSmGn${type}" "GP38${type}" "MLD${type}")
+
 
 for type in "${Type_seq[@]}"; do
         echo "Traitement des sequence ${type}"
-        
+        File=("Gc${type}" "Gn${type}" "NSm${type}" "NSmGn${type}" "GP38${type}" "MLD${type}")
         for ID in "${File[@]}"; do 
                 echo "${ID} FASTA"
                 trimal  -in "${path}${study}${phylofile}${ID}_align.aln-fasta" \
@@ -54,8 +54,8 @@ done
 study="Nairoviridae"     
 target="haemorrha"
 ths=0.005
-proteins=("MLD" "GP38" "Gn" "NSm" "Gc")
-list_proteins=$(IFS=, ; echo "${proteins[*]}")
+proteins=('"MLD"' '"GP38"' '"Gn"' '"NSm"' '"Gc"')
+list_proteins=$(IFS=, ; echo ["${proteins[*]}"])
 
 
-/usr/bin/python3 /home/seannacharles/Documents/Script/delete_dbl.py "$study"  "$target" "$ths" "$list_proteins"
+/usr/bin/python3 delete_dbl.py "$study"  "$target" "$ths" "$list_proteins"

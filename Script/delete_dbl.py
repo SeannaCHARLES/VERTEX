@@ -12,11 +12,18 @@ ths=float(sys.argv[3])
 Prot_list=list(sys.argv[4])
 
 
+# study="Peribunyaviridae"
+# target="bunyamwer"
+# ths=float(0.01)
+# Prot_list=list(["Gn","NSm","Gc"])
+
+print(Prot_list)
+
 final_dbl=[]
 old_col_names=[]
 
 for protein in Prot_list : 
-
+    print(protein)
     Doublon,name_colonnes=select_doublon(protein,study,target,ths)
     old_col_names=col_name(old_col_names,name_colonnes,protein)
 

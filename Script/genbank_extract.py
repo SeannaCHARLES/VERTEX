@@ -10,15 +10,15 @@ for study in studies :
     sp= study
     print(f"Data extraction from genbank files for {study}")
     if study=="Peribunyaviridae" :
-            
-        sp=""
+        with open(f"{path}{study}/sequences_{study}_segM.gb","r") as Datas:   
+            sp=""
 
-        first_call(study)
-        extract_id(Datas,study,sp)
-        linux_line(sp,study)
+            first_call(study)
+            extract_id(Datas,study,sp)
+            linux_line(sp,study)
 
-        subprocess.run(f"mafft --auto {path}{study}/M_prot_all_.fasta > {path}{study}/M_prot_all_align_{sp}.aln-fasta",shell=True)
-        subprocess.run(f"mafft --auto {path}{study}/M_nucl_all_.fasta > {path}{study}/M_nucl_all_align_{sp}.aln-fasta",shell=True)
+            subprocess.run(f"mafft --auto {path}{study}/M_prot_all_.fasta > {path}{study}/M_prot_all_align_{sp}.aln-fasta",shell=True)
+            subprocess.run(f"mafft --auto {path}{study}/M_nucl_all_.fasta > {path}{study}/M_nucl_all_align_{sp}.aln-fasta",shell=True)
 
     elif study=="hedwig" :
         study="Peribunyaviridae"
