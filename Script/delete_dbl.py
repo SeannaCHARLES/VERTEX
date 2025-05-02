@@ -3,27 +3,18 @@ import sys
 
 from All_Functions import select_doublon,delete_dbl,col_name
 
-path ="/home/seannacharles/Documents/"
+path =str(sys.argv[1])
+study=str(sys.argv[2])
+target=str(sys.argv[3])
+ths=float(sys.argv[4])
+Prot_list=sys.argv[5]
 
-
-study=str(sys.argv[1])
-target=str(sys.argv[2])
-ths=float(sys.argv[3])
-Prot_list=list(sys.argv[4])
-
-
-# study="Peribunyaviridae"
-# target="bunyamwer"
-# ths=float(0.01)
-# Prot_list=list(["Gn","NSm","Gc"])
-
-print(Prot_list)
+Prot_list=list(Prot_list.split(","))
 
 final_dbl=[]
 old_col_names=[]
 
 for protein in Prot_list : 
-    print(protein)
     Doublon,name_colonnes=select_doublon(protein,study,target,ths)
     old_col_names=col_name(old_col_names,name_colonnes,protein)
 

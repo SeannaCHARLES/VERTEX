@@ -27,8 +27,8 @@ import time
 mail="charles.seanna@outlook.fr"
 
 #The path may need to change
-path = "/home/seannacharles/Documents/"
-
+path = "/home/seannacharles/"
+res_file="/res_phylo/"
 #######Function for the Script Genbank extract##################
 #This part create a set of 100 random colors to create the itol legends 
 cmap=plt.get_cmap("hsv")
@@ -64,6 +64,7 @@ def Modif_ID(ID) :
 # A colour is assigned to each parameter that may appear in a legend
 # The colours are chosen at random 
 # All families will have the same captions
+
 #Legencolors save for each legend label the associated colors to have the same color for the same label 
 legencolors={}
 
@@ -203,10 +204,10 @@ def write_file(Description_nu,Description_prot,Sequence_aa,Sequence_nu,localisat
     sero.close()
 
 
-    nom_prot_file=f"{strain}_{ID_prot}_{ID}"
-    nom_prot_file.replace(" ","")
-    nom_nucl_file=f"{strain}_{Nu}_{ID}"
-    nom_nucl_file.replace(" ","")
+    nonucl_file=f"{strain}_{ID_prot}_{ID}"
+    nonucl_file.replace(" ","")
+    nonucl_file=f"{strain}_{Nu}_{ID}"
+    nonucl_file.replace(" ","")
 
 
     name_geol=f"{path}{study}/{type_files[0]}_{study}NSmGn_itol.txt"
@@ -239,10 +240,10 @@ def write_file(Description_nu,Description_prot,Sequence_aa,Sequence_nu,localisat
     sero.write(text)
     sero.close()
 
-    nom_prot_file=f"{strain}_{ID_prot}_{ID}"
-    nom_prot_file.replace(" ","")
-    nom_nucl_file=f"{strain}_{Nu}_{ID}"
-    nom_nucl_file.replace(" ","")
+    nomprot_file=f"{strain}_{ID_prot}_{ID}"
+    nomprot_file=nomprot_file.replace(" ","")
+    nomnucl_file=f"{strain}_{Nu}_{ID}"
+    nomnucl_file=nomnucl_file.replace(" ","")
 
 
 
@@ -251,27 +252,27 @@ def write_file(Description_nu,Description_prot,Sequence_aa,Sequence_nu,localisat
 
 
     if sp =="" : 
-        with open (f"{path}{study}/M_nucl/{nom_nucl_file}.fasta","w") as nu : 
+        with open (f"{path}{study}/nucl/{nomnucl_file}.fasta","w") as nu : 
             nu.write(f">{ID}\n{Sequence_nu}\n")
-        with open (f"{path}{study}/M_prot/{nom_prot_file}.fasta","w") as aa : 
+        with open (f"{path}{study}/prot/{nomprot_file}.fasta","w") as aa : 
             aa.write(f">{ID}\n{Sequence_aa}\n")
 
     elif sp =="CCHFV" :
-        with open (f"{path}{study}/M_nucl/{strain}_{Nu}.fasta","w") as nu : 
+        with open (f"{path}{study}/nucl/{strain}_{Nu}.fasta","w") as nu : 
             nu.write(f">{ID}\n{Sequence_nu}\n")
-        with open (f"{path}{study}/M_prot/{strain}_{ID_prot}.fasta","w") as aa : 
+        with open (f"{path}{study}/prot/{strain}_{ID_prot}.fasta","w") as aa : 
             aa.write(f">{ID}\n{Sequence_aa}\n")
 
     elif sp=="Nairoviridae" :
-        with open (f"{path}{study}/M_nucl/{nom_nucl_file}.fasta","w") as nu : 
+        with open (f"{path}{study}/nucl/{nomnucl_file}.fasta","w") as nu : 
             nu.write(f">{ID}\n{Sequence_nu}\n")
-        with open (f"{path}{study}/M_prot/{nom_prot_file}.fasta","w") as aa : 
+        with open (f"{path}{study}/prot/{nomprot_file}.fasta","w") as aa : 
             aa.write(f">{ID}\n{Sequence_aa}\n")
             
     else :
-        with open (f"{path}{study}/{nom_nucl_file}.fasta","w") as nu : 
+        with open (f"{path}{study}/{nomnucl_file}.fasta","w") as nu : 
             nu.write(f">{ID}\n{Sequence_nu}\n")
-        with open (f"{path}{study}/{nom_prot_file}.fasta","w") as aa : 
+        with open (f"{path}{study}/{nomprot_file}.fasta","w") as aa : 
             aa.write(f">{ID}\n{Sequence_aa}\n")    
 
 ### Function first_call 
@@ -307,11 +308,11 @@ def first_call(study) :
 
 def linux_line(sp,study) :
     global path
-    subprocess.run(['rm', f'{path}{study}/M_prot_all_{sp}.fasta'],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
-    subprocess.run(['rm', f'{path}{study}/M_nucl_all_{sp}.fasta'],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+    subprocess.run(['rm', f'{path}{study}/nucl_all_{sp}.fasta'],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+    subprocess.run(['rm', f'{path}{study}/prot_all_{sp}.fasta'],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
     
-    subprocess.run(f"cat {path}{study}/M_prot/* >> {path}{study}/M_prot_all_{sp}.fasta",shell=True)
-    subprocess.run(f"cat {path}{study}/M_nucl/* >> {path}{study}/M_nucl_all_{sp}.fasta",shell=True)
+    subprocess.run(f"cat {path}{study}/nucl/* >> {path}{study}/nucl_all_{sp}.fasta",shell=True)
+    subprocess.run(f"cat {path}{study}/prot/* >> {path}{study}/prot_all_{sp}.fasta",shell=True)
 
 ### Function extract_id
 # This function extracts the following information: Host, Host country, Strain, Nucleic identifier, Protein identifier for each genbank file.
@@ -431,11 +432,11 @@ def extract_prot_data(ID_prot,study) :
     record = SeqIO.read(handle, "genbank")
     handle.close()
     time.sleep(2)  
-    with open(f"{path}{study}/M_prot/{ID_prot}.gp", "w") as output_handle:
+    with open(f"{path}{study}/prot/{ID_prot}.gp", "w") as output_handle:
         SeqIO.write(record, output_handle, "genbank")
         output_handle
 
-    record = SeqIO.read(f"{path}{study}/M_prot/{ID_prot}.gp", "genbank")
+    record = SeqIO.read(f"{path}{study}/prot/{ID_prot}.gp", "genbank")
     proteins={}
     for feature in record.features :
 
@@ -453,7 +454,7 @@ def extract_prot_data(ID_prot,study) :
             output+=f'GP38+Gn: {str(proteins["GP38+Gn"][0])}\tGP38+Gn: {str(proteins["GP38+Gn"][1])}\t'
         else : 
             output+=f"\t\t"
-    subprocess.run(['rm', f'{path}{study}/M_prot/{ID_prot}.gp'],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+    subprocess.run(['rm', f'{path}{study}/prot/{ID_prot}.gp'],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
 
     return output
 
@@ -572,8 +573,6 @@ def mark_sequence(sequence,pos_align,name,description) :
     file.close()
 
 
-
-
 #######Function for the split_protein##################
 
 
@@ -607,7 +606,7 @@ def write_file_prot(Data,sp,Protname,study) :
  
     for ID,seq in Data.items() : 
         for index,prot in enumerate(seq) : 
-            name=f"{path}{study}/seg_M_phylo/"+str(Protname[index])+sp+".fasta"
+            name=f"{path}{study}{res_file}"+str(Protname[index])+sp+".fasta"
             file = open(name,"a")
             text=str (">"+ID+'\n'+Seq(prot)+'\n')
             file.write(text)
@@ -620,8 +619,7 @@ def write_file_prot(Data,sp,Protname,study) :
 
 def select_doublon(protein,study,target,ths) :
     global path
-    print (protein)
-    df = pd.read_csv(f"{path}{study}/seg_M_phylo/{protein}nucl_dnadist.txt", delimiter="\t",header=0,index_col=0)
+    df = pd.read_csv(f"{path}{study}{res_file}{protein}nucl_dnadist.txt", delimiter="\t",header=0,index_col=0)
     df.iloc[:, 1:]=df.iloc[:, 1:].astype(float)
     
     
@@ -650,7 +648,6 @@ def select_doublon(protein,study,target,ths) :
         line+=1
     noms_colonnes = df.columns
     return Doublon,noms_colonnes
-    #delete_dbl(Doublon,study,protein) 
 
 ##Function col_name
 #This function delete the duplicate sequence name 
@@ -675,16 +672,16 @@ def col_name(old_col_names,col_name,Protein) :
 def delete_dbl(Doublon,study,protein,old_col_names):
     global path
     
+    print(protein)
+    name=f"{path}{study}{res_file}{protein}nucl_sdbl.fasta"
     
-    name=f"{path}{study}/seg_M_phylo/{protein}nucl_sdbl.fasta"
-    
-    subprocess.run(['rm', f'{name}'],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+    subprocess.run(f"rm {name}",shell=True)
     if study!="CCHFV" :
-        file_nucl=f"{path}{study}/seg_M_phylo/{protein}nucl_trimal.fasta"
-        file_prot=f"{path}{study}/seg_M_phylo/{protein}prot_trimal.fasta"
+        file_nucl=f"{path}{study}{res_file}{protein}nucl_trimal.fasta"
+        file_prot=f"{path}{study}{res_file}{protein}prot_trimal.fasta"
     else : 
-        file_nucl=f"{path}{study}/seg_M_phylo/{protein}nucl.aln-fasta"
-        file_prot=f"{path}{study}/seg_M_phylo/{protein}prot.aln-fasta"
+        file_nucl=f"{path}{study}{res_file}{protein}nucl.aln-fasta"
+        file_prot=f"{path}{study}{res_file}{protein}prot.aln-fasta"
 
     for record in SeqIO.parse(f"{file_nucl}","fasta") :
         
@@ -694,14 +691,9 @@ def delete_dbl(Doublon,study,protein,old_col_names):
             file.write(text)
             file.close()
 
-    output_phylip=f"{path}{study}/seg_M_phylo/{protein}nucl_sdbl.phy"
-    subprocess.run(f" mafft --auto {name} > {path}{study}/seg_M_phylo/{protein}nucl_sdbl.aln-fasta ",shell=True)
-    alignment = AlignIO.read(f"{path}{study}/seg_M_phylo/{protein}nucl_sdbl.aln-fasta", "fasta")
-    AlignIO.write(alignment, output_phylip, "phylip")
 
-
-    name=f"{path}{study}/seg_M_phylo/{protein}prot_sdbl.fasta"
-    subprocess.run(['rm', f'{name}'],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+    name=f"{path}{study}{res_file}{protein}prot_sdbl.fasta"
+    subprocess.run(f'rm {name}',shell=True)
     for record in SeqIO.parse(f"{file_prot}","fasta") :
         
         if record.description not in Doublon and record.description in old_col_names :
@@ -710,9 +702,6 @@ def delete_dbl(Doublon,study,protein,old_col_names):
             file.write(text)
             file.close()
 
-    output_phylip=f"{path}{study}/seg_M_phylo/{protein}prot_sdbl.phy"
-    subprocess.run(f" mafft --auto {name} > {path}{study}/seg_M_phylo/{protein}prot_sdbl.aln-fasta ",shell=True)
-    alignment = AlignIO.read(f"{path}{study}/seg_M_phylo/{protein}prot_sdbl.aln-fasta", "fasta")
-    AlignIO.write(alignment, output_phylip, "phylip")
+
     
 

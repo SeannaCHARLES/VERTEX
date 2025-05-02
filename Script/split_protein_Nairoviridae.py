@@ -1,29 +1,29 @@
-from Bio import SeqIO
-import re
 import subprocess
-from Bio.Seq import Seq
-from Bio import AlignIO
+import sys 
+
 from All_Functions import Extract_data, write_file
-path = "/home/seannacharles/Documents/"
-study="Nairoviridae"
+
+path =str(sys.argv[1])
+study= str(sys.argv[2])
+res_file= str(sys.argv[3])
 
 Protname=["MLD","GP38","Gn","NSm","Gc"]
 
 
-Extract_data("M_prot_all_align_marke_prot.fasta","prot",Protname,study)
-Extract_data("M_nucl_all_align_marke.fasta","nucl",Protname,study)
+Extract_data("prot_all_align_marke_prot.fasta","prot",Protname,study)
+Extract_data("nucl_all_align_marke.fasta","nucl",Protname,study)
 
 
-subprocess.run(f"mafft --auto {path}{study}/seg_M_phylo/Gnprot.fasta > {path}{study}/seg_M_phylo/Gnprot_align.aln-fasta",shell=True)
-subprocess.run(f"mafft --auto {path}{study}/seg_M_phylo/Gcprot.fasta > {path}{study}/seg_M_phylo/Gcprot_align.aln-fasta",shell=True)
-subprocess.run(f"mafft --auto {path}{study}/seg_M_phylo/NSmprot.fasta > {path}{study}/seg_M_phylo/NSmprot_align.aln-fasta",shell=True)
-subprocess.run(f"mafft --auto {path}{study}/seg_M_phylo/GP38prot.fasta > {path}{study}/seg_M_phylo/GP38prot_align.aln-fasta",shell=True)
-subprocess.run(f"mafft --auto {path}{study}/seg_M_phylo/MLDprot.fasta > {path}{study}/seg_M_phylo/MLDprot_align.aln-fasta",shell=True)
+subprocess.run(f"mafft --auto {path}{study}{res_file}Gnprot.fasta > {path}{study}{res_file}Gnprot_align.aln-fasta",shell=True)
+subprocess.run(f"mafft --auto {path}{study}{res_file}Gcprot.fasta > {path}{study}{res_file}Gcprot_align.aln-fasta",shell=True)
+subprocess.run(f"mafft --auto {path}{study}{res_file}NSmprot.fasta > {path}{study}{res_file}NSmprot_align.aln-fasta",shell=True)
+subprocess.run(f"mafft --auto {path}{study}{res_file}GP38prot.fasta > {path}{study}{res_file}GP38prot_align.aln-fasta",shell=True)
+subprocess.run(f"mafft --auto {path}{study}{res_file}MLDprot.fasta > {path}{study}{res_file}MLDprot_align.aln-fasta",shell=True)
 
 
-subprocess.run(f"mafft --auto {path}{study}/seg_M_phylo/Gnnucl.fasta > {path}{study}/seg_M_phylo/Gnnucl_align.aln-fasta",shell=True)
-subprocess.run(f"mafft --auto {path}{study}/seg_M_phylo/Gcnucl.fasta > {path}{study}/seg_M_phylo/Gcnucl_align.aln-fasta",shell=True)
-subprocess.run(f"mafft --auto {path}{study}/seg_M_phylo/NSmnucl.fasta > {path}{study}/seg_M_phylo/NSmnucl_align.aln-fasta",shell=True)
-subprocess.run(f"mafft --auto {path}{study}/seg_M_phylo/GP38nucl.fasta > {path}{study}/seg_M_phylo/GP38nucl_align.aln-fasta",shell=True)
-subprocess.run(f"mafft --auto {path}{study}/seg_M_phylo/MLDnucl.fasta > {path}{study}/seg_M_phylo/MLDnucl_align.aln-fasta",shell=True)
+subprocess.run(f"mafft --auto {path}{study}{res_file}Gnnucl.fasta > {path}{study}{res_file}Gnnucl_align.aln-fasta",shell=True)
+subprocess.run(f"mafft --auto {path}{study}{res_file}Gcnucl.fasta > {path}{study}{res_file}Gcnucl_align.aln-fasta",shell=True)
+subprocess.run(f"mafft --auto {path}{study}{res_file}NSmnucl.fasta > {path}{study}{res_file}NSmnucl_align.aln-fasta",shell=True)
+subprocess.run(f"mafft --auto {path}{study}{res_file}GP38nucl.fasta > {path}{study}{res_file}GP38nucl_align.aln-fasta",shell=True)
+subprocess.run(f"mafft --auto {path}{study}{res_file}MLDnucl.fasta > {path}{study}{res_file}MLDnucl_align.aln-fasta",shell=True)
 

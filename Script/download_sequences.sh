@@ -1,6 +1,4 @@
 #!/bin/bash
-
-path="/home/seannacharles/Documents/"
 studies=("Peribunyaviridae" "CCHFV" "Nairoviridae")
 
 NUID=(
@@ -12,18 +10,11 @@ NUID=(
 for i in "${!NUID[@]}"; do   
     study="${studies[$i]}"
     echo "${study}"
-    if [ -d "${path}""${study}" ]; then
-        rm "${path}""${study}"/M_nucl/* "${path}""${study}"/M_prot/* "${path}""${study}"/seg_M_phylo/* "${path}""${study}"/sequences_"${study}"_segM.gb 2>/dev/null
-
-    else
-        cd "${path}" ||
-        mkdir "${study}"/M_nucl "${study}"/M_prot "${study}"/seg_M_phylo
-    fi
-
+    
     for ID in ${NUID[$i]}; do 
-        esearch -db nucleotide -query "$ID" |efetch -format gb > "${path}""${study}"/M_nucl/"$ID".gb
-        cat "${path}""${study}"/M_nucl/"$ID".gb >> "${path}""${study}"/sequences_"${study}"_segM.gb
-        rm "${path}""${study}"/M_nucl/"$ID".gb >/dev/null
+        esearch -db nucleotide -query "$ID" |efetch -format gb > "${path}""${study}"/nucl/"$ID".gb
+        cat "${path}""${study}"/nucl/"$ID".gb >> "${path}""${study}"/sequences_"${study}".gb
+        rm "${path}""${study}"/nucl/"$ID".gb >/dev/null
     done
 done
 
