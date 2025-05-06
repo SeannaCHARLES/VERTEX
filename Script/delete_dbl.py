@@ -3,19 +3,19 @@ import sys
 
 from All_Functions import select_doublon,delete_dbl,col_name
 
-# path =str(sys.argv[1])
-# study=str(sys.argv[2])
-# target=str(sys.argv[3])
-# ths=float(sys.argv[4])
-# Prot_list=sys.argv[5]
-# Prot_list=list(Prot_list.split(","))
+path =str(sys.argv[1])
+study=str(sys.argv[2])
+target=str(sys.argv[3])
+ths=float(sys.argv[4])
+Prot_list=sys.argv[5]
+Prot_list=list(Prot_list.split(","))
 
-study="CCHFV"
-path = "/home/seannacharles/"
-res_file="/res_phylo/"
-target="np950235."
-ths=0.009
-Prot_list=["MLD","GP38","Gn","NSm","Gc"]
+# study="CCHFV"
+# path = "/home/seannacharles/"
+# res_file="/res_phylo/"
+# target="np950235."
+# ths=0.009
+# Prot_list=["MLD","GP38","Gn","NSm","Gc"]
 
 final_dbl=[]
 old_col_names=[]
