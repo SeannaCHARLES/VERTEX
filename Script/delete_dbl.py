@@ -3,13 +3,19 @@ import sys
 
 from All_Functions import select_doublon,delete_dbl,col_name
 
-path =str(sys.argv[1])
-study=str(sys.argv[2])
-target=str(sys.argv[3])
-ths=float(sys.argv[4])
-Prot_list=sys.argv[5]
+# path =str(sys.argv[1])
+# study=str(sys.argv[2])
+# target=str(sys.argv[3])
+# ths=float(sys.argv[4])
+# Prot_list=sys.argv[5]
+# Prot_list=list(Prot_list.split(","))
 
-Prot_list=list(Prot_list.split(","))
+study="CCHFV"
+path = "/home/seannacharles/"
+res_file="/res_phylo/"
+target="np950235."
+ths=0.009
+Prot_list=["MLD","GP38","Gn","NSm","Gc"]
 
 final_dbl=[]
 old_col_names=[]
@@ -18,8 +24,10 @@ for protein in Prot_list :
     Doublon,name_colonnes=select_doublon(protein,study,target,ths)
     old_col_names=col_name(old_col_names,name_colonnes,protein)
 
-    if len(final_dbl)> len(Doublon) or len(final_dbl)==0 : 
+    if len(final_dbl)==0 : 
         final_dbl=Doublon
+    else : 
+        final_dbl += [e for e in Doublon if e not in final_dbl]
 
 for protein in Prot_list : 
         delete_dbl(final_dbl,study,protein,old_col_names)

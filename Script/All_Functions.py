@@ -649,11 +649,12 @@ def select_doublon(protein,study,target,ths) :
     return Doublon,noms_colonnes
 def onlygap(protein,study,target):
     Doublon=[]
-    types_seq=["nucl","prot"]
+    types_seq=["prot","nucl"]
     for type_seq in types_seq:
-        for record in SeqIO.parse(f"{path}{study}/{protein}{type_seq}_align.aln-fasta","fasta") :
-            if set(record.seq) <= {'-'} and record.id != target:
-                Doublon.append(record.id)
+        for record in SeqIO.parse(f"{path}{study}/{res_file}{protein}{type_seq}_align.aln-fasta","fasta") :
+            if set(record.seq)=={'-'} and record.id != target:
+                if record.id not in Doublon :
+                    Doublon.append(record.id)
     return Doublon
 
 ##Function col_name
@@ -665,9 +666,7 @@ def col_name(old_col_names,col_name,Protein) :
         if Protein=="NSmGn" : 
             col_name=[element[-9:] for element in col_name]
 
-            old_col_names = [element for element in old_col_names if element in col_name]
-        else :
-            old_col_names = [element for element in old_col_names if element in col_name]
+        old_col_names = [element for element in old_col_names if element in col_name]
     else : 
         old_col_names=col_name
 
