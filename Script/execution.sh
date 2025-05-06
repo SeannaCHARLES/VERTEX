@@ -4,26 +4,24 @@ SECONDS=0
 path="/home/seannacharles/"
 path_script="Phylogenetic/Script/"
 res_file="/res_phylo/"
-
-#studies=("Peribunyaviridae" "CCHFV" "Nairoviridae")
-studies=("CCHFV")
+studies=("Peribunyaviridae" "CCHFV" "Nairoviridae")
 Type_seq=("prot" "nucl")
 proteins=("NSm" "Gn" "Gc" "NSmGn")
 
-# for study in "${studies[@]}"; do
-# rm -r "${path}""${study:?}/"* 
-# mkdir -p "${path}""${study}"/nucl "${path}""${study}"/prot "${path}""${study}""${res_file}"
-# done
+for study in "${studies[@]}"; do
+rm -r "${path}""${study:?}/"* 
+mkdir -p "${path}""${study}"/nucl "${path}""${study}"/prot "${path}""${study}""${res_file}"
+done
 
 #Common scripts for all studies
-#  echo The sequences are currently being downloaded ...
-#  ./"${path_script}"download_sequences.sh "${path}" 
+ echo The sequences are currently being downloaded ...
+ ./"${path_script}"download_sequences.sh "${path}" 
 
-# rm "${path}"Metadata_studies.txt 
-# echo -e "Virus name\tID itol tree\tTaxonomy\tSerogroup\tProtein accesion number\tSize Proteique sequence\tStart MLD\tEnd MLD\tSart GP38\tEnd GP38\tStart Gn\tEnd Gn\tStart NSm\tEnd NSm\tStart Gc\tEnd Gc\tNucleique accession number\tSize Nucelique sequence\tStrand\tStrain\tGeographical region\tHost\tHost source\tReferences" >"${path}"Metadata_studies.txt
+rm "${path}"Metadata_studies.txt 
+echo -e "Virus name\tID itol tree\tTaxonomy\tSerogroup\tProtein accesion number\tSize Proteique sequence\tStart MLD\tEnd MLD\tSart GP38\tEnd GP38\tStart Gn\tEnd Gn\tStart NSm\tEnd NSm\tStart Gc\tEnd Gc\tNucleique accession number\tSize Nucelique sequence\tStrand\tStrain\tGeographical region\tHost\tHost source\tReferences" >"${path}"Metadata_studies.txt
 
-# echo The captions, metadata files and files containing all the sequences are currently being created.
-# /usr/bin/python3 "${path}""${path_script}"genbank_extract.py "${path}"
+echo The captions, metadata files and files containing all the sequences are currently being created.
+/usr/bin/python3 "${path}""${path_script}"genbank_extract.py "${path}"
 
 
 for study in "${studies[@]}"; do
