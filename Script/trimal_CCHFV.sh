@@ -1,10 +1,20 @@
 #!/bin/bash
 
 study="$1"
+path="$2"
+res_file="$3"
+path_script="$4"
+
+# path="/home/seannacharles/"
+# path_script="Phylogenetic/Script/"
+# res_file="/res_phylo/"
+# study="CCHFV"
+
 File=("Gcnucl" "Gnnucl" "GP38nucl" "MLDnucl" "NSmnucl" "NSmGnnucl")
 
 
 for ID in "${File[@]}"; do 
+echo "${path}${study}${res_file}${ID}_align.aln-fasta"
         seqret -sequence "${path}${study}${res_file}${ID}_align.aln-fasta" -outseq "${path}${study}${res_file}${ID}_trimal.phy" -osformat phylip
         cp "${path}${study}${res_file}${ID}_trimal.phy" infile
         echo -e "Y\n" | phylip dnadist

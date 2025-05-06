@@ -1,27 +1,29 @@
 #!/bin/bash
 SECONDS=0
 
-export path="$HOME/"
-export path_script="Phylogenetic/Script/"
-export res_file="/res_phylo/"
-export studies=("Peribunyaviridae" "CCHFV" "Nairoviridae")
-export Type_seq=("prot" "nucl")
-export proteins=("NSm" "Gn" "Gc" "NSmGn")
+path="/home/seannacharles/"
+path_script="Phylogenetic/Script/"
+res_file="/res_phylo/"
 
- for study in "${studies[@]}"; do
- rm -r "${path}""${study}"/*
- mkdir -p "${path}""${study}"/nucl "${path}""${study}"/prot "${path}""${study}""${res_file}"
- done
+studies=("Peribunyaviridae" "CCHFV" "Nairoviridae")
+#studies=("CCHFV" "Nairoviridae")
+Type_seq=("prot" "nucl")
+proteins=("NSm" "Gn" "Gc" "NSmGn")
+
+for study in "${studies[@]}"; do
+rm -r "${path}""${study:?}/"* 
+mkdir -p "${path}""${study}"/nucl "${path}""${study}"/prot "${path}""${study}""${res_file}"
+done
 
 #Common scripts for all studies
  echo The sequences are currently being downloaded ...
- ./"${path_script}"download_sequences.sh 
+ ./"${path_script}"download_sequences.sh "${path}" 
 
 rm "${path}"Metadata_studies.txt 
 echo -e "Virus name\tID itol tree\tTaxonomy\tSerogroup\tProtein accesion number\tSize Proteique sequence\tStart MLD\tEnd MLD\tSart GP38\tEnd GP38\tStart Gn\tEnd Gn\tStart NSm\tEnd NSm\tStart Gc\tEnd Gc\tNucleique accession number\tSize Nucelique sequence\tStrand\tStrain\tGeographical region\tHost\tHost source\tReferences" >"${path}"Metadata_studies.txt
 
 echo The captions, metadata files and files containing all the sequences are currently being created.
-/usr/bin/python3 "${path}""${path_script}"genbank_extract.py 
+/usr/bin/python3 "${path}""${path_script}"genbank_extract.py "${path}"
 
 
 for study in "${studies[@]}"; do
@@ -48,7 +50,7 @@ for study in "${studies[@]}"; do
     mafft --auto "${path}""${study}""${res_file}"NSmGnnucl.fasta > "${path}""${study}""${res_file}"NSmGnnucl_align.aln-fasta
 
     echo Non-informative regions are being removed and sequences that are too close will be deleted for the "${study}"...
-    ./"${path_script}"trimal_"${study}".sh "${study}"
+    ./"${path_script}"trimal_"${study}".sh "${study}" "${path}" "${res_file}" "${path_script}"
 
     echo Identification of the best phylogenetic model is underway for the "${study}"
     echo The phylogenetic trees are also being created. This operation may take a few hours depending on the number of sequences. 
@@ -58,20 +60,20 @@ for study in "${studies[@]}"; do
         for name in "${proteins[@]}";do
             mafft --auto "${path}""${study}""${res_file}""${name}""${type}"_sdbl.fasta > "${path}""${study}""${res_file}""${name}""${type}"_sdbl.aln-fasta
             echo "${name}""${type}" : >> "${path}""${study}""${res_file}"Best_model_"${study}".txt
-            iqtree2 -s "${path}""${study}""${res_file}""${name}""${type}"_sdbl.aln-fasta -m MFP -bb 1000 -alrt 1000 -nt AUTO |grep 'Best-fit model:' >> "${path}""${study}""${res_file}"Best_model_"${study}".txt
+            iqtree2 -s "${path}""${study}""${res_file}""${name}""${type}"_sdbl.aln-fasta -m MFP -bb 1000 -alrt 1000 -nt AUTO #|grep 'Best-fit model:' >> "${path}""${study}""${res_file}"Best_model_"${study}".txt
         done
         if [ "$study" != "Peribunyaviridae" ] ;then 
-            mafft --auto "${path}""${study}""${res_file}"MLD"${type}"_sdbl.fasta > "${path}""${study}""${res_file}""${name}""${type}"_sdbl.aln-fasta
+            mafft --auto "${path}""${study}""${res_file}"MLD"${type}"_sdbl.fasta > "${path}""${study}""${res_file}"MLD"${type}"_sdbl.aln-fasta
             echo MLD"${type}": >> "${path}""${study}""${res_file}"Best_model_"${study}".txt
-            iqtree2 -s "${path}""${study}""${res_file}"MLD"${type}"_sdbl.aln-fasta -m MFP -bb 1000 -alrt 1000 -nt AUTO |grep 'Best-fit model:' >> "${path}""${study}""${res_file}"Best_model_"${study}".txt
+            iqtree2 -s "${path}""${study}""${res_file}"MLD"${type}"_sdbl.aln-fasta -m MFP -bb 1000 -alrt 1000 -nt AUTO #|grep 'Best-fit model:' >> "${path}""${study}""${res_file}"Best_model_"${study}".txt
             
-            mafft --auto "${path}""${study}""${res_file}"GP38"${type}"_sdbl.fasta > "${path}""${study}""${res_file}""${name}""${type}"_sdbl.aln-fasta
+            mafft --auto "${path}""${study}""${res_file}"GP38"${type}"_sdbl.fasta > "${path}""${study}""${res_file}"GP38"${type}"_sdbl.aln-fasta
             echo GP38"${type}": >> "${path}""${study}""${res_file}"Best_model_"${study}".txt
-            iqtree2 -s "${path}""${study}""${res_file}"GP38"${type}"_sdbl.aln-fasta -m MFP -bb 1000 -alrt 1000 -nt AUTO |grep 'Best-fit model:' >> "${path}""${study}""${res_file}"Best_model_"${study}".txt
+            iqtree2 -s "${path}""${study}""${res_file}"GP38"${type}"_sdbl.aln-fasta -m MFP -bb 1000 -alrt 1000 -nt AUTO #|grep 'Best-fit model:' >> "${path}""${study}""${res_file}"Best_model_"${study}".txt
         fi
 
 done
-    echo End of treatment for"${study}" :
+    echo End of treatment for "${study}" :
 done
 
 

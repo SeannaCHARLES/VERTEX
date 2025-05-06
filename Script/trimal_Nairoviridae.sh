@@ -2,6 +2,10 @@
 
 
 study="$1"
+path="$2"
+res_file="$3"
+path_script="$4"
+
 Type_seq=("prot" "nucl")
 for type in "${Type_seq[@]}"; do
         echo "Traitement des sequence ${type}"

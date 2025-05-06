@@ -623,7 +623,7 @@ def select_doublon(protein,study,target,ths) :
     df.iloc[:, 1:]=df.iloc[:, 1:].astype(float)
     
     
-    Doublon=[]
+    Doublon=onlygap(protein,study,target)
     end_line=df.shape[0]
     end_col=df.shape[1]
     line=0
@@ -637,7 +637,6 @@ def select_doublon(protein,study,target,ths) :
                     Doublon.append(ID)
                     df=df.drop(columns=ID)
                     df=df.drop(index=ID)
-                    #df = df.reset_index(drop=True)
                     end_line=df.shape[0]
                     end_col=df.shape[1]
                     line=0
@@ -648,6 +647,14 @@ def select_doublon(protein,study,target,ths) :
         line+=1
     noms_colonnes = df.columns
     return Doublon,noms_colonnes
+def onlygap(protein,study,target):
+    Doublon=[]
+    types_seq=["nucl","prot"]
+    for type_seq in types_seq:
+        for record in SeqIO.parse(f"{path}{study}/{protein}{type_seq}_align.aln-fasta","fasta") :
+            if set(record.seq) <= {'-'} and record.id != target:
+                Doublon.append(record.id)
+    return Doublon
 
 ##Function col_name
 #This function delete the duplicate sequence name 
@@ -680,8 +687,8 @@ def delete_dbl(Doublon,study,protein,old_col_names):
         file_nucl=f"{path}{study}{res_file}{protein}nucl_trimal.fasta"
         file_prot=f"{path}{study}{res_file}{protein}prot_trimal.fasta"
     else : 
-        file_nucl=f"{path}{study}{res_file}{protein}nucl.aln-fasta"
-        file_prot=f"{path}{study}{res_file}{protein}prot.aln-fasta"
+        file_nucl=f"{path}{study}{res_file}{protein}nucl_align.aln-fasta"
+        file_prot=f"{path}{study}{res_file}{protein}prot_align.aln-fasta"
 
     for record in SeqIO.parse(f"{file_nucl}","fasta") :
         
