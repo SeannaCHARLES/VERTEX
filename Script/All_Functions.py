@@ -98,21 +98,24 @@ def geographic_region(pays) :
 
     latitude=location.latitude
     longitude=location.longitude
-
     if -35 <= latitude <= 37 and -20 <= longitude <= 55:
-        return( "Africa")
+        return "Africa"
     elif 35 <= latitude <= 70 and -10 <= longitude <= 40:
-        return( "Europe")
+        return "Europe"
+    elif 35 <= latitude <= 75 and 40 < longitude <= 70:
+        return "Eurasia"  
+    elif 50 <= latitude <= 75 and 40 <= longitude <= 180:
+        return "Russia"
     elif 5 <= latitude <= 55 and 70 <= longitude <= 140:
-        return( "Asia")
+        return "Asia"
     elif -55 <= latitude <= 15 and -80 <= longitude <= -35:
-        return( "South America")
+        return "South America"
     elif 15 <= latitude <= 72 and -170 <= longitude <= -50:
-        return( "North America")
+        return "North America"
     elif -50 <= latitude <= -10 and 110 <= longitude <= 180:
-        return( "Oceania")
+        return "Oceania"
     else:
-        return(pays)
+        return pays
    
 ### Function modif host
 # For each host, it is important to keep only those elements that allow the species to be identified
@@ -125,7 +128,7 @@ def modif_host(host) :
     elif "midge" in host.lower() :
         host="Midges"
     elif "tick" in host.lower() : 
-        host="Tick"
+        host="Ticks"
 
     host.split(";")[0]
     host.replace("sp.",'')
@@ -341,6 +344,9 @@ def extract_id(Datas,study,sp) :
         taxonomy=record.annotations.get('taxonomy')[7:]
         taxonomy=' : '.join(taxonomy)
 
+        references=record.annotations.get('references')[0]
+        ref=f"Authors : {references.authors};Title : {references.title};Journal : {references.journal};Pubmed ID : {references.pubmed_id};Medline ID : {references.medline_id} "
+
         for feature in record.features : 
             if "host" in feature.qualifiers : 
                 host = feature.qualifiers['host'][0]
@@ -366,10 +372,10 @@ def extract_id(Datas,study,sp) :
             if feature.type == "CDS" and "translation" in feature.qualifiers :
                 Sequence_aa=feature.qualifiers["translation"][0] 
                 sizeprot=len(Sequence_aa)    
-                            
+                strand = feature.location.strand          
             if "protein_id" in feature.qualifiers :
                 ID_prot = feature.qualifiers['protein_id'][0]
-
+                
         output_prot=extract_prot_data(ID_prot,study)
 
         order_color=colour_choice(order)
@@ -378,10 +384,11 @@ def extract_id(Datas,study,sp) :
         color_sero=colour_choice(serogroup)
 
         if study=="CCHFV" : 
+            organism=ID_prot
             ID=Modif_ID(str(ID_prot+strain))
             Description_nu = f"{ID}"
             Description_prot = f"{ID}"
-            organism=ID
+            
 
         else : 
             ID=Modif_ID(str(organism+ID_prot))
@@ -396,7 +403,7 @@ def extract_id(Datas,study,sp) :
         write_file(Description_nu,Description_prot,Sequence_aa,Sequence_nu,localisation,region,region_color,order,order_color,host,strain,Nu,ID_prot,study,organism,ID,sp,serogroup,color_sero)
         
         
-        line=f"{fullorganisme}\t{ID}\t{taxonomy}\t{serogroup}\t{ID_prot}\t{sizeprot}\t{output_prot}{Nu}\t{sizenu}\t\t{strain}\t{region}: {localisation}\t{order}: {host}\t\t\t\n"
+        line=f"{fullorganisme}\t{ID}\t{taxonomy}\t{serogroup}\t{ID_prot}\t{sizeprot}\t{output_prot}{Nu}\t{sizenu}\t{strand}\t{strain}\t{region}: {localisation}\t{order}: {host}\t{ref}\n"
         
         name=f"{path}Metadata_studies.txt"
         allmetadata=open(name,'a')

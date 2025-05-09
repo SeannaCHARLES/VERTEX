@@ -4,7 +4,7 @@ import sys
 
 from All_Functions import Modif_ID,colour_choice,modif_localisation,geographic_region,modif_host,deforder,write_file,first_call,linux_line,extract_id
 
-path = sys.argv[1]
+path = "/home/seannacharles/"
 
 studies=["CCHFV","Nairoviridae","Peribunyaviridae","hedwig","khurdun"]
 
