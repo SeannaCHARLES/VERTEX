@@ -126,10 +126,12 @@ def modif_host(host) :
     elif "homo sapiens" in host.lower():
         host="Homo sapiens"
     elif "midge" in host.lower() :
-        host="Midges"
+        host="Midge"
     elif "tick" in host.lower() : 
         host="Ticks"
-
+    elif "pigeon" in host.lower():
+        host="Columba livia"
+    
     host.split(";")[0]
     host.replace("sp.",'')
     host.replace("sentinel.",'')
@@ -164,7 +166,13 @@ def deforder(species) :
         return data["ScientificName"]
 
     except Exception as e : 
-    
+        sp=deforder(species.split(" ")[0])
+        if sp not in species :
+            return sp
+        else :
+            sp=deforder(species.split(" ")[1])
+            if sp !="" and sp not in species:
+                return sp
         return species
 
 ### Function write_file
