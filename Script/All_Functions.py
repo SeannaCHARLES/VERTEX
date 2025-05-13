@@ -188,6 +188,7 @@ def write_file(Description_nu,Description_prot,Sequence_aa,Sequence_nu,localisat
     name_host=f"{path}{study}/{type_files[1]}_{study}_itol.txt"
     name_label=f"{path}{study}/Label_{study}_itol.txt"
     name_sero=f"{path}{study}/{type_files[2]}_{study}_itol.txt"
+    name_host_images=f"{path}{study}/Host_images{study}_itol.txt"
 
     geoloc=open(name_geol,'a')
     geoloc.write(f"##{localisation}\n")
@@ -214,6 +215,11 @@ def write_file(Description_nu,Description_prot,Sequence_aa,Sequence_nu,localisat
     sero.write(text)
     sero.close()
 
+    HostI_f=open(name_host_images,'a')
+    HostI_f.write(f"##{host}\n")
+    text=str (f"{ID}\t-1\t1\t0\t0\t0\thttps://raw.githubusercontent.com/SeannaCHARLES/Images/main/{order}.png\n")
+    HostI_f.write(text)
+    HostI_f.close()
 
     nonucl_file=f"{strain}_{ID_prot}_{ID}"
     nonucl_file.replace(" ","")
@@ -225,6 +231,7 @@ def write_file(Description_nu,Description_prot,Sequence_aa,Sequence_nu,localisat
     name_host=f"{path}{study}/{type_files[1]}_{study}NSmGn_itol.txt"
     name_label=f"{path}{study}/Label_{study}NSmGn_itol.txt"
     name_sero=f"{path}{study}/{type_files[2]}_{study}NSmGn_itol.txt"
+    name_host_images=f"{path}{study}/Host_images{study}NSmGn_itol.txt"
 
     geoloc=open(name_geol,'a')
     geoloc.write(f"##{localisation}\n")
@@ -250,6 +257,13 @@ def write_file(Description_nu,Description_prot,Sequence_aa,Sequence_nu,localisat
     text=str (f"N{ID}\trange\t{color_sero}\t{serogroup}\nG{ID}\trange\t{color_sero}\t{serogroup}\n")
     sero.write(text)
     sero.close()
+
+    HostI_f=open(name_host_images,'a')
+    HostI_f.write(f"##{host}\n")
+    text=str (f"N{ID}\t-1\t1\t0\t0\t0\thttps://raw.githubusercontent.com/SeannaCHARLES/Images/main/{order}.png\nG{ID}\t-1\t1\t0\t0\t0\thttps://raw.githubusercontent.com/SeannaCHARLES/Images/main/{order}.png\n")
+    HostI_f.write(text)
+    HostI_f.close()
+
 
     nomprot_file=f"{strain}_{ID_prot}_{ID}"
     nomprot_file=nomprot_file.replace(" ","")
@@ -297,22 +311,36 @@ def first_call(study) :
     for name in type_files : 
         name_files = f"{path}{study}/{name}_{study}_itol.txt"
         file = open(name_files,"w")
-        file.write(f"TREE_COLORS\nSEPARATOR TAB\nDATA\n")       
+        file.write(f"TREE_COLORS\nSEPARATOR TAB\nDATASET_LABEL\t{name}\nDATA\n")       
         file.close()
     for name in type_files : 
         name_files = f"{path}{study}/{name}_{study}NSmGn_itol.txt"
         file = open(name_files,"w")
-        file.write(f"TREE_COLORS\nSEPARATOR TAB\nDATA\n")       
+        file.write(f"TREE_COLORS\nSEPARATOR TAB\nDATASET_LABEL\t{name}\nDATA\n")       
         file.close()
 
     name_files = f"{path}{study}/Label_{study}_itol.txt"
     file = open(name_files,"w")
-    file.write(f"LABELS\nSEPARATOR TAB\nDATA\n")       
+    file.write(f"LABELS\nSEPARATOR TAB\nDATASET_LABEL\tOrganisme Label\nDATA\n")       
     file.close()
+
     name_files = f"{path}{study}/Label_{study}NSmGn_itol.txt"
     file = open(name_files,"w")
-    file.write(f"LABELS\nSEPARATOR TAB\nDATA\n")       
+    file.write(f"LABELS\nSEPARATOR TAB\nDATASET_LABEL\tOrganisme Label\nDATA\n")       
     file.close()
+
+    name_files = f"{path}{study}/Host_images{study}_itol.txt"
+    file = open(name_files,"w")
+    file.write(f"DATASET_IMAGE\nSEPARATOR TAB\nDATASET_LABEL\tHost with images\nCOLOR\t#000000\nSIZE_FACTOR\t0.7\nIMAGE_ROTATION\t0\nIMAGE_SHIFT_V\t0\nIMAGE_SHIFT_H\t0\nSHOW_INTERNAL\t0\nMARGIN\t0\nDATA\n")       
+    file.close()
+
+    name_files = f"{path}{study}/Host_images{study}NSmGn_itol.txt"
+    file = open(name_files,"w")
+    file.write(f"DATASET_IMAGE\nSEPARATOR TAB\nDATASET_LABEL\tHost with images\nCOLOR\t#000000\nSIZE_FACTOR\t0.7\nIMAGE_ROTATION\t0\nIMAGE_SHIFT_V\t0\nIMAGE_SHIFT_H\t0\nSHOW_INTERNAL\t0\nMARGIN\t0\nDATA\n")       
+    file.close()
+
+
+
    
 ### Function linux_line 
 # This function concatenates all the species for each study into one file 
