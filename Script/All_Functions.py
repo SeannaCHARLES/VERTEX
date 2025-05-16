@@ -131,10 +131,12 @@ def modif_host(host) :
         host="Ticks"
     elif "pigeon" in host.lower():
         host="Columba livia"
+    elif "hamster" in host.lower():
+        host="Cricetinae"
     
-    host.split(";")[0]
-    host.replace("sp.",'')
-    host.replace("sentinel.",'')
+    host=host.split(";")[0]
+    host=host.replace("sp.",'')
+    host=host.replace("sentinel.",'')
     host=re.sub(r"\([^)]*\)", "", host) #replace all the text betwenn ()
 
     return host
@@ -147,13 +149,24 @@ def modif_host(host) :
 def deforder(species) : 
     global mail
     Entrez.email=mail
-
+    sp =species
     try : 
         search= Entrez.esearch(db="taxonomy",term=species)
         record=Entrez.read(search)
-
+        
         if not record["IdList"]:
-            return species
+            if sp not in species:
+                return sp
+            elif (sp!="" or sp!=" " or sp==species)and len(species.split()) > 1 :
+                for part in species.split(" ") : 
+                    spepart=deforder(part)
+                    if spepart not in species : 
+                        return spepart
+                print(f"\nThe species '{species}' was not identified by the NCBI taxonomy database\nPlease check the scientific name of this species and add a If statement in the modif_host function such as.\n elif {species.lower()} in host.lower() : \n\thost='Scientificname'")
+                return species
+            else  : 
+                print(f"\nThe species '{species}' was not identified by the NCBI taxonomy database\nPlease check the scientific name of this species and add a If statement in the modif_host function such as.\n elif {species.lower()} in host.lower() : \n\thost='Scientificname'")
+                return species
 
         tax_id = record["IdList"][0]
         tax_info= Entrez.efetch(db="taxonomy",id=tax_id,retmode="xml")
@@ -166,14 +179,18 @@ def deforder(species) :
         return data["ScientificName"]
 
     except Exception as e : 
-        sp=deforder(species.split(" ")[0])
-        if sp not in species :
+        if sp not in species:
             return sp
-        else :
-            sp=deforder(species.split(" ")[1])
-            if sp !="" and sp not in species:
-                return sp
-        return species
+        elif (sp!="" or sp!=" " or sp==species)and len(species.split()) > 1 :
+            for part in species.split(" ") : 
+                spepart=deforder(part)
+                if spepart not in species : 
+                    return spepart
+            print(f"\nThe species '{species}' was not identified by the NCBI taxonomy database\nPlease check the scientific name of this species and add a If statement in the modif_host function such as.\n If {species.lower()} in host.lower() : \n\thost='Scientificname'")
+            return species
+        else  : 
+            print(f"\nThe species '{species}' was not identified by the NCBI taxonomy database\nPlease check the scientific name of this species and add a If statement in the modif_host function such as.\n If {species.lower()} in host.lower() : \n\thost='Scientificname'")
+            return species
 
 ### Function write_file
 # This function writes the caption files required for itol
@@ -331,12 +348,12 @@ def first_call(study) :
 
     name_files = f"{path}{study}/Host_images{study}_itol.txt"
     file = open(name_files,"w")
-    file.write(f"DATASET_IMAGE\nSEPARATOR TAB\nDATASET_LABEL\tHost with images\nCOLOR\t#000000\nSIZE_FACTOR\t0.7\nIMAGE_ROTATION\t0\nIMAGE_SHIFT_V\t0\nIMAGE_SHIFT_H\t0\nSHOW_INTERNAL\t0\nMARGIN\t0\nDATA\n")       
+    file.write(f"DATASET_IMAGE\nSEPARATOR TAB\nDATASET_LABEL\tHost with images\nCOLOR\t#000000\nSIZE_FACTOR\t0.6\nIMAGE_ROTATION\t0\nIMAGE_SHIFT_V\t0\nIMAGE_SHIFT_H\t0\nSHOW_INTERNAL\t0\nMARGIN\t0\nDATA\n")       
     file.close()
 
     name_files = f"{path}{study}/Host_images{study}NSmGn_itol.txt"
     file = open(name_files,"w")
-    file.write(f"DATASET_IMAGE\nSEPARATOR TAB\nDATASET_LABEL\tHost with images\nCOLOR\t#000000\nSIZE_FACTOR\t0.7\nIMAGE_ROTATION\t0\nIMAGE_SHIFT_V\t0\nIMAGE_SHIFT_H\t0\nSHOW_INTERNAL\t0\nMARGIN\t0\nDATA\n")       
+    file.write(f"DATASET_IMAGE\nSEPARATOR TAB\nDATASET_LABEL\tHost with images\nCOLOR\t#000000\nSIZE_FACTOR\t0.3\nIMAGE_ROTATION\t0\nIMAGE_SHIFT_V\t0\nIMAGE_SHIFT_H\t0\nSHOW_INTERNAL\t0\nMARGIN\t0\nDATA\n")       
     file.close()
 
 
@@ -412,8 +429,8 @@ def extract_id(Datas,study,sp) :
             if "protein_id" in feature.qualifiers :
                 ID_prot = feature.qualifiers['protein_id'][0]
                 
-        output_prot=extract_prot_data(ID_prot,study)
-
+        #output_prot=extract_prot_data(ID_prot,study)
+        output_prot=""
         order_color=colour_choice(order)
         region_color=colour_choice(region)
         serogroup=find_serogroup(fullorganisme)
@@ -509,12 +526,20 @@ df.iloc[:, 1:]=df.iloc[:, 1:].astype(str)
 #This function 
 def find_serogroup(organism) : 
     global df
+    global path
     end_line=df.shape[0]
     for line in range(0,end_line) : 
-        if df.iloc[line,0].lower() in organism.lower() or organism.lower() in df.iloc[line,0].lower() : 
+        if df.iloc[line,0].lower() in organism.lower() or organism.lower() in df.iloc[line,0].lower() or organism.replace(" ","").lower() in df.iloc[line,0].replace(" ","").lower() : 
             return str(df.iloc[line,1])
+    name=f"{path}Serogroup.txt"
+    file = open(name,"a")
+    file.write(f"{organism}|Na\n")       
+    file.close()
+    df = pd.read_csv(f"{path}Serogroup.txt", delimiter="|",header=0)
+    df.iloc[:, 1:]=df.iloc[:, 1:].astype(str)
+    find_serogroup(organism)
 
-
+#or organism.replace(" ","").lower() in df.iloc[line,0].replace(" ","").lower()
 #######Function for the Script mark_prot##################
 
 
@@ -526,10 +551,11 @@ def compt_ali_nucl(sequence,debseq,pos_prot) :
     pos_align=[]
     compt_ali=0
     compt_nu=0
-    compt_prot=0
+    compt_AA=0
     compt_codon=0
     codon=""
     deb=True
+
     for nu in sequence: 
         compt_ali+=1
         if nu!= "-" : 
@@ -539,17 +565,17 @@ def compt_ali_nucl(sequence,debseq,pos_prot) :
                 codon+=nu
                 if compt_codon==3 : 
                     compt_codon=0
-                    compt_prot+=1
-                    if compt_prot in pos_prot :
+                    compt_AA+=1
+                    if compt_AA in pos_prot :
                             
                         if deb==True : 
                             deb=False
                             pos_align.append(compt_ali-2)
-                            pos_prot.remove(compt_prot)
+                            pos_prot.remove(compt_AA)
                         else : 
                             deb=True
                             pos_align.append(compt_ali)
-                            pos_prot.remove(compt_prot) 
+                            pos_prot.remove(compt_AA) 
                         
                     codon=""
     return pos_align
@@ -561,7 +587,7 @@ def compt_alignement (sequence,pos_prot) :
     
     pos_align=[]
     compt_ali=0
-    compt_prot=0
+    compt_AA=0
     mark_prot=""
     deb=True
     for aa in sequence : 
@@ -569,21 +595,21 @@ def compt_alignement (sequence,pos_prot) :
             compt_ali+=1
         else : 
             compt_ali+=1
-            compt_prot+=1
+            compt_AA+=1
 
-        if compt_prot in pos_prot :
+        if compt_AA in pos_prot :
             if deb==True : 
                 mark_prot+="|"
                 mark_prot+=aa
                 deb=False
                 pos_align.append(compt_ali)
-                pos_prot.remove(compt_prot)
+                pos_prot.remove(compt_AA)
             else : 
                 mark_prot+=aa
                 mark_prot+="|"
                 pos_align.append(compt_ali)
                 deb=True
-                pos_prot.remove(compt_prot)
+                pos_prot.remove(compt_AA)
         else : 
             mark_prot+=aa
     return pos_align
@@ -690,6 +716,7 @@ def select_doublon(protein,study,target,ths) :
         line+=1
     noms_colonnes = df.columns
     return Doublon,noms_colonnes
+
 def onlygap(protein,study,target):
     Doublon=[]
     types_seq=["prot","nucl"]

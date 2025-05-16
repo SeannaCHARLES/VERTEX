@@ -8,15 +8,13 @@ import sys
 from All_Functions import compt_ali_nucl,compt_alignement,mark_sequence
 
 
-# path =str(sys.argv[1])
-# study= str(sys.argv[2])
+path =str(sys.argv[1])
+study= str(sys.argv[2])
 
-path="/home/seannacharles/"
-path_script="Phylogenetic/Script/"
-res_file="/res_phylo/"
-study="CCHFV"
+
 target = "np950235."
 stratseq=93
+
 pos_prot=[23,248,249,520,521,843,844,996,997,1684]
 #prot
 for record in SeqIO.parse(f"{path}{study}/prot_all_align_{study}.aln-fasta","fasta") :
