@@ -4,13 +4,10 @@ import sys
 from All_Functions import Extract_data, write_file
 
 
-# path =str(sys.argv[1])
-# study= str(sys.argv[2])
-# res_file= str(sys.argv[3])
-path="/home/seannacharles/"
-path_script="Phylogenetic/Script/"
-res_file="/res_phylo/"
-study="CCHFV"
+path =str(sys.argv[1])
+study= str(sys.argv[2])
+res_file= str(sys.argv[3])
+
 Protname=["MLD","GP38","Gn","NSm","Gc"]
 
 

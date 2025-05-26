@@ -32,7 +32,7 @@ res_file="/res_phylo/"
 #######Function for the Script Genbank extract##################
 #This part create a set of 100 random colors to create the itol legends 
 cmap=plt.get_cmap("hsv")
-Rcolor=[cmap(i/100)for i in range(100)] #Colors in rgb format
+Rcolor=[cmap(i/60)for i in range(60)] #Colors in rgb format
 colors=['#%02x%02x%02x'%(int(r*255),int(g*255),int(b*255))for r,g,b,_ in Rcolor] #Colors in hexa format
 random.shuffle(colors)
 
@@ -67,16 +67,29 @@ def Modif_ID(ID) :
 
 #Legencolors save for each legend label the associated colors to have the same color for the same label 
 legencolors={}
+legencolors["Na"]=["#FFFFFF"]
+name_legend=f"{path}/All_legend_caption.txt"
+All_legend=open(name_legend,'w')
+text=str (f"Legend\tColor\nNa\t#FFFFFF\n")
+All_legend.write(text)
+All_legend.close()
 
-def colour_choice (region):
+def colour_choice (caption):
     global colors
-    if region not in legencolors : 
+    global path
+    if caption not in legencolors : 
         choice=colors[0]
         colors.remove(choice)
-        legencolors[region]=[choice]
+        legencolors[caption]=[choice]
+
+        name_legend=f"{path}/All_legend_caption.txt"
+        All_legend=open(name_legend,'a')
+        text=str (f"{caption}\t{choice}\n")
+        All_legend.write(text)
+        All_legend.close()
         return(choice)
     else : 
-        return(legencolors[region][0])
+        return(legencolors[caption][0])
 
 ### Function modif_localisation
 # For each geographical region, it is important to keep only those elements that identify the host's country of origin.
@@ -265,7 +278,7 @@ def write_file(Description_nu,Description_prot,Sequence_aa,Sequence_nu,localisat
 
     label=open(name_label,'a')
     label.write(f"##{organism}\n")
-    text=str (f"N{ID}\tN{organism}\nG{ID}\tG{organism}\n{ID}\t{organism}\n")
+    text=str (f"N{ID}\tN{organism}\nG{ID}\tG{organism}\n")
     label.write(text)
     label.close() 
 
@@ -348,12 +361,12 @@ def first_call(study) :
 
     name_files = f"{path}{study}/Host_images{study}_itol.txt"
     file = open(name_files,"w")
-    file.write(f"DATASET_IMAGE\nSEPARATOR TAB\nDATASET_LABEL\tHost with images\nCOLOR\t#000000\nSIZE_FACTOR\t0.6\nIMAGE_ROTATION\t0\nIMAGE_SHIFT_V\t0\nIMAGE_SHIFT_H\t0\nSHOW_INTERNAL\t0\nMARGIN\t0\nDATA\n")       
+    file.write(f"DATASET_IMAGE\nSEPARATOR TAB\nDATASET_LABEL\tHost with images\nCOLOR\t#000000\nSIZE_FACTOR\t0.6\nIMAGE_ROTATION\t0\nIMAGE_SHIFT_V\t0\nIMAGE_SHIFT_H\t0\nSHOW_INTERNAL\t0\nMARGIN\t400\nDATA\n")       
     file.close()
 
     name_files = f"{path}{study}/Host_images{study}NSmGn_itol.txt"
     file = open(name_files,"w")
-    file.write(f"DATASET_IMAGE\nSEPARATOR TAB\nDATASET_LABEL\tHost with images\nCOLOR\t#000000\nSIZE_FACTOR\t0.3\nIMAGE_ROTATION\t0\nIMAGE_SHIFT_V\t0\nIMAGE_SHIFT_H\t0\nSHOW_INTERNAL\t0\nMARGIN\t0\nDATA\n")       
+    file.write(f"DATASET_IMAGE\nSEPARATOR TAB\nDATASET_LABEL\tHost with images\nCOLOR\t#000000\nSIZE_FACTOR\t0.2\nIMAGE_ROTATION\t0\nIMAGE_SHIFT_V\t0\nIMAGE_SHIFT_H\t0\nSHOW_INTERNAL\t0\nMARGIN\t250\nDATA\n")       
     file.close()
 
 
@@ -539,7 +552,7 @@ def find_serogroup(organism) :
     df.iloc[:, 1:]=df.iloc[:, 1:].astype(str)
     find_serogroup(organism)
 
-#or organism.replace(" ","").lower() in df.iloc[line,0].replace(" ","").lower()
+
 #######Function for the Script mark_prot##################
 
 

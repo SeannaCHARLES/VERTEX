@@ -17,8 +17,6 @@ done
  echo The sequences are currently being downloaded ...
  ./"${path_script}"download_sequences.sh "${path}" 
 
-rm "${path}"Metadata_studies.txt 
-echo -e "Virus name\tID itol tree\tTaxonomy\tSerogroup\tProtein accesion number\tSize Proteique sequence\tStart MLD\tEnd MLD\tSart GP38\tEnd GP38\tStart Gn\tEnd Gn\tStart NSm\tEnd NSm\tStart Gc\tEnd Gc\tNucleique accession number\tSize Nucelique sequence\tStrand\tStrain\tGeographical region\tHost\tReferences" >"${path}"Metadata_studies.txt
 
 echo The captions, metadata files and files containing all the sequences are currently being created.
 /usr/bin/python3 "${path}""${path_script}"genbank_extract.py "${path}"
