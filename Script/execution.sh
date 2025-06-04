@@ -55,16 +55,19 @@ for study in "${studies[@]}"; do
         echo for the "${type}" sequences...
         for name in "${proteins[@]}";do
             mafft --auto "${path}""${study}""${res_file}""${name}""${type}"_sdbl.fasta > "${path}""${study}""${res_file}""${name}""${type}"_sdbl.aln-fasta
-            echo "${name}""${type}" : >> "${path}""${study}""${res_file}"Best_model_"${study}".txt
+            seqret -sequence "${path}""${study}""${res_file}""${name}""${type}"_sdbl.aln-fasta -outseq "${path}""${study}""${res_file}""${name}""${type}"_Final.phy -osformat2 phylip
+            { echo "${name}""${type}" : ; echo awk 'NR==1' "${path}""${study}""${res_file}""${name}""${type}"_Final.phy ;}>> "${path}""${study}""${res_file}"Best_model_"${study}".txt
             iqtree2 -s "${path}""${study}""${res_file}""${name}""${type}"_sdbl.aln-fasta -m MFP -bb 1000 -alrt 1000 -nt AUTO |grep 'Best-fit model:' >> "${path}""${study}""${res_file}"Best_model_"${study}".txt
         done
         if [ "$study" != "Peribunyaviridae" ] ;then 
             mafft --auto "${path}""${study}""${res_file}"MLD"${type}"_sdbl.fasta > "${path}""${study}""${res_file}"MLD"${type}"_sdbl.aln-fasta
-            echo MLD"${type}": >> "${path}""${study}""${res_file}"Best_model_"${study}".txt
+            seqret -sequence "${path}""${study}""${res_file}"MLD"${type}"_sdbl.aln-fasta -outseq "${path}""${study}""${res_file}"MLD"${type}"_Final.phy -osformat2 phylip
+            { echo MLD"${type}": ; echo awk 'NR==1' "${path}""${study}""${res_file}""${name}""${type}"_Final.phy ; } >> "${path}""${study}""${res_file}"Best_model_"${study}".txt
             iqtree2 -s "${path}""${study}""${res_file}"MLD"${type}"_sdbl.aln-fasta -m MFP -bb 1000 -alrt 1000 -nt AUTO |grep 'Best-fit model:' >> "${path}""${study}""${res_file}"Best_model_"${study}".txt
             
             mafft --auto "${path}""${study}""${res_file}"GP38"${type}"_sdbl.fasta > "${path}""${study}""${res_file}"GP38"${type}"_sdbl.aln-fasta
-            echo GP38"${type}": >> "${path}""${study}""${res_file}"Best_model_"${study}".txt
+            seqret -sequence "${path}""${study}""${res_file}"GP38"${type}"_sdbl.aln-fasta -outseq "${path}""${study}""${res_file}"GP38"${type}"_Final.phy -osformat2 phylip
+            { echo GP38"${type}": ; echo awk 'NR==1' "${path}""${study}""${res_file}"GP38"${type}"_Final.phy ; } >> "${path}""${study}""${res_file}"Best_model_"${study}".txt
             iqtree2 -s "${path}""${study}""${res_file}"GP38"${type}"_sdbl.aln-fasta -m MFP -bb 1000 -alrt 1000 -nt AUTO |grep 'Best-fit model:' >> "${path}""${study}""${res_file}"Best_model_"${study}".txt
         fi
 
@@ -72,7 +75,8 @@ done
     echo End of treatment for "${study}" :
 done
 
-
+#./Phylogenetic/Script/execution.sh: ligne 77: erreur de syntaxe près du symbole inattendu « ) »
+#./Phylogenetic/Script/execution.sh: ligne 77: `/ 3600))'
 Hours=$(("${SECONDS}" / 3600))
 Minutes=$((("${SECONDS}" % 3600) / 60))
 Sec=$(("${SECONDS}" % 60))

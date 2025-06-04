@@ -441,9 +441,9 @@ def extract_id(Datas,study,sp) :
                 strand = feature.location.strand          
             if "protein_id" in feature.qualifiers :
                 ID_prot = feature.qualifiers['protein_id'][0]
-                
-        #output_prot=extract_prot_data(ID_prot,study)
-        output_prot=""
+        output_prot=""        
+        output_prot=extract_prot_data(ID_prot,study)
+        
         order_color=colour_choice(order)
         region_color=colour_choice(region)
         serogroup=find_serogroup(fullorganisme)

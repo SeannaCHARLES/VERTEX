@@ -9,7 +9,7 @@ target=str(sys.argv[3])
 ths=float(sys.argv[4])
 Prot_list=sys.argv[5]
 Prot_list=list(Prot_list.split(","))
-
+res_file=str(sys.argv[6])
 
 
 final_dbl=[]
@@ -50,4 +50,24 @@ for name in final_dbl:
 
 
 delete_dbl(NG_final_dbl,study,"NSmGn",NG_old_col_names)
+NSm_listeNairo=["dugbeense","haemorrha","kupeyp010","ganjamamt"]
+Concern_prot=["NSm","NSmGn"]
+NUPR=["nucl","prot"]
+if study=="Nairoviridae" : 
+    for types in NUPR : 
+        subprocess.run(f"cp {path}{study}/{res_file}NSm{types}_sdbl.fasta {path}{study}/{res_file}NSm{types}_sdbl_RN.fasta ")
+        filename=f"{path}{study}/{res_file}NSm{types}_sdbl.fasta"
+        for record in SeqIO.parse(f"{path}{study}/{res_file}NSm{types}_sdbl_RN.fasta","fasta") :
+            if record.id in NSm_listeNairo : 
+                file = open(filename,"a")
+                file.write(f">{record.id}\n{record.seq}\n")       
+                file.close()
 
+        subprocess.run(f"cp {path}{study}/{res_file}NSmGn{types}_sdbl.fasta {path}{study}/{res_file}NSmGn{types}_sdbl_RN.fasta ")
+        filename=f"{path}{study}/{res_file}NSmGn{types}_sdbl.fasta"
+        for record in SeqIO.parse(f"{path}{study}/{res_file}NSmGn{types}_sdbl_RN.fasta","fasta") :
+            if record.id.startswith("N") :
+                if record.id.replace("N","") in NSm_listeNairo : 
+                    file = open(filename,"a")
+                    file.write(f">{record.id}\n{record.seq}\n")       
+                    file.close()

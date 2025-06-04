@@ -59,4 +59,4 @@ target="bunyamwer"
 proteins=("Gn" "NSm" "Gc")
 list_proteins=$(IFS=, ; echo "${proteins[*]}")
 
-/usr/bin/python3 "${path}""${path_script}"delete_dbl.py "${path}" "$study"  "$target" "$ths" "$list_proteins"
+/usr/bin/python3 "${path}""${path_script}"delete_dbl.py "${path}" "$study"  "$target" "$ths" "$list_proteins" "$res_file"
