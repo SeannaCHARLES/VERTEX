@@ -699,13 +699,13 @@ def write_file_prot(Data,sp,Protname,study) :
 #This function identified all the possible duplicate sequences
 #The possible duplicates are identified using a specific threshold; this threshold was found using the dnadist file and the visible rake of the phylogenetic tree (specific to each study and not provided by this script). 
 
-def select_doublon(protein,study,target,ths) :
+def select_doublon(protein,study,target,ths,OG_list) :
     global path
     df = pd.read_csv(f"{path}{study}{res_file}{protein}nucl_dnadist.txt", delimiter="\t",header=0,index_col=0)
     df.iloc[:, 1:]=df.iloc[:, 1:].astype(float)
     
     
-    Doublon=onlygap(protein,study,target)
+    Doublon=onlygap(protein,study,target,OG_list)
     end_line=df.shape[0]
     end_col=df.shape[1]
     line=0
@@ -714,7 +714,7 @@ def select_doublon(protein,study,target,ths) :
         col=line+1
         while col <end_col-1 :
             if df.iloc[line,col] <=ths and df.iloc[line,col]!=-1  :
-                if target not in df.index[line]:
+                if target not in df.index[line] and (df.index[line] not in OG_list or any(og not in df.index[line] for og in OG_list)):
                     ID=str(df.index[line])
                     Doublon.append(ID)
                     df=df.drop(columns=ID)
@@ -730,12 +730,12 @@ def select_doublon(protein,study,target,ths) :
     noms_colonnes = df.columns
     return Doublon,noms_colonnes
 
-def onlygap(protein,study,target):
+def onlygap(protein,study,target,OG_list):
     Doublon=[]
     types_seq=["prot","nucl"]
     for type_seq in types_seq:
         for record in SeqIO.parse(f"{path}{study}/{res_file}{protein}{type_seq}_align.aln-fasta","fasta") :
-            if set(record.seq)=={'-'} and record.id != target:
+            if set(record.seq)=={'-'} and record.id != target and (record.id not in OG_list or any(og not in record.id for og in OG_list)):
                 if record.id not in Doublon :
                     Doublon.append(record.id)
     return Doublon

@@ -45,6 +45,7 @@ done
 target="np950235."
 ths=0.009
 proteins=("MLD" "GP38" "Gn" "NSm" "Gc")
+OG=("Na")
 list_proteins=$(IFS=, ; echo "${proteins[*]}")
-
-/usr/bin/python3 "${path}""${path_script}"delete_dbl.py "${path}" "$study"  "$target" "$ths" "$list_proteins" "$res_file"
+list_OG=$(IFS=, ; echo "${OG[*]}")
+/usr/bin/python3 "${path}""${path_script}"delete_dbl.py "${path}" "$study"  "$target" "$ths" "$list_proteins" "$res_file" "$list_OG"

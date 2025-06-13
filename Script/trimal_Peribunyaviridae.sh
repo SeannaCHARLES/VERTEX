@@ -58,5 +58,6 @@ ths=0.01
 target="bunyamwer"
 proteins=("Gn" "NSm" "Gc")
 list_proteins=$(IFS=, ; echo "${proteins[*]}")
-
-/usr/bin/python3 "${path}""${path_script}"delete_dbl.py "${path}" "$study"  "$target" "$ths" "$list_proteins" "$res_file"
+OG=("hedwigcah" "khurdunyp")
+list_OG=$(IFS=, ; echo "${OG[*]}")
+/usr/bin/python3 "${path}""${path_script}"delete_dbl.py "${path}" "$study"  "$target" "$ths" "$list_proteins" "$res_file" "$list_OG"

@@ -43,7 +43,7 @@ for ID in "${File[@]}"; do
         for (i=1; i<=NF; i++) {
         printf "%s\t", $i;
         count++;
-        if (count % max == 0) print "";  # Nouvelle ligne après 10 valeurs
+        if (count % max == 0) print "";  
         }
         }
         END { if (count % max != 0) print ""; }' >> "${path}${study}${res_file}${ID}_dnadist.txt"
@@ -57,6 +57,7 @@ target="haemorrha"
 ths=0.005
 proteins=("MLD" "GP38" "Gn" "NSm" "Gc")
 list_proteins=$(IFS=, ; echo "${proteins[*]}")
+OG=("sanxiawat")
+list_OG=$(IFS=, ; echo "${OG[*]}")
 
-
-/usr/bin/python3 "${path}""${path_script}"delete_dbl.py "${path}" "$study"  "$target" "$ths" "$list_proteins" "$res_file"
+/usr/bin/python3 "${path}""${path_script}"delete_dbl.py "${path}" "$study"  "$target" "$ths" "$list_proteins" "$res_file" "$list_OG"

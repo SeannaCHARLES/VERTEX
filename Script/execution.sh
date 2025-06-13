@@ -13,7 +13,7 @@ rm -r "${path}""${study:?}/"*
 mkdir -p "${path}""${study}"/nucl "${path}""${study}"/prot "${path}""${study}""${res_file}"
 done
 
-#Common scripts for all studies
+# #Common scripts for all studies
  echo The sequences are currently being downloaded ...
  ./"${path_script}"download_sequences.sh "${path}" 
 
@@ -56,18 +56,18 @@ for study in "${studies[@]}"; do
         for name in "${proteins[@]}";do
             mafft --auto "${path}""${study}""${res_file}""${name}""${type}"_sdbl.fasta > "${path}""${study}""${res_file}""${name}""${type}"_sdbl.aln-fasta
             seqret -sequence "${path}""${study}""${res_file}""${name}""${type}"_sdbl.aln-fasta -outseq "${path}""${study}""${res_file}""${name}""${type}"_Final.phy -osformat2 phylip
-            { echo "${name}""${type}" : ; awk 'NR==1' "${path}""${study}""${res_file}""${name}""${type}"_Final.phy ;}>> "${path}""${study}""${res_file}"Best_model_"${study}".txt
+            { echo "${name}""${type}" : ; awk 'NR==1 {print "Number of sequences:", $1, "Sequences size:", $2}' "${path}""${study}""${res_file}""${name}""${type}"_Final.phy ;}>> "${path}""${study}""${res_file}"Best_model_"${study}".txt
             iqtree2 -s "${path}""${study}""${res_file}""${name}""${type}"_sdbl.aln-fasta -m MFP -bb 1000 -alrt 1000 -nt AUTO |grep 'Best-fit model:' >> "${path}""${study}""${res_file}"Best_model_"${study}".txt
         done
         if [ "$study" != "Peribunyaviridae" ] ;then 
             mafft --auto "${path}""${study}""${res_file}"MLD"${type}"_sdbl.fasta > "${path}""${study}""${res_file}"MLD"${type}"_sdbl.aln-fasta
             seqret -sequence "${path}""${study}""${res_file}"MLD"${type}"_sdbl.aln-fasta -outseq "${path}""${study}""${res_file}"MLD"${type}"_Final.phy -osformat2 phylip
-            { echo MLD"${type}": ; awk 'NR==1' "${path}""${study}""${res_file}""${name}""${type}"_Final.phy ; } >> "${path}""${study}""${res_file}"Best_model_"${study}".txt
+            { echo MLD"${type}": ; awk 'NR==1 {print "Number of sequences:", $1, "Sequences size:", $2}' "${path}""${study}""${res_file}"MLD"${type}"_Final.phy ; } >> "${path}""${study}""${res_file}"Best_model_"${study}".txt
             iqtree2 -s "${path}""${study}""${res_file}"MLD"${type}"_sdbl.aln-fasta -m MFP -bb 1000 -alrt 1000 -nt AUTO |grep 'Best-fit model:' >> "${path}""${study}""${res_file}"Best_model_"${study}".txt
             
             mafft --auto "${path}""${study}""${res_file}"GP38"${type}"_sdbl.fasta > "${path}""${study}""${res_file}"GP38"${type}"_sdbl.aln-fasta
             seqret -sequence "${path}""${study}""${res_file}"GP38"${type}"_sdbl.aln-fasta -outseq "${path}""${study}""${res_file}"GP38"${type}"_Final.phy -osformat2 phylip
-            { echo GP38"${type}": ; awk 'NR==1' "${path}""${study}""${res_file}"GP38"${type}"_Final.phy ; } >> "${path}""${study}""${res_file}"Best_model_"${study}".txt
+            { echo GP38"${type}": ; awk 'NR==1 {print "Number of sequences:", $1, "Sequences size:", $2}' "${path}""${study}""${res_file}"GP38"${type}"_Final.phy ; } >> "${path}""${study}""${res_file}"Best_model_"${study}".txt
             iqtree2 -s "${path}""${study}""${res_file}"GP38"${type}"_sdbl.aln-fasta -m MFP -bb 1000 -alrt 1000 -nt AUTO |grep 'Best-fit model:' >> "${path}""${study}""${res_file}"Best_model_"${study}".txt
         fi
 
