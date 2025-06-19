@@ -214,11 +214,11 @@ def write_file(Description_nu,Description_prot,Sequence_aa,Sequence_nu,localisat
     global path
 
     organism.replace(" ","")
-    name_geol=f"{path}{study}/{type_files[0]}_{study}_itol.txt"
-    name_host=f"{path}{study}/{type_files[1]}_{study}_itol.txt"
-    name_label=f"{path}{study}/Label_{study}_itol.txt"
-    name_sero=f"{path}{study}/{type_files[2]}_{study}_itol.txt"
-    name_host_images=f"{path}{study}/Host_images{study}_itol.txt"
+    name_geol=f"{path}{study}/legend/{type_files[0]}_{study}_itol.txt"
+    name_host=f"{path}{study}/legend/{type_files[1]}_{study}_itol.txt"
+    name_label=f"{path}{study}/legend/Label_{study}_itol.txt"
+    name_sero=f"{path}{study}/legend/{type_files[2]}_{study}_itol.txt"
+    name_host_images=f"{path}{study}/legend/Host_images{study}_itol.txt"
 
     geoloc=open(name_geol,'a')
     geoloc.write(f"##{localisation}\n")
@@ -257,11 +257,11 @@ def write_file(Description_nu,Description_prot,Sequence_aa,Sequence_nu,localisat
     nonucl_file.replace(" ","")
 
 
-    name_geol=f"{path}{study}/{type_files[0]}_{study}NSmGn_itol.txt"
-    name_host=f"{path}{study}/{type_files[1]}_{study}NSmGn_itol.txt"
-    name_label=f"{path}{study}/Label_{study}NSmGn_itol.txt"
-    name_sero=f"{path}{study}/{type_files[2]}_{study}NSmGn_itol.txt"
-    name_host_images=f"{path}{study}/Host_images{study}NSmGn_itol.txt"
+    name_geol=f"{path}{study}/legend/NSmGn/{type_files[0]}_{study}NSmGn_itol.txt"
+    name_host=f"{path}{study}/legend/NSmGn/{type_files[1]}_{study}NSmGn_itol.txt"
+    name_label=f"{path}{study}/legend/NSmGn/Label_{study}NSmGn_itol.txt"
+    name_sero=f"{path}{study}/legend/NSmGn/{type_files[2]}_{study}NSmGn_itol.txt"
+    name_host_images=f"{path}{study}/legend/NSmGn/Host_images{study}NSmGn_itol.txt"
 
     geoloc=open(name_geol,'a')
     geoloc.write(f"##{localisation}\n")
@@ -336,35 +336,34 @@ def write_file(Description_nu,Description_prot,Sequence_aa,Sequence_nu,localisat
 def first_call(study) : 
     global type_files
     global path
-    global allmetadata
 
     for name in type_files : 
-        name_files = f"{path}{study}/{name}_{study}_itol.txt"
+        name_files = f"{path}{study}/legend/{name}_{study}_itol.txt"
         file = open(name_files,"w")
         file.write(f"TREE_COLORS\nSEPARATOR TAB\nDATASET_LABEL\t{name}\nDATA\n")       
         file.close()
     for name in type_files : 
-        name_files = f"{path}{study}/{name}_{study}NSmGn_itol.txt"
+        name_files = f"{path}{study}/legend/{name}_{study}NSmGn_itol.txt"
         file = open(name_files,"w")
         file.write(f"TREE_COLORS\nSEPARATOR TAB\nDATASET_LABEL\t{name}\nDATA\n")       
         file.close()
 
-    name_files = f"{path}{study}/Label_{study}_itol.txt"
+    name_files = f"{path}{study}/legend/Label_{study}_itol.txt"
     file = open(name_files,"w")
     file.write(f"LABELS\nSEPARATOR TAB\nDATASET_LABEL\tOrganisme Label\nDATA\n")       
     file.close()
 
-    name_files = f"{path}{study}/Label_{study}NSmGn_itol.txt"
+    name_files = f"{path}{study}/legend/NSmGn/Label_{study}NSmGn_itol.txt"
     file = open(name_files,"w")
     file.write(f"LABELS\nSEPARATOR TAB\nDATASET_LABEL\tOrganisme Label\nDATA\n")       
     file.close()
 
-    name_files = f"{path}{study}/Host_images{study}_itol.txt"
+    name_files = f"{path}{study}/legend/Host_images{study}_itol.txt"
     file = open(name_files,"w")
     file.write(f"DATASET_IMAGE\nSEPARATOR TAB\nDATASET_LABEL\tHost with images\nCOLOR\t#000000\nSIZE_FACTOR\t0.6\nIMAGE_ROTATION\t0\nIMAGE_SHIFT_V\t0\nIMAGE_SHIFT_H\t0\nSHOW_INTERNAL\t0\nMARGIN\t400\nDATA\n")       
     file.close()
 
-    name_files = f"{path}{study}/Host_images{study}NSmGn_itol.txt"
+    name_files = f"{path}{study}/legend/NSmGn/Host_images{study}NSmGn_itol.txt"
     file = open(name_files,"w")
     file.write(f"DATASET_IMAGE\nSEPARATOR TAB\nDATASET_LABEL\tHost with images\nCOLOR\t#000000\nSIZE_FACTOR\t0.2\nIMAGE_ROTATION\t0\nIMAGE_SHIFT_V\t0\nIMAGE_SHIFT_H\t0\nSHOW_INTERNAL\t0\nMARGIN\t250\nDATA\n")       
     file.close()
@@ -470,11 +469,22 @@ def extract_id(Datas,study,sp) :
         
         
         line=f"{fullorganisme}\t{ID}\t{taxonomy}\t{serogroup}\t{ID_prot}\t{sizeprot}\t{output_prot}{Nu}\t{sizenu}\t{strand}\t{strain}\t{region}: {localisation}\t{order}: {host}\t{ref}\n"
-        
+        line_prot_=f"{ID}\t{output_prot}"
+        line_prot_.replace(">","")
+        line_prot_.replace("<","")
+        line_prot_.replace("GP38","")
+        line_prot_.replace("Gn","")
+
         name=f"{path}Metadata_studies.txt"
         allmetadata=open(name,'a')
         allmetadata.write(line)
         allmetadata.close()
+
+        name=f"{path}Prot_file_size.txt"
+        protfile=open("name","a")
+        protfile.write(line_prot_)
+        protfile.close()
+
     return strain,ID_prot,Nu
 
 ###Function modif_name_prot

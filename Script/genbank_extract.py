@@ -8,6 +8,7 @@ path = sys.argv[1]
 #path = "/home/seannacharles/"
 studies=["CCHFV","Nairoviridae","Peribunyaviridae","hedwig","khurdun"]
 subprocess.run(f"echo 'Virus name\tID itol tree\tTaxonomy\tSerogroup\tProtein accesion number\tSize Proteic sequence\tStart MLD\tEnd MLD\tSart GP38\tEnd GP38\tStart Gn\tEnd Gn\tStart NSm\tEnd NSm\tStart Gc\tEnd Gc\tNucleic accession number\tSize Nucleic sequence\tStrand\tStrain\tGeographical region\tHost or vector\tReferences' >{path}Metadata_studies.txt",shell=True)
+subprocess.run(f"echo 'ID itol tree\tStart MLD\tEnd MLD\tSart GP38\tEnd GP38\tStart Gn\tEnd Gn\tStart NSm\tEnd NSm\tStart Gc\tEnd Gc\t' >{path}Prot_file_size.txt",shell=True)
 
 for study in studies :
     sp= study

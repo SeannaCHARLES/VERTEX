@@ -10,7 +10,7 @@ proteins=("NSm" "Gn" "Gc" "NSmGn")
 
 for study in "${studies[@]}"; do
 rm -r "${path}""${study:?}/"* 
-mkdir -p "${path}""${study}"/nucl "${path}""${study}"/prot "${path}""${study}""${res_file}"
+mkdir -p "${path}""${study}"/nucl "${path}""${study}"/prot "${path}""${study}""${res_file}" "${path}""${study}"/legend "${path}""${study}"/legend/NSmGn
 done
 
 # #Common scripts for all studies
