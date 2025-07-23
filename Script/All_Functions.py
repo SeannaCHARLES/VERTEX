@@ -24,7 +24,7 @@ from geopy.geocoders import Nominatim
 
 import time
 #You email addresse for NCBI request
-mail="charles.seanna@outlook.fr"
+mail="seanna.charles@univ-lyon1.fr"
 
 #The path may need to change
 path = "/home/seannacharles/"
@@ -49,14 +49,13 @@ type_files=["Geolocalisation","Host","Serogroup"]
 def Modif_ID(ID) : 
     #These changes are necessary to ensure the uniformity of the identifiers used by the various organisations.
     #Add you own modification if you feel the need
-    ID=ID.lower()
-    ID=ID.replace(" ","")
+    ID=ID.lower()    
     ID=ID.replace("_","")
     ID=ID.replace("-","")
     ID=ID.replace("'","")
-    ID=ID.replace("orthobunya","")
-    ID=ID.replace("orthonairo","")
-    ID=ID.replace("nairovirid","")
+    ID=ID.replace(".","")
+    ID=ID.replace(" ","")
+
     ID=ID[:9]
     return ID
 
@@ -67,7 +66,7 @@ def Modif_ID(ID) :
 
 #Legencolors save for each legend label the associated colors to have the same color for the same label 
 legencolors={}
-legencolors["Na"]=["#FFFFFF"]
+legencolors["Na"]=["#979a9a"]
 name_legend=f"{path}/All_legend_caption.txt"
 All_legend=open(name_legend,'w')
 text=str (f"Legend\tColor\nNa\t#FFFFFF\n")
@@ -76,7 +75,7 @@ All_legend.close()
 
 def colour_choice (caption):
     global colors
-    global path
+
     if caption not in legencolors : 
         choice=colors[0]
         colors.remove(choice)
@@ -105,7 +104,7 @@ def modif_localisation(localisation) :
 
 def geographic_region(pays) : 
 
-    geolocator = Nominatim(user_agent=f"{pays}continentcharles.seanna@outlook.fr")
+    geolocator = Nominatim(user_agent=f"{pays}continentseanna.charles@univ-lyon1.fr")
     location = geolocator.geocode(pays,timeout=10)
 
 
@@ -209,9 +208,9 @@ def deforder(species) :
 # This function writes the caption files required for itol
 # This function writes individual files for each nucleotide and protein sequence 
 
-def write_file(Description_nu,Description_prot,Sequence_aa,Sequence_nu,localisation,region,region_color,order,order_color,host,strain,Nu,ID_prot,study,organism,ID,sp,serogroup,color_sero) : 
+def write_file(path,Description_nu,Description_prot,Sequence_aa,Sequence_nu,localisation,region,region_color,order,order_color,host,strain,Nu,ID_prot,study,organism,ID,serogroup,color_sero,sp) : 
     global type_files
-    global path
+
 
     organism.replace(" ","")
     name_geol=f"{path}{study}/legend/{type_files[0]}_{study}_itol.txt"
@@ -241,7 +240,7 @@ def write_file(Description_nu,Description_prot,Sequence_aa,Sequence_nu,localisat
 
     sero=open(name_sero,'a')
     sero.write(f"##{serogroup}\n")
-    text=str (f"{ID}\trange\t{color_sero}\t{serogroup}\n")
+    text=str (f"{ID}\trange\t{color_sero}\t{serogroup}\n{ID}\branch\t{color_sero}\tdashed\t5\n")
     sero.write(text)
     sero.close()
 
@@ -251,17 +250,12 @@ def write_file(Description_nu,Description_prot,Sequence_aa,Sequence_nu,localisat
     HostI_f.write(text)
     HostI_f.close()
 
-    nonucl_file=f"{strain}_{ID_prot}_{ID}"
-    nonucl_file.replace(" ","")
-    nonucl_file=f"{strain}_{Nu}_{ID}"
-    nonucl_file.replace(" ","")
-
-
-    name_geol=f"{path}{study}/legend/NSmGn/{type_files[0]}_{study}NSmGn_itol.txt"
-    name_host=f"{path}{study}/legend/NSmGn/{type_files[1]}_{study}NSmGn_itol.txt"
-    name_label=f"{path}{study}/legend/NSmGn/Label_{study}NSmGn_itol.txt"
-    name_sero=f"{path}{study}/legend/NSmGn/{type_files[2]}_{study}NSmGn_itol.txt"
-    name_host_images=f"{path}{study}/legend/NSmGn/Host_images{study}NSmGn_itol.txt"
+    
+    name_geol=f"{path}{study}/legend/{type_files[0]}_{study}NSmGn_itol.txt"
+    name_host=f"{path}{study}/legend/{type_files[1]}_{study}NSmGn_itol.txt"
+    name_label=f"{path}{study}/legend/Label_{study}NSmGn_itol.txt"
+    name_sero=f"{path}{study}/legend/{type_files[2]}_{study}NSmGn_itol.txt"
+    name_host_images=f"{path}{study}/legend/Host_images{study}NSmGn_itol.txt"
 
     geoloc=open(name_geol,'a')
     geoloc.write(f"##{localisation}\n")
@@ -284,7 +278,7 @@ def write_file(Description_nu,Description_prot,Sequence_aa,Sequence_nu,localisat
 
     sero=open(name_sero,'a')
     sero.write(f"##{serogroup}\n")
-    text=str (f"N{ID}\trange\t{color_sero}\t{serogroup}\nG{ID}\trange\t{color_sero}\t{serogroup}\n")
+    text=str (f"N{ID}\trange\t{color_sero}\t{serogroup}\nG{ID}\trange\t{color_sero}\t{serogroup}\nN{ID}\branch\t{color_sero}\tdashed\t5G{ID}\branch\t{color_sero}\tdashed\t5")
     sero.write(text)
     sero.close()
 
@@ -295,47 +289,31 @@ def write_file(Description_nu,Description_prot,Sequence_aa,Sequence_nu,localisat
     HostI_f.close()
 
 
-    nomprot_file=f"{strain}_{ID_prot}_{ID}"
+    nomprot_file=f"{Nu}_prot"
     nomprot_file=nomprot_file.replace(" ","")
-    nomnucl_file=f"{strain}_{Nu}_{ID}"
+    nomnucl_file=f"{Nu}_nucl"
     nomnucl_file=nomnucl_file.replace(" ","")
 
 
-
-
-
-
-
-    if sp =="" : 
-        with open (f"{path}{study}/nucl/{nomnucl_file}.fasta","w") as nu : 
-            nu.write(f">{ID}\n{Sequence_nu}\n")
-        with open (f"{path}{study}/prot/{nomprot_file}.fasta","w") as aa : 
-            aa.write(f">{ID}\n{Sequence_aa}\n")
-
-    elif sp =="CCHFV" :
-        with open (f"{path}{study}/nucl/{strain}_{Nu}.fasta","w") as nu : 
-            nu.write(f">{ID}\n{Sequence_nu}\n")
-        with open (f"{path}{study}/prot/{strain}_{ID_prot}.fasta","w") as aa : 
-            aa.write(f">{ID}\n{Sequence_aa}\n")
-
-    elif sp=="Nairoviridae" :
-        with open (f"{path}{study}/nucl/{nomnucl_file}.fasta","w") as nu : 
-            nu.write(f">{ID}\n{Sequence_nu}\n")
-        with open (f"{path}{study}/prot/{nomprot_file}.fasta","w") as aa : 
-            aa.write(f">{ID}\n{Sequence_aa}\n")
-            
-    else :
+    if sp =="OGspe" :         
         with open (f"{path}{study}/{nomnucl_file}.fasta","w") as nu : 
             nu.write(f">{ID}\n{Sequence_nu}\n")
         with open (f"{path}{study}/{nomprot_file}.fasta","w") as aa : 
-            aa.write(f">{ID}\n{Sequence_aa}\n")    
+            aa.write(f">{ID}\n{Sequence_aa}\n")  
+    else : 
+        with open (f"{path}{study}/nucl/{nomnucl_file}.fasta","w") as nu : 
+            nu.write(f">{ID}\n{Sequence_nu}\n")
+        with open (f"{path}{study}/prot/{nomprot_file}.fasta","w") as aa : 
+            aa.write(f">{ID}\n{Sequence_aa}\n")
+
+  
 
 ### Function first_call 
 # This function writes the header for caption files for Itol
       
-def first_call(study) : 
+def first_call(path,study) : 
     global type_files
-    global path
+
 
     for name in type_files : 
         name_files = f"{path}{study}/legend/{name}_{study}_itol.txt"
@@ -353,7 +331,7 @@ def first_call(study) :
     file.write(f"LABELS\nSEPARATOR TAB\nDATASET_LABEL\tOrganisme Label\nDATA\n")       
     file.close()
 
-    name_files = f"{path}{study}/legend/NSmGn/Label_{study}NSmGn_itol.txt"
+    name_files = f"{path}{study}/legend/Label_{study}NSmGn_itol.txt"
     file = open(name_files,"w")
     file.write(f"LABELS\nSEPARATOR TAB\nDATASET_LABEL\tOrganisme Label\nDATA\n")       
     file.close()
@@ -363,7 +341,7 @@ def first_call(study) :
     file.write(f"DATASET_IMAGE\nSEPARATOR TAB\nDATASET_LABEL\tHost with images\nCOLOR\t#000000\nSIZE_FACTOR\t0.6\nIMAGE_ROTATION\t0\nIMAGE_SHIFT_V\t0\nIMAGE_SHIFT_H\t0\nSHOW_INTERNAL\t0\nMARGIN\t400\nDATA\n")       
     file.close()
 
-    name_files = f"{path}{study}/legend/NSmGn/Host_images{study}NSmGn_itol.txt"
+    name_files = f"{path}{study}/legend/Host_images{study}NSmGn_itol.txt"
     file = open(name_files,"w")
     file.write(f"DATASET_IMAGE\nSEPARATOR TAB\nDATASET_LABEL\tHost with images\nCOLOR\t#000000\nSIZE_FACTOR\t0.2\nIMAGE_ROTATION\t0\nIMAGE_SHIFT_V\t0\nIMAGE_SHIFT_H\t0\nSHOW_INTERNAL\t0\nMARGIN\t250\nDATA\n")       
     file.close()
@@ -371,21 +349,21 @@ def first_call(study) :
 
 
    
-### Function linux_line 
+### Function concatenates 
 # This function concatenates all the species for each study into one file 
 
-def linux_line(sp,study) :
-    global path
-    subprocess.run(['rm', f'{path}{study}/nucl_all_{sp}.fasta'],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
-    subprocess.run(['rm', f'{path}{study}/prot_all_{sp}.fasta'],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+def concatenates(path,study) :
+
+    subprocess.run(['rm', f'{path}{study}/nucl_all_{study}.fasta'],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+    subprocess.run(['rm', f'{path}{study}/prot_all_{study}.fasta'],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
     
-    subprocess.run(f"cat {path}{study}/nucl/* >> {path}{study}/nucl_all_{sp}.fasta",shell=True)
-    subprocess.run(f"cat {path}{study}/prot/* >> {path}{study}/prot_all_{sp}.fasta",shell=True)
+    subprocess.run(f"cat {path}{study}/nucl/* >> {path}{study}/nucl_all_{study}.fasta",shell=True)
+    subprocess.run(f"cat {path}{study}/prot/* >> {path}{study}/prot_all_{study}.fasta",shell=True)
 
 ### Function extract_id
 # This function extracts the following information: Host, Host country, Strain, Nucleic identifier, Protein identifier for each genbank file.
 
-def extract_id(Datas,study,sp) :
+def extract_id(path,Datas,study,sp,list_prot) :
 
     global allmetadata
 
@@ -441,47 +419,34 @@ def extract_id(Datas,study,sp) :
             if "protein_id" in feature.qualifiers :
                 ID_prot = feature.qualifiers['protein_id'][0]
         output_prot=""        
-        output_prot=extract_prot_data(ID_prot,study)
+        output_prot,output_pos=extract_prot_data(ID_prot,study,list_prot)
         
         order_color=colour_choice(order)
         region_color=colour_choice(region)
         serogroup=find_serogroup(fullorganisme)
         color_sero=colour_choice(serogroup)
 
-        if study=="CCHFV" : 
-            organism=ID_prot
-            ID=Modif_ID(str(ID_prot+strain))
-            Description_nu = f"{ID}"
-            Description_prot = f"{ID}"
-            
+        ID=Modif_ID(str(organism[:3]+Nu[3:]))
+        Description_nu = f"{ID}"
+        Description_prot = f"{ID}"
 
-        else : 
-            ID=Modif_ID(str(organism+ID_prot))
-            Description_nu = f"{ID}"
-            Description_prot = f"{ID}"
-        
-        Description_nu.replace(" ","")
-        Description_prot.replace(" ","")
-
-
-
-        write_file(Description_nu,Description_prot,Sequence_aa,Sequence_nu,localisation,region,region_color,order,order_color,host,strain,Nu,ID_prot,study,organism,ID,sp,serogroup,color_sero)
+        write_file(path,Description_nu,Description_prot,Sequence_aa,Sequence_nu,localisation,region,region_color,order,order_color,host,strain,Nu,ID_prot,study,organism,ID,serogroup,color_sero,sp)
         
         
-        line=f"{fullorganisme}\t{ID}\t{taxonomy}\t{serogroup}\t{ID_prot}\t{sizeprot}\t{output_prot}{Nu}\t{sizenu}\t{strand}\t{strain}\t{region}: {localisation}\t{order}: {host}\t{ref}\n"
-        line_prot_=f"{ID}\t{output_prot}"
-        line_prot_.replace(">","")
-        line_prot_.replace("<","")
-        line_prot_.replace("GP38","")
-        line_prot_.replace("Gn","")
-
-        name=f"{path}Metadata_studies.txt"
+        line=f"{study}\t{fullorganisme}\t{ID}\t{taxonomy}\t{serogroup}\t{ID_prot}\t{sizeprot}\t{output_prot}{Nu}\t{sizenu}\t{strand}\t{strain}\t{region}: {localisation}\t{order}: {host}\t{ref}\n"
+        line_prot_=f"{study}\t{ID}\t{output_pos}\n"
+        line_prot_=line_prot_.replace(">","")
+        line_prot_=line_prot_.replace("<","")
+        line_prot_=line_prot_.replace("GP38","")
+        line_prot_=line_prot_.replace("Gn","")
+        line_prot_=line_prot_.replace(":","")
+        name=f"{path}{study}/Metadata_{study}.txt"
         allmetadata=open(name,'a')
         allmetadata.write(line)
         allmetadata.close()
 
-        name=f"{path}Prot_file_size.txt"
-        protfile=open("name","a")
+        name=f"{path}{study}/Pos_prot_{study}.txt"
+        protfile=open(name,"a")
         protfile.write(line_prot_)
         protfile.close()
 
@@ -507,9 +472,8 @@ def modif_name_prot(name_prot) :
 ##Function extract_prot_data
 #This function extract the position of each proteins of each organism in order to save everything in the metadatafiles
 
-def extract_prot_data(ID_prot,study) : 
+def extract_prot_data(ID_prot,study,all_proteins) : 
     global mail
-    all_proteins=["MLD","GP38","Gn","NSm","Gc"]
     Entrez.email = mail
     handle = Entrez.efetch(db="protein", id=ID_prot, rettype="gp", retmode="text")
     record = SeqIO.read(handle, "genbank")
@@ -529,17 +493,24 @@ def extract_prot_data(ID_prot,study) :
             end=(feature.location.end)
             prot=modif_name_prot(prot) 
             proteins[prot]=[start,end]    
-    output=""        
+    output=""  
+    output_pos=""    
     for prot in all_proteins : 
         if prot in proteins : 
             output+=f'{str(proteins[prot][0])}\t{str(proteins[prot][1])}\t'
+            output_pos+=f'{str(proteins[prot][0])}\t{str(proteins[prot][1])}\t'
         elif (prot=="GP38" or prot=="Gn") and "GP38+Gn" in proteins:
             output+=f'GP38+Gn: {str(proteins["GP38+Gn"][0])}\tGP38+Gn: {str(proteins["GP38+Gn"][1])}\t'
+            if prot=="GP38" : 
+                output_pos+=f'{str(proteins["GP38+Gn"][0])}\t\t'
+            else : 
+                output_pos+=f'\t{str(proteins["GP38+Gn"][1])}\t'
         else : 
             output+=f"\t\t"
+            output_pos+=f"\t\t"
     subprocess.run(['rm', f'{path}{study}/prot/{ID_prot}.gp'],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
 
-    return output
+    return output,output_pos
 
 #The serogroup file 
 df = pd.read_csv(f"{path}Serogroup.txt", delimiter="|",header=0)
@@ -549,7 +520,7 @@ df.iloc[:, 1:]=df.iloc[:, 1:].astype(str)
 #This function 
 def find_serogroup(organism) : 
     global df
-    global path
+
     end_line=df.shape[0]
     for line in range(0,end_line) : 
         if df.iloc[line,0].lower() in organism.lower() or organism.lower() in df.iloc[line,0].lower() or organism.replace(" ","").lower() in df.iloc[line,0].replace(" ","").lower() : 
@@ -570,99 +541,145 @@ def find_serogroup(organism) :
 # This function uses the position of the proteins of the target organism (proteic sequence) to identify the position of the proteins in the alignment.
 # It is important not to just translate the protein sequence into RNA in order to keep the intergenic regions.
 
-def compt_ali_nucl(sequence,debseq,pos_prot) :
-    pos_align=[]
-    compt_ali=0
-    compt_nu=0
-    compt_AA=0
-    compt_codon=0
-    codon=""
-    deb=True
+def nucleic_sequences(study,ID,sequence,debseq,pos_prot,proteins,sp,resfile) :
 
-    for nu in sequence: 
-        compt_ali+=1
-        if nu!= "-" : 
-            compt_nu+=1
-            if compt_nu >=debseq: 
-                compt_codon+=1
-                codon+=nu
-                if compt_codon==3 : 
-                    compt_codon=0
-                    compt_AA+=1
-                    if compt_AA in pos_prot :
-                            
-                        if deb==True : 
-                            deb=False
-                            pos_align.append(compt_ali-2)
-                            pos_prot.remove(compt_AA)
-                        else : 
-                            deb=True
-                            pos_align.append(compt_ali)
-                            pos_prot.remove(compt_AA) 
-                        
-                    codon=""
-    return pos_align
+    position_proteines=[pos_prot[i:i+2] for i in range(0, len(pos_prot), 2)]
+    prot_position=dict(zip(proteins, position_proteines))
+
+    for prot,pos in prot_position.items() : 
+        name=f"{path}{study}{resfile}{prot}_{sp}_nucl.fasta"
+        mark_prot=""
+        compt_AA=0
+        compt_nu=0
+        compt_codon=0
+        inprot=False
+
+        for nu in sequence : 
+            if inprot==True : 
+                mark_prot+=nu
+            if nu!='-' : 
+                compt_nu+=1
+                if compt_nu >= debseq :
+                    compt_codon+=1
+                
+                    if compt_codon==3 : 
+                        compt_codon=0
+                        compt_AA+=1
+
+                        if compt_AA in pos :
+                            mark_prot+=nu
+                            pos.remove(compt_AA)
+                            if inprot==False : 
+                                inprot=True
+                            else : 
+                                inprot=False
+
+        file = open(f"{name}","a")
+        file.write(f">{ID}\n{mark_prot}\n")
+        file.close()
   
 ##Function compt_alignement
 # This function uses the position of the target organism's proteins (sequence proteic) to identify the position of the proteins in the alignment.
 
-def compt_alignement (sequence,pos_prot) : 
-    
-    pos_align=[]
-    compt_ali=0
-    compt_AA=0
-    mark_prot=""
-    deb=True
-    for aa in sequence : 
-        if aa=='-' : 
-            compt_ali+=1
-        else : 
-            compt_ali+=1
-            compt_AA+=1
+def proteic_sequence (study,ID,sequence,pos_prot,proteins,sp,resfile) : 
 
-        if compt_AA in pos_prot :
-            if deb==True : 
-                mark_prot+="|"
+
+    position_proteines=[pos_prot[i:i+2] for i in range(0, len(pos_prot), 2)]
+    prot_position=dict(zip(proteins, position_proteines))
+
+
+    for prot,pos in prot_position.items() : 
+        name=f"{path}{study}{resfile}{prot}_{sp}_prot.fasta"
+        mark_prot=""
+        compt_AA=0
+        inprot=False
+        for aa in sequence : 
+            if aa!='-' : 
+                compt_AA+=1
+
+            if inprot==True : 
                 mark_prot+=aa
-                deb=False
-                pos_align.append(compt_ali)
-                pos_prot.remove(compt_AA)
-            else : 
+
+            if compt_AA in pos :
                 mark_prot+=aa
-                mark_prot+="|"
-                pos_align.append(compt_ali)
-                deb=True
-                pos_prot.remove(compt_AA)
-        else : 
-            mark_prot+=aa
-    return pos_align
+                pos.remove(compt_AA)
+                if inprot==False : 
+                    inprot=True
+                else : 
+                    inprot=False
+        file = open(f"{name}","a")
+        file.write(f">{ID}\n{mark_prot}\n")
+        file.close()
+
 
 ##Function mark_sequence
 #This function marks the start and end of proteins in protein and nucleic acid sequences. 
 
-def mark_sequence(sequence,pos_align,name,description) : 
-    compt_ali=0
-    mark_prot=""
-    deb=True
-    for aa in sequence : 
-        compt_ali+=1
-        if compt_ali in pos_align :
-            if deb==True : 
-                mark_prot+="|"
-                mark_prot+=aa
-                deb=False
-             
-            else : 
-                mark_prot+=aa
-                mark_prot+="|"
-                deb=True
-        else : 
-            mark_prot+=aa
-    
-    file = open(name,"a")
-    text=str (">"+description +'\n'+mark_prot+'\n')
-    file.write(text)
+def final_pos(study,prot,study_prot,proteins) : 
+    chain_prot=""
+    df = pd.read_csv(f"{path}{study}/Pos_prot_{study}.txt", delimiter="\t",header=0,index_col=0)
+    df.iloc[:, 1:]=df.iloc[:, 1:].astype(str)
+    end_line=df.shape[0]
+    end_col=df.shape[1]
+
+    pos_col_prot={}
+    for col in df.columns : 
+        for item in prot :
+            item=item.split(";")
+            for pos_prot in item :
+                if pos_prot not in pos_col_prot :
+                    if pos_prot in col :
+                        pos_col_prot[pos_prot]=[df.columns.get_loc(col),df.columns.get_loc(col)+1]
+    final_pos_prot={}
+   
+    for line in range (0,end_line) :
+  
+        pos_col=col_pos(str(df.index[line]),pos_col_prot,study_prot)
+        final_pos_prot[df.iloc[line,0]]=[] 
+        for col, prot in zip(range(1,end_col-1), proteins[str(df.index[line])]):
+
+            if df.iloc[line,col]=="nan" :
+                if col+1<end_col :
+                    if df.iloc[line,col+1]!="nan":
+                        if prot<int(float(df.iloc[line,col+1])) : 
+                            final_pos_prot[df.iloc[line,0]].append(int(prot))
+
+                        else : 
+                            final_pos_prot[df.iloc[line,0]].append(int(float(df.iloc[line,col+1]))-1)
+
+                    else : 
+                        final_pos_prot[df.iloc[line,0]].append(int(prot))
+
+                else : 
+                    final_pos_prot[df.iloc[line,0]].append(int(prot))
+
+            else :
+                final_pos_prot[df.iloc[line,0]].append(int(float(df.iloc[line,col])))
+   
+
+            
+
+
+        for c in range (0,len(final_pos_prot[df.iloc[line,0]] )-1) :
+            if final_pos_prot[df.iloc[line,0]][c+1] <= final_pos_prot[df.iloc[line,0]][c] : 
+                final_pos_prot[df.iloc[line,0]][c]=final_pos_prot[df.iloc[line,0]][c+1]-1
+
+    ligne_chaine = '\t'.join(df.iloc[[0]].astype(str))
+    name=f"{path}{study}/Pos_prot_final_{study}.fasta"
+    file = open(f"{name}","w")
+    file.write(f"{ligne_chaine}\n")
     file.close()
+    return final_pos_prot,name
+
+def col_pos(nm_study,pos_col_prot,study_prot) :
+
+    range_col=[]
+    for element in study_prot[nm_study]:
+        for e in pos_col_prot[element]:
+            range_col.append(int(e))
+
+    return(range_col)
+
 
 
 #######Function for the split_protein##################
@@ -709,13 +726,12 @@ def write_file_prot(Data,sp,Protname,study) :
 #This function identified all the possible duplicate sequences
 #The possible duplicates are identified using a specific threshold; this threshold was found using the dnadist file and the visible rake of the phylogenetic tree (specific to each study and not provided by this script). 
 
-def select_doublon(protein,study,target,ths,OG_list) :
-    global path
-    df = pd.read_csv(f"{path}{study}{res_file}{protein}nucl_dnadist.txt", delimiter="\t",header=0,index_col=0)
+def select_doublon(path,study,ths,keep_list,target) :
+
+    df = pd.read_csv(f"{path}{study}/{study}_dnadist.txt", delimiter="\t",header=0,index_col=0)
     df.iloc[:, 1:]=df.iloc[:, 1:].astype(float)
     
-    
-    Doublon=onlygap(protein,study,target,OG_list)
+    Doublon=onlygap(path,study,target,keep_list)
     end_line=df.shape[0]
     end_col=df.shape[1]
     line=0
@@ -724,7 +740,7 @@ def select_doublon(protein,study,target,ths,OG_list) :
         col=line+1
         while col <end_col-1 :
             if df.iloc[line,col] <=ths and df.iloc[line,col]!=-1  :
-                if target not in df.index[line] and (df.index[line] not in OG_list or any(og not in df.index[line] for og in OG_list)):
+                if (df.index[line] not in target[9:].lower() or target[9:].lower() not in df.index[line])  and (df.index[line] not in keep_list or any(prot[9:].lower() not in df.index[line] for prot in keep_list)): #or any(og not in df.index[line] for og in keep_list):
                     ID=str(df.index[line])
                     Doublon.append(ID)
                     df=df.drop(columns=ID)
@@ -737,69 +753,37 @@ def select_doublon(protein,study,target,ths,OG_list) :
             
 
         line+=1
-    noms_colonnes = df.columns
-    return Doublon,noms_colonnes
+    return Doublon
 
-def onlygap(protein,study,target,OG_list):
+def onlygap(path,study,target,keep_list):
     Doublon=[]
     types_seq=["prot","nucl"]
     for type_seq in types_seq:
-        for record in SeqIO.parse(f"{path}{study}/{res_file}{protein}{type_seq}_align.aln-fasta","fasta") :
-            if set(record.seq)=={'-'} and record.id != target and (record.id not in OG_list or any(og not in record.id for og in OG_list)):
+        for record in SeqIO.parse(f"{path}{study}/nucl_all_align_{study}.aln-fasta","fasta") :
+            if set(record.seq)=={'-'} and (record.id not in target[9:].lower() or target[9:].lower() not in record.id) and (record.id not in keep_list or any(prot[9:].lower() not in record.id for prot in keep_list)):
                 if record.id not in Doublon :
                     Doublon.append(record.id)
     return Doublon
 
-##Function col_name
-#This function delete the duplicate sequence name 
-    
-def col_name(old_col_names,col_name,Protein) :
-
-    if len(old_col_names) >0 :
-        if Protein=="NSmGn" : 
-            col_name=[element[-9:] for element in col_name]
-
-        old_col_names = [element for element in old_col_names if element in col_name]
-    else : 
-        old_col_names=col_name
-
-    return old_col_names
 
 ##Function delete_dbl
 #This function delete the identified duplicates for each protein for each study
 
-def delete_dbl(Doublon,study,protein,old_col_names):
-    global path
+def delete_dbl(path,Doublon,study):
+    types_seq=["nucl",'prot']
+    for type_seq in types_seq :
     
-    print(protein)
-    name=f"{path}{study}{res_file}{protein}nucl_sdbl.fasta"
+        name=f"{path}{study}/{type_seq}_sdbl_{study}.fasta"
     
-    subprocess.run(f"rm {name}",shell=True)
-    if study!="CCHFV" :
-        file_nucl=f"{path}{study}{res_file}{protein}nucl_trimal.fasta"
-        file_prot=f"{path}{study}{res_file}{protein}prot_trimal.fasta"
-    else : 
-        file_nucl=f"{path}{study}{res_file}{protein}nucl_align.aln-fasta"
-        file_prot=f"{path}{study}{res_file}{protein}prot_align.aln-fasta"
+        subprocess.run(f"rm {name}",shell=True)
 
-    for record in SeqIO.parse(f"{file_nucl}","fasta") :
+        for record in SeqIO.parse(f"{path}{study}/{type_seq}_all_align_{study}.aln-fasta","fasta") :
         
-        if record.description not in Doublon and record.description in old_col_names :
-            file = open(name,"a")
-            text=str (">"+record.description +'\n'+record.seq+'\n')
-            file.write(text)
-            file.close()
-
-
-    name=f"{path}{study}{res_file}{protein}prot_sdbl.fasta"
-    subprocess.run(f'rm {name}',shell=True)
-    for record in SeqIO.parse(f"{file_prot}","fasta") :
-        
-        if record.description not in Doublon and record.description in old_col_names :
-            file = open(name,"a")
-            text=str (">"+record.description+'\n'+record.seq+'\n')
-            file.write(text)
-            file.close()
+            if record.id not in Doublon :
+                file = open(name,"a")
+                text=str (">"+record.id +'\n'+record.seq+'\n')
+                file.write(text)
+                file.close()
 
 
     

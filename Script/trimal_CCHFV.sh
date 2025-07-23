@@ -26,7 +26,7 @@ echo "${path}${study}${res_file}${ID}_align.aln-fasta"
 
         nb_colonnes=$(head -n1 "${path}${study}${res_file}${ID}_dnadist.txt" | awk -F"\t" '{print NF}')
 
-        sed '1d' outfile |awk -v max=$nb_colonnes '{
+        sed '1d' outfile |awk -v max="$nb_colonnes" '{
                 for (i=1; i<=NF; i++) {
                         printf "%s\t", $i;
                         count++;

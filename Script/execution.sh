@@ -1,82 +1,142 @@
 #!/bin/bash
 SECONDS=0
 
-path="/home/seannacharles/"
-path_script="Phylogenetic/Script/"
-res_file="/res_phylo/"
-studies=("Peribunyaviridae" "CCHFV" "Nairoviridae")
-Type_seq=("prot" "nucl")
-proteins=("NSm" "Gn" "Gc" "NSmGn")
+while IFS=$',' read -r col1 col2 col3 col4 col5 col6 col7 col8 col9 col10 col11 col12 col13 col14 _; do
+    # Ignorer les lignes commentées
+    [[ $col1 =~ ^# ]] && continue
+    names+=("$col2") 
+    Allstudies+=("$col1")
+    for_prot+=("$col5")
 
-for study in "${studies[@]}"; do
-rm -r "${path}""${study:?}/"* 
-mkdir -p "${path}""${study}"/nucl "${path}""${study}"/prot "${path}""${study}""${res_file}" "${path}""${study}"/legend "${path}""${study}"/legend/NSmGn
-done
+    if [[ $col4 == N* ]]; then
+        studies+=("$col1")  #Studies associé aux names 
+        NUID+=("$col3") #Identifiants des outgroup spécifique
+        target_list+=("$col8")  #Organisme représentant l'étude
+        position+=("$col9") #Positions des proteines de l'outgroup
+        start+=("$col10")   #Début de la séquence proteiques sur la séquence nucleique
+        ths+=("$col11") #Seuil pour DNAdist pour supprimer les doublons
+        proteins+=("$col6")
+        if [[ $col14 == Y* ]]; then
+            trim+=("$col1")
+        fi
+    else
+        studiesspeOG+=("$col1") #Studies associé aux names 
+           #Nom des 'sous unités' de chaque studies ex. spécifique outgroup
+        NUIDspeOG+=("$col3")    #Identifiants des outgroup spécifique
+        OG_prot+=("$col5")   #Proteines associées aux outgroup specifique
+        positionspeOG+=("$col9")    #Positions des proteines de l'outgroup
+        startspe_OG+=("$col10")  #Début de la séquence proteiques sur la séquence nucleique
+        proteinsspe_OG+=("$col6")
+    fi
+done < All_information.txt
+
+#echo "${NUID[*]}"
+#NUID=$(grep -v "^#" All_information.txt |awk -F"," '{print $3}')
+path=$(grep '^#' All_information.txt | awk -F"=" 'NR==2 {print $2}'| tr -d ',')
+res_file=$(grep '^#' All_information.txt | awk -F"=" 'NR==3 {print $2}'| tr -d ',')
+path_script=$(grep '^#' All_information.txt | awk -F"=" 'NR==4 {print $2}'| tr -d ',')
+Type_seq=$(grep '^#' All_information.txt | awk -F"=" 'NR==5 {print $2}'| tr -d ',')
+
+keep_prot=$(grep -v "^#" All_information.txt |awk -F"," '{print $12}')
+#proteins=$(grep -v "^#" All_information.txt |awk -F"," '{print $6}'| grep -v '^["[:space:]"]*$'|sed 's/\,/" "/g'| uniq)
+speprot=$(grep -v "^#" All_information.txt |awk -F"," '{print "\"",$7,"\""}')
+orgaWIWO=$(grep -v "^#" All_information.txt | awk -F"," '{gsub(/\xc2\xa0/, "", $13); print $13}' | awk -F"=" '{print $2}')
+INOUT=$(grep -v "^#" All_information.txt |awk -F"," '{print $13}'|awk -F"=" '{print $1}'| awk -F "*" '{print $1}')
+protINOUT=$(grep -v "^#" All_information.txt |awk -F"," '{print $13}'|awk -F"=" '{print $1}'| awk -F "*" '{print $2}')
+
+
+
+# for study in "${studies[@]}"; do
+# rm -r "${path}""${study:?}/"* 
+# mkdir -p "${path}""${study}"/nucl "${path}""${study}"/prot "${path}""${study}""${res_file}" "${path}""${study}"/legend 
+# done
 
 # #Common scripts for all studies
  echo The sequences are currently being downloaded ...
- ./"${path_script}"download_sequences.sh "${path}" 
 
 
-echo The captions, metadata files and files containing all the sequences are currently being created.
-/usr/bin/python3 "${path}""${path_script}"genbank_extract.py "${path}"
+
+# for i in "${!NUID[@]}"; do   
+#     study="${studies[$i]}"
+#     echo "${study}"
+#     IFS=$';' read -ra IDprot <<< "${NUID[$i]}"
+#    for ID in "${IDprot[@]}"; do 
+
+#         esearch -db nucleotide -query "$ID" |efetch -format gb > "${path}""${study}"/"$ID".gb
+#         cat "${path}""${study}"/"$ID".gb >> "${path}""${study}"/sequences_"${study}".gb
+#         rm "${path}""${study}"/"$ID".gb >/dev/null
+#     done
+# done
+
+
+# for i in "${!NUIDspeOG[@]}"; do   
+#     study="${studiesspeOG[$i]}"
+#     IFS=$';' read -ra IDprotspeOG <<< "${NUIDspeOG[$i]}"
+#     for ID in "${IDprotspeOG[@]}"; do 
+
+#         esearch -db nucleotide -query "$ID" |efetch -format gb > "${path}""${study}"/"$ID".gb
+
+#     done
+# done
+
+
+
+# echo The captions, metadata files and files containing all the sequences are currently being created.
+# /usr/bin/python3 "${path}""${path_script}"genbank_extract.py "${path}" "${studies[*]}" "${studiesspeOG[*]}" "${names[*]}" "${NUIDspeOG[*]}" "${proteins[*]}" "${proteinsspe_OG[*]}"
+
+# ./"${path_script}"DNA_dist.sh "${path}" "${studies[*]}" 
+
+# echo The duplicate sequences are being deleted
+# /usr/bin/python3 "${path}""${path_script}"delete_dbl.py "${path}" "${studies[*]}" "${keep_prot[*]}" "${ths[*]}" "${target_list[*]}" 
+
+###Blast pour avoir le % de similarité table pour chaque study
+echo the proteins are being seperated
+/usr/bin/python3 "${path}""${path_script}"test_script_mark_spe.py "${path}" "${studies[*]}" "${position[*]}" "${names[*]}" "${positionspeOG[*]}" "${start[*]}" "${startspe_OG[*]}" "${proteins[*]}" "${proteinsspe_OG[*]}" "${res_file}" "${studiesspeOG[*]}" "${NUIDspeOG[*]}"
+
+echo The proteines that are presented or not in certains proteins are being treated
+/usr/bin/python3 "${path}""${path_script}"WIWO_protein.py "${path}" "${names[*]}" "${orgaWIWO[*]}" "${INOUT[*]}" "${protINOUT[*]}" "${res_file}" "${Type_seq[*]}"
+
+# #merge = OG
+
+/usr/bin/python3 "${path}""${path_script}"merge_spe_prot.py "${path}" "${names[*]}" "${speprot[*]}" "${Type_seq[*]}" "${res_file}" "${studies[*]}" "${Allstudies[*]}" "${for_prot[*]}" 
 
 
 for study in "${studies[@]}"; do
-    echo Start treatment for "${study}" : 
+    for val in "${trim[@]}"; do
+        for fichier in "${path}${study}${res_file}"*_OG.aln-fasta; do
+            nom_fichier=$(basename "$fichier")
+            start_file_name="${nom_fichier%_OG.aln-fasta}"
+            if [[ "$study" == "$val" ]]; then
 
-    echo The position of the proteins of the "${study}" are being marked ...
-    /usr/bin/python3 "${path}""${path_script}"mark_prot_"${study}".py "${path}" "${study}"
-
-    echo The proteins are being splited for the "${study}" ...
-    /usr/bin/python3 "${path}""${path_script}"split_protein_"${study}".py  "${path}" "${study}" "${res_file}"
-
-    echo The NSm and Gn protein identifiers are currently being modified to avoid duplicate identifiers for the "${study}"...
-    if [ "$study" == "Peribunyaviridae" ] ;then 
-        { sed 's/^>/>N/' "${path}""${study}""${res_file}"NSmprotSH.fasta; sed 's/^>/>G/' "${path}""${study}""${res_file}"GnprotKhurdun.fasta;sed 's/^>/>G/' "${path}""${study}""${res_file}"GnprotSH.fasta ; } > "${path}""${study}""${res_file}"NSmGnprot.fasta
-        { sed 's/^>/>N/' "${path}""${study}""${res_file}"NSmnuclSH.fasta; sed 's/^>/>G/' "${path}""${study}""${res_file}"GnnuclKhurdun.fasta;sed 's/^>/>G/' "${path}""${study}""${res_file}"GnnuclSH.fasta ;} > "${path}""${study}""${res_file}"NSmGnnucl.fasta
-
-    else
-        { sed 's/^>/>N/' "${path}""${study}""${res_file}"NSmprot.fasta; sed 's/^>/>G/' "${path}""${study}""${res_file}"Gnprot.fasta; } > "${path}""${study}""${res_file}"NSmGnprot.fasta
-        { sed 's/^>/>N/' "${path}""${study}""${res_file}"NSmnucl.fasta; sed 's/^>/>G/' "${path}""${study}""${res_file}"Gnnucl.fasta; } > "${path}""${study}""${res_file}"NSmGnnucl.fasta
-
-    fi
-    
-    mafft --auto "${path}""${study}""${res_file}"NSmGnprot.fasta > "${path}""${study}""${res_file}"NSmGnprot_align.aln-fasta
-    mafft --auto "${path}""${study}""${res_file}"NSmGnnucl.fasta > "${path}""${study}""${res_file}"NSmGnnucl_align.aln-fasta
-
-    echo Non-informative regions are being removed and sequences that are too close will be deleted for the "${study}"...
-    ./"${path_script}"trimal_"${study}".sh "${study}" "${path}" "${res_file}" "${path_script}"
-
-    echo Identification of the best phylogenetic model is underway for the "${study}"
-    echo The phylogenetic trees are also being created. This operation may take a few hours depending on the number of sequences. 
-
-   for type in "${Type_seq[@]}" ; do
-        echo for the "${type}" sequences...
-        for name in "${proteins[@]}";do
-            mafft --auto "${path}""${study}""${res_file}""${name}""${type}"_sdbl.fasta > "${path}""${study}""${res_file}""${name}""${type}"_sdbl.aln-fasta
-            seqret -sequence "${path}""${study}""${res_file}""${name}""${type}"_sdbl.aln-fasta -outseq "${path}""${study}""${res_file}""${name}""${type}"_Final.phy -osformat2 phylip
-            { echo "${name}""${type}" : ; awk 'NR==1 {print "Number of sequences:", $1, "Sequences size:", $2}' "${path}""${study}""${res_file}""${name}""${type}"_Final.phy ;}>> "${path}""${study}""${res_file}"Best_model_"${study}".txt
-            iqtree2 -s "${path}""${study}""${res_file}""${name}""${type}"_sdbl.aln-fasta -m MFP -bb 1000 -alrt 1000 -nt AUTO |grep 'Best-fit model:' >> "${path}""${study}""${res_file}"Best_model_"${study}".txt
+                    trimal  -in "$fichier" \
+                        -out "${path}${study}${res_file}${start_file_name}_OG_trimal.fasta" \
+                        -automated1 \
+                        -fasta 
+                    trimal  -in "$fichier" \
+                        -out "${path}${study}${res_file}${start_file_name}_OG_trimal.phy" \
+                        -automated1 \
+                        -phylip 
+            else 
+                cp "$fichier" "${path}${study}${res_file}${start_file_name}_OG_trimal.fasta"
+                seqret -sequence "$fichier" -outseq "${path}${study}${res_file}${start_file_name}_OG_trimal.phy" -osformat2 phylip
+            fi
         done
-        if [ "$study" != "Peribunyaviridae" ] ;then 
-            mafft --auto "${path}""${study}""${res_file}"MLD"${type}"_sdbl.fasta > "${path}""${study}""${res_file}"MLD"${type}"_sdbl.aln-fasta
-            seqret -sequence "${path}""${study}""${res_file}"MLD"${type}"_sdbl.aln-fasta -outseq "${path}""${study}""${res_file}"MLD"${type}"_Final.phy -osformat2 phylip
-            { echo MLD"${type}": ; awk 'NR==1 {print "Number of sequences:", $1, "Sequences size:", $2}' "${path}""${study}""${res_file}"MLD"${type}"_Final.phy ; } >> "${path}""${study}""${res_file}"Best_model_"${study}".txt
-            iqtree2 -s "${path}""${study}""${res_file}"MLD"${type}"_sdbl.aln-fasta -m MFP -bb 1000 -alrt 1000 -nt AUTO |grep 'Best-fit model:' >> "${path}""${study}""${res_file}"Best_model_"${study}".txt
-            
-            mafft --auto "${path}""${study}""${res_file}"GP38"${type}"_sdbl.fasta > "${path}""${study}""${res_file}"GP38"${type}"_sdbl.aln-fasta
-            seqret -sequence "${path}""${study}""${res_file}"GP38"${type}"_sdbl.aln-fasta -outseq "${path}""${study}""${res_file}"GP38"${type}"_Final.phy -osformat2 phylip
-            { echo GP38"${type}": ; awk 'NR==1 {print "Number of sequences:", $1, "Sequences size:", $2}' "${path}""${study}""${res_file}"GP38"${type}"_Final.phy ; } >> "${path}""${study}""${res_file}"Best_model_"${study}".txt
-            iqtree2 -s "${path}""${study}""${res_file}"GP38"${type}"_sdbl.aln-fasta -m MFP -bb 1000 -alrt 1000 -nt AUTO |grep 'Best-fit model:' >> "${path}""${study}""${res_file}"Best_model_"${study}".txt
-        fi
-
-done
-    echo End of treatment for "${study}" :
+    done
 done
 
-#./Phylogenetic/Script/execution.sh: ligne 77: erreur de syntaxe près du symbole inattendu « ) »
-#./Phylogenetic/Script/execution.sh: ligne 77: `/ 3600))'
+
+for study in "${studies[@]}"; do
+    for fichier in "${path}${study}${res_file}"*_OG_trimal.fasta; do
+        nom_fichier=$(basename "$fichier")
+        start_file_name="${nom_fichier%_OG_trimal.fasta}"    
+        { echo "${start_file_name}" : ; awk 'NR==1 {print "Number of sequences:", $1, "Sequences size:", $2}' "${path}""${study}""${res_file}""${start_file_name}"_OG_trimal.phy ;}>> "${path}""${study}""${res_file}"Best_model_"${study}".txt
+        iqtree2 -s "${fichier}" -m MFP -bb 1000 -alrt 1000 -nt AUTO |grep 'Best-fit model:' >> "${path}""${study}""${res_file}"Best_model_"${study}".txt
+
+    done
+
+done    
+
+
 Hours=$(("${SECONDS}" / 3600))
 Minutes=$((("${SECONDS}" % 3600) / 60))
 Sec=$(("${SECONDS}" % 60))

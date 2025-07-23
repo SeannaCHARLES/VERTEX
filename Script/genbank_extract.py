@@ -2,53 +2,38 @@
 import subprocess
 import sys 
 
-from All_Functions import Modif_ID,colour_choice,modif_localisation,geographic_region,modif_host,deforder,write_file,first_call,linux_line,extract_id
+from All_Functions import Modif_ID,colour_choice,modif_localisation,geographic_region,modif_host,deforder,write_file,first_call,concatenates,extract_id
 
 path = sys.argv[1]
-#path = "/home/seannacharles/"
-studies=["CCHFV","Nairoviridae","Peribunyaviridae","hedwig","khurdun"]
-subprocess.run(f"echo 'Virus name\tID itol tree\tTaxonomy\tSerogroup\tProtein accesion number\tSize Proteic sequence\tStart MLD\tEnd MLD\tSart GP38\tEnd GP38\tStart Gn\tEnd Gn\tStart NSm\tEnd NSm\tStart Gc\tEnd Gc\tNucleic accession number\tSize Nucleic sequence\tStrand\tStrain\tGeographical region\tHost or vector\tReferences' >{path}Metadata_studies.txt",shell=True)
-subprocess.run(f"echo 'ID itol tree\tStart MLD\tEnd MLD\tSart GP38\tEnd GP38\tStart Gn\tEnd Gn\tStart NSm\tEnd NSm\tStart Gc\tEnd Gc\t' >{path}Prot_file_size.txt",shell=True)
+studies=list(sys.argv[2].split(" "))
+studiesspeOG=list(sys.argv[3].split(" "))
+names=list(sys.argv[4].split(" "))
+NUIDspeOG=list(sys.argv[5].split(" "))
+list_prot = [x.split(';') for x in sys.argv[6].split()]
+list_prot_speOG = [x.split(';') for x in sys.argv[7].split()]
+chain_prot=""
 
-for study in studies :
-    sp= study
-    print(f"Data extraction from genbank files for {study}")
-    if study=="Peribunyaviridae" :
-        with open(f"{path}{study}/sequences_{study}.gb","r") as Datas:   
-            sp=""
 
-            first_call(study)
-            extract_id(Datas,study,sp)
-            linux_line(sp,study)
 
-            subprocess.run(f"mafft --auto {path}{study}/prot_all_.fasta > {path}{study}/prot_all_align_{sp}.aln-fasta",shell=True)
-            subprocess.run(f"mafft --auto {path}{study}/nucl_all_.fasta > {path}{study}/nucl_all_align_{sp}.aln-fasta",shell=True)
+for study,prot in zip(studies,list_prot) :
+    subprocess.run(f"rm {path}{study}/nucl/* {path}{study}/prot/*",shell=True)
+    chain_prot=""
+    for p in prot : 
+        
+        chain_prot+=f"Start{p}\tEnd{p}\t"
+    subprocess.run(f"echo 'Study\tVirus name\tID itol tree\tTaxonomy\tSerogroup\tProtein accesion number\tSize Proteic sequence\t{chain_prot}Nucleic accession number\tSize Nucleic sequence\tStrand\tStrain\tGeographical region\tHost or vector\tReferences' >{path}{study}/Metadata_{study}.txt",shell=True)
 
-    elif study=="hedwig" :
-        study="Peribunyaviridae"
-        with open(f"{path}{study}/OV054446.1.gb","r") as Datas:
+    subprocess.run(f"echo 'Study\tID itol tree\t{chain_prot}' >{path}{study}/Pos_prot_{study}.txt",shell=True)
+    with open(f"{path}{study}/sequences_{study}.gb","r") as Datas:
+        sp=''
+        first_call(path,study)
+        extract_id(path,Datas,study,sp,prot)
+        concatenates(path,study)
 
-            extract_id(Datas,study,sp)
+    subprocess.run(f"mafft --auto {path}{study}/prot_all_{study}.fasta > {path}{study}/prot_all_align_{study}.aln-fasta",shell=True)
+    subprocess.run(f"mafft --auto {path}{study}/nucl_all_{study}.fasta > {path}{study}/nucl_all_align_{study}.aln-fasta",shell=True)
 
-            subprocess.run(f"cat {path}{study}/prot_all_.fasta {path}{study}/ED-I-079-18_CAH0473050.1_hedwigcah.fasta >{path}{study}/prot_all_align_{sp}.fasta",shell=True)
-            subprocess.run(f"cat {path}{study}/nucl_all_.fasta {path}{study}/ED-I-079-18_OV054446.1_hedwigcah.fasta >{path}{study}/nucl_all_align_{sp}.fasta",shell=True)
-            subprocess.run(f"mafft --auto {path}{study}/prot_all_align_{sp}.fasta > {path}{study}/prot_all_align_{sp}.aln-fasta",shell=True)
-            subprocess.run(f"mafft --auto {path}{study}/nucl_all_align_{sp}.fasta > {path}{study}/nucl_all_align_{sp}.aln-fasta",shell=True)
-
-    elif study=="khurdun" : 
-        study="Peribunyaviridae"
-        with open(f"{path}{study}/NC_078560.1.gb","r") as Datas:
-
-            extract_id(Datas,study,sp)
-    else : 
-        with open(f"{path}{study}/sequences_{study}.gb","r") as Datas:
-
-            sp=f"{study}"
-
-            first_call(study)
-            extract_id(Datas,study,sp)
-            linux_line(sp,study)
-
-        subprocess.run(f"mafft --auto {path}{study}/prot_all_{sp}.fasta > {path}{study}/prot_all_align_{sp}.aln-fasta",shell=True)
-        subprocess.run(f"mafft --auto {path}{study}/nucl_all_{sp}.fasta > {path}{study}/nucl_all_align_{sp}.aln-fasta",shell=True)
-    
+for study,ID,prot in zip(studiesspeOG, NUIDspeOG,list_prot_speOG):
+    with open(f"{path}{study}/{ID}.gb","r") as Datas:
+        sp='OGspe'
+        extract_id(path,Datas,study,sp,prot)
