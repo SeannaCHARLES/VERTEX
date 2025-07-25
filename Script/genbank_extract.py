@@ -9,6 +9,7 @@ studies=list(sys.argv[2].split(" "))
 studiesspeOG=list(sys.argv[3].split(" "))
 names=list(sys.argv[4].split(" "))
 NUIDspeOG=list(sys.argv[5].split(" "))
+email=sys.argv[6]
 list_prot = [x.split(';') for x in sys.argv[6].split()]
 list_prot_speOG = [x.split(';') for x in sys.argv[7].split()]
 chain_prot=""
@@ -27,11 +28,11 @@ for study,prot in zip(studies,list_prot) :
     with open(f"{path}{study}/sequences_{study}.gb","r") as Datas:
         sp=''
         first_call(path,study)
-        extract_id(path,Datas,study,sp,prot)
+        extract_id(path,Datas,study,sp,prot,email)
         concatenates(path,study)
 
-    subprocess.run(f"mafft --auto {path}{study}/prot_all_{study}.fasta > {path}{study}/prot_all_align_{study}.aln-fasta",shell=True)
-    subprocess.run(f"mafft --auto {path}{study}/nucl_all_{study}.fasta > {path}{study}/nucl_all_align_{study}.aln-fasta",shell=True)
+    #subprocess.run(f"mafft --auto {path}{study}/prot_all_{study}.fasta > {path}{study}/prot_all_align_{study}.aln-fasta",shell=True)
+    #subprocess.run(f"mafft --auto {path}{study}/nucl_all_{study}.fasta > {path}{study}/nucl_all_align_{study}.aln-fasta",shell=True)
 
 for study,ID,prot in zip(studiesspeOG, NUIDspeOG,list_prot_speOG):
     with open(f"{path}{study}/{ID}.gb","r") as Datas:

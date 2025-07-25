@@ -1,18 +1,33 @@
+##########################Description##########################
+""" This script delete all the sequences that are to close from each other.
+According to the threshold choosen in information_file.txt.
+This script need the DNA_dist matrix as input.
 
+"""
+##########################################################
+
+##########################Import##########################
 import sys
 import subprocess
-from All_Functions import select_doublon,delete_dbl,Modif_ID
+
 from Bio import SeqIO
 
+from All_Functions import select_doublon,delete_dbl,Modif_ID
+##########################################################
+
+###########################Input##########################
 path =str(sys.argv[1])
 studies=list(sys.argv[2].split(" "))
-
 keep_list=list(sys.argv[3].replace("\n","").split(";"))
 ths_list=list(sys.argv[4].split())
 target_list=list(sys.argv[5].split())
-
-
 keep=[]
+##########################################################
+
+
+##########################Script##########################
+
+
 
 for element in keep_list : 
     keep.append(Modif_ID(element))
@@ -31,5 +46,5 @@ for study,ths,target in zip(studies,ths_list,target_list) :
         dbl_file.write(f"{db}\n")
     dbl_file.close()
 
-
+##########################################################
 

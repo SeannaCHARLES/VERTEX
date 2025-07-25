@@ -1,17 +1,31 @@
 #!/bin/bash
+
+# This file launches DNAdist and create a distance matrix between the organismes. 
+# Using the organismes ID as row and column header
+
+##########################Input##########################
 path="$1"
 allstudies="$2"
-echo "${studies[@]}"
 IFS=' ' read -ra studies <<< "$allstudies"
+##########################################################
 
+###########################Script##########################
 for study in "${studies[@]}"; do 
-        echo dnadist 
-        seqret -sequence "${path}${study}/nucl_all_align_${study}.aln-fasta" -outseq "${path}${study}/nucl_all_align_${study}.phy" -osformat phylip
+
+        echo A DNAdist table is created for the "${study}" study 
+
+        seqret -sequence "${path}${study}/nucl_all_align_${study}.aln-fasta" -outseq "${path}${study}/nucl_all_align_${study}.phy" -osformat phylip 
+        #converts a fasta file into phylip
+        
         cp "${path}${study}/nucl_all_align_${study}.phy" infile
+        #phylip DNAdist need a phylip format as input. The input need to be named infile
+
         echo -e "Y\n" | phylip dnadist
-        { sed '1d' outfile | awk '$1 ~ /[a-zA-Z]/ {print $1}' | while read -r i; do
+        { sed '1d' outfile | awk '$1 ~ /[a-zA-Z]/ {print $1}' | while read -r i; do 
+        #All the id supposedly start with a letter this caracteristique is used to identify the organismes ID
+
         echo -ne "\t${i}"
-        done
+        done # for the while loop
         echo "" ;} > "${path}${study}/${study}_dnadist.txt"
 
 
@@ -27,4 +41,5 @@ for study in "${studies[@]}"; do
         END { if (count % max != 0) print ""; }' >> "${path}${study}/${study}_dnadist.txt"
         rm outfile 
         rm infile
-done
+done # for the for loop
+############################################################

@@ -158,8 +158,8 @@ def modif_host(host) :
 # If the order can't be find the species will be kept
 # This function send a request to the NCBI database
 
-def deforder(species) : 
-    global mail
+def deforder(species,mail) : 
+
     Entrez.email=mail
     sp =species
     try : 
@@ -171,7 +171,7 @@ def deforder(species) :
                 return sp
             elif (sp!="" or sp!=" " or sp==species)and len(species.split()) > 1 :
                 for part in species.split(" ") : 
-                    spepart=deforder(part)
+                    spepart=deforder(part,mail)
                     if spepart not in species : 
                         return spepart
                 print(f"\nThe species '{species}' was not identified by the NCBI taxonomy database\nPlease check the scientific name of this species and add a If statement in the modif_host function such as.\n elif {species.lower()} in host.lower() : \n\thost='Scientificname'")
@@ -195,7 +195,7 @@ def deforder(species) :
             return sp
         elif (sp!="" or sp!=" " or sp==species)and len(species.split()) > 1 :
             for part in species.split(" ") : 
-                spepart=deforder(part)
+                spepart=deforder(part,mail)
                 if spepart not in species : 
                     return spepart
             print(f"\nThe species '{species}' was not identified by the NCBI taxonomy database\nPlease check the scientific name of this species and add a If statement in the modif_host function such as.\n If {species.lower()} in host.lower() : \n\thost='Scientificname'")
@@ -363,7 +363,7 @@ def concatenates(path,study) :
 ### Function extract_id
 # This function extracts the following information: Host, Host country, Strain, Nucleic identifier, Protein identifier for each genbank file.
 
-def extract_id(path,Datas,study,sp,list_prot) :
+def extract_id(path,Datas,study,sp,list_prot,mail) :
 
     global allmetadata
 
@@ -394,7 +394,7 @@ def extract_id(path,Datas,study,sp,list_prot) :
             if "host" in feature.qualifiers : 
                 host = feature.qualifiers['host'][0]
                 host=modif_host(host)
-                order = deforder(host) 
+                order = deforder(host,mail) 
 
             if "country" in feature.qualifiers :
                 localisation = feature.qualifiers['country'][0]
@@ -419,7 +419,7 @@ def extract_id(path,Datas,study,sp,list_prot) :
             if "protein_id" in feature.qualifiers :
                 ID_prot = feature.qualifiers['protein_id'][0]
         output_prot=""        
-        output_prot,output_pos=extract_prot_data(ID_prot,study,list_prot)
+        output_prot,output_pos=extract_prot_data(ID_prot,study,list_prot,mail)
         
         order_color=colour_choice(order)
         region_color=colour_choice(region)
@@ -472,8 +472,8 @@ def modif_name_prot(name_prot) :
 ##Function extract_prot_data
 #This function extract the position of each proteins of each organism in order to save everything in the metadatafiles
 
-def extract_prot_data(ID_prot,study,all_proteins) : 
-    global mail
+def extract_prot_data(ID_prot,study,all_proteins,mail) : 
+
     Entrez.email = mail
     handle = Entrez.efetch(db="protein", id=ID_prot, rettype="gp", retmode="text")
     record = SeqIO.read(handle, "genbank")
@@ -553,8 +553,9 @@ def nucleic_sequences(study,ID,sequence,debseq,pos_prot,proteins,sp,resfile) :
         compt_nu=0
         compt_codon=0
         inprot=False
-
+    
         for nu in sequence : 
+
             if inprot==True : 
                 mark_prot+=nu
             if nu!='-' : 
@@ -586,6 +587,7 @@ def proteic_sequence (study,ID,sequence,pos_prot,proteins,sp,resfile) :
 
     position_proteines=[pos_prot[i:i+2] for i in range(0, len(pos_prot), 2)]
     prot_position=dict(zip(proteins, position_proteines))
+
 
 
     for prot,pos in prot_position.items() : 
@@ -777,7 +779,7 @@ def delete_dbl(path,Doublon,study):
     
         subprocess.run(f"rm {name}",shell=True)
 
-        for record in SeqIO.parse(f"{path}{study}/{type_seq}_all_align_{study}.aln-fasta","fasta") :
+        for record in SeqIO.parse(f"{path}{study}/{type_seq}_all_align_{study}.fasta","fasta") :
         
             if record.id not in Doublon :
                 file = open(name,"a")
