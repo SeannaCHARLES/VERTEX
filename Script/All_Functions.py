@@ -31,10 +31,49 @@ path = "/home/seannacharles/"
 res_file="/res_phylo/"
 #######Function for the Script Genbank extract##################
 #This part create a set of 100 random colors to create the itol legends 
-cmap=plt.get_cmap("hsv")
-Rcolor=[cmap(i/60)for i in range(60)] #Colors in rgb format
-colors=['#%02x%02x%02x'%(int(r*255),int(g*255),int(b*255))for r,g,b,_ in Rcolor] #Colors in hexa format
-random.shuffle(colors)
+# cmap=plt.get_cmap("hsv")
+# Rcolor=[cmap(i/60)for i in range(60)] #Colors in rgb format
+# colors=['#%02x%02x%02x'%(int(r*255),int(g*255),int(b*255))for r,g,b,_ in Rcolor] #Colors in hexa format
+# random.shuffle(colors)
+
+ratp_colors = [
+    # Métro
+    "#FFCD00", # M1
+    "#003CA6", # M2
+    "#837902", # M3
+    "#6EC4E8", # M3bis
+    "#CF009E", # M4
+    "#FF7E2E", # M5
+    "#6ECA97", # M6
+    "#FA9ABA", # M7
+    "#6ECA97", # M7bis
+    "#E19BDF", # M8
+    "#B6BD00", # M9
+    "#C9910D", # M10
+    "#704B1C", # M11
+    "#007852", # M12
+    "#6EC4E8", # M13
+    "#62259D", # M14
+
+    # RER
+    "#E2231A", # RER A
+    "#003DA5", # RER B
+    "#F7A600", # RER C
+    "#008641", # RER D
+    "#62259D", # RER E
+
+    # Tramways
+    "#BBBD00", # T1
+    "#006AB6", # T2
+    "#E19BDF", # T3a
+    "#00A7E1", # T3b
+    "#BB77B7", # T4
+    "#FF5A00", # T5
+    "#6ECA97", # T6
+    "#6E4D8C", # T7
+    "#DA1A32"  # T8
+]
+
 
 
 #This is the diffent type of legends
@@ -73,12 +112,13 @@ text=str (f"Legend\tColor\nNa\t#FFFFFF\n")
 All_legend.write(text)
 All_legend.close()
 
-def colour_choice (caption):
-    global colors
-
+def colour_choice (caption,colors_list):
+    global ratp_colors
+    if len(colors_list)==0 : 
+        colors_list=ratp_colors
     if caption not in legencolors : 
-        choice=colors[0]
-        colors.remove(choice)
+        choice=colors_list[0]
+        colors_list.remove(choice)
         legencolors[caption]=[choice]
 
         name_legend=f"{path}/All_legend_caption.txt"
@@ -86,9 +126,9 @@ def colour_choice (caption):
         text=str (f"{caption}\t{choice}\n")
         All_legend.write(text)
         All_legend.close()
-        return(choice)
+        return(choice,colors_list)
     else : 
-        return(legencolors[caption][0])
+        return(legencolors[caption][0],colors_list)
 
 ### Function modif_localisation
 # For each geographical region, it is important to keep only those elements that identify the host's country of origin.
@@ -362,7 +402,9 @@ def concatenates(path,study) :
 
 ### Function extract_id
 # This function extracts the following information: Host, Host country, Strain, Nucleic identifier, Protein identifier for each genbank file.
-
+    region_colors=ratp_colors
+    serogroup_colors=ratp_colors
+    host_colors=ratp_colors
 def extract_id(path,Datas,study,sp,list_prot,mail) :
 
     global allmetadata
@@ -421,10 +463,10 @@ def extract_id(path,Datas,study,sp,list_prot,mail) :
         output_prot=""        
         output_prot,output_pos=extract_prot_data(ID_prot,study,list_prot,mail)
         
-        order_color=colour_choice(order)
-        region_color=colour_choice(region)
+        order_color,host_colors=colour_choice(order,host_colors)
+        region_color,region_colors=colour_choice(region,region_colors)
         serogroup=find_serogroup(fullorganisme)
-        color_sero=colour_choice(serogroup)
+        color_sero,serogroup_colors=colour_choice(serogroup,serogroup_colors)
 
         ID=Modif_ID(str(organism[:3]+Nu[3:]))
         Description_nu = f"{ID}"
@@ -779,7 +821,7 @@ def delete_dbl(path,Doublon,study):
     
         subprocess.run(f"rm {name}",shell=True)
 
-        for record in SeqIO.parse(f"{path}{study}/{type_seq}_all_align_{study}.fasta","fasta") :
+        for record in SeqIO.parse(f"{path}{study}/{type_seq}_all_{study}.fasta","fasta") :
         
             if record.id not in Doublon :
                 file = open(name,"a")

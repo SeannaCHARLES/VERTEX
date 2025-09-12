@@ -16,6 +16,7 @@ while IFS=$',' read -r col1 col2 col3 col4 col5 col6 col7 col8 col9 col10 col11 
         start+=("$col10")   #Début de la séquence proteiques sur la séquence nucleique
         ths+=("$col11") #Seuil pour DNAdist pour supprimer les doublons
         proteins+=("$col6")
+        namespepro+=("$col7")
         if [[ $col14 == Y* ]]; then
             trim+=("$col1")
         fi
@@ -93,32 +94,29 @@ echo The duplicate sequences are being deleted
 echo the proteins are being seperated
 /usr/bin/python3 "${path}""${path_script}"test_script_mark_spe.py "${path}" "${studies[*]}" "${position[*]}" "${names[*]}" "${positionspeOG[*]}" "${start[*]}" "${startspe_OG[*]}" "${proteins[*]}" "${proteinsspe_OG[*]}" "${res_file}" "${studiesspeOG[*]}" "${NUIDspeOG[*]}"
 
-###Blast pour avoir le % de similarité table pour chaque study
-./"${path_script}"Blast_prot.sh "${path}" "${res_file}" "${studies[*]}" 
-for study in "${studies[@]}"; do
-    echo "${study}" blast
-        for fichier in "${path}${study}${res_file}"*prot_OG.fasta; do
-            nom_fichier=$(basename "$fichier")
-            start_file_name="${nom_fichier%prot_OG.fasta}"
+##Blast pour avoir le % de similarité table pour chaque study
+#./"${path_script}"Blast_prot.sh "${path}" "${res_file}" "${studies[*]}" 
 
-            makeblastdb -in "${path}${study}${res_file}${start_file_name}_OG.fasta"\
-                        -title "${start_file_name}"\
+for study in "${!studies[@]}"; do
+    IFS=$';' read -ra sepprot <<< "${proteins[$i]}"
+    for prot in "${sepprot[@]}"; do        
+            makeblastdb -in "${path}${studies[$study]}${res_file}${prot}_${studies[$study]}_prot.fasta"\
+                        -title "${prot}_${studies[$study]}${prot}"\
                         -dbtype prot \
-                        -out "${path}${study}/blast/database/${start_file_name}_DB"\
+                        -out "${path}${studies[$study]}/blast/database/${prot}_DB"\
                         -parse_seqids
-
+    done
+        prot=$(echo "${namespepro[$i]}" | cut -d'=' -f1 | tr -d ' ')
+        echo "${prot}"
+    for prot1 in "${sepprot[@]}"; do
+        for prot2 in "${sepprot[@]}"; do
+            blastp  -query "${path}${studies[$study]}${res_file}${prot1}_${studies[$study]}_prot.fasta" \
+                    -db "${path}${studies[$study]}/blast/database/${prot2}_DB" \
+                    -out "${path}${studies[$study]}/blast/${prot1}_${prot2}blast.txt" \
+                    -outfmt 7
         done
+    done
 
-        for fichier in "${path}${study}"/blast/database/*_DB; do
-            nom_fichier=$(basename "$fichier")
-            start_file_name="${nom_fichier%_DB}"
-
-            blastp  -query "${path}${study}${res_file}${start_file_name}_OG.fasta" \
-                    -db "${fichier}" \
-                    -out "${path}${study}/blast/${start_file_name}_blast.txt" \
-                    -outfmt 7 
-
-        done
 done
 
 echo The proteines that are presented or not in certains proteins are being treated
@@ -132,27 +130,31 @@ echo The proteines that are presented or not in certains proteins are being trea
 for study in "${studies[@]}"; do
     echo "${study}"
     for val in "${trim[@]}"; do
-        for fichier in "${path}${study}${res_file}"*_OG.aln-fasta; do
-            nom_fichier=$(basename "$fichier")
-            start_file_name="${nom_fichier%_OG.aln-fasta}"
+        IFS=$';' read -ra sepprot <<< "${proteins[$i]}"
+        for prot in "${sepprot[@]}"; do
+#         for fichier in "${path}${study}${res_file}"*_OG.aln-fasta; do
+#             nom_fichier=$(basename "$fichier")
+#             start_file_name="${nom_fichier%_OG.aln-fasta}"
             if [[ "$study" == "$val" ]]; then
 
 
-                    trimal  -in "$fichier" \
-                        -out "${path}${study}${res_file}${start_file_name}/treefolder/_OG_trimal.fasta" \
-                        -automated1 \
-                        -fasta 
-                    trimal  -in "$fichier" \
-                        -out "${path}${study}${res_file}${start_file_name}/treefolder/__OG_trimal.phy" \
+                trimal  -in "${path}${study}${res_file}${prot}_${study}_prot_OG.aln-fasta" \
+                    -out "${path}${study}${res_file}/treefolder/${prot}_${study}_prot_trimal.fasta" \
+                    -automated1 \
+                    -fasta 
+                trimal  -in "${path}${study}${res_file}${prot}_${study}_prot_OG.aln-fasta" \
+                        -out "${path}${study}${res_file}/treefolder/${prot}_${study}_prot_trimal.phy" \
                         -automated1 \
                         -phylip 
-            else 
-                cp "$fichier" "${path}${study}${res_file}${start_file_name}/treefolder/__OG_trimal.fasta"
-                seqret -sequence "$fichier" -outseq "${path}${study}${res_file}${start_file_name}/treefolder/__OG_trimal.phy" -osformat2 phylip
-            { echo "${start_file_name}" : ; awk 'NR==1 {print "Number of sequences:", $1, "Sequences size:", $2}' "${path}""${study}""${res_file}""${start_file_name}"_OG_trimal.phy ;}>> "${path}""${study}""${res_file}"Best_model_"${study}".txt
-            iqtree2 -s "${fichier}" -m MFP -bb 1000 -alrt 1000 -nt AUTO |grep 'Best-fit model:' >> "${path}""${study}""${res_file}"Best_model_"${study}".txt
-            echo "\n" >>"${path}""${study}""${res_file}"Best_model_"${study}".txt
-            fi
+#             
+
+                else 
+                cp "${path}${study}${res_file}${prot}_${study}_prot_OG.aln-fasta" "${path}${study}${res_file}/treefolder/${prot}_${study}_OG_trimal.fasta"
+                seqret -sequence "${path}${study}${res_file}${prot}_${study}_prot_OG.aln-fasta" -outseq "${path}${study}${res_file}/treefolder/${prot}_${study}_prot_trimal.phy" -osformat2 phylip
+            { echo "${prot}" : ; awk 'NR==1 {print "Number of sequences:", $1, "Sequences size:", $2}' "${path}""${study}""${res_file}"/treefolder/"${prot}"_"${study}"_prot_trimal.phy ;}>> "${path}""${study}""${res_file}"Best_model_"${study}".txt
+            iqtree2 -s "${path}${study}${res_file}/treefolder/${prot}_${study}_prot_trimal.fasta" -m MFP -bb 1000 -alrt 1000 -nt AUTO |grep 'Best-fit model:' >> "${path}""${study}""${res_file}"/treefolder/Best_model_"${study}".txt
+            printf "\n" >>"${path}""${study}""${res_file}"/treefolder/Best_model_"${study}".txt
+             fi
         done
     done
 done

@@ -31,10 +31,10 @@ for study,prot in zip(studies,list_prot) :
         extract_id(path,Datas,study,sp,prot,email)
         concatenates(path,study)
 
-    #subprocess.run(f"mafft --auto {path}{study}/prot_all_{study}.fasta > {path}{study}/prot_all_align_{study}.aln-fasta",shell=True)
-    #subprocess.run(f"mafft --auto {path}{study}/nucl_all_{study}.fasta > {path}{study}/nucl_all_align_{study}.aln-fasta",shell=True)
+    subprocess.run(f"mafft --auto {path}{study}/prot_all_{study}.fasta > {path}{study}/prot_all_align_{study}.aln-fasta",shell=True)
+    subprocess.run(f"mafft --auto {path}{study}/nucl_all_{study}.fasta > {path}{study}/nucl_all_align_{study}.aln-fasta",shell=True)
 
 for study,ID,prot in zip(studiesspeOG, NUIDspeOG,list_prot_speOG):
     with open(f"{path}{study}/{ID}.gb","r") as Datas:
         sp='OGspe'
-        extract_id(path,Datas,study,sp,prot)
+        extract_id(path,Datas,study,sp,prot,email)
