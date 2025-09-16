@@ -3,6 +3,7 @@ import subprocess
 
 from Bio import SeqIO
 from Bio.Seq import Seq
+
 def clean_filename(s):
     return s.replace(" ", "").replace('"', "")
 

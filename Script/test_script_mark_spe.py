@@ -59,7 +59,7 @@ for item,study in zip(prot,studies) :
 
 
 for study in studies :
-    subprocess.run(f"rm {path}{study}{resfile}*",shell=True)
+    subprocess.run(["rm",f"{path}{study}{resfile}*" ],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,shell=True)
     final_pos_prot,name=final_pos(study,prot,study_prot,proteins)
     sp=study
     file = open(f"{name}","a")

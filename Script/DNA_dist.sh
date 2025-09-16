@@ -39,7 +39,7 @@ for study in "${studies[@]}"; do
         }
         }
         END { if (count % max != 0) print ""; }' >> "${path}${study}/${study}_dnadist.txt"
-        rm outfile 
-        rm infile
+        rm outfile >/dev/null
+        rm infile >/dev/null
 done # for the for loop
 ############################################################

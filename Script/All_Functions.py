@@ -30,11 +30,8 @@ mail="seanna.charles@univ-lyon1.fr"
 path = "/home/seannacharles/"
 res_file="/res_phylo/"
 #######Function for the Script Genbank extract##################
-#This part create a set of 100 random colors to create the itol legends 
-# cmap=plt.get_cmap("hsv")
-# Rcolor=[cmap(i/60)for i in range(60)] #Colors in rgb format
-# colors=['#%02x%02x%02x'%(int(r*255),int(g*255),int(b*255))for r,g,b,_ in Rcolor] #Colors in hexa format
-# random.shuffle(colors)
+#This part create a set of colors to create the itol legends 
+
 
 ratp_colors = [
     # Métro
@@ -46,13 +43,11 @@ ratp_colors = [
     "#FF7E2E", # M5
     "#6ECA97", # M6
     "#FA9ABA", # M7
-    "#6ECA97", # M7bis
     "#E19BDF", # M8
     "#B6BD00", # M9
     "#C9910D", # M10
     "#704B1C", # M11
     "#007852", # M12
-    "#6EC4E8", # M13
     "#62259D", # M14
 
     # RER
@@ -60,19 +55,17 @@ ratp_colors = [
     "#003DA5", # RER B
     "#F7A600", # RER C
     "#008641", # RER D
-    "#62259D", # RER E
 
     # Tramways
     "#BBBD00", # T1
     "#006AB6", # T2
-    "#E19BDF", # T3a
     "#00A7E1", # T3b
     "#BB77B7", # T4
     "#FF5A00", # T5
-    "#6ECA97", # T6
     "#6E4D8C", # T7
     "#DA1A32"  # T8
 ]
+
 
 
 
@@ -107,12 +100,10 @@ def Modif_ID(ID) :
 legencolors={}
 legencolors["Na"]=["#979a9a"]
 name_legend=f"{path}/All_legend_caption.txt"
-All_legend=open(name_legend,'w')
-text=str (f"Legend\tColor\nNa\t#FFFFFF\n")
-All_legend.write(text)
-All_legend.close()
 
-def colour_choice (caption,colors_list):
+
+
+def colour_choice (caption,colors_list,type_):
     global ratp_colors
     if len(colors_list)==0 : 
         colors_list=ratp_colors
@@ -402,13 +393,14 @@ def concatenates(path,study) :
 
 ### Function extract_id
 # This function extracts the following information: Host, Host country, Strain, Nucleic identifier, Protein identifier for each genbank file.
-    region_colors=ratp_colors
-    serogroup_colors=ratp_colors
-    host_colors=ratp_colors
+region_colors=ratp_colors.copy()
+serogroup_colors=ratp_colors.copy()
+host_colors=ratp_colors.copy()
 def extract_id(path,Datas,study,sp,list_prot,mail) :
-
+    global region_colors
+    global serogroup_colors
+    global host_colors
     global allmetadata
-
     for record in SeqIO.parse(Datas,"genbank"): 
         #Variable initialisation 
         host="Na"
@@ -463,10 +455,10 @@ def extract_id(path,Datas,study,sp,list_prot,mail) :
         output_prot=""        
         output_prot,output_pos=extract_prot_data(ID_prot,study,list_prot,mail)
         
-        order_color,host_colors=colour_choice(order,host_colors)
-        region_color,region_colors=colour_choice(region,region_colors)
+        order_color,host_colors=colour_choice(order,host_colors,"order")
+        region_color,region_colors=colour_choice(region,region_colors,"region")
         serogroup=find_serogroup(fullorganisme)
-        color_sero,serogroup_colors=colour_choice(serogroup,serogroup_colors)
+        color_sero,serogroup_colors=colour_choice(serogroup,serogroup_colors,"serogroup")
 
         ID=Modif_ID(str(organism[:3]+Nu[3:]))
         Description_nu = f"{ID}"
@@ -829,6 +821,32 @@ def delete_dbl(path,Doublon,study):
                 file.write(text)
                 file.close()
 
+
+def deleteIN(study,IO,protein,organismes,res_file,types_seq) : 
+
+    for type_seq in types_seq : 
+        subprocess.run(f" cp {path}{study}{res_file}{protein}_{study}_{type_seq}.fasta {path}{study}{res_file}{protein}_{study}_{type_seq}_RN.fasta" ,shell=True)
+        subprocess.run(["rm", f"{path}{study}{res_file}{protein}_{study}_{type_seq}.fasta"] ,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,shell=True)
+        filename=f"{path}{study}{res_file}{protein}_{study}_{type_seq}.fasta"
+
+        for record in SeqIO.parse(f"{path}{study}{res_file}{protein}_{study}_{type_seq}_RN.fasta","fasta") :
+            if any(org[:6] in record.id for org in organismes):
+                file = open(filename,"a")
+                file.write(f">{record.id}\n{record.seq}\n")       
+                file.close()
+
+def deleteOUT(study,IO,protein,organismes,res_file,types_seq) : 
+
+    for type_seq in types_seq : 
+        subprocess.run(f"cp {path}{study}{res_file}{protein}_{study}_{type_seq}.fasta {path}{study}{res_file}{protein}_{study}_{type_seq}_RN.fasta",shell=True)
+        subprocess.run(["rm", f"{path}{study}{res_file}{protein}_{study}_{type_seq}.fasta"], stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,shell=True)
+        filename=f"{path}{study}{res_file}{protein}_{study}_{type_seq}.fasta"
+
+        for record in SeqIO.parse(f"{path}{study}{res_file}{protein}_{study}_{type_seq}_RN.fasta","fasta") :
+            if not any(org[:6] in record.id for org in organismes): 
+                file = open(filename,"a")
+                file.write(f">{record.id}\n{record.seq}\n")       
+                file.close()
 
     
 

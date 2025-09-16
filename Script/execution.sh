@@ -48,10 +48,10 @@ protINOUT=$(grep -v "^#" All_information.txt |awk -F"," '{print $13}'|awk -F"=" 
 
 
 for study in "${studies[@]}"; do
-rm -r "${path}""${study:?}/"* 
+rm -r "${path}""${study:?}/"* >/dev/null 
 mkdir -p "${path}""${study}"/nucl "${path}""${study}"/prot "${path}""${study}""${res_file}"/treefolder "${path}""${study}"/legend "${path}""${study}"/blast/database/
 done
-
+echo -e "Serogroup\tRegion\tOrder\nNa\t#979a9a" > "${path}"/All_legend_caption.txt
 # #Common scripts for all studies
  echo The sequences are currently being downloaded ...
 
@@ -113,7 +113,7 @@ for study in "${!studies[@]}"; do
             blastp  -query "${path}${studies[$study]}${res_file}${prot1}_${studies[$study]}_prot.fasta" \
                     -db "${path}${studies[$study]}/blast/database/${prot2}_DB" \
                     -out "${path}${studies[$study]}/blast/${prot1}_${prot2}blast.txt" \
-                    -outfmt 7
+                    -outfmt 6
         done
     done
 
@@ -122,43 +122,46 @@ done
 echo The proteines that are presented or not in certains proteins are being treated
 /usr/bin/python3 "${path}""${path_script}"WIWO_protein.py "${path}" "${names[*]}" "${orgaWIWO[*]}" "${INOUT[*]}" "${protINOUT[*]}" "${res_file}" "${Type_seq[*]}"
 
-#merge = OG
+# #merge = OG
 
 /usr/bin/python3 "${path}""${path_script}"merge_spe_prot.py "${path}" "${names[*]}" "${speprot[*]}" "${Type_seq[*]}" "${res_file}" "${studies[*]}" "${Allstudies[*]}" "${for_prot[*]}" 
 
 
 for study in "${studies[@]}"; do
-    echo "${study}"
-    for val in "${trim[@]}"; do
+
         IFS=$';' read -ra sepprot <<< "${proteins[$i]}"
         for prot in "${sepprot[@]}"; do
-#         for fichier in "${path}${study}${res_file}"*_OG.aln-fasta; do
-#             nom_fichier=$(basename "$fichier")
-#             start_file_name="${nom_fichier%_OG.aln-fasta}"
-            if [[ "$study" == "$val" ]]; then
 
+            if [[ " ${trim[*]} " =~ $study ]]; then
 
+                echo "trimal" "${study}" "${prot}"
                 trimal  -in "${path}${study}${res_file}${prot}_${study}_prot_OG.aln-fasta" \
-                    -out "${path}${study}${res_file}/treefolder/${prot}_${study}_prot_trimal.fasta" \
+                    -out "${path}${study}${res_file}treefolder/${prot}_${study}_prot_trimal.fasta" \
                     -automated1 \
                     -fasta 
                 trimal  -in "${path}${study}${res_file}${prot}_${study}_prot_OG.aln-fasta" \
-                        -out "${path}${study}${res_file}/treefolder/${prot}_${study}_prot_trimal.phy" \
+                        -out "${path}${study}${res_file}treefolder/${prot}_${study}_prot_trimal.phy" \
                         -automated1 \
                         -phylip 
-#             
+            
 
-                else 
-                cp "${path}${study}${res_file}${prot}_${study}_prot_OG.aln-fasta" "${path}${study}${res_file}/treefolder/${prot}_${study}_OG_trimal.fasta"
-                seqret -sequence "${path}${study}${res_file}${prot}_${study}_prot_OG.aln-fasta" -outseq "${path}${study}${res_file}/treefolder/${prot}_${study}_prot_trimal.phy" -osformat2 phylip
-            { echo "${prot}" : ; awk 'NR==1 {print "Number of sequences:", $1, "Sequences size:", $2}' "${path}""${study}""${res_file}"/treefolder/"${prot}"_"${study}"_prot_trimal.phy ;}>> "${path}""${study}""${res_file}"Best_model_"${study}".txt
-            iqtree2 -s "${path}${study}${res_file}/treefolder/${prot}_${study}_prot_trimal.fasta" -m MFP -bb 1000 -alrt 1000 -nt AUTO |grep 'Best-fit model:' >> "${path}""${study}""${res_file}"/treefolder/Best_model_"${study}".txt
-            printf "\n" >>"${path}""${study}""${res_file}"/treefolder/Best_model_"${study}".txt
+            else 
+                echo "convert" "${study}"  "${prot}"
+                cp "${path}${study}${res_file}${prot}_${study}_prot_OG.aln-fasta" "${path}${study}${res_file}treefolder/${prot}_${study}_prot_trimal.fasta"
+                seqret -sequence "${path}${study}${res_file}${prot}_${study}_prot_OG.aln-fasta" -outseq "${path}${study}${res_file}treefolder/${prot}_${study}_prot_trimal.phy" -osformat2 phylip
+
+
              fi
         done
-    done
+    
 done
+echo "done"
+for study in "${studies[@]}"; do
 
+            { echo "${prot}" : ; awk 'NR==1 {print "Number of sequences:", $1, "Sequences size:", $2}' "${path}""${study}""${res_file}"treefolder/"${prot}"_"${study}"_prot_trimal.phy ;}>> "${path}""${study}""${res_file}"Best_model_"${study}".txt
+            iqtree2 -s "${path}${study}${res_file}treefolder/${prot}_${study}_prot_trimal.fasta" -m MFP -bb 1000 -alrt 1000 -nt AUTO |grep 'Best-fit model:' >> "${path}""${study}""${res_file}"Best_model_"${study}".txt
+            printf "\n" >> "${path}""${study}""${res_file}"Best_model_"${study}".txt
+done
 
 # for study in "${studies[@]}"; do
 #     for fichier in "${path}${study}${res_file}"*_OG_trimal.fasta; do

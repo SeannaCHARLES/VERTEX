@@ -2,7 +2,7 @@ import sys
 import subprocess
 
 from Bio import SeqIO
-from All_Functions import Modif_ID
+from All_Functions import Modif_ID,deleteIN,deleteOUT
 
 path = sys.argv[1]
 names=list(sys.argv[2].split(" "))
@@ -16,8 +16,8 @@ types_seq=list(sys.argv[7].split(";"))
 def deleteIN(study,IO,protein,organismes,res_file,types_seq) : 
 
     for type_seq in types_seq : 
-        subprocess.run(f"cp {path}{study}{res_file}{protein}_{study}_{type_seq}.fasta {path}{study}{res_file}{protein}_{study}_{type_seq}_RN.fasta ",shell=True)
-        subprocess.run(f"rm {path}{study}{res_file}{protein}_{study}_{type_seq}.fasta",shell=True)
+        subprocess.run(f" cp {path}{study}{res_file}{protein}_{study}_{type_seq}.fasta {path}{study}{res_file}{protein}_{study}_{type_seq}_RN.fasta" ,shell=True)
+        subprocess.run(["rm", f"{path}{study}{res_file}{protein}_{study}_{type_seq}.fasta"] ,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,shell=True)
         filename=f"{path}{study}{res_file}{protein}_{study}_{type_seq}.fasta"
 
         for record in SeqIO.parse(f"{path}{study}{res_file}{protein}_{study}_{type_seq}_RN.fasta","fasta") :
@@ -29,8 +29,8 @@ def deleteIN(study,IO,protein,organismes,res_file,types_seq) :
 def deleteOUT(study,IO,protein,organismes,res_file,types_seq) : 
 
     for type_seq in types_seq : 
-        subprocess.run(f"cp {path}{study}{res_file}{protein}_{study}_{type_seq}.fasta {path}{study}{res_file}{protein}_{study}_{type_seq}_RN.fasta ",shell=True)
-        subprocess.run(f"rm {path}{study}{res_file}{protein}_{study}_{type_seq}.fasta",shell=True)
+        subprocess.run(f"cp {path}{study}{res_file}{protein}_{study}_{type_seq}.fasta {path}{study}{res_file}{protein}_{study}_{type_seq}_RN.fasta",shell=True)
+        subprocess.run(["rm", f"{path}{study}{res_file}{protein}_{study}_{type_seq}.fasta"], stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,shell=True)
         filename=f"{path}{study}{res_file}{protein}_{study}_{type_seq}.fasta"
 
         for record in SeqIO.parse(f"{path}{study}{res_file}{protein}_{study}_{type_seq}_RN.fasta","fasta") :
@@ -44,15 +44,14 @@ for study,IO,protein,organismesAV in zip(names,INOUT,protINOUT,orgaWIWO) :
 
     organismesAV=organismesAV.split(";")
     if IO !='' :
-        print(f"organismes : {organismesAV}")
-        print(f"organismes cut : {organismesAV[3:]}")
+
         organismes=[]
         for element in organismesAV : 
             organismes.append(Modif_ID(element[3:]))
-        print(f"modif protein : {organismes}")
+
         if IO.lower()=="in" :
-            print(f"for the study {study} the protein {protein} is {IO} the following organismes olny {organismes}")
+            print(f"for the study {study} the protein {protein} is {IO} the following organismes only {organismes}")
             deleteIN(study,IO,protein,organismes,res_file,types_seq)
         else : 
-            print(f"for the study {study} the protein {protein} is {IO} the following organismes olny {organismes}")
+            print(f"for the study {study} the protein {protein} is {IO} the following organismes only {organismes}")
             deleteOUT(study,IO,protein,organismes,res_file,types_seq) 

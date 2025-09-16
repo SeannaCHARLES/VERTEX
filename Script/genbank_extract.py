@@ -17,7 +17,7 @@ chain_prot=""
 
 
 for study,prot in zip(studies,list_prot) :
-    subprocess.run(f"rm {path}{study}/nucl/* {path}{study}/prot/*",shell=True)
+    subprocess.run(f"rm {path}{study}/nucl/* {path}{study}/prot/* >/dev/null",shell=True)
     chain_prot=""
     for p in prot : 
         
