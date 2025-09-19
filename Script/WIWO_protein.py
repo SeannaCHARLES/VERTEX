@@ -16,12 +16,14 @@ types_seq=list(sys.argv[7].split(";"))
 def deleteIN(study,IO,protein,organismes,res_file,types_seq) : 
 
     for type_seq in types_seq : 
-        subprocess.run(f" cp {path}{study}{res_file}{protein}_{study}_{type_seq}.fasta {path}{study}{res_file}{protein}_{study}_{type_seq}_RN.fasta" ,shell=True)
-        subprocess.run(["rm", f"{path}{study}{res_file}{protein}_{study}_{type_seq}.fasta"] ,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,shell=True)
+        subprocess.run(f" cp {path}{study}{res_file}{protein}_{study}_{type_seq}.fasta {path}{study}{res_file}{protein}_{study}_{type_seq}_bef_WIWO.fasta" ,shell=True)
+        subprocess.run(f"rm {path}{study}{res_file}{protein}_{study}_{type_seq}.fasta",shell=True)
         filename=f"{path}{study}{res_file}{protein}_{study}_{type_seq}.fasta"
 
-        for record in SeqIO.parse(f"{path}{study}{res_file}{protein}_{study}_{type_seq}_RN.fasta","fasta") :
+        for record in SeqIO.parse(f"{path}{study}{res_file}{protein}_{study}_{type_seq}_bef_WIWO.fasta","fasta") :
+            print(f"organismes : {org[:6]} \n Record : {record.id}")
             if any(org[:6] in record.id for org in organismes):
+                print ("write")
                 file = open(filename,"a")
                 file.write(f">{record.id}\n{record.seq}\n")       
                 file.close()
@@ -29,11 +31,11 @@ def deleteIN(study,IO,protein,organismes,res_file,types_seq) :
 def deleteOUT(study,IO,protein,organismes,res_file,types_seq) : 
 
     for type_seq in types_seq : 
-        subprocess.run(f"cp {path}{study}{res_file}{protein}_{study}_{type_seq}.fasta {path}{study}{res_file}{protein}_{study}_{type_seq}_RN.fasta",shell=True)
-        subprocess.run(["rm", f"{path}{study}{res_file}{protein}_{study}_{type_seq}.fasta"], stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,shell=True)
+        subprocess.run(f"cp {path}{study}{res_file}{protein}_{study}_{type_seq}.fasta {path}{study}{res_file}{protein}_{study}_{type_seq}_bef_WIWO.fasta",shell=True)
+        subprocess.run(f"rm {path}{study}{res_file}{protein}_{study}_{type_seq}.fasta",shell=True)
         filename=f"{path}{study}{res_file}{protein}_{study}_{type_seq}.fasta"
 
-        for record in SeqIO.parse(f"{path}{study}{res_file}{protein}_{study}_{type_seq}_RN.fasta","fasta") :
+        for record in SeqIO.parse(f"{path}{study}{res_file}{protein}_{study}_{type_seq}_bef_WIWO.fasta","fasta") :
             if not any(org[:6] in record.id for org in organismes): 
                 file = open(filename,"a")
                 file.write(f">{record.id}\n{record.seq}\n")       
@@ -44,7 +46,6 @@ for study,IO,protein,organismesAV in zip(names,INOUT,protINOUT,orgaWIWO) :
 
     organismesAV=organismesAV.split(";")
     if IO !='' :
-
         organismes=[]
         for element in organismesAV : 
             organismes.append(Modif_ID(element[3:]))

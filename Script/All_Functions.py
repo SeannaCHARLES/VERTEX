@@ -825,11 +825,11 @@ def delete_dbl(path,Doublon,study):
 def deleteIN(study,IO,protein,organismes,res_file,types_seq) : 
 
     for type_seq in types_seq : 
-        subprocess.run(f" cp {path}{study}{res_file}{protein}_{study}_{type_seq}.fasta {path}{study}{res_file}{protein}_{study}_{type_seq}_RN.fasta" ,shell=True)
+        subprocess.run(f" cp {path}{study}{res_file}{protein}_{study}_{type_seq}.fasta {path}{study}{res_file}{protein}_{study}_{type_seq}_bef_WIWO.fasta" ,shell=True)
         subprocess.run(["rm", f"{path}{study}{res_file}{protein}_{study}_{type_seq}.fasta"] ,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,shell=True)
         filename=f"{path}{study}{res_file}{protein}_{study}_{type_seq}.fasta"
 
-        for record in SeqIO.parse(f"{path}{study}{res_file}{protein}_{study}_{type_seq}_RN.fasta","fasta") :
+        for record in SeqIO.parse(f"{path}{study}{res_file}{protein}_{study}_{type_seq}_bef_WIWO.fasta","fasta") :
             if any(org[:6] in record.id for org in organismes):
                 file = open(filename,"a")
                 file.write(f">{record.id}\n{record.seq}\n")       
@@ -838,11 +838,11 @@ def deleteIN(study,IO,protein,organismes,res_file,types_seq) :
 def deleteOUT(study,IO,protein,organismes,res_file,types_seq) : 
 
     for type_seq in types_seq : 
-        subprocess.run(f"cp {path}{study}{res_file}{protein}_{study}_{type_seq}.fasta {path}{study}{res_file}{protein}_{study}_{type_seq}_RN.fasta",shell=True)
+        subprocess.run(f"cp {path}{study}{res_file}{protein}_{study}_{type_seq}.fasta {path}{study}{res_file}{protein}_{study}_{type_seq}_bef_WIWO.fasta",shell=True)
         subprocess.run(["rm", f"{path}{study}{res_file}{protein}_{study}_{type_seq}.fasta"], stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,shell=True)
         filename=f"{path}{study}{res_file}{protein}_{study}_{type_seq}.fasta"
 
-        for record in SeqIO.parse(f"{path}{study}{res_file}{protein}_{study}_{type_seq}_RN.fasta","fasta") :
+        for record in SeqIO.parse(f"{path}{study}{res_file}{protein}_{study}_{type_seq}_bef_WIWO.fasta","fasta") :
             if not any(org[:6] in record.id for org in organismes): 
                 file = open(filename,"a")
                 file.write(f">{record.id}\n{record.seq}\n")       
