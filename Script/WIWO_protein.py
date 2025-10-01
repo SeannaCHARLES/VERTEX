@@ -21,8 +21,9 @@ def deleteIN(study,IO,protein,organismes,res_file,types_seq) :
         filename=f"{path}{study}{res_file}{protein}_{study}_{type_seq}.fasta"
 
         for record in SeqIO.parse(f"{path}{study}{res_file}{protein}_{study}_{type_seq}_bef_WIWO.fasta","fasta") :
-            print(f"organismes : {org[:6]} \n Record : {record.id}")
+            
             if any(org[:6] in record.id for org in organismes):
+                print(f"Record : {record.id}")
                 print ("write")
                 file = open(filename,"a")
                 file.write(f">{record.id}\n{record.seq}\n")       
