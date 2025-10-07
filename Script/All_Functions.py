@@ -176,6 +176,8 @@ def modif_host(host) :
         host="Columba livia"
     elif "hamster" in host.lower():
         host="Cricetinae"
+    elif "mosquito" in host.lower() : 
+	    host='Culicidae'
     
     host=host.split(";")[0]
     host=host.replace("sp.",'')
@@ -271,7 +273,7 @@ def write_file(path,Description_nu,Description_prot,Sequence_aa,Sequence_nu,loca
 
     sero=open(name_sero,'a')
     sero.write(f"##{serogroup}\n")
-    text=str (f"{ID}\trange\t{color_sero}\t{serogroup}\n{ID}\branch\t{color_sero}\tdashed\t5\n")
+    text=str (f"{ID}\trange\t{color_sero}\t{serogroup}\n{ID}\tbranch\t{color_sero}\tdashed\t5\n")
     sero.write(text)
     sero.close()
 
@@ -309,7 +311,7 @@ def write_file(path,Description_nu,Description_prot,Sequence_aa,Sequence_nu,loca
 
     sero=open(name_sero,'a')
     sero.write(f"##{serogroup}\n")
-    text=str (f"N{ID}\trange\t{color_sero}\t{serogroup}\nG{ID}\trange\t{color_sero}\t{serogroup}\nN{ID}\branch\t{color_sero}\tdashed\t5G{ID}\branch\t{color_sero}\tdashed\t5")
+    text=str (f"N{ID}\trange\t{color_sero}\t{serogroup}\nG{ID}\trange\t{color_sero}\t{serogroup}\nN{ID}\tbranch\t{color_sero}\tdashed\t5\nG{ID}\branch\t{color_sero}\tdashed\t5\n")
     sero.write(text)
     sero.close()
 
@@ -396,6 +398,7 @@ def concatenates(path,study) :
 region_colors=ratp_colors.copy()
 serogroup_colors=ratp_colors.copy()
 host_colors=ratp_colors.copy()
+
 def extract_id(path,Datas,study,sp,list_prot,mail) :
     global region_colors
     global serogroup_colors
@@ -696,9 +699,17 @@ def final_pos(study,prot,study_prot,proteins) :
             
 
 
-        for c in range (0,len(final_pos_prot[df.iloc[line,0]] )-1) :
-            if final_pos_prot[df.iloc[line,0]][c+1] <= final_pos_prot[df.iloc[line,0]][c] : 
-                final_pos_prot[df.iloc[line,0]][c]=final_pos_prot[df.iloc[line,0]][c+1]-1
+        for c in range (1,len(final_pos_prot[df.iloc[line,0]] )-1) :
+            if c%2 ==0 : 
+                if final_pos_prot[df.iloc[line,0]][c+1] <= final_pos_prot[df.iloc[line,0]][c] : 
+                    final_pos_prot[df.iloc[line,0]][c]=final_pos_prot[df.iloc[line,0]][c+1]-1
+                if final_pos_prot[df.iloc[line,0]][c-1] >= final_pos_prot[df.iloc[line,0]][c] : 
+                    final_pos_prot[df.iloc[line,0]][c]=final_pos_prot[df.iloc[line,0]][c-1]+1
+            else : 
+                if final_pos_prot[df.iloc[line,0]][c-1] >= final_pos_prot[df.iloc[line,0]][c] : 
+                    final_pos_prot[df.iloc[line,0]][c]=final_pos_prot[df.iloc[line,0]][c-1]+1
+                if final_pos_prot[df.iloc[line,0]][c+1] <= final_pos_prot[df.iloc[line,0]][c] : 
+                    final_pos_prot[df.iloc[line,0]][c]=final_pos_prot[df.iloc[line,0]][c+1]-1
 
     ligne_chaine = '\t'.join(df.iloc[[0]].astype(str))
     name=f"{path}{study}/Pos_prot_final_{study}.fasta"

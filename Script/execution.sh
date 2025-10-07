@@ -47,38 +47,38 @@ protINOUT=$(grep -v "^#" All_information.txt |awk -F"," '{print $13}'|awk -F"=" 
 
 
 
-for study in "${studies[@]}"; do
-rm -r "${path}""${study:?}/"* >/dev/null 
-mkdir -p "${path}""${study}"/nucl "${path}""${study}"/prot "${path}""${study}""${res_file}"/treefolder "${path}""${study}"/legend "${path}""${study}"/blast/database/
-done
+# for study in "${studies[@]}"; do
+# rm -r "${path}""${study:?}/"* >/dev/null 
+# mkdir -p "${path}""${study}"/nucl "${path}""${study}"/prot "${path}""${study}""${res_file}"/treefolder "${path}""${study}"/legend "${path}""${study}"/blast/database/
+# done
 echo -e "Serogroup\tRegion\tOrder\nNa\t#979a9a" > "${path}"/All_legend_caption.txt
 # #Common scripts for all studies
  echo The sequences are currently being downloaded ...
 
 
 
-for i in "${!NUID[@]}"; do   
-    study="${studies[$i]}"
-    echo Download the nucleic sequences for the study : "${study}"
-    IFS=$';' read -ra IDprot <<< "${NUID[$i]}"
-   for ID in "${IDprot[@]}"; do 
+# for i in "${!NUID[@]}"; do   
+#     study="${studies[$i]}"
+#     echo Download the nucleic sequences for the study : "${study}"
+#     IFS=$';' read -ra IDprot <<< "${NUID[$i]}"
+#    for ID in "${IDprot[@]}"; do 
 
-        esearch -db nucleotide -query "$ID" |efetch -format gb > "${path}""${study}"/"$ID".gb
-        cat "${path}""${study}"/"$ID".gb >> "${path}""${study}"/sequences_"${study}".gb
-        rm "${path}""${study}"/"$ID".gb >/dev/null
-    done
-done
+#         esearch -db nucleotide -query "$ID" |efetch -format gb > "${path}""${study}"/"$ID".gb
+#         cat "${path}""${study}"/"$ID".gb >> "${path}""${study}"/sequences_"${study}".gb
+#         rm "${path}""${study}"/"$ID".gb >/dev/null
+#     done
+# done
 
 
-for i in "${!NUIDspeOG[@]}"; do   
-    study="${studiesspeOG[$i]}"
-    IFS=$';' read -ra IDprotspeOG <<< "${NUIDspeOG[$i]}"
-    for ID in "${IDprotspeOG[@]}"; do 
+# for i in "${!NUIDspeOG[@]}"; do   
+#     study="${studiesspeOG[$i]}"
+#     IFS=$';' read -ra IDprotspeOG <<< "${NUIDspeOG[$i]}"
+#     for ID in "${IDprotspeOG[@]}"; do 
 
-        esearch -db nucleotide -query "$ID" |efetch -format gb > "${path}""${study}"/"$ID".gb
+#         esearch -db nucleotide -query "$ID" |efetch -format gb > "${path}""${study}"/"$ID".gb
 
-    done
-done
+#     done
+# done
 
 
 
@@ -101,138 +101,139 @@ echo the proteins are being seperated
 for study in "${studies[@]}"; do
 rm -f "${path}""${study:?}""${res_file}"* >/dev/null 
 done
+
 /usr/bin/python3 "${path}""${path_script}"test_script_mark_spe.py "${path}" "${studies[*]}" "${position[*]}" "${names[*]}" "${positionspeOG[*]}" "${start[*]}" "${startspe_OG[*]}" "${proteins[*]}" "${proteinsspe_OG[*]}" "${res_file}" "${studiesspeOG[*]}" "${NUIDspeOG[*]}"
 
-Blast pour avoir le % de similarité table pour chaque study
-./"${path_script}"Blast_prot.sh "${path}" "${res_file}" "${studies[*]}" 
+# Blast pour avoir le % de similarité table pour chaque study
+# ./"${path_script}"Blast_prot.sh "${path}" "${res_file}" "${studies[*]}" 
 
-echo Lauch of blast
-for study in "${!studies[@]}"; do
-    IFS=$';' read -ra sepprot <<< "${proteins[$study]}"
-    for prot in "${sepprot[@]}"; do        
-            makeblastdb -in "${path}${studies[$study]}${res_file}${prot}_${studies[$study]}_prot.fasta"\
-                        -title "${prot}_${studies[$study]}${prot}"\
-                        -dbtype prot \
-                        -out "${path}${studies[$study]}/blast/database/${prot}_DB"\
-                        -parse_seqids
-            bioawk -c fastx '{ print $name, length($seq) }' "${path}${studies[$study]}${res_file}${prot}_${studies[$study]}_prot.fasta" > "${path}${studies[$study]}/blast/${prot}_${studies[$study]}_prot_size.fasta"
-    done
-        prot=$(echo "${namespepro[$study]}" | cut -d'=' -f1 | tr -d ' ')
-        echo "${prot}"
-    for prot1 in "${sepprot[@]}"; do
-        for prot2 in "${sepprot[@]}"; do
-            blastp  -query "${path}${studies[$study]}${res_file}${prot1}_${studies[$study]}_prot.fasta" \
-                    -db "${path}${studies[$study]}/blast/database/${prot2}_DB" \
-                    -out "${path}${studies[$study]}/blast/${prot1}_${prot2}_blast.txt" \
-                    -outfmt "6"
-            awk '                                                                                         ARGIND==1 { qsize[$1]=$2; next }        # 1er fichier : tailles des query
-                ARGIND==2 { ssize[$1]=$2; next }        # 2e fichier : tailles des subject
-                ARGIND==3 {
-                qs = ($1 in qsize) ? qsize[$1] : "0"
-                ss = ($2 in ssize) ? ssize[$2] : "0"
-                print $0, qs, ss
-                                                }
-            ' "${path}${studies[$study]}/blast/${prot1}_${studies[$study]}_prot_size.fasta"   "${path}${studies[$study]}/blast/${prot2}_${studies[$study]}_prot_size.fasta"   "${path}${studies[$study]}/blast/${prot1}_${prot2}_blast.txt" > "${path}${studies[$study]}/blast/${prot1}_${prot2}_blast_sizes.txt"
+# echo Lauch of blast
+# for study in "${!studies[@]}"; do
+#     IFS=$';' read -ra sepprot <<< "${proteins[$study]}"
+#     for prot in "${sepprot[@]}"; do        
+#             makeblastdb -in "${path}${studies[$study]}${res_file}${prot}_${studies[$study]}_prot.fasta"\
+#                         -title "${prot}_${studies[$study]}${prot}"\
+#                         -dbtype prot \
+#                         -out "${path}${studies[$study]}/blast/database/${prot}_DB"\
+#                         -parse_seqids
+#             bioawk -c fastx '{ print $name, length($seq) }' "${path}${studies[$study]}${res_file}${prot}_${studies[$study]}_prot.fasta" > "${path}${studies[$study]}/blast/${prot}_${studies[$study]}_prot_size.fasta"
+#     done
+#         prot=$(echo "${namespepro[$study]}" | cut -d'=' -f1 | tr -d ' ')
+#         echo "${prot}"
+#     for prot1 in "${sepprot[@]}"; do
+#         for prot2 in "${sepprot[@]}"; do
+#             blastp  -query "${path}${studies[$study]}${res_file}${prot1}_${studies[$study]}_prot.fasta" \
+#                     -db "${path}${studies[$study]}/blast/database/${prot2}_DB" \
+#                     -out "${path}${studies[$study]}/blast/${prot1}_${prot2}_blast.txt" \
+#                     -outfmt "6"
+#             awk '                                                                                         ARGIND==1 { qsize[$1]=$2; next }        # 1er fichier : tailles des query
+#                 ARGIND==2 { ssize[$1]=$2; next }        # 2e fichier : tailles des subject
+#                 ARGIND==3 {
+#                 qs = ($1 in qsize) ? qsize[$1] : "0"
+#                 ss = ($2 in ssize) ? ssize[$2] : "0"
+#                 print $0, qs, ss
+#                                                 }
+#             ' "${path}${studies[$study]}/blast/${prot1}_${studies[$study]}_prot_size.fasta"   "${path}${studies[$study]}/blast/${prot2}_${studies[$study]}_prot_size.fasta"   "${path}${studies[$study]}/blast/${prot1}_${prot2}_blast.txt" > "${path}${studies[$study]}/blast/${prot1}_${prot2}_blast_sizes.txt"
 
-            awk '{print $0 "\t" (($10-$9+1)/$13*100) "\t" (($8-$7+1)/$14*100)}'   "${path}${studies[$study]}/blast/${prot1}_${prot2}_blast_sizes.txt" | sed '1iQseqid\tSseqid\tpident\tlength\tmismatch\tgapopen\tQstart\tQend\tSstart\tSend\tevalue\tbitscore\tQlength\tSlength\tQcoverage\tScoverage'> "${path}${studies[$study]}/blast/${prot1}_${prot2}_blast_table.txt"
+#             awk '{print $0 "\t" (($10-$9+1)/$13*100) "\t" (($8-$7+1)/$14*100)}'   "${path}${studies[$study]}/blast/${prot1}_${prot2}_blast_sizes.txt" | sed '1iQseqid\tSseqid\tpident\tlength\tmismatch\tgapopen\tQstart\tQend\tSstart\tSend\tevalue\tbitscore\tQlength\tSlength\tQcoverage\tScoverage'> "${path}${studies[$study]}/blast/${prot1}_${prot2}_blast_table.txt"
 
-        done
-    done
+#         done
+#     done
 
-done
+# done
 
-echo The proteines that are presented or not in certains proteins are being treated
-/usr/bin/python3 "${path}""${path_script}"WIWO_protein.py "${path}" "${names[*]}" "${orgaWIWO[*]}" "${INOUT[*]}" "${protINOUT[*]}" "${res_file}" "${Type_seq[*]}"
+# echo The proteines that are presented or not in certains proteins are being treated
+# /usr/bin/python3 "${path}""${path_script}"WIWO_protein.py "${path}" "${names[*]}" "${orgaWIWO[*]}" "${INOUT[*]}" "${protINOUT[*]}" "${res_file}" "${Type_seq[*]}"
 
-#merge = OG
-echo The outgroup of each studies are being added
-for study in "${studies[@]}"; do
-rm -f "${path}""${study:?}"/"${res_file}"/*_OG.fasta "${path}""${study:?}"/"${res_file}"/*_OG.aln-fasta  >/dev/null 
-done
-/usr/bin/python3 "${path}""${path_script}"merge_spe_prot.py "${path}" "${names[*]}" "${speprot[*]}" "${Type_seq[*]}" "${res_file}" "${studies[*]}" "${Allstudies[*]}" "${for_prot[*]}" 
-speprotsse=$(echo "${speprot[@]}" | tr -d '" ' | cut -d'=' -f1 | paste -sd, -)
+# #merge = OG
+# echo The outgroup of each studies are being added
+# for study in "${studies[@]}"; do
+# rm -f "${path}""${study:?}"/"${res_file}"/*_OG.fasta "${path}""${study:?}"/"${res_file}"/*_OG.aln-fasta  >/dev/null 
+# done
+# /usr/bin/python3 "${path}""${path_script}"merge_spe_prot.py "${path}" "${names[*]}" "${speprot[*]}" "${Type_seq[*]}" "${res_file}" "${studies[*]}" "${Allstudies[*]}" "${for_prot[*]}" 
+# speprotsse=$(echo "${speprot[@]}" | tr -d '" ' | cut -d'=' -f1 | paste -sd, -)
 
-IFS=$',' read -ra speprotsep <<< "${speprotsse[@]}"
-for i in "${!speprotsep[@]}"; do
-    if [[ -n "${speprotsep[$i]}" ]]; then
-        pairs+=("${speprotsep[$i]},${Allstudies[$i]}")
-    fi
-done
+# IFS=$',' read -ra speprotsep <<< "${speprotsse[@]}"
+# for i in "${!speprotsep[@]}"; do
+#     if [[ -n "${speprotsep[$i]}" ]]; then
+#         pairs+=("${speprotsep[$i]},${Allstudies[$i]}")
+#     fi
+# done
 
-# Supprimer les doublons
-mapfile -t unique_pairs < <(printf "%s\n" "${pairs[@]}" | sort -u)
+# # Supprimer les doublons
+# mapfile -t unique_pairs < <(printf "%s\n" "${pairs[@]}" | sort -u)
 
 
-for study in "${!studies[@]}"; do
+# for study in "${!studies[@]}"; do
 
-        IFS=$';' read -ra sepprot <<< "${proteins[$study]}"
-        for prot in "${sepprot[@]}"; do
-            echo trimal pour la proteine "${prot}" pour l etude "${studies[$study]}"
-            if [[ " ${trim[*]} " =~ ${studies[study]} ]]; then
+#         IFS=$';' read -ra sepprot <<< "${proteins[$study]}"
+#         for prot in "${sepprot[@]}"; do
+#             echo trimal pour la proteine "${prot}" pour l etude "${studies[$study]}"
+#             if [[ " ${trim[*]} " =~ ${studies[study]} ]]; then
 
-                trimal  -in "${path}${studies[$study]}${res_file}${prot}_${studies[$study]}_prot_OG.aln-fasta" \
-                    -out "${path}${studies[$study]}${res_file}treefolder/${prot}_${studies[$study]}_prot_trimal.fasta" \
-                    -automated1 \
-                    -fasta 
-                trimal  -in "${path}${studies[$study]}${res_file}${prot}_${studies[$study]}_prot_OG.aln-fasta" \
-                        -out "${path}${studies[$study]}${res_file}treefolder/${prot}_${studies[$study]}_prot_trimal.phy" \
-                        -automated1 \
-                        -phylip 
+#                 trimal  -in "${path}${studies[$study]}${res_file}${prot}_${studies[$study]}_prot_OG.aln-fasta" \
+#                     -out "${path}${studies[$study]}${res_file}treefolder/${prot}_${studies[$study]}_prot_trimal.fasta" \
+#                     -automated1 \
+#                     -fasta 
+#                 trimal  -in "${path}${studies[$study]}${res_file}${prot}_${studies[$study]}_prot_OG.aln-fasta" \
+#                         -out "${path}${studies[$study]}${res_file}treefolder/${prot}_${studies[$study]}_prot_trimal.phy" \
+#                         -automated1 \
+#                         -phylip 
             
 
-            else 
-                echo "convert" "${studies[$study]}"  "${prot}"
-                seqkit grep -vs -r -p "^[Nn\-]+$" "${path}${studies[$study]}${res_file}${prot}_${studies[$study]}_prot_OG.aln-fasta">"${path}${studies[$study]}${res_file}treefolder/${prot}_${studies[$study]}_prot_trimal.fasta"
-                seqret -sequence "${path}${studies[$study]}${res_file}treefolder/${prot}_${studies[$study]}_prot_trimal.fasta" -outseq "${path}${studies[$study]}${res_file}treefolder/${prot}_${studies[$study]}_prot_trimal.phy" -osformat2 phylip
+#             else 
+#                 echo "convert" "${studies[$study]}"  "${prot}"
+#                 seqkit grep -vs -r -p "^[Nn\-]+$" "${path}${studies[$study]}${res_file}${prot}_${studies[$study]}_prot_OG.aln-fasta">"${path}${studies[$study]}${res_file}treefolder/${prot}_${studies[$study]}_prot_trimal.fasta"
+#                 seqret -sequence "${path}${studies[$study]}${res_file}treefolder/${prot}_${studies[$study]}_prot_trimal.fasta" -outseq "${path}${studies[$study]}${res_file}treefolder/${prot}_${studies[$study]}_prot_trimal.phy" -osformat2 phylip
 
 
-             fi
-        done
+#              fi
+#         done
     
-done
+# done
 
-for pair in "${unique_pairs[@]}" ; do 
-IFS=$',' read -ra protstud <<< "${pair[@]}"
-if [[ " ${trim[*]} " =~ ${protstud[1]} ]]; then
+# for pair in "${unique_pairs[@]}" ; do 
+# IFS=$',' read -ra protstud <<< "${pair[@]}"
+# if [[ " ${trim[*]} " =~ ${protstud[1]} ]]; then
 
-                trimal  -in "${path}${protstud[1]}${res_file}${protstud[0]}_${protstud[1]}_prot_OG.aln-fasta" \
-                    -out "${path}${protstud[1]}${res_file}treefolder/${protstud[0]}_${protstud[1]}_prot_trimal.fasta" \
-                    -automated1 \
-                    -fasta 
-                trimal  -in "${path}${protstud[1]}${res_file}${protstud[0]}_${protstud[1]}_prot_OG.aln-fasta" \
-                        -out "${path}${protstud[1]}${res_file}treefolder/${protstud[0]}_${protstud[1]}_prot_trimal.phy" \
-                        -automated1 \
-                        -phylip 
+#                 trimal  -in "${path}${protstud[1]}${res_file}${protstud[0]}_${protstud[1]}_prot_OG.aln-fasta" \
+#                     -out "${path}${protstud[1]}${res_file}treefolder/${protstud[0]}_${protstud[1]}_prot_trimal.fasta" \
+#                     -automated1 \
+#                     -fasta 
+#                 trimal  -in "${path}${protstud[1]}${res_file}${protstud[0]}_${protstud[1]}_prot_OG.aln-fasta" \
+#                         -out "${path}${protstud[1]}${res_file}treefolder/${protstud[0]}_${protstud[1]}_prot_trimal.phy" \
+#                         -automated1 \
+#                         -phylip 
             
 
-            else 
-                echo "convert" "${protstud[1]}"  "${protstud[0]}"
-                seqkit grep -vs -r -p "^[Nn\-]+$" "${path}${protstud[1]}${res_file}${protstud[0]}_${protstud[1]}_prot_OG.aln-fasta">"${path}${protstud[1]}${res_file}treefolder/${protstud[0]}_${protstud[1]}_prot_trimal.fasta"
-                seqret -sequence "${path}${protstud[1]}${res_file}treefolder/${protstud[0]}_${protstud[1]}_prot_trimal.fasta" -outseq "${path}${protstud[1]}${res_file}treefolder/${protstud[0]}_${protstud[1]}_prot_trimal.phy" -osformat2 phylip
+#             else 
+#                 echo "convert" "${protstud[1]}"  "${protstud[0]}"
+#                 seqkit grep -vs -r -p "^[Nn\-]+$" "${path}${protstud[1]}${res_file}${protstud[0]}_${protstud[1]}_prot_OG.aln-fasta">"${path}${protstud[1]}${res_file}treefolder/${protstud[0]}_${protstud[1]}_prot_trimal.fasta"
+#                 seqret -sequence "${path}${protstud[1]}${res_file}treefolder/${protstud[0]}_${protstud[1]}_prot_trimal.fasta" -outseq "${path}${protstud[1]}${res_file}treefolder/${protstud[0]}_${protstud[1]}_prot_trimal.phy" -osformat2 phylip
 
 
-             fi
+#              fi
 
-done 
+# done 
 
-for study in "${!studies[@]}"; do
-printf "The best model for each proteic sequence will be write \n">"${path}""${studies[$study]}""${res_file}"Best_model_"${studies[$study]}".txt
-    IFS=$';' read -ra sepprot <<< "${proteins[$study]}"
-    for prot in "${sepprot[@]}"; do
-            echo IQtree2 pour la proteine "${prot}" pour l étude "${studies[$study]}"
-            { echo "${prot}" : ; awk 'NR==1 {print "Number of sequences:", $1, "Sequences size:", $2}' "${path}""${studies[$study]}""${res_file}"treefolder/"${prot}"_"${studies[$study]}"_prot_trimal.phy ;}>> "${path}""${studies[$study]}""${res_file}"Best_model_"${studies[$study]}".txt
-            iqtree2 -redo -s "${path}${studies[$study]}${res_file}treefolder/${prot}_${studies[$study]}_prot_trimal.fasta" -m MFP -bb 1000 -alrt 1000 -nt AUTO |grep 'Best-fit model:' >> "${path}""${studies[$study]}""${res_file}"Best_model_"${studies[$study]}".txt
-            printf "\n" >> "${path}""${studies[$study]}""${res_file}"Best_model_"${studies[$study]}".txt
-    done
-done
-for pair in "${unique_pairs[@]}" ; do 
-IFS=$',' read -ra protstud <<< "${pair[@]}"
-echo IQtree2 pour la proteine "${protstud[0]}" pour l étude "${protstud[1]}"
-            { echo "${protstud[0]}" : ; awk 'NR==1 {print "Number of sequences:", $1, "Sequences size:", $2}' "${path}""${protstud[1]}""${res_file}"treefolder/"${protstud[0]}"_"${protstud[1]}"_prot_trimal.phy ;}>> "${path}""${protstud[1]}""${res_file}"Best_model_"${protstud[1]}".txt
-            iqtree2 -redo -s "${path}${protstud[1]}${res_file}treefolder/${protstud[0]}_${protstud[1]}_prot_trimal.fasta" -m MFP -bb 1000 -alrt 1000 -nt AUTO |grep 'Best-fit model:' >> "${path}""${protstud[1]}""${res_file}"Best_model_"${protstud[1]}".txt
-            printf "\n" >> "${path}""${protstud[1]}""${res_file}"Best_model_"${protstud[1]}".txt
+# for study in "${!studies[@]}"; do
+# printf "The best model for each proteic sequence will be writen \n">"${path}""${studies[$study]}""${res_file}"Best_model_"${studies[$study]}".txt
+#     IFS=$';' read -ra sepprot <<< "${proteins[$study]}"
+#     for prot in "${sepprot[@]}"; do
+#             echo IQtree2 pour la proteine "${prot}" pour l étude "${studies[$study]}"
+#             { echo "${prot}" : ; awk 'NR==1 {print "Number of sequences:", $1, "Sequences size:", $2}' "${path}""${studies[$study]}""${res_file}"treefolder/"${prot}"_"${studies[$study]}"_prot_trimal.phy ;}>> "${path}""${studies[$study]}""${res_file}"Best_model_"${studies[$study]}".txt
+#             iqtree2 -redo -s "${path}${studies[$study]}${res_file}treefolder/${prot}_${studies[$study]}_prot_trimal.fasta" -m MFP -bb 1000 -alrt 1000 -nt AUTO |grep 'Best-fit model:' >> "${path}""${studies[$study]}""${res_file}"Best_model_"${studies[$study]}".txt
+#             printf "\n" >> "${path}""${studies[$study]}""${res_file}"Best_model_"${studies[$study]}".txt
+#     done
+# done
+# for pair in "${unique_pairs[@]}" ; do 
+# IFS=$',' read -ra protstud <<< "${pair[@]}"
+# echo IQtree2 pour la proteine "${protstud[0]}" pour l étude "${protstud[1]}"
+#             { echo "${protstud[0]}" : ; awk 'NR==1 {print "Number of sequences:", $1, "Sequences size:", $2}' "${path}""${protstud[1]}""${res_file}"treefolder/"${protstud[0]}"_"${protstud[1]}"_prot_trimal.phy ;}>> "${path}""${protstud[1]}""${res_file}"Best_model_"${protstud[1]}".txt
+#             iqtree2 -redo -s "${path}${protstud[1]}${res_file}treefolder/${protstud[0]}_${protstud[1]}_prot_trimal.fasta" -m MFP -bb 1000 -alrt 1000 -nt AUTO |grep 'Best-fit model:' >> "${path}""${protstud[1]}""${res_file}"Best_model_"${protstud[1]}".txt
+#             printf "\n" >> "${path}""${protstud[1]}""${res_file}"Best_model_"${protstud[1]}".txt
 
-done
+# done
 
 Hours=$(("${SECONDS}" / 3600))
 Minutes=$((("${SECONDS}" % 3600) / 60))

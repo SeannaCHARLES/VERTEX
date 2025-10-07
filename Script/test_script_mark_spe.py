@@ -42,7 +42,7 @@ for study,start,position in zip(studies,start,position) :
     position=[int(x) for x in position]
     info =  position+[int(start)]
     proteins[study]=info
-#This loop create a dictionnary whith 
+
 for study,start,position in zip(onlyOG,startspeOG,positionspeOG) :
     position=position.split(";")
     position=[int(x) for x in position]
