@@ -21,7 +21,7 @@ import random
 import requests
 
 from geopy.geocoders import Nominatim
-
+from itertools import combinations
 import time
 #You email addresse for NCBI request
 mail="seanna.charles@univ-lyon1.fr"
@@ -289,7 +289,9 @@ def write_file(path,Description_nu,Description_prot,Sequence_aa,Sequence_nu,loca
     name_label=f"{path}{study}/legend/Label_{study}NSmGn_itol.txt"
     name_sero=f"{path}{study}/legend/{type_files[2]}_{study}NSmGn_itol.txt"
     name_host_images=f"{path}{study}/legend/Host_images{study}NSmGn_itol.txt"
-
+    name_range=f"{path}{study}/legend/Range_{study}NSmGn_itol.txt"
+    name_accol=f"{path}{study}/legend/accolade_{study}NSmGn_itol.txt"
+    name_collapse=f"{path}{study}/legend/Collapse_{study}NSmGn_itol.txt"
     geoloc=open(name_geol,'a')
     geoloc.write(f"##{localisation}\n")
     text=str (f"N{ID}\trange\t{region_color}\t{region}\nG{ID}\trange\t{region_color}\t{region}\n")
@@ -305,15 +307,23 @@ def write_file(path,Description_nu,Description_prot,Sequence_aa,Sequence_nu,loca
 
     label=open(name_label,'a')
     label.write(f"##{organism}\n")
-    text=str (f"N{ID}\tN{organism}\nG{ID}\tG{organism}\n")
+    text=str (f"N{ID}\t{organism}\nG{ID}\t{organism}\n")
     label.write(text)
     label.close() 
 
     sero=open(name_sero,'a')
     sero.write(f"##{serogroup}\n")
-    text=str (f"N{ID}\trange\t{color_sero}\t{serogroup}\nG{ID}\trange\t{color_sero}\t{serogroup}\nN{ID}\tbranch\t{color_sero}\tdashed\t5\nG{ID}\branch\t{color_sero}\tdashed\t5\n")
+    text=str (f"N{ID}\trange\t{color_sero}\t{serogroup}\nG{ID}\trange\t{color_sero}\t{serogroup}\nN{ID}\tbranch\t{color_sero}\tdashed\t5\nG{ID}\tbranch\t{color_sero}\tdashed\t5\n")
     sero.write(text)
     sero.close()
+    
+    label=open(name_collapse,'a')
+    label.write(f"##{organism}\n")
+    text=str (f"N{ID}\t{color_sero}\nG{ID}\t{color_sero}\n")
+    label.write(text)
+    label.close() 
+   
+
 
     HostI_f=open(name_host_images,'a')
     HostI_f.write(f"##{host}\n")
@@ -379,6 +389,21 @@ def first_call(path,study) :
     file.write(f"DATASET_IMAGE\nSEPARATOR TAB\nDATASET_LABEL\tHost with images\nCOLOR\t#000000\nSIZE_FACTOR\t0.2\nIMAGE_ROTATION\t0\nIMAGE_SHIFT_V\t0\nIMAGE_SHIFT_H\t0\nSHOW_INTERNAL\t0\nMARGIN\t250\nDATA\n")       
     file.close()
 
+    name_files = f"{path}{study}/legend/Range_{study}NSmGn_itol.txt"
+    file = open(name_files,"w")
+    file.write(f"DATASET_RANGE\nSEPARATOR TAB\nDATASET_LABEL\tCOLOR\t#000000\nWIDTH\t2\nDRAW_ARC\ttrue\nLABEL_SIZE\t14\nDATA\n")       
+    file.close()
+
+    name_files = f"{path}{study}/legend/accolade_{study}NSmGn_itol.txt"
+    file = open(name_files,"w")
+    file.write(f"DATASET_STYLE\nSEPARATOR TAB\nDATASET_LABEL\tCOLOR\t#000000\nDATA\n")       
+    file.close()
+
+    name_files = f"{path}{study}/legend/Collapse_{study}NSmGn_itol.txt"
+    file = open(name_files,"w")
+    file.write(f"DATASET_COLORSTRIP\nSEPARATOR TAB\nCOLOR	#ff0000\nSTRIP_WIDTH	25\nSHOW_INTERNAL	0\nMARGIN	5\nBORDER_WIDTH 1\nDATA\n")       
+    file.close()
+
 
 
    
@@ -404,6 +429,7 @@ def extract_id(path,Datas,study,sp,list_prot,mail) :
     global serogroup_colors
     global host_colors
     global allmetadata
+    global collaps
     for record in SeqIO.parse(Datas,"genbank"): 
         #Variable initialisation 
         host="Na"
@@ -487,6 +513,8 @@ def extract_id(path,Datas,study,sp,list_prot,mail) :
         protfile.write(line_prot_)
         protfile.close()
 
+    
+
     return strain,ID_prot,Nu
 
 ###Function modif_name_prot
@@ -552,15 +580,21 @@ def extract_prot_data(ID_prot,study,all_proteins,mail) :
 #The serogroup file 
 df = pd.read_csv(f"{path}Serogroup.txt", delimiter="|",header=0)
 df.iloc[:, 1:]=df.iloc[:, 1:].astype(str)
-
+collaps={}
 ##Function find_serogroup 
 #This function 
 def find_serogroup(organism) : 
     global df
+    global collaps
 
     end_line=df.shape[0]
     for line in range(0,end_line) : 
         if df.iloc[line,0].lower() in organism.lower() or organism.lower() in df.iloc[line,0].lower() or organism.replace(" ","").lower() in df.iloc[line,0].replace(" ","").lower() : 
+            if df.iloc[line,1] not in collaps : 
+                collaps[df.iloc[line,1]]=[organism]
+            else : 
+                collaps[df.iloc[line,1]].append(organism)
+
             return str(df.iloc[line,1])
     name=f"{path}Serogroup.txt"
     file = open(name,"a")
@@ -569,6 +603,7 @@ def find_serogroup(organism) :
     df = pd.read_csv(f"{path}Serogroup.txt", delimiter="|",header=0)
     df.iloc[:, 1:]=df.iloc[:, 1:].astype(str)
     find_serogroup(organism)
+    
 
 
 #######Function for the Script mark_prot##################
@@ -584,37 +619,39 @@ def nucleic_sequences(study,ID,sequence,debseq,pos_prot,proteins,sp,resfile) :
     prot_position=dict(zip(proteins, position_proteines))
 
     for prot,pos in prot_position.items() : 
-        name=f"{path}{study}{resfile}{prot}_{sp}_nucl.fasta"
-        mark_prot=""
-        compt_AA=0
-        compt_nu=0
-        compt_codon=0
-        inprot=False
+        if pos !="ABS" : 
+            name=f"{path}{study}{resfile}{prot}_{sp}_nucl.fasta"
+            mark_prot=""
+            compt_AA=0
+            compt_nu=0
+            compt_codon=0
+            inprot=False
     
-        for nu in sequence : 
+            for nu in sequence : 
 
-            if inprot==True : 
-                mark_prot+=nu
-            if nu!='-' : 
-                compt_nu+=1
-                if compt_nu >= debseq :
-                    compt_codon+=1
+                if inprot==True : 
+                    mark_prot+=nu
+                if nu!='-' : 
+                    compt_nu+=1
+                    if compt_nu >= debseq :
+                        compt_codon+=1
                 
-                    if compt_codon==3 : 
-                        compt_codon=0
-                        compt_AA+=1
+                        if compt_codon==3 : 
+                            compt_codon=0
+                            compt_AA+=1
 
-                        if compt_AA in pos :
-                            mark_prot+=nu
-                            pos.remove(compt_AA)
-                            if inprot==False : 
-                                inprot=True
-                            else : 
-                                inprot=False
-
-        file = open(f"{name}","a")
-        file.write(f">{ID}\n{mark_prot}\n")
-        file.close()
+                            if compt_AA in pos :
+                                mark_prot+=nu
+                                pos.remove(compt_AA)
+                                if inprot==False : 
+                                    inprot=True
+                                else : 
+                                    inprot=False
+            
+            file = open(f"{name}","a")
+            file.write(f">{ID}\n{mark_prot}\n")
+            file.close()
+ 
   
 ##Function compt_alignement
 # This function uses the position of the target organism's proteins (sequence proteic) to identify the position of the proteins in the alignment.
@@ -628,31 +665,182 @@ def proteic_sequence (study,ID,sequence,pos_prot,proteins,sp,resfile) :
 
 
     for prot,pos in prot_position.items() : 
-        name=f"{path}{study}{resfile}{prot}_{sp}_prot.fasta"
-        mark_prot=""
-        compt_AA=0
-        inprot=False
-        for aa in sequence : 
-            if aa!='-' : 
-                compt_AA+=1
+        if pos !="ABS" : 
+            name=f"{path}{study}{resfile}{prot}_{sp}_prot.fasta"
+            mark_prot=""
+            compt_AA=0
+            inprot=False
+            for aa in sequence : 
+                if aa!='-' : 
+                    compt_AA+=1
 
-            if inprot==True : 
-                mark_prot+=aa
+                if inprot==True : 
+                    mark_prot+=aa
 
-            if compt_AA in pos :
-                mark_prot+=aa
-                pos.remove(compt_AA)
-                if inprot==False : 
-                    inprot=True
-                else : 
-                    inprot=False
-        file = open(f"{name}","a")
-        file.write(f">{ID}\n{mark_prot}\n")
-        file.close()
+                if compt_AA in pos :
+                    mark_prot+=aa
+                    pos.remove(compt_AA)
+                    if inprot==False : 
+                        inprot=True
+                    else : 
+                        inprot=False
+            file = open(f"{name}","a")
+            file.write(f">{ID}\n{mark_prot}\n")
+            file.close()
 
 
-##Function mark_sequence
+
+#Function mark_sequence
 #This function marks the start and end of proteins in protein and nucleic acid sequences. 
+
+def final_pos_IO(study,prot,study_prot,proteins,concern_study) : 
+
+   
+    chain_prot=""
+    df = pd.read_csv(f"{path}{study}/Pos_prot_{study}.txt", delimiter="\t",header=0,index_col=0)
+    df.iloc[:, 1:]=df.iloc[:, 1:].astype(str)
+    end_line=df.shape[0]
+    end_col=df.shape[1]
+
+    pos_col_prot={}
+    for col in df.columns : 
+        for item in prot :
+            item=item.split(";")
+            for pos_prot in item :
+                if pos_prot not in pos_col_prot :
+                    if pos_prot in col :
+                        pos_col_prot[pos_prot]=[df.columns.get_loc(col),df.columns.get_loc(col)+1]
+    final_pos_prot={}
+   
+    for line in range (0,end_line) :
+        pos_col=col_pos(str(df.index[line]),pos_col_prot,study_prot)
+        final_pos_prot[df.iloc[line,0]]=[] 
+        for col, prot in zip(range(1,end_col-1), proteins[str(df.index[line])]):
+            # print(any(df.iloc[line,0][3:] not in Concerna_orga for Concerna_orga in concern_study[study][0]))
+            # print(df.iloc[line,0][3:])
+            for orga in concern_study[study][0] : 
+                if df.iloc[line,0][3:]  in orga and "nsm" in df.columns[col].lower() : 
+                    print(orga)
+                    print(df.iloc[line,0][3:])
+                    print(concern_study[study][1].upper()=="IN")
+                    print(concern_study[study][2],df.columns[col])
+            # if  : 
+            #     print(df.iloc[line,0][3:])
+                
+            if concern_study[study][1].upper()=="IN" and concern_study[study][2] in df.columns[col] and not any (df.iloc[line,0][3:] in Concerna_orga for Concerna_orga in concern_study[study][0])  :
+                #print("in")
+                final_pos_prot[df.iloc[line,0]].append("ABS")
+            elif concern_study[study][1].upper()=="OUT" and concern_study[study][2] in df.columns[col] and any(df.iloc[line,0][3:] in Concerna_orga for Concerna_orga in concern_study[study][0])  :
+                print("out")
+                final_pos_prot[df.iloc[line,0]].append("ABS")
+            else : 
+                if "NSm" in df.columns[col] : 
+                    print(df.iloc[line,0][3:],"here")
+                if df.iloc[line,col]=="nan" :
+                    if col%2!=0   : 
+                        if col >1 : 
+                            if int(float(df.iloc[line,col-1]!="nan")) : 
+                                final_pos_prot[df.iloc[line,0]].append(int(float(df.iloc[line,col-1]))+1)
+                                    
+                            else : 
+
+                                pourcent =(proteins[str(df.index[line])][proteins[str(df.index[line])].index(prot)+1]-proteins[str(df.index[line])][proteins[str(df.index[line])].index(prot)]+1)/proteins[str(df.index[line])][len(proteins[str(df.index[line])])-2]
+
+                                if df.iloc[line,end_col-1] !="nan": 
+                                    end=int(df.iloc[line,end_col-1])
+                                else : 
+                                    end= proteins[str(df.index[line])][len(proteins[str(df.index[line])])-2]
+                                if df.iloc[line,3]!="nan" :
+                                    start = int(df.iloc[line,3])
+                                else : 
+                                    start=proteins[str(df.index[line])][0]
+
+                                new_size=int(((end-start+1)*pourcent))
+                                
+
+                                if df.iloc[line,col+1] !="nan":
+                                    
+                                    final_pos_prot[df.iloc[line,0]].append(int(df.iloc[line,col+1])-new_size)
+                                else : 
+                                    
+                                    final_pos_prot[df.iloc[line,0]].append(int(float(proteins[str(df.index[line])][proteins[str(df.index[line])].index(prot)-1]))-new_size)
+
+
+
+
+                        else : 
+                            final_pos_prot[df.iloc[line,0]].append(int(prot))
+                    else : 
+                        
+                        if col+1<end_col :
+
+                            if int(float(df.iloc[line,col+1]!="nan"))  :
+                                    final_pos_prot[df.iloc[line,0]].append(int(float(df.iloc[line,col+1]))-1)
+                                    
+                            else : 
+                                pourcent =(proteins[str(df.index[line])][proteins[str(df.index[line])].index(prot)]-proteins[str(df.index[line])][proteins[str(df.index[line])].index(prot)-1]+1)/proteins[str(df.index[line])][len(proteins[str(df.index[line])])-2]
+
+                                if df.iloc[line,end_col-1] !="nan": 
+                                    end=int(df.iloc[line,end_col-1])
+                                else : 
+                                    end= proteins[str(df.index[line])][len(proteins[str(df.index[line])])-2]
+                                if df.iloc[line,3]!="nan" :
+                                    start = int(df.iloc[line,3])
+                                else : 
+                                    start=proteins[str(df.index[line])][0]
+
+                                new_size=int(((end-start+1)*pourcent))
+
+
+                                if df.iloc[line,col-1] !="nan":
+                                    final_pos_prot[df.iloc[line,0]].append(int(df.iloc[line,col-1])+new_size)
+                                else : 
+                                    
+                                    final_pos_prot[df.iloc[line,0]].append(int(float(proteins[str(df.index[line])][proteins[str(df.index[line])].index(prot)-1]))+new_size)
+                        else : 
+
+                            final_pos_prot[df.iloc[line,0]].append(int(prot))
+                else : 
+                    final_pos_prot[df.iloc[line,0]].append(int(float(df.iloc[line,col])))
+         
+
+        for c in range(len(final_pos_prot[df.iloc[line, 0]]) - 1, 1, -1):
+            i=1
+            j=1
+            if c%2 ==0 : 
+                if final_pos_prot[df.iloc[line,0]][c+i] != "ABS" :
+                    if final_pos_prot[df.iloc[line,0]][c+i] <= final_pos_prot[df.iloc[line,0]][c] : 
+                        final_pos_prot[df.iloc[line,0]][c]=final_pos_prot[df.iloc[line,0]][c+i]-1
+                else : 
+                    i+=1
+                if c-j >len(final_pos_prot[df.iloc[line, 0]]) and  final_pos_prot[df.iloc[line,0]][c-j] != "ABS" :
+                    if final_pos_prot[df.iloc[line,0]][c-j] >= final_pos_prot[df.iloc[line,0]][c] : 
+                        final_pos_prot[df.iloc[line,0]][c]=final_pos_prot[df.iloc[line,0]][c-j]+1
+                else : 
+                        j+=1
+
+            else : 
+                if final_pos_prot[df.iloc[line,0]][c-j] != "ABS" :
+                    if final_pos_prot[df.iloc[line,0]][c-j] >= final_pos_prot[df.iloc[line,0]][c] : 
+                        final_pos_prot[df.iloc[line,0]][c]=final_pos_prot[df.iloc[line,0]][c-j]+1
+                else : 
+                    j+=1
+                if c+i<-1 and final_pos_prot[df.iloc[line,0]][c+i] != "ABS" :
+                    if c < (len(final_pos_prot[df.iloc[line, 0]]) - 1) :
+                        if final_pos_prot[df.iloc[line,0]][c+1] <= final_pos_prot[df.iloc[line,0]][c] : 
+                            final_pos_prot[df.iloc[line,0]][c]=final_pos_prot[df.iloc[line,0]][c+1]-1  
+                else :
+                    i+=1
+            
+
+#KP792742
+#KU925501
+    ligne_chaine = '\t'.join(df.iloc[[0]].astype(str))
+    name=f"{path}{study}/Pos_prot_final_{study}.fasta"
+    file = open(f"{name}","w")
+    file.write(f"study\t{ligne_chaine}\n")
+    file.close()
+    return final_pos_prot,name
 
 def final_pos(study,prot,study_prot,proteins) : 
     chain_prot=""
@@ -678,19 +866,22 @@ def final_pos(study,prot,study_prot,proteins) :
         for col, prot in zip(range(1,end_col-1), proteins[str(df.index[line])]):
 
             if df.iloc[line,col]=="nan" :
-                if col+1<end_col :
-                    if df.iloc[line,col+1]!="nan":
-                        if prot<int(float(df.iloc[line,col+1])) : 
-                            final_pos_prot[df.iloc[line,0]].append(int(prot))
-
-                        else : 
-                            final_pos_prot[df.iloc[line,0]].append(int(float(df.iloc[line,col+1]))-1)
-
+                if col%2!=0   : 
+                    if col >1 :
+                        if df.iloc[line,col-1]!="nan":
+                            final_pos_prot[df.iloc[line,0]].append(int(float(df.iloc[line,col-1]))+1) 
+                        else :
+                            final_pos_prot[df.iloc[line,0]].append(int(prot)) 
                     else : 
-                        final_pos_prot[df.iloc[line,0]].append(int(prot))
-
+                        final_pos_prot[df.iloc[line,0]].append(int(prot)) 
                 else : 
-                    final_pos_prot[df.iloc[line,0]].append(int(prot))
+                    if col+1<end_col :
+                        if df.iloc[line,col+1]!="nan":
+                            final_pos_prot[df.iloc[line,0]].append(int(float(df.iloc[line,col+1]))-1) 
+                        else : 
+                            final_pos_prot[df.iloc[line,0]].append(int(prot))
+                    else : 
+                        final_pos_prot[df.iloc[line,0]].append(int(prot)) 
 
             else :
                 final_pos_prot[df.iloc[line,0]].append(int(float(df.iloc[line,col])))
@@ -698,7 +889,33 @@ def final_pos(study,prot,study_prot,proteins) :
 
             
 
+        # for c in range(len(final_pos_prot[df.iloc[line, 0]]) - 1, 1, -1):
+        #     i=1
+        #     j=1
+        #     if c%2 ==0 : 
+        #         if final_pos_prot[df.iloc[line,0]][c+i] != "ABS" :
+        #             if final_pos_prot[df.iloc[line,0]][c+i] <= final_pos_prot[df.iloc[line,0]][c] : 
+        #                 final_pos_prot[df.iloc[line,0]][c]=final_pos_prot[df.iloc[line,0]][c+i]-1
+        #         else : 
+        #             i+=1
+        #         if c-j >len(final_pos_prot[df.iloc[line, 0]]) and  final_pos_prot[df.iloc[line,0]][c-j] != "ABS" :
+        #             if final_pos_prot[df.iloc[line,0]][c-j] >= final_pos_prot[df.iloc[line,0]][c] : 
+        #                 final_pos_prot[df.iloc[line,0]][c]=final_pos_prot[df.iloc[line,0]][c-j]+1
+        #         else : 
+        #                 j+=1
 
+        #     else : 
+        #         if final_pos_prot[df.iloc[line,0]][c-j] != "ABS" :
+        #             if final_pos_prot[df.iloc[line,0]][c-j] >= final_pos_prot[df.iloc[line,0]][c] : 
+        #                 final_pos_prot[df.iloc[line,0]][c]=final_pos_prot[df.iloc[line,0]][c-j]+1
+        #         else : 
+        #             j+=1
+        #         if c+i<-1 and final_pos_prot[df.iloc[line,0]][c+i] != "ABS" :
+        #             if c < (len(final_pos_prot[df.iloc[line, 0]]) - 1) :
+        #                 if final_pos_prot[df.iloc[line,0]][c+1] <= final_pos_prot[df.iloc[line,0]][c] : 
+        #                     final_pos_prot[df.iloc[line,0]][c]=final_pos_prot[df.iloc[line,0]][c+1]-1  
+        #         else :
+        #             i+=1
         for c in range (1,len(final_pos_prot[df.iloc[line,0]] )-1) :
             if c%2 ==0 : 
                 if final_pos_prot[df.iloc[line,0]][c+1] <= final_pos_prot[df.iloc[line,0]][c] : 

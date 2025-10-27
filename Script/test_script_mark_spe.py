@@ -13,7 +13,7 @@ from Bio.Seq import Seq
 import subprocess
 import sys 
 import pandas as pd
-from All_Functions import nucleic_sequences,proteic_sequence,final_pos,col_pos
+from All_Functions import nucleic_sequences,proteic_sequence,final_pos,col_pos,final_pos_IO
 ##########################################################
 
 ###########################Input##########################
@@ -29,7 +29,9 @@ protspe_OG=list(sys.argv[9].split(" "))
 resfile=str(sys.argv[10])
 studiesspeOG=list(sys.argv[11].split(" "))
 NUIDspeOG=list(sys.argv[12].split(" "))
-
+orgaWIWO=list(sys.argv[13].replace(" ", "\n").splitlines())
+INOUT=list(sys.argv[14].replace(" ", "\n").splitlines())
+protINOUT=list(sys.argv[15].replace(" ", "\n").splitlines())
 onlyOG= [x for x in names if x not in studies]
 Pos_prot={}
 proteins={}
@@ -37,6 +39,8 @@ study_prot={}
 ##########################################################
 
 ###########################Script##########################
+
+
 for study,start,position in zip(studies,start,position) :
     position=position.split(";")
     position=[int(x) for x in position]
@@ -56,11 +60,23 @@ for item,study in zip(protspe_OG,onlyOG) :
 for item,study in zip(prot,studies) :
         study_prot[study]=item.split(";")
 
+concern_study={}
+for name_,orga,IO,proteinIO in zip(names,orgaWIWO,INOUT,protINOUT) : 
+    if orga!="" : 
+        orga=orga.split(";")
+        conc_orga=[element.replace(".", "").lower() for element in orga]
+        
+        concern_study[name_]=[conc_orga,IO,proteinIO]
+for study in studies : 
+#for name_all,organismesAV,IO,proteinIO in zip(names,orgaWIWO,INOUT,protINOUT) :
+    #subprocess.run(["rm",f"{path}{study}{resfile}/*" ],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,shell=True)
+   
+    if study in concern_study : 
+        final_pos_prot,name=final_pos_IO(study,prot,study_prot,proteins,concern_study)
+        #final_pos_prot,name=final_pos(study,prot,study_prot,proteins)
+    else : 
+        final_pos_prot,name=final_pos(study,prot,study_prot,proteins)
 
-
-for study in studies :
-    subprocess.run(["rm",f"{path}{study}{resfile}*" ],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,shell=True)
-    final_pos_prot,name=final_pos(study,prot,study_prot,proteins)
     sp=study
     file = open(f"{name}","a")
 
@@ -81,9 +97,13 @@ for study in studies :
         stratseq=proteins[sp][-1]
         nucleic_sequences(study,record.id,record.seq,stratseq,final_pos_prot[record.id],study_prot[study],sp,resfile)
 
-for study,sp,ID in zip(studiesspeOG,onlyOG,NUIDspeOG) :
+for study,sp,ID,name,organismesAV,IO,proteinIO in zip(studiesspeOG,onlyOG,NUIDspeOG,names,orgaWIWO,INOUT,protINOUT) :
 
-    final_pos_prot,name=final_pos(study,prot,study_prot,proteins)
+    if study in concern_study : 
+        #final_pos_prot,name=final_pos_(study,prot,study_prot,proteins,concern_study)
+        final_pos_prot,name=final_pos(study,prot,study_prot,proteins)
+    else : 
+        final_pos_prot,name=final_pos(study,prot,study_prot,proteins)
     file = open(f"{name}","a")
 
     for key,positions in final_pos_prot.items() : 
