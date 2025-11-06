@@ -1,8 +1,8 @@
 #!/bin/bash
 SECONDS=0
-
+###################################################################EXTRACT ALL THE INFORMATION FROM THE INFORMATION FILE###################################################################
 while IFS=$',' read -r col1 col2 col3 col4 col5 col6 col7 col8 col9 col10 col11 col12 col13 col14 _; do
-    # Ignorer les lignes commentées
+    
     [[ $col1 =~ ^# ]] && continue
     names+=("$col2") 
     Allstudies+=("$col1")
@@ -46,7 +46,7 @@ INOUT=$(grep -v "^#" All_information.txt |awk -F"," '{print $13}'|awk -F"=" '{pr
 protINOUT=$(grep -v "^#" All_information.txt |awk -F"," '{print $13}'|awk -F"=" '{print $1}'| awk -F "*" '{print $2}')
 
 
-
+###################################################################DELETE THE FOLDER OF THE STUDY###################################################################
 # for study in "${studies[@]}"; do
 # rm -r "${path}""${study:?}/"* >/dev/null 
 # mkdir -p "${path}""${study}"/nucl "${path}""${study}"/prot "${path}""${study}""${res_file}"/treefolder "${path}""${study}"/legend "${path}""${study}"/blast/database/
@@ -56,7 +56,7 @@ protINOUT=$(grep -v "^#" All_information.txt |awk -F"," '{print $13}'|awk -F"=" 
 #  echo The sequences are currently being downloaded ...
 
 
-
+###################################################################DOWNLOAD THE DATA IN GENBANK FORMAT FOR ALL THE ID FOR EACH STUDY###################################################################
 # for i in "${!NUID[@]}"; do   
 #     study="${studies[$i]}"
 #     echo Download the nucleic sequences for the study : "${study}"
@@ -69,7 +69,7 @@ protINOUT=$(grep -v "^#" All_information.txt |awk -F"," '{print $13}'|awk -F"=" 
 #     done
 # done
 
-
+############SPECIFIQUE OUTGROUP############
 # for i in "${!NUIDspeOG[@]}"; do   
 #     study="${studiesspeOG[$i]}"
 #     IFS=$';' read -ra IDprotspeOG <<< "${NUIDspeOG[$i]}"
@@ -81,22 +81,27 @@ protINOUT=$(grep -v "^#" All_information.txt |awk -F"," '{print $13}'|awk -F"=" 
 # done
 
 
-
+###################################################################EXTRACT ALL THE DATA FROM THE GENBANK FILES###################################################################
 # echo The captions, metadata files and files containing all the sequences are currently being created.
 # for study in "${studies[@]}"; do
 # rm -f "${path}""${study:?}/nucl/*" "${path}""${study:?}/prot/*" >/dev/null 
 # done
 # /usr/bin/python3 "${path}""${path_script}"genbank_extract.py "${path}" "${studies[*]}" "${studiesspeOG[*]}" "${names[*]}" "${NUIDspeOG[*]}" "${proteins[*]}" "${proteinsspe_OG[*]}" "${email}"
 
+###################################################################CREATE A TABLE WITH THE DIVERGENCE OF THE SPECIFIC PROTEINS##################################################################
+/usr/bin/python3 "${path}""${path_script}"protdist.py "${path}" "${studies[*]}" "${speprot[*]}" "${names[*]}" "${path_script}" "${res_file}"
+
+###################################################################MESURE THE DIVERGENCE BETWEEN ALL THE SEQUENCES FOR EACH STUDY###################################################################
 # ./"${path_script}"DNA_dist.sh "${path}" "${studies[*]}" 
-./"${path_script}"PROT_dist.sh "${path}" "${studies[*]}" "${res_file}"
+
+###################################################################DELETE THE SEQUENCES THAT ARE TOO CLOSE###################################################################
 # echo The duplicate sequences are being deleted
 # for study in "${studies[@]}"; do
 # rm -f "${path}""${study:?}"/nucl_sdbl_"${study}".fasta "${path}""${study:?}"/prot_sdbl_"${study}".fasta  >/dev/null 
 # done
 # /usr/bin/python3 "${path}""${path_script}"delete_dbl.py "${path}" "${studies[*]}" "${keep_prot[*]}" "${ths[*]}" "${target_list[*]}" 
 
-
+###################################################################SEPERATE THE PROTEINES###################################################################
 # echo the proteins are being seperated
 # for study in "${studies[@]}"; do
 # rm -f "${path}""${study:?}""${res_file}"/* >/dev/null 
@@ -104,93 +109,11 @@ protINOUT=$(grep -v "^#" All_information.txt |awk -F"," '{print $13}'|awk -F"=" 
 
 # /usr/bin/python3 "${path}""${path_script}"test_script_mark_spe.py "${path}" "${studies[*]}" "${position[*]}" "${names[*]}" "${positionspeOG[*]}" "${start[*]}" "${startspe_OG[*]}" "${proteins[*]}" "${proteinsspe_OG[*]}" "${res_file}" "${studiesspeOG[*]}" "${NUIDspeOG[*]}" "${orgaWIWO[*]}" "${INOUT[*]}" "${protINOUT[*]}"
 
-
-
-# echo Lauch of blast
-# for study in "${!studies[@]}"; do
-#     IFS=$';' read -ra sepprot <<< "${proteins[$study]}"
-#     awk 'NR > 4 && $0 !~ /^#/ ' "${path}${studies[$study]}/legend/Label_${studies[$study]}_itol.txt" > map_file.txt
-#     for prot in "${sepprot[@]}"; do        
-#             makeblastdb -in "${path}${studies[$study]}${res_file}${prot}_${studies[$study]}_prot.fasta"\
-#                         -title "${prot}_${studies[$study]}${prot}"\
-#                         -dbtype prot \
-#                         -out "${path}${studies[$study]}/blast/database/${prot}_DB"\
-#                         -parse_seqids
-#             bioawk -c fastx '{ print $name, length($seq) }' "${path}${studies[$study]}${res_file}${prot}_${studies[$study]}_prot.fasta" > "${path}${studies[$study]}/blast/${prot}_${studies[$study]}_prot_size.fasta"
-#     done
-#         prot=$(echo "${namespepro[$study]}" | cut -d'=' -f1 | tr -d ' ')
-#         echo "${prot}"
-#     for prot1 in "${sepprot[@]}"; do
-#         for prot2 in "${sepprot[@]}"; do
-#             blastp  -query "${path}${studies[$study]}${res_file}${prot1}_${studies[$study]}_prot.fasta" \
-#                     -db "${path}${studies[$study]}/blast/database/${prot2}_DB" \
-#                     -out "${path}${studies[$study]}/blast/${prot1}_${prot2}_blast.txt" \
-#                     -outfmt "6"
-#             awk '                                                                                         ARGIND==1 { qsize[$1]=$2; next }        # 1er fichier : tailles des query
-#                 ARGIND==2 { ssize[$1]=$2; next }        # 2e fichier : tailles des subject
-#                 ARGIND==3 {
-#                 qs = ($1 in qsize) ? qsize[$1] : "0"
-#                 ss = ($2 in ssize) ? ssize[$2] : "0"
-#                 print $0,"\t",qs"\t",ss
-#                                                 }
-#             ' "${path}${studies[$study]}/blast/${prot1}_${studies[$study]}_prot_size.fasta"   "${path}${studies[$study]}/blast/${prot2}_${studies[$study]}_prot_size.fasta"   "${path}${studies[$study]}/blast/${prot1}_${prot2}_blast.txt" > "${path}${studies[$study]}/blast/${prot1}_${prot2}_blast_sizes.txt" 
-#             sed '1iQseqid\tSseqid\tpident\tlength\tmismatch\tgapopen\tQstart\tQend\tSstart\tSend\tevalue\tbitscore\tQlength\tSlength' "${path}${studies[$study]}/blast/${prot1}_${prot2}_blast_sizes.txt" > "${path}${studies[$study]}/blast/${prot1}_${prot2}_blast_sizes_leg.txt"
-
-#             awk '{print $0 "\t" (($10-$9+1)/$13*100) "\t" (($8-$7+1)/$14*100)}'   "${path}${studies[$study]}/blast/${prot1}_${prot2}_blast_sizes.txt" | sort -k1,1 -k2,2|sed '1iQseqid\tSseqid\tpident\tlength\tmismatch\tgapopen\tQstart\tQend\tSstart\tSend\tevalue\tbitscore\tQlength\tSlength\tQcoverage\tScoverage'> "${path}${studies[$study]}/blast/${prot1}_${prot2}_blast_table.txt"
-# awk '$1==$2' "${path}${studies[$study]}/blast/${prot1}_${prot2}_blast_table.txt" | sed '1iQseqid\tSseqid\tpident\tlength\tmismatch\tgapopen\tQstart\tQend\tSstart\tSend\tevalue\tbitscore\tQlength\tSlength\tQcoverage\tScoverage' > "${path}${studies[$study]}/blast/${prot1}_${prot2}_blast_table_sameID.txt"
-
-# awk -F'\t' '
-# NR==1 && ($1 ~ /^#|[Qq]uery/) { header=$0; next }   # Garde l’en-tête s’il existe
-# $1 == $2 { self[$1] }                               # Stocke les IDs qui s’alignent sur eux-mêmes
-# {
-#     lines[NR]=$0; subj[NR]=$2                       # Stocke chaque ligne + son subject
-# }
-# END {
-#     if (header) print header
-#     for (i=1; i<=NR; i++) {
-#         if (subj[i] in self)
-#             print lines[i]
-#     }
-# }' "${path}${studies[$study]}/blast/${prot1}_${prot2}_blast_table.txt" | sed '1iQseqid\tSseqid\tpident\tlength\tmismatch\tgapopen\tQstart\tQend\tSstart\tSend\tevalue\tbitscore\tQlength\tSlength\tQcoverage\tScoverage' > "${path}${studies[$study]}/blast/${prot1}_${prot2}_blast_table_mod.txt"
-# awk -F'\t' '
-# $1 == $2 { self[$1] }                     # Étape 1 : repère les IDs avec self-hit
-# {
-#     lines[NR]=$0; q[NR]=$1; s[NR]=$2      # Étape 2 : mémorise toutes les lignes
-# }
-# END {
-#     for (i=1; i<=NR; i++) {
-#         if ((q[i] in self) && (s[i] in self))  # Étape 3 : ne garde que si les deux IDs ont self-hit
-#             print lines[i]
-#     }
-# }' "${path}${studies[$study]}/blast/${prot1}_${prot2}_blast_table_mod.txt" |
-# sort -k1,1 -k2,2  | sed '1iQseqid\tSseqid\tpident\tlength\tmismatch\tgapopen\tQstart\tQend\tSstart\tSend\tevalue\tbitscore\tQlength\tSlength\tQcoverage\tScoverage' > "${path}${studies[$study]}/blast/${prot1}_${prot2}_blast_table_mod_.txt"
-        
-# awk '
-# NR==FNR { map[$1]=$2; next }        # lit le fichier de correspondance (map.txt) 
-# {
-#   if ($1 in map) $1 = map[$1]       # remplace la première colonne si correspondance
-#   if ($2 in map) $2 = map[$2]       # remplace la deuxième colonne si correspondance
-#   print                             # imprime la ligne entière
-# }' map.txt "${path}${studies[$study]}/blast/${prot1}_${prot2}_blast_table_mod_.txt" | sed '1iQseqid\tSseqid\tpident\tlength\tmismatch\tgapopen\tQstart\tQend\tSstart\tSend\tevalue\tbitscore\tQlength\tSlength\tQcoverage\tScoverage' > "${path}${studies[$study]}/blast/${prot1}_${prot2}_blast_table_mod.txt"
-
-
-# awk '
-# NR==FNR { map[$1]=$2; next }        # lit le fichier de correspondance (map.txt) 
-# {
-#   if ($1 in map) $1 = map[$1]       # remplace la première colonne si correspondance
-#   if ($2 in map) $2 = map[$2]       # remplace la deuxième colonne si correspondance
-#   print                             # imprime la ligne entière
-# }' map.txt "${path}${studies[$study]}/blast/${prot1}_${prot2}_blast_table_.txt" > "${path}${studies[$study]}/blast/${prot1}_${prot2}_blast_table.txt"
-        
-#         done
-#     done
-
-# done
-
+###################################################################DELETE THE PROTEINES THAT ARE NOT PRESENTED IN CERTAIN ORGANISM###################################################################
 # echo The proteines that are presented or not in certains proteins are being treated
 # /usr/bin/python3 "${path}""${path_script}"WIWO_protein.py "${path}" "${names[*]}" "${orgaWIWO[*]}" "${INOUT[*]}" "${protINOUT[*]}" "${res_file}" "${Type_seq[*]}"
 
-##merge = OG
+###################################################################ADD THE SPECIFIC OUTGROUP IN EACH FILE###################################################################
 # echo The outgroup of each studies are being added
 # for study in "${studies[@]}"; do
 # rm -f "${path}""${study:?}"/"${res_file}"/*_OG.fasta "${path}""${study:?}"/"${res_file}"/*_OG.aln-fasta  >/dev/null 
@@ -198,9 +121,7 @@ protINOUT=$(grep -v "^#" All_information.txt |awk -F"," '{print $13}'|awk -F"=" 
 # /usr/bin/python3 "${path}""${path_script}"merge_spe_prot.py "${path}" "${names[*]}" "${speprot[*]}" "${Type_seq[*]}" "${res_file}" "${studies[*]}" "${Allstudies[*]}" "${for_prot[*]}" 
 
 
-
-
-
+###################################################################LAUCH TRIMAL FOR EACH PROTEINES OF EACH STUDY###################################################################
 # for study in "${!studies[@]}"; do
 
 #         IFS=$';' read -ra sepprot <<< "${proteins[$study]}"
@@ -228,6 +149,8 @@ protINOUT=$(grep -v "^#" All_information.txt |awk -F"," '{print $13}'|awk -F"=" 
 #         done
     
 # done
+
+############LAUCH TRIMAL FOR EACH SPECIFIC PROTEINES OF EACH STUDY############
 # speprotsse=$(echo "${speprot[@]}" | tr -d '" ' | cut -d'=' -f1 | paste -sd, -)
 # IFS=$',' read -ra speprotsep <<< "${speprotsse[@]}"
 # for i in "${!speprotsep[@]}"; do
@@ -265,6 +188,7 @@ protINOUT=$(grep -v "^#" All_information.txt |awk -F"," '{print $13}'|awk -F"=" 
 
 # done 
 
+###################################################################LAUCH IQTREE2 FOR EACH PROTEINES FOR EACH STUDY###################################################################
 # for study in "${!studies[@]}"; do
 # printf "The best model for each proteic sequence will be writen \n">"${path}""${studies[$study]}""${res_file}"Best_model_"${studies[$study]}".txt
 #     IFS=$';' read -ra sepprot <<< "${proteins[$study]}"
@@ -276,6 +200,7 @@ protINOUT=$(grep -v "^#" All_information.txt |awk -F"," '{print $13}'|awk -F"=" 
 #     done
 # done
 
+############LAUCH IQTREE2 FOR EACH  SPECIFIC PROTEINES FOR EACH STUDY############
 # for pair in "${unique_pairs[@]}" ; do 
 # IFS=$',' read -ra protstud <<< "${pair[@]}"
 

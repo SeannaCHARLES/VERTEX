@@ -2,7 +2,7 @@
 import subprocess
 import sys 
 
-from All_Functions import Modif_ID,colour_choice,modif_localisation,geographic_region,modif_host,deforder,write_file,first_call,concatenates,extract_id
+from All_Functions import first_call,concatenates,extract_id
 
 path = sys.argv[1]
 studies=list(sys.argv[2].split(" "))

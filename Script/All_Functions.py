@@ -23,6 +23,7 @@ import requests
 from geopy.geocoders import Nominatim
 from itertools import combinations
 import time
+
 #You email addresse for NCBI request
 mail="seanna.charles@univ-lyon1.fr"
 
@@ -78,6 +79,9 @@ type_files=["Geolocalisation","Host","Serogroup"]
 # It is important to remove all special characters that could cause problems in the future use of the software.
 # It is important to remove terms that do not allow the different organisms to be differentiated (Add the terms you want in this function)
 
+
+
+###################################################################GENBANK EXTRACT PYTHON FILE###################################################################
 def Modif_ID(ID) : 
     #These changes are necessary to ensure the uniformity of the identifiers used by the various organisations.
     #Add you own modification if you feel the need
@@ -317,7 +321,7 @@ def write_file(path,Description_nu,Description_prot,Sequence_aa,Sequence_nu,loca
     sero.write(text)
     sero.close()
     
-    label=open(name_collapse,'a')
+    label=open(name_range,'a')
     label.write(f"##{organism}\n")
     text=str (f"N{ID}\t{color_sero}\nG{ID}\t{color_sero}\n")
     label.write(text)
@@ -391,8 +395,9 @@ def first_call(path,study) :
 
     name_files = f"{path}{study}/legend/Range_{study}NSmGn_itol.txt"
     file = open(name_files,"w")
-    file.write(f"DATASET_RANGE\nSEPARATOR TAB\nDATASET_LABEL\tCOLOR\t#000000\nWIDTH\t2\nDRAW_ARC\ttrue\nLABEL_SIZE\t14\nDATA\n")       
+    file.write(f"DATASET_COLORSTRIP\nSEPARATOR TAB\nDATASET_LABEL	RectZoneExample\tCOLOR\t#000000\nDATA\n")       
     file.close()
+    
 
     name_files = f"{path}{study}/legend/accolade_{study}NSmGn_itol.txt"
     file = open(name_files,"w")
@@ -606,8 +611,73 @@ def find_serogroup(organism) :
     
 
 
-#######Function for the Script mark_prot##################
+###################################################################Function for the Script delete_dbl###################################################################
 
+##Function select_doublon
+#This function identified all the possible duplicate sequences
+#The possible duplicates are identified using a specific threshold; this threshold was found using the dnadist file and the visible rake of the phylogenetic tree (specific to each study and not provided by this script). 
+
+def select_doublon(path,study,ths,keep_list,target) :
+
+    df = pd.read_csv(f"{path}{study}/{study}_dnadist.txt", delimiter="\t",header=0,index_col=0)
+    df.iloc[:, 1:]=df.iloc[:, 1:].astype(float)
+    
+    Doublon=onlygap(path,study,target,keep_list)
+    end_line=df.shape[0]
+    end_col=df.shape[1]
+    line=0
+    col=0
+    while line <end_line:
+        col=line+1
+        while col <end_col-1 :
+            if df.iloc[line,col] <=ths and df.iloc[line,col]!=-1  :
+                if (df.index[line] not in target[9:].lower() or target[9:].lower() not in df.index[line])  and (df.index[line] not in keep_list or any(prot[9:].lower() not in df.index[line] for prot in keep_list)): #or any(og not in df.index[line] for og in keep_list):
+                    ID=str(df.index[line])
+                    Doublon.append(ID)
+                    df=df.drop(columns=ID)
+                    df=df.drop(index=ID)
+                    end_line=df.shape[0]
+                    end_col=df.shape[1]
+                    line=0
+
+            col+=1
+            
+
+        line+=1
+    return Doublon
+
+##Function delete_dbl
+#This function delete the identified duplicates for each protein for each study
+
+def delete_dbl(path,Doublon,study):
+    types_seq=["nucl",'prot']
+    for type_seq in types_seq :
+    
+        name=f"{path}{study}/{type_seq}_sdbl_{study}.fasta"
+    
+        subprocess.run(f"rm {name}",shell=True)
+
+        for record in SeqIO.parse(f"{path}{study}/{type_seq}_all_{study}.fasta","fasta") :
+        
+            if record.id not in Doublon :
+                file = open(name,"a")
+                text=str (">"+record.id +'\n'+record.seq+'\n')
+                file.write(text)
+                file.close()
+
+
+def onlygap(path,study,target,keep_list):
+    Doublon=[]
+    types_seq=["prot","nucl"]
+    for type_seq in types_seq:
+        for record in SeqIO.parse(f"{path}{study}/nucl_all_align_{study}.aln-fasta","fasta") :
+            if set(record.seq)=={'-'} and (record.id not in target[9:].lower() or target[9:].lower() not in record.id) and (record.id not in keep_list or any(prot[9:].lower() not in record.id for prot in keep_list)):
+                if record.id not in Doublon :
+                    Doublon.append(record.id)
+    return Doublon
+
+
+###################################################################Function for the Script Mark_script###################################################################
 
 ##Function compt_ali_nucl
 # This function uses the position of the proteins of the target organism (proteic sequence) to identify the position of the proteins in the alignment.
@@ -833,8 +903,7 @@ def final_pos_IO(study,prot,study_prot,proteins,concern_study) :
                     i+=1
             
 
-#KP792742
-#KU925501
+
     ligne_chaine = '\t'.join(df.iloc[[0]].astype(str))
     name=f"{path}{study}/Pos_prot_final_{study}.fasta"
     file = open(f"{name}","w")
@@ -946,7 +1015,36 @@ def col_pos(nm_study,pos_col_prot,study_prot) :
 
 
 
-#######Function for the split_protein##################
+###################################################################Function for the Script WIWO###################################################################
+
+
+def deleteIN(study,IO,protein,organismes,res_file,types_seq) : 
+
+    for type_seq in types_seq : 
+        subprocess.run(f" cp {path}{study}{res_file}{protein}_{study}_{type_seq}.fasta {path}{study}{res_file}{protein}_{study}_{type_seq}_bef_WIWO.fasta" ,shell=True)
+        subprocess.run(["rm", f"{path}{study}{res_file}{protein}_{study}_{type_seq}.fasta"] ,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,shell=True)
+        filename=f"{path}{study}{res_file}{protein}_{study}_{type_seq}.fasta"
+
+        for record in SeqIO.parse(f"{path}{study}{res_file}{protein}_{study}_{type_seq}_bef_WIWO.fasta","fasta") :
+            if any(org[:6] in record.id for org in organismes):
+                file = open(filename,"a")
+                file.write(f">{record.id}\n{record.seq}\n")       
+                file.close()
+
+def deleteOUT(study,IO,protein,organismes,res_file,types_seq) : 
+
+    for type_seq in types_seq : 
+        subprocess.run(f"cp {path}{study}{res_file}{protein}_{study}_{type_seq}.fasta {path}{study}{res_file}{protein}_{study}_{type_seq}_bef_WIWO.fasta",shell=True)
+        subprocess.run(["rm", f"{path}{study}{res_file}{protein}_{study}_{type_seq}.fasta"], stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,shell=True)
+        filename=f"{path}{study}{res_file}{protein}_{study}_{type_seq}.fasta"
+
+        for record in SeqIO.parse(f"{path}{study}{res_file}{protein}_{study}_{type_seq}_bef_WIWO.fasta","fasta") :
+            if not any(org[:6] in record.id for org in organismes): 
+                file = open(filename,"a")
+                file.write(f">{record.id}\n{record.seq}\n")       
+                file.close()
+
+    
 
 
 ##Function Extract_data
@@ -985,96 +1083,5 @@ def write_file_prot(Data,sp,Protname,study) :
             file.write(text)
             file.close()
             
-#######Function for the Script delete_dbl##################
-##Function select_doublon
-#This function identified all the possible duplicate sequences
-#The possible duplicates are identified using a specific threshold; this threshold was found using the dnadist file and the visible rake of the phylogenetic tree (specific to each study and not provided by this script). 
 
-def select_doublon(path,study,ths,keep_list,target) :
-
-    df = pd.read_csv(f"{path}{study}/{study}_dnadist.txt", delimiter="\t",header=0,index_col=0)
-    df.iloc[:, 1:]=df.iloc[:, 1:].astype(float)
-    
-    Doublon=onlygap(path,study,target,keep_list)
-    end_line=df.shape[0]
-    end_col=df.shape[1]
-    line=0
-    col=0
-    while line <end_line:
-        col=line+1
-        while col <end_col-1 :
-            if df.iloc[line,col] <=ths and df.iloc[line,col]!=-1  :
-                if (df.index[line] not in target[9:].lower() or target[9:].lower() not in df.index[line])  and (df.index[line] not in keep_list or any(prot[9:].lower() not in df.index[line] for prot in keep_list)): #or any(og not in df.index[line] for og in keep_list):
-                    ID=str(df.index[line])
-                    Doublon.append(ID)
-                    df=df.drop(columns=ID)
-                    df=df.drop(index=ID)
-                    end_line=df.shape[0]
-                    end_col=df.shape[1]
-                    line=0
-
-            col+=1
-            
-
-        line+=1
-    return Doublon
-
-def onlygap(path,study,target,keep_list):
-    Doublon=[]
-    types_seq=["prot","nucl"]
-    for type_seq in types_seq:
-        for record in SeqIO.parse(f"{path}{study}/nucl_all_align_{study}.aln-fasta","fasta") :
-            if set(record.seq)=={'-'} and (record.id not in target[9:].lower() or target[9:].lower() not in record.id) and (record.id not in keep_list or any(prot[9:].lower() not in record.id for prot in keep_list)):
-                if record.id not in Doublon :
-                    Doublon.append(record.id)
-    return Doublon
-
-
-##Function delete_dbl
-#This function delete the identified duplicates for each protein for each study
-
-def delete_dbl(path,Doublon,study):
-    types_seq=["nucl",'prot']
-    for type_seq in types_seq :
-    
-        name=f"{path}{study}/{type_seq}_sdbl_{study}.fasta"
-    
-        subprocess.run(f"rm {name}",shell=True)
-
-        for record in SeqIO.parse(f"{path}{study}/{type_seq}_all_{study}.fasta","fasta") :
-        
-            if record.id not in Doublon :
-                file = open(name,"a")
-                text=str (">"+record.id +'\n'+record.seq+'\n')
-                file.write(text)
-                file.close()
-
-
-def deleteIN(study,IO,protein,organismes,res_file,types_seq) : 
-
-    for type_seq in types_seq : 
-        subprocess.run(f" cp {path}{study}{res_file}{protein}_{study}_{type_seq}.fasta {path}{study}{res_file}{protein}_{study}_{type_seq}_bef_WIWO.fasta" ,shell=True)
-        subprocess.run(["rm", f"{path}{study}{res_file}{protein}_{study}_{type_seq}.fasta"] ,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,shell=True)
-        filename=f"{path}{study}{res_file}{protein}_{study}_{type_seq}.fasta"
-
-        for record in SeqIO.parse(f"{path}{study}{res_file}{protein}_{study}_{type_seq}_bef_WIWO.fasta","fasta") :
-            if any(org[:6] in record.id for org in organismes):
-                file = open(filename,"a")
-                file.write(f">{record.id}\n{record.seq}\n")       
-                file.close()
-
-def deleteOUT(study,IO,protein,organismes,res_file,types_seq) : 
-
-    for type_seq in types_seq : 
-        subprocess.run(f"cp {path}{study}{res_file}{protein}_{study}_{type_seq}.fasta {path}{study}{res_file}{protein}_{study}_{type_seq}_bef_WIWO.fasta",shell=True)
-        subprocess.run(["rm", f"{path}{study}{res_file}{protein}_{study}_{type_seq}.fasta"], stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,shell=True)
-        filename=f"{path}{study}{res_file}{protein}_{study}_{type_seq}.fasta"
-
-        for record in SeqIO.parse(f"{path}{study}{res_file}{protein}_{study}_{type_seq}_bef_WIWO.fasta","fasta") :
-            if not any(org[:6] in record.id for org in organismes): 
-                file = open(filename,"a")
-                file.write(f">{record.id}\n{record.seq}\n")       
-                file.close()
-
-    
 
