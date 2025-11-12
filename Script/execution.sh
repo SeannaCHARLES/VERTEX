@@ -89,7 +89,10 @@ protINOUT=$(grep -v "^#" All_information.txt |awk -F"," '{print $13}'|awk -F"=" 
 # /usr/bin/python3 "${path}""${path_script}"genbank_extract.py "${path}" "${studies[*]}" "${studiesspeOG[*]}" "${names[*]}" "${NUIDspeOG[*]}" "${proteins[*]}" "${proteinsspe_OG[*]}" "${email}"
 
 ###################################################################CREATE A TABLE WITH THE DIVERGENCE OF THE SPECIFIC PROTEINS##################################################################
-/usr/bin/python3 "${path}""${path_script}"protdist.py "${path}" "${studies[*]}" "${speprot[*]}" "${names[*]}" "${path_script}" "${res_file}"
+for study in "${studies[@]}"; do
+    mkdir -p "${path}""${study}"/Align_all
+done
+/usr/bin/python3 "${path}""${path_script}"protdist.py "${path}" "${studies[*]}" "${speprot[*]}" "${names[*]}" "${path_script}" "${res_file}" "${path_script}"
 
 ###################################################################MESURE THE DIVERGENCE BETWEEN ALL THE SEQUENCES FOR EACH STUDY###################################################################
 # ./"${path_script}"DNA_dist.sh "${path}" "${studies[*]}" 
@@ -189,24 +192,25 @@ protINOUT=$(grep -v "^#" All_information.txt |awk -F"," '{print $13}'|awk -F"=" 
 # done 
 
 ###################################################################LAUCH IQTREE2 FOR EACH PROTEINES FOR EACH STUDY###################################################################
+
 # for study in "${!studies[@]}"; do
 # printf "The best model for each proteic sequence will be writen \n">"${path}""${studies[$study]}""${res_file}"Best_model_"${studies[$study]}".txt
 #     IFS=$';' read -ra sepprot <<< "${proteins[$study]}"
 #     for prot in "${sepprot[@]}"; do
 #             echo IQtree2 pour la proteine "${prot}" pour l étude "${studies[$study]}"
 #             { echo "${prot}" : ; awk 'NR==1 {print "Number of sequences:", $1, "Sequences size:", $2}' "${path}""${studies[$study]}""${res_file}"treefolder/"${prot}"_"${studies[$study]}"_prot_trimal.phy ;}>> "${path}""${studies[$study]}""${res_file}"Best_model_"${studies[$study]}".txt
-#             iqtree2 -redo -s "${path}${studies[$study]}${res_file}treefolder/${prot}_${studies[$study]}_prot_trimal.fasta" -m MFP -bb 1000 -alrt 1000 -nt AUTO |grep 'Best-fit model:' >> "${path}""${studies[$study]}""${res_file}"Best_model_"${studies[$study]}".txt
+#             iqtree2 -redo -s "${path}${studies[$study]}${res_file}treefolder/${prot}_${studies[$study]}_prot_trimal.fasta" -m MFP -bb 1000 -alrt 1000 -nt AUTO -T AUTO |grep 'Best-fit model:' >> "${path}""${studies[$study]}""${res_file}"Best_model_"${studies[$study]}".txt
 #             printf "\n" >> "${path}""${studies[$study]}""${res_file}"Best_model_"${studies[$study]}".txt
 #     done
 # done
 
-############LAUCH IQTREE2 FOR EACH  SPECIFIC PROTEINES FOR EACH STUDY############
+###########LAUCH IQTREE2 FOR EACH  SPECIFIC PROTEINES FOR EACH STUDY############
 # for pair in "${unique_pairs[@]}" ; do 
 # IFS=$',' read -ra protstud <<< "${pair[@]}"
 
 # echo IQtree2 pour la proteine "${protstud[0]}" pour l étude "${protstud[1]}"
 #             { echo "${protstud[0]}" : ; awk 'NR==1 {print "Number of sequences:", $1, "Sequences size:", $2}' "${path}""${protstud[1]}""${res_file}"treefolder/"${protstud[0]}"_"${protstud[1]}"_prot_trimal.phy ;}>> "${path}""${protstud[1]}""${res_file}"Best_model_"${protstud[1]}".txt
-#             iqtree2 -redo -s "${path}${protstud[1]}${res_file}treefolder/${protstud[0]}_${protstud[1]}_prot_trimal.fasta" -m MFP -bb 1000 -alrt 1000 -nt AUTO |grep 'Best-fit model:' >> "${path}""${protstud[1]}""${res_file}"Best_model_"${protstud[1]}".txt
+#             iqtree2 -redo -s "${path}${protstud[1]}${res_file}treefolder/${protstud[0]}_${protstud[1]}_prot_trimal.fasta" -m MFP -bb 1000 -alrt 1000 -nt AUTO -T AUTO |grep 'Best-fit model:' >> "${path}""${protstud[1]}""${res_file}"Best_model_"${protstud[1]}".txt
 #             printf "\n" >> "${path}""${protstud[1]}""${res_file}"Best_model_"${protstud[1]}".txt
 
 # done
