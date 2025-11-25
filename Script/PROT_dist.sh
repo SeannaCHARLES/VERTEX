@@ -1,5 +1,5 @@
 #!/bin/bash
-
+set -e
 # This file launches DNAdist and create a distance matrix between the organismes. 
 # Using the organismes ID as row and column header
 
@@ -22,7 +22,7 @@ echo -e ">${Query}\n${Qseq}\n>${subject}\n${Sseq}\n" > "${new_path}temp.fasta"
 mafft --auto "${new_path}temp.fasta" > "${new_path}temp.aln-fasta"
 seqret -sequence "${new_path}temp.aln-fasta" -outseq "${new_path}temp.phy" -osformat phylip
 cp "${new_path}"temp.phy "${new_path}"infile
-cd "${new_path}" || return
+cd "${new_path}"
    
 echo -e "Y\n" | phylip protdist 
 

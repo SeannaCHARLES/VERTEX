@@ -1,0 +1,125 @@
+import subprocess
+import sys 
+
+import pandas as pd
+path = sys.argv[1]
+studies=list(sys.argv[2].split(" "))
+studiesspeOG=list(sys.argv[3].split(" "))
+orgaWIWO=list(sys.argv[4].replace(" ", "\n").splitlines())
+INOUT=list(sys.argv[5].replace(" ", "\n").splitlines())
+protINOUT=list(sys.argv[6].replace(" ", "\n").splitlines())
+target_list=list(sys.argv[7].split())
+names=list(sys.argv[8].split(" "))
+Allstudies=list(sys.argv[9].split(" "))
+OG_protOUT={}
+OG_protIN={}
+
+def Blastp_run(DB,File,output) :
+    subprocess.run(f"blastp -db {DB}_DB -query {File} -outfmt 6 -out {output}.txt",shell=True)
+    # cmd=str("bioawk -c fastx '{ print $name, length($seq) }' ")
+    # subprocess.run(f"{cmd}{DB}.fasta",shell=True)
+    #print(f"{File}"
+    subprocess.run(f"water -asequence {DB}.fasta -bsequence {File} -outfile {output}_water.txt -auto",shell=True)
+    subprocess.run(f"needle -asequence {DB}.fasta -bsequence {File} -outfile {output}_needle.txt -auto",shell=True)
+    
+def add_new_pos(protein,output) :
+    prot=protein.replace("Start","").replace("End","")
+    if "Start" in protein :
+        missing_pos=9
+    else : 
+        missing_pos=10
+    #cmd=str("awk '/"+{prot}+"/ && (NR==1 || $3+0 > max) { max = ${missing_pos}+0; line = $0 } END { print line }'"+ {output}+".txt")
+    cmd = f"awk '/{prot}/ && (NR==1 || $3+0 > max) {{ max = $3+0; line = $0 }} END {{ print ${missing_pos} }}' {output}.txt"
+   
+    pos=subprocess.run(f"{cmd}",capture_output=True,shell=True, text=True)
+    print(pos.stdout)
+    return pos.stdout
+#print(f"{INOUT}\n{protINOUT}")
+dicy={}
+for all_s, IO,prots,virus in zip(Allstudies,INOUT,protINOUT,orgaWIWO) :
+    if all_s not in dicy : #and IO!='' :
+        dicy[all_s]=[IO,prots,virus]
+    else : #if IO!='' : 
+        dicy[all_s].append([IO,prots,virus])
+
+
+for study,target,element in zip(studies,target_list,dicy.items()) : 
+
+    pos_prot = pd.read_csv(f"{path}{study}/Pos_prot_{study}.txt", delimiter="\t",header=0,index_col=0)
+    metadata = pd.read_csv(f"{path}{study}/Metadata_{study}.txt", delimiter="\t",header=0,index_col=0)
+    pos_prot.to_csv(f"{path}{study}/Pos_prot_Final_{study}.txt")
+    Pos_prot_final=pd.read_csv(f"{path}{study}/Pos_prot_Final_{study}.txt", delimiter="\t",header=0,index_col=0)
+    OG_protOUT={}
+  
+    if element[1][0]=="OUT" : 
+        for virus in element[1][2].split(";") :
+            OG_protOUT[virus]=element[1][1]
+    elif element[1][0]=="IN":
+        list_ID=metadata["Nucleic accession number"].tolist()
+        print(list_ID)
+        for  ID in list_ID :
+            if ID not in element[1][2].split(";") :
+                if ID not in OG_protOUT :
+                    OG_protOUT[ID]=[element[1][1]]
+                elif element[1][1] not in  OG_protOUT[ID] : 
+                    OG_protOUT[ID].append(element[1][1])
+    #print(f"OG_protOUT : {OG_protOUT}")
+    end_line=metadata.shape[0]
+    end_col=metadata.shape[1]
+    match_ID={}
+    for line in range(0,end_line-1) : 
+        ID_itol=metadata.columns.get_loc('ID itol tree')
+        ID_Nu=metadata.columns.get_loc('Nucleic accession number')
+        match_ID[metadata.iloc[line,ID_itol]]=metadata.iloc[line,ID_Nu]
+
+    end_line=pos_prot.shape[0]
+    end_col=pos_prot.shape[1]  
+    missing_val={}
+    for line in range(0,end_line-1) : 
+        for col in range(2,end_col-1) :  
+            if "nan" in str(pos_prot.iloc[line,col]) : 
+                DB = str(f"{path}{study}/{target}_ref")
+                File=str(f"{path}{study}/prot/{match_ID[pos_prot.iloc[line,0]]}_prot.fasta")
+                output=str(f"{path}{study}/Align/{target}_{match_ID[pos_prot.iloc[line,0]]}")
+                protein=(str(f"pos_prot.columns[col]"))
+                if match_ID[pos_prot.iloc[line,0]] in OG_protOUT :
+
+                    if not any(str(elem).lower() in str(pos_prot.columns[col]).lower()  for elem in OG_protOUT[match_ID[pos_prot.iloc[line,0]]]) : 
+                        print(f"é{study}-->{pos_prot.columns[col].replace("Start","").replace("End","")} is missing||{pos_prot.iloc[line,0]}={match_ID[pos_prot.iloc[line,0]]}")
+                        
+                        if pos_prot.iloc[line,0] not in missing_val : 
+                            missing_val[match_ID[pos_prot.iloc[line,0]]]=[pos_prot.columns[col]]
+                            Blastp_run(DB,File,output)
+                            
+                            new_pos=add_new_pos(protein,output)
+                            Pos_prot_final.iloc[line,col]=new_pos
+                            Pos_prot_final.to_csv(f"{path}{study}/Pos_prot_Final_{study}.txt", sep="\t")
+
+                        elif pos_prot.columns[col] not in missing_val[match_ID[pos_prot.iloc[line,0]]]: 
+                            missing_val[match_ID[pos_prot.iloc[line,0]]].append(pos_prot.columns[col])
+                            
+                            new_pos=add_new_pos(protein,output)
+                            Pos_prot_final.iloc[line,col]=new_pos
+                            Pos_prot_final.to_csv(f"{path}{study}/Pos_prot_Final_{study}.txt", sep="\t")
+                else :  
+                    print(f"r for the study {study}-->{pos_prot.columns[col].replace("Start","").replace("End","")} is missing||{pos_prot.iloc[line,0]}={match_ID[pos_prot.iloc[line,0]]}")
+                    #Blastp_run(DB,File,output)
+                    if pos_prot.iloc[line,0] not in missing_val : 
+                        missing_val[match_ID[pos_prot.iloc[line,0]]]=[pos_prot.columns[col]]
+                        Blastp_run(DB,File,output)
+
+                        new_pos=add_new_pos(protein,output)
+                        print(new_pos)
+                        Pos_prot_final.iloc[line,col]=new_pos
+                        Pos_prot_final.to_csv(f"{path}{study}/Pos_prot_Final_{study}.txt", sep="\t")
+
+                    elif pos_prot.columns[col] not in missing_val[match_ID[pos_prot.iloc[line,0]]]: 
+                        missing_val[match_ID[pos_prot.iloc[line,0]]].append(pos_prot.columns[col])
+
+                        new_pos=add_new_pos(protein,output)
+                        print(new_pos)
+                        Pos_prot_final.iloc[line,col]=new_pos
+                        Pos_prot_final.to_csv(f"{path}{study}/Pos_prot_Final_{study}.txt", sep="\t")
+    #print(f"{missing_val}")
+                
+                    

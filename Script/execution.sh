@@ -44,6 +44,7 @@ speprot=$(grep -v "^#" All_information.txt |awk -F"," '{print "\"",$7,"\""}')
 orgaWIWO=$(grep -v "^#" All_information.txt | awk -F"," '{gsub(/\xc2\xa0/, "", $13); print $13}' | awk -F"=" '{print $2}')
 INOUT=$(grep -v "^#" All_information.txt |awk -F"," '{print $13}'|awk -F"=" '{print $1}'| awk -F "*" '{print $1}')
 protINOUT=$(grep -v "^#" All_information.txt |awk -F"," '{print $13}'|awk -F"=" '{print $1}'| awk -F "*" '{print $2}')
+diff_name_prot=$(grep "^#" All_information.txt |awk -F":" 'NR==7 {print $2}'| tr -d ',')
 
 
 ###################################################################DELETE THE FOLDER OF THE STUDY###################################################################
@@ -61,6 +62,7 @@ protINOUT=$(grep -v "^#" All_information.txt |awk -F"," '{print $13}'|awk -F"=" 
 #     study="${studies[$i]}"
 #     echo Download the nucleic sequences for the study : "${study}"
 #     IFS=$';' read -ra IDprot <<< "${NUID[$i]}"
+#     rm "${path}""${study}"/sequences_"${study}".gb
 #    for ID in "${IDprot[@]}"; do 
 
 #         esearch -db nucleotide -query "$ID" |efetch -format gb > "${path}""${study}"/"$ID".gb
@@ -69,7 +71,7 @@ protINOUT=$(grep -v "^#" All_information.txt |awk -F"," '{print $13}'|awk -F"=" 
 #     done
 # done
 
-############SPECIFIQUE OUTGROUP############
+# ###########SPECIFIQUE OUTGROUP############
 # for i in "${!NUIDspeOG[@]}"; do   
 #     study="${studiesspeOG[$i]}"
 #     IFS=$';' read -ra IDprotspeOG <<< "${NUIDspeOG[$i]}"
@@ -82,17 +84,59 @@ protINOUT=$(grep -v "^#" All_information.txt |awk -F"," '{print $13}'|awk -F"=" 
 
 
 ###################################################################EXTRACT ALL THE DATA FROM THE GENBANK FILES###################################################################
-# echo The captions, metadata files and files containing all the sequences are currently being created.
-# for study in "${studies[@]}"; do
-# rm -f "${path}""${study:?}/nucl/*" "${path}""${study:?}/prot/*" >/dev/null 
-# done
-# /usr/bin/python3 "${path}""${path_script}"genbank_extract.py "${path}" "${studies[*]}" "${studiesspeOG[*]}" "${names[*]}" "${NUIDspeOG[*]}" "${proteins[*]}" "${proteinsspe_OG[*]}" "${email}"
+echo The captions, metadata files and files containing all the sequences are currently being created.
+echo "${diff_name_prot[*]}"
+for study in "${studies[@]}"; do
+rm -f "${path}""${study:?}/nucl/*" "${path}""${study:?}/prot/*" >/dev/null 
+done
+/usr/bin/python3 "${path}""${path_script}"genbank_extract.py "${path}" "${studies[*]}" "${studiesspeOG[*]}" "${names[*]}" "${NUIDspeOG[*]}" "${email}" "${proteins[*]}"  "${proteinsspe_OG[*]}"   "${OG_prot[*]}" "${diff_name_prot[*]}"
 
 ###################################################################CREATE A TABLE WITH THE DIVERGENCE OF THE SPECIFIC PROTEINS##################################################################
 for study in "${studies[@]}"; do
     mkdir -p "${path}""${study}"/Align_all
 done
 /usr/bin/python3 "${path}""${path_script}"protdist.py "${path}" "${studies[*]}" "${speprot[*]}" "${names[*]}" "${path_script}" "${res_file}" "${path_script}"
+
+for i in "${!studies[@]}"; do
+
+    IFS=$';' read -ra prot <<< "${proteins[i]}"
+    IFS=$';' read -ra pos <<< "${position[i]}"
+    inc=0        
+    rm "${path}""${studies[i]}"/"${target_list[i]}"_ref.fasta "${path}""${studies[i]}"/"${target_list[i]}"_ref_DB
+    
+    for p in "${!prot[@]}"; do
+        ss=${p}+${inc}
+        inc=${inc}+1
+
+awk -v start="${pos[ss]}" -v end="${pos[ss+1]}" -v id="${target_list[i]}" -v proteine="${prot[p]}" '
+    !/^>/ { seq = seq $0 }          # concatène toutes les lignes de séquence
+    END {
+        print ">"  id "_" proteine 
+        print substr(seq, start, end - start + 1)
+    }
+' "${path}""${studies[i]}"/prot/"${target_list[i]}"_prot.fasta >> "${path}""${studies[i]}"/"${target_list[i]}"_ref.fasta
+        
+    done
+        makeblastdb -in "${path}""${studies[i]}"/"${target_list[i]}"_ref.fasta \
+                    -title "${target_list[i]}"_ref.fasta \
+                    -dbtype prot \
+                    -out "${path}""${studies[i]}"/"${target_list[i]}"_ref_DB \
+                    -parse_seqids
+
+
+
+done
+for study in "${studies[@]}"; do
+mkdir -p "${path}""${studies[i]}"/Align
+rm -f "${path}""${study}"/Align/* >/dev/null 
+done
+/usr/bin/python3 "${path}""${path_script}"prot_position.py "${path}" "${studies[*]}" "${studiesspeOG[*]}" "${orgaWIWO[*]}" "${INOUT[*]}" "${protINOUT[*]}" "${target_list[*]}" "${names[*]}" "${Allstudies[*]}"
+
+
+
+
+
+
 
 ###################################################################MESURE THE DIVERGENCE BETWEEN ALL THE SEQUENCES FOR EACH STUDY###################################################################
 # ./"${path_script}"DNA_dist.sh "${path}" "${studies[*]}" 
@@ -112,6 +156,8 @@ done
 
 # /usr/bin/python3 "${path}""${path_script}"test_script_mark_spe.py "${path}" "${studies[*]}" "${position[*]}" "${names[*]}" "${positionspeOG[*]}" "${start[*]}" "${startspe_OG[*]}" "${proteins[*]}" "${proteinsspe_OG[*]}" "${res_file}" "${studiesspeOG[*]}" "${NUIDspeOG[*]}" "${orgaWIWO[*]}" "${INOUT[*]}" "${protINOUT[*]}"
 
+
+#/usr/bin/python3 "${path}""${path_script}"test_script_mark_spe.py "${path}" "${studies[*]}" "${studiesspeOG[*]}" "${orgaWIWO[*]}" "${INOUT[*]}" "${protINOUT[*]}" "${target_list[*]}" 
 ###################################################################DELETE THE PROTEINES THAT ARE NOT PRESENTED IN CERTAIN ORGANISM###################################################################
 # echo The proteines that are presented or not in certains proteins are being treated
 # /usr/bin/python3 "${path}""${path_script}"WIWO_protein.py "${path}" "${names[*]}" "${orgaWIWO[*]}" "${INOUT[*]}" "${protINOUT[*]}" "${res_file}" "${Type_seq[*]}"
@@ -220,3 +266,6 @@ Minutes=$((("${SECONDS}" % 3600) / 60))
 Sec=$(("${SECONDS}" % 60))
 
 echo "It is finally over excution time : ${Hours} Hours ${Minutes} Minutes ${Sec} Seconds"
+
+#snakemake
+#nextflow

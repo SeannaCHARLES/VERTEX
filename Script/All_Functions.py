@@ -347,6 +347,10 @@ def write_file(path,Description_nu,Description_prot,Sequence_aa,Sequence_nu,loca
             nu.write(f">{ID}\n{Sequence_nu}\n")
         with open (f"{path}{study}/{nomprot_file}.fasta","w") as aa : 
             aa.write(f">{ID}\n{Sequence_aa}\n")  
+        with open (f"{path}{study}/nucl/{nomnucl_file}.fasta","w") as nu : 
+            nu.write(f">{ID}\n{Sequence_nu}\n")
+        with open (f"{path}{study}/prot/{nomprot_file}.fasta","w") as aa : 
+            aa.write(f">{ID}\n{Sequence_aa}\n")
     else : 
         with open (f"{path}{study}/nucl/{nomnucl_file}.fasta","w") as nu : 
             nu.write(f">{ID}\n{Sequence_nu}\n")
@@ -429,12 +433,15 @@ region_colors=ratp_colors.copy()
 serogroup_colors=ratp_colors.copy()
 host_colors=ratp_colors.copy()
 
-def extract_id(path,Datas,study,sp,list_prot,mail) :
+def extract_id(path,Datas,study,sp,list_prot,mail,Diff_name,chain_prot,vv_prot) :
     global region_colors
     global serogroup_colors
     global host_colors
     global allmetadata
     global collaps
+
+    
+
     for record in SeqIO.parse(Datas,"genbank"): 
         #Variable initialisation 
         host="Na"
@@ -487,7 +494,7 @@ def extract_id(path,Datas,study,sp,list_prot,mail) :
             if "protein_id" in feature.qualifiers :
                 ID_prot = feature.qualifiers['protein_id'][0]
         output_prot=""        
-        output_prot,output_pos=extract_prot_data(ID_prot,study,list_prot,mail)
+        output_prot,output_pos=extract_prot_data(ID_prot,study,list_prot,mail,Diff_name,chain_prot,vv_prot)
         
         order_color,host_colors=colour_choice(order,host_colors,"order")
         region_color,region_colors=colour_choice(region,region_colors,"region")
@@ -503,16 +510,16 @@ def extract_id(path,Datas,study,sp,list_prot,mail) :
         
         line=f"{study}\t{fullorganisme}\t{ID}\t{taxonomy}\t{serogroup}\t{ID_prot}\t{sizeprot}\t{output_prot}{Nu}\t{sizenu}\t{strand}\t{strain}\t{region}: {localisation}\t{order}: {host}\t{ref}\n"
         line_prot_=f"{study}\t{ID}\t{output_pos}\n"
-        line_prot_=line_prot_.replace(">","")
-        line_prot_=line_prot_.replace("<","")
-        line_prot_=line_prot_.replace("GP38","")
-        line_prot_=line_prot_.replace("Gn","")
+
+        # line_prot_=line_prot_.replace("GP38","")
+        # line_prot_=line_prot_.replace("Gn","")
         line_prot_=line_prot_.replace(":","")
         name=f"{path}{study}/Metadata_{study}.txt"
         allmetadata=open(name,'a')
         allmetadata.write(line)
         allmetadata.close()
-
+        line_prot_=line_prot_.replace(">","")
+        line_prot_=line_prot_.replace("<","")
         name=f"{path}{study}/Pos_prot_{study}.txt"
         protfile=open(name,"a")
         protfile.write(line_prot_)
@@ -525,24 +532,32 @@ def extract_id(path,Datas,study,sp,list_prot,mail) :
 ###Function modif_name_prot
 #The purpose of this function is to identify the protein present in the gp
 
-def modif_name_prot(name_prot) : 
-    name_prot=name_prot.upper()
-    if "HANTA_G2" in name_prot  : 
-        name_prot="Gc"
-    name_prot=name_prot.replace("BUNYA","")
-    name_prot=name_prot.replace("_","")
-    name_prot=name_prot.replace("G2","Gn")
-    name_prot=name_prot.replace("G1","Gc")
-    name_prot=name_prot.replace("NSM","NSm")
-    name_prot=name_prot.replace("DUF5585","MLD")
-    name_prot=name_prot.replace("NAIROVIRUSM","GP38+Gn")
+def modif_name_prot(prot,Diff_name) :
     
-    return name_prot
+    for diff_prot in Diff_name :
+        
+        DP=diff_prot.split("=")
+        #print (DP)
+        prot=prot.upper().replace(DP[0].upper(),DP[1].upper())
+        prot=prot.upper().replace("-","").replace("\xa0", " ").replace(" ","")
+        #print(f"Pour la protéine {p} on veut replace {DP[0]} par {DP[1]} résultat = {prot} \n")
+    # name_prot=name_prot.upper()airovirus_M=GP38+Gn
+    # if "HANTA_G2" in name_prot  : 
+    #     name_prot="Gc"
+    # name_prot=name_prot.replace("BUNYA","")
+    # name_prot=name_prot.replace("_","")
+    # name_prot=name_prot.replace("G2","Gn")
+    # name_prot=name_prot.replace("G1","Gc")
+    # name_prot=name_prot.replace("NSM","NSm")
+    # name_prot=name_prot.replace("DUF5585","MLD")
+    # name_prot=name_prot.replace("NAIROVIRUSM","GP38+Gn")
+    
+    return prot
 
 ##Function extract_prot_data
 #This function extract the position of each proteins of each organism in order to save everything in the metadatafiles
 
-def extract_prot_data(ID_prot,study,all_proteins,mail) : 
+def extract_prot_data(ID_prot,study,all_proteins,mail,Diff_name,chain_prot,vv_prot) : 
 
     Entrez.email = mail
     handle = Entrez.efetch(db="protein", id=ID_prot, rettype="gp", retmode="text")
@@ -559,26 +574,41 @@ def extract_prot_data(ID_prot,study,all_proteins,mail) :
 
         if 'region_name' in feature.qualifiers : 
             prot=(feature.qualifiers['region_name'][0])
+        
             start=(feature.location.start)
             end=(feature.location.end)
-            prot=modif_name_prot(prot) 
-            proteins[prot]=[start,end]    
+            prot=modif_name_prot(prot,Diff_name) 
+            print(prot)
+            if "+" in prot : 
+                two_prot=prot.split("+")
+                proteins[two_prot[0]]=[start,end]
+                proteins[two_prot[1]]=[start,end]
+            else : 
+                proteins[prot]=[start,end]    
+    
     output=""  
     output_pos=""    
-    for prot in all_proteins : 
-        if prot in proteins : 
-            output+=f'{str(proteins[prot][0])}\t{str(proteins[prot][1])}\t'
-            output_pos+=f'{str(proteins[prot][0])}\t{str(proteins[prot][1])}\t'
-        elif (prot=="GP38" or prot=="Gn") and "GP38+Gn" in proteins:
-            output+=f'GP38+Gn: {str(proteins["GP38+Gn"][0])}\tGP38+Gn: {str(proteins["GP38+Gn"][1])}\t'
-            if prot=="GP38" : 
-                output_pos+=f'{str(proteins["GP38+Gn"][0])}\t\t'
-            else : 
-                output_pos+=f'\t{str(proteins["GP38+Gn"][1])}\t'
+    for prot in vv_prot : 
+        # print(f"{prot}-{chain_prot}-")
+        # for ID_p in chain_prot : 
+        #     print(prot.upper(),ID_p.upper(),prot.upper() in ID_p.upper(),prot.upper() in proteins)
+        if prot.upper() in proteins and  any(prot.upper() in ID_p.upper() for ID_p in chain_prot)   : 
+            print("exacte")
+            output+=f'{str(proteins[prot.upper()][0])}\t{str(proteins[prot.upper()][1])}\t'
+            output_pos+=f'{str(proteins[prot.upper()][0])}\t{str(proteins[prot.upper()][1])}\t'
         else : 
-            output+=f"\t\t"
-            output_pos+=f"\t\t"
-    subprocess.run(['rm', f'{path}{study}/prot/{ID_prot}.gp'],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+            print("else 1")
+            output+=f"nan\tnan\t"
+            output_pos+=f"nan\tnan\t"
+            # if prot=="GP38" : 
+            #     output_pos+=f'{str(proteins[prot][0])}\tnan\t'
+            # else : 
+                        # if prot=="GP38" : 
+            #     output_pos+=f'{str(proteins[prot][0])}\tnan\t'
+            # else : 
+            #     output_pos+=f'\t{str(proteins[prot][1])}\t'#     output_pos+=f'\t{str(proteins[prot][1])}\t'
+
+    #subprocess.run(['rm', f'{path}{study}/prot/{ID_prot}.gp'],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
 
     return output,output_pos
 
@@ -621,7 +651,8 @@ def select_doublon(path,study,ths,keep_list,target) :
 
     df = pd.read_csv(f"{path}{study}/{study}_dnadist.txt", delimiter="\t",header=0,index_col=0)
     df.iloc[:, 1:]=df.iloc[:, 1:].astype(float)
-    
+
+
     Doublon=onlygap(path,study,target,keep_list)
     end_line=df.shape[0]
     end_col=df.shape[1]
@@ -764,152 +795,172 @@ def proteic_sequence (study,ID,sequence,pos_prot,proteins,sp,resfile) :
 #This function marks the start and end of proteins in protein and nucleic acid sequences. 
 
 def final_pos_IO(study,prot,study_prot,proteins,concern_study) : 
-
+    
    
     chain_prot=""
     df = pd.read_csv(f"{path}{study}/Pos_prot_{study}.txt", delimiter="\t",header=0,index_col=0)
     df.iloc[:, 1:]=df.iloc[:, 1:].astype(str)
     end_line=df.shape[0]
     end_col=df.shape[1]
+    for line in range (1,end_line-1,1) :
+        for col in range(2,end_col-1,1) : 
+  
+            if df.iloc[line,col]=="nan" : 
+                print(f"{df.iloc[line,col]}",df.iloc[0,col],df.iloc[line,0])
 
-    pos_col_prot={}
-    for col in df.columns : 
-        for item in prot :
-            item=item.split(";")
-            for pos_prot in item :
-                if pos_prot not in pos_col_prot :
-                    if pos_prot in col :
-                        pos_col_prot[pos_prot]=[df.columns.get_loc(col),df.columns.get_loc(col)+1]
-    final_pos_prot={}
+                break
+                #subprocess.run(f"blastp  -db -query -out -max_target_seqs -outfmt "6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore sseq"")
+
+
+    return (df.iloc[line,col],df.iloc[line,col])
+
+
+
+
+
+
+
+
+
+
+    # pos_col_prot={}
+    # for col in df.columns : 
+    #     for item in prot :
+    #         item=item.split(";")
+    #         for pos_prot in item :
+    #             if pos_prot not in pos_col_prot :
+    #                 if pos_prot in col :
+    #                     pos_col_prot[pos_prot]=[df.columns.get_loc(col),df.columns.get_loc(col)+1]
+    # final_pos_prot={}
    
-    for line in range (0,end_line) :
-        pos_col=col_pos(str(df.index[line]),pos_col_prot,study_prot)
-        final_pos_prot[df.iloc[line,0]]=[] 
-        for col, prot in zip(range(1,end_col-1), proteins[str(df.index[line])]):
-            # print(any(df.iloc[line,0][3:] not in Concerna_orga for Concerna_orga in concern_study[study][0]))
-            # print(df.iloc[line,0][3:])
-            for orga in concern_study[study][0] : 
-                if df.iloc[line,0][3:]  in orga and "nsm" in df.columns[col].lower() : 
-                    print(orga)
-                    print(df.iloc[line,0][3:])
-                    print(concern_study[study][1].upper()=="IN")
-                    print(concern_study[study][2],df.columns[col])
-            # if  : 
-            #     print(df.iloc[line,0][3:])
+    # for line in range (0,end_line) :
+    #     pos_col=col_pos(str(df.index[line]),pos_col_prot,study_prot)
+    #     final_pos_prot[df.iloc[line,0]]=[] 
+    #     for col, prot in zip(range(1,end_col-1), proteins[str(df.index[line])]):
+    #         # print(any(df.iloc[line,0][3:] not in Concerna_orga for Concerna_orga in concern_study[study][0]))
+    #         # print(df.iloc[line,0][3:])
+    #         for orga in concern_study[study][0] : 
+    #             if df.iloc[line,0][3:]  in orga and "nsm" in df.columns[col].lower() : 
+    #                 print(orga)
+    #                 print(df.iloc[line,0][3:])
+    #                 print(concern_study[study][1].upper()=="IN")
+    #                 print(concern_study[study][2],df.columns[col])
+    #         # if  : 
+    #         #     print(df.iloc[line,0][3:])
                 
-            if concern_study[study][1].upper()=="IN" and concern_study[study][2] in df.columns[col] and not any (df.iloc[line,0][3:] in Concerna_orga for Concerna_orga in concern_study[study][0])  :
-                #print("in")
-                final_pos_prot[df.iloc[line,0]].append("ABS")
-            elif concern_study[study][1].upper()=="OUT" and concern_study[study][2] in df.columns[col] and any(df.iloc[line,0][3:] in Concerna_orga for Concerna_orga in concern_study[study][0])  :
-                print("out")
-                final_pos_prot[df.iloc[line,0]].append("ABS")
-            else : 
-                if "NSm" in df.columns[col] : 
-                    print(df.iloc[line,0][3:],"here")
-                if df.iloc[line,col]=="nan" :
-                    if col%2!=0   : 
-                        if col >1 : 
-                            if int(float(df.iloc[line,col-1]!="nan")) : 
-                                final_pos_prot[df.iloc[line,0]].append(int(float(df.iloc[line,col-1]))+1)
+    #         if concern_study[study][1].upper()=="IN" and concern_study[study][2] in df.columns[col] and not any (df.iloc[line,0][3:] in Concerna_orga for Concerna_orga in concern_study[study][0])  :
+    #             #print("in")
+    #             final_pos_prot[df.iloc[line,0]].append("ABS")
+    #         elif concern_study[study][1].upper()=="OUT" and concern_study[study][2] in df.columns[col] and any(df.iloc[line,0][3:] in Concerna_orga for Concerna_orga in concern_study[study][0])  :
+    #             print("out")
+    #             final_pos_prot[df.iloc[line,0]].append("ABS")
+    #         else : 
+    #             if "NSm" in df.columns[col] : 
+    #                 print(df.iloc[line,0][3:],"here")
+    #             if df.iloc[line,col]=="nan" :
+    #                 if col%2!=0   : 
+    #                     if col >1 : 
+    #                         if int(float(df.iloc[line,col-1]!="nan")) : 
+    #                             final_pos_prot[df.iloc[line,0]].append(int(float(df.iloc[line,col-1]))+1)
                                     
-                            else : 
+    #                         else : 
 
-                                pourcent =(proteins[str(df.index[line])][proteins[str(df.index[line])].index(prot)+1]-proteins[str(df.index[line])][proteins[str(df.index[line])].index(prot)]+1)/proteins[str(df.index[line])][len(proteins[str(df.index[line])])-2]
+    #                             pourcent =(proteins[str(df.index[line])][proteins[str(df.index[line])].index(prot)+1]-proteins[str(df.index[line])][proteins[str(df.index[line])].index(prot)]+1)/proteins[str(df.index[line])][len(proteins[str(df.index[line])])-2]
 
-                                if df.iloc[line,end_col-1] !="nan": 
-                                    end=int(df.iloc[line,end_col-1])
-                                else : 
-                                    end= proteins[str(df.index[line])][len(proteins[str(df.index[line])])-2]
-                                if df.iloc[line,3]!="nan" :
-                                    start = int(df.iloc[line,3])
-                                else : 
-                                    start=proteins[str(df.index[line])][0]
+    #                             if df.iloc[line,end_col-1] !="nan": 
+    #                                 end=int(df.iloc[line,end_col-1])
+    #                             else : 
+    #                                 end= proteins[str(df.index[line])][len(proteins[str(df.index[line])])-2]
+    #                             if df.iloc[line,3]!="nan" :
+    #                                 start = int(df.iloc[line,3])
+    #                             else : 
+    #                                 start=proteins[str(df.index[line])][0]
 
-                                new_size=int(((end-start+1)*pourcent))
+    #                             new_size=int(((end-start+1)*pourcent))
                                 
 
-                                if df.iloc[line,col+1] !="nan":
+    #                             if df.iloc[line,col+1] !="nan":
                                     
-                                    final_pos_prot[df.iloc[line,0]].append(int(df.iloc[line,col+1])-new_size)
-                                else : 
+    #                                 final_pos_prot[df.iloc[line,0]].append(int(df.iloc[line,col+1])-new_size)
+    #                             else : 
                                     
-                                    final_pos_prot[df.iloc[line,0]].append(int(float(proteins[str(df.index[line])][proteins[str(df.index[line])].index(prot)-1]))-new_size)
+    #                                 final_pos_prot[df.iloc[line,0]].append(int(float(proteins[str(df.index[line])][proteins[str(df.index[line])].index(prot)-1]))-new_size)
 
 
 
 
-                        else : 
-                            final_pos_prot[df.iloc[line,0]].append(int(prot))
-                    else : 
+    #                     else : 
+    #                         final_pos_prot[df.iloc[line,0]].append(int(prot))
+    #                 else : 
                         
-                        if col+1<end_col :
+    #                     if col+1<end_col :
 
-                            if int(float(df.iloc[line,col+1]!="nan"))  :
-                                    final_pos_prot[df.iloc[line,0]].append(int(float(df.iloc[line,col+1]))-1)
+    #                         if int(float(df.iloc[line,col+1]!="nan"))  :
+    #                                 final_pos_prot[df.iloc[line,0]].append(int(float(df.iloc[line,col+1]))-1)
                                     
-                            else : 
-                                pourcent =(proteins[str(df.index[line])][proteins[str(df.index[line])].index(prot)]-proteins[str(df.index[line])][proteins[str(df.index[line])].index(prot)-1]+1)/proteins[str(df.index[line])][len(proteins[str(df.index[line])])-2]
+    #                         else : 
+    #                             pourcent =(proteins[str(df.index[line])][proteins[str(df.index[line])].index(prot)]-proteins[str(df.index[line])][proteins[str(df.index[line])].index(prot)-1]+1)/proteins[str(df.index[line])][len(proteins[str(df.index[line])])-2]
 
-                                if df.iloc[line,end_col-1] !="nan": 
-                                    end=int(df.iloc[line,end_col-1])
-                                else : 
-                                    end= proteins[str(df.index[line])][len(proteins[str(df.index[line])])-2]
-                                if df.iloc[line,3]!="nan" :
-                                    start = int(df.iloc[line,3])
-                                else : 
-                                    start=proteins[str(df.index[line])][0]
+    #                             if df.iloc[line,end_col-1] !="nan": 
+    #                                 end=int(df.iloc[line,end_col-1])
+    #                             else : 
+    #                                 end= proteins[str(df.index[line])][len(proteins[str(df.index[line])])-2]
+    #                             if df.iloc[line,3]!="nan" :
+    #                                 start = int(df.iloc[line,3])
+    #                             else : 
+    #                                 start=proteins[str(df.index[line])][0]
 
-                                new_size=int(((end-start+1)*pourcent))
+    #                             new_size=int(((end-start+1)*pourcent))
 
 
-                                if df.iloc[line,col-1] !="nan":
-                                    final_pos_prot[df.iloc[line,0]].append(int(df.iloc[line,col-1])+new_size)
-                                else : 
+    #                             if df.iloc[line,col-1] !="nan":
+    #                                 final_pos_prot[df.iloc[line,0]].append(int(df.iloc[line,col-1])+new_size)
+    #                             else : 
                                     
-                                    final_pos_prot[df.iloc[line,0]].append(int(float(proteins[str(df.index[line])][proteins[str(df.index[line])].index(prot)-1]))+new_size)
-                        else : 
+    #                                 final_pos_prot[df.iloc[line,0]].append(int(float(proteins[str(df.index[line])][proteins[str(df.index[line])].index(prot)-1]))+new_size)
+    #                     else : 
 
-                            final_pos_prot[df.iloc[line,0]].append(int(prot))
-                else : 
-                    final_pos_prot[df.iloc[line,0]].append(int(float(df.iloc[line,col])))
+    #                         final_pos_prot[df.iloc[line,0]].append(int(prot))
+    #             else : 
+    #                 final_pos_prot[df.iloc[line,0]].append(int(float(df.iloc[line,col])))
          
 
-        for c in range(len(final_pos_prot[df.iloc[line, 0]]) - 1, 1, -1):
-            i=1
-            j=1
-            if c%2 ==0 : 
-                if final_pos_prot[df.iloc[line,0]][c+i] != "ABS" :
-                    if final_pos_prot[df.iloc[line,0]][c+i] <= final_pos_prot[df.iloc[line,0]][c] : 
-                        final_pos_prot[df.iloc[line,0]][c]=final_pos_prot[df.iloc[line,0]][c+i]-1
-                else : 
-                    i+=1
-                if c-j >len(final_pos_prot[df.iloc[line, 0]]) and  final_pos_prot[df.iloc[line,0]][c-j] != "ABS" :
-                    if final_pos_prot[df.iloc[line,0]][c-j] >= final_pos_prot[df.iloc[line,0]][c] : 
-                        final_pos_prot[df.iloc[line,0]][c]=final_pos_prot[df.iloc[line,0]][c-j]+1
-                else : 
-                        j+=1
+    #     for c in range(len(final_pos_prot[df.iloc[line, 0]]) - 1, 1, -1):
+    #         i=1
+    #         j=1
+    #         if c%2 ==0 : 
+    #             if final_pos_prot[df.iloc[line,0]][c+i] != "ABS" :
+    #                 if final_pos_prot[df.iloc[line,0]][c+i] <= final_pos_prot[df.iloc[line,0]][c] : 
+    #                     final_pos_prot[df.iloc[line,0]][c]=final_pos_prot[df.iloc[line,0]][c+i]-1
+    #             else : 
+    #                 i+=1
+    #             if c-j >len(final_pos_prot[df.iloc[line, 0]]) and  final_pos_prot[df.iloc[line,0]][c-j] != "ABS" :
+    #                 if final_pos_prot[df.iloc[line,0]][c-j] >= final_pos_prot[df.iloc[line,0]][c] : 
+    #                     final_pos_prot[df.iloc[line,0]][c]=final_pos_prot[df.iloc[line,0]][c-j]+1
+    #             else : 
+    #                     j+=1
 
-            else : 
-                if final_pos_prot[df.iloc[line,0]][c-j] != "ABS" :
-                    if final_pos_prot[df.iloc[line,0]][c-j] >= final_pos_prot[df.iloc[line,0]][c] : 
-                        final_pos_prot[df.iloc[line,0]][c]=final_pos_prot[df.iloc[line,0]][c-j]+1
-                else : 
-                    j+=1
-                if c+i<-1 and final_pos_prot[df.iloc[line,0]][c+i] != "ABS" :
-                    if c < (len(final_pos_prot[df.iloc[line, 0]]) - 1) :
-                        if final_pos_prot[df.iloc[line,0]][c+1] <= final_pos_prot[df.iloc[line,0]][c] : 
-                            final_pos_prot[df.iloc[line,0]][c]=final_pos_prot[df.iloc[line,0]][c+1]-1  
-                else :
-                    i+=1
+    #         else : 
+    #             if final_pos_prot[df.iloc[line,0]][c-j] != "ABS" :
+    #                 if final_pos_prot[df.iloc[line,0]][c-j] >= final_pos_prot[df.iloc[line,0]][c] : 
+    #                     final_pos_prot[df.iloc[line,0]][c]=final_pos_prot[df.iloc[line,0]][c-j]+1
+    #             else : 
+    #                 j+=1
+    #             if c+i<-1 and final_pos_prot[df.iloc[line,0]][c+i] != "ABS" :
+    #                 if c < (len(final_pos_prot[df.iloc[line, 0]]) - 1) :
+    #                     if final_pos_prot[df.iloc[line,0]][c+1] <= final_pos_prot[df.iloc[line,0]][c] : 
+    #                         final_pos_prot[df.iloc[line,0]][c]=final_pos_prot[df.iloc[line,0]][c+1]-1  
+    #             else :
+    #                 i+=1
             
 
 
-    ligne_chaine = '\t'.join(df.iloc[[0]].astype(str))
-    name=f"{path}{study}/Pos_prot_final_{study}.fasta"
-    file = open(f"{name}","w")
-    file.write(f"study\t{ligne_chaine}\n")
-    file.close()
-    return final_pos_prot,name
+    # ligne_chaine = '\t'.join(df.iloc[[0]].astype(str))
+    # name=f"{path}{study}/Pos_prot_final_{study}.fasta"
+    # file = open(f"{name}","w")
+    # file.write(f"study\t{ligne_chaine}\n")
+    # file.close()
+    # return final_pos_prot,name
 
 def final_pos(study,prot,study_prot,proteins) : 
     chain_prot=""
