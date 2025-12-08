@@ -30,22 +30,16 @@ def Lauch_MSP(list_record) :
     subject = record_2.id
     Sseq = record_2.seq
 
-    new_path=f"{path}{name}/Align_all/{Query}{subject}/"
+    new_path=f"{path}{name}/Align_all/{Query}{subject}"
 
     
     subprocess.run(f"./{script_path}PROT_dist.sh {new_path} {Query} {Qseq} {subject} {Sseq} ",shell=True)
 
-    out=pd.read_csv(f"{new_path}outfile_prot.txt",sep="\t",skiprows=0,index_col=0)
+    out=pd.read_csv(f"{new_path}/outfile_prot.txt",sep="\t",skiprows=0,index_col=0)
     out.columns=out.index
     out.to_csv(f"{path}{name}/Align_all/{Query}{subject}/{Query}{subject}_table.txt",sep="\t")
+    #out=pd.read_csv(f"{path}{name}/Align_all/{Query}{subject}/{Query}{subject}_table.txt",sep="\t",index_col=0,header=0)
 
-    if os.path.getsize(f"{path}{name}/temp_protdist_filter.txt")==0:
-        out.to_csv(f"{path}{name}/Align_all/{Query}{subject}/{Query}{subject}_table.txt",sep="\t")
-    else : 
-        final_table=pd.read_csv(f"{path}{name}/temp_protdist_filter.txt",sep="\t",index_col=0,header=0)
-        Final_table_v=final_table.combine_first(out)
-        Final_table_v.to_csv(f"{path}{name}/temp_protdist_filter.txt",sep="\t")
-    subprocess.run(f"rm -r {new_path}")
 
 
 for name,spe_prot in zip(names,spe_prot) : 
@@ -84,19 +78,21 @@ for name,spe_prot in zip(names,spe_prot) :
                 p.map(Lauch_MSP,couple_list)
    #lambda x : lauch_MSP(x,script_path,path,)
 
-        # for elements in couple_list   :
-        #     record_1=elements[0]   
-        #     record_2=elements[1] 
+        for elements in couple_list   :
+            record_1=elements[0]   
+            record_2=elements[1] 
 
-        #     table=pd.read_csv(f"{path}{name}/Align_all/{record_1.id}{record_2.id}/{record_1.id}{record_2.id}_table.txt",sep="\t",skiprows=0,index_col=0,header=0)
+            table=pd.read_csv(f"{path}{name}/Align_all/{record_1.id}{record_2.id}/{record_1.id}{record_2.id}_table.txt",sep="\t",skiprows=0,index_col=0,header=0)
             
-        #     if os.path.getsize(f"{path}{name}/temp_protdist_filter.txt")==0:
+            if os.path.getsize(f"{path}{name}/temp_protdist_filter.txt")==0:
              
-        #         table.to_csv(f"{path}{name}/temp_protdist_filter.txt",sep="\t")
-        #     else:
-        #         final_table=pd.read_csv(f"{path}{name}/temp_protdist_filter.txt",sep="\t",index_col=0,header=0)
-        #         Final_table_v=final_table.combine_first(table)
-        #         Final_table_v.to_csv(f"{path}{name}/temp_protdist_filter.txt",sep="\t")
+                table.to_csv(f"{path}{name}/temp_protdist_filter.txt",sep="\t")
+            else:
+                final_table=pd.read_csv(f"{path}{name}/temp_protdist_filter.txt",sep="\t",index_col=0,header=0)
+                Final_table_v=final_table.combine_first(table)
+                Final_table_v.to_csv(f"{path}{name}/temp_protdist_filter.txt",sep="\t")
+   
+            subprocess.run(f"rm -r {path}{name}/Align_all/{record_1.id}{record_2.id}/",shell=True)
 
         final_table=pd.read_csv(f"{path}{name}/temp_protdist_filter.txt",sep="\t",index_col=0,header=0)    
         final_table.drop(final_table.index[final_table.index.str.startswith(f'{proteins[0][0]}')],axis=0,inplace=True)

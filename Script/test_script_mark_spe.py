@@ -14,7 +14,7 @@ import subprocess
 import sys 
 import pandas as pd
 
-from All_Functions import nucleic_sequences,proteic_sequence,final_pos,col_pos,final_pos_IO
+from All_Functions import nucleic_sequences,proteic_sequence,final_pos,col_pos,final_pos_IO,nucleic_sequences_OG
 ##########################################################
 
 ###########################Input##########################
@@ -72,13 +72,39 @@ for study in studies :
 #for name_all,organismesAV,IO,proteinIO in zip(names,orgaWIWO,INOUT,protINOUT) :
     #subprocess.run(["rm",f"{path}{study}{resfile}/*" ],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,shell=True)
    
-    if study in concern_study : 
-        final_pos_prot,name=final_pos_IO(study,prot,study_prot,proteins,concern_study)
-        #final_pos_prot,name=final_pos(study,prot,study_prot,proteins)
-    else : 
-        final_pos_prot,name=final_pos(study,prot,study_prot,proteins)
+    # if study in concern_study : 
+    #     final_pos_prot,name=final_pos_IO(study,prot,study_prot,proteins,concern_study)
+    #     #final_pos_prot,name=final_pos(study,prot,study_prot,proteins)
+    # else : 
+    #     final_pos_prot,name=final_pos(study,prot,study_prot,proteins)
 
-    # sp=study
+    sp=study
+    # file = open(f"{name}","a")
+
+    # for key,positions in final_pos_prot.items() : 
+    #     file.write(f"{study}\t{key}\t")
+
+    #     for pos in positions : 
+    #         file.write(f"{pos}\t")
+    #     file.write(f"\n")
+
+    # file.close()
+    print(study)
+    for record in SeqIO.parse(f"{path}{study}/prot_sdbl_{study}.fasta","fasta") :
+        proteic_sequence(study,record.id,record.seq,study_prot[study],sp,resfile)
+
+
+    for record in SeqIO.parse(f"{path}{study}/nucl_sdbl_{study}.fasta","fasta") :
+        stratseq=proteins[sp][-1]
+        nucleic_sequences(study,record.id,record.seq,stratseq,study_prot[study],sp,resfile)
+
+for study,sp,ID,name,organismesAV,IO,proteinIO in zip(studiesspeOG,onlyOG,NUIDspeOG,names,orgaWIWO,INOUT,protINOUT) :
+
+    # if study in concern_study : 
+    #     #final_pos_prot,name=final_pos_(study,prot,study_prot,proteins,concern_study)
+    #     final_pos_prot,name=final_pos(study,prot,study_prot,proteins)
+    # else : 
+    #     final_pos_prot,name=final_pos(study,prot,study_prot,proteins)
     # file = open(f"{name}","a")
 
     # for key,positions in final_pos_prot.items() : 
@@ -90,37 +116,13 @@ for study in studies :
 
     # file.close()
 
-    # for record in SeqIO.parse(f"{path}{study}/prot_sdbl_{study}.fasta","fasta") :
-    #     proteic_sequence(study,record.id,record.seq,final_pos_prot[record.id],study_prot[study],sp,resfile)
+    for record in SeqIO.parse(f"{path}{study}/{ID}_prot.fasta","fasta") :
+        print(record)
+        proteic_sequence(study,record.id,record.seq,study_prot[study],sp,resfile)
 
 
-    # for record in SeqIO.parse(f"{path}{study}/nucl_sdbl_{study}.fasta","fasta") :
-    #     stratseq=proteins[sp][-1]
-    #    nucleic_sequences(study,record.id,record.seq,stratseq,final_pos_prot[record.id],study_prot[study],sp,resfile)
-
-# for study,sp,ID,name,organismesAV,IO,proteinIO in zip(studiesspeOG,onlyOG,NUIDspeOG,names,orgaWIWO,INOUT,protINOUT) :
-
-#     if study in concern_study : 
-#         #final_pos_prot,name=final_pos_(study,prot,study_prot,proteins,concern_study)
-#         final_pos_prot,name=final_pos(study,prot,study_prot,proteins)
-#     else : 
-#         final_pos_prot,name=final_pos(study,prot,study_prot,proteins)
-#     file = open(f"{name}","a")
-
-#     for key,positions in final_pos_prot.items() : 
-#         file.write(f"{study}\t{key}\t")
-
-#         for pos in positions : 
-#             file.write(f"{pos}\t")
-#         file.write(f"\n")
-
-#     file.close()
-
-#     for record in SeqIO.parse(f"{path}{study}/{ID}_prot.fasta","fasta") :
-#         proteic_sequence(study,record.id,record.seq,final_pos_prot[record.id],study_prot[study],sp,resfile)
-
-
-#     for record in SeqIO.parse(f"{path}{study}/{ID}_nucl.fasta","fasta") :
-#         stratseq=proteins[sp][-1]
-#         nucleic_sequences(study,record.id,record.seq,stratseq,proteins[sp][:-1],study_prot[study],sp,resfile)
+    for record in SeqIO.parse(f"{path}{study}/{ID}_nucl.fasta","fasta") :
+        stratseq=proteins[sp][-1]
+        print("--------------------------------------------------------------------------------------------",study_prot[study])
+        nucleic_sequences_OG(study,record.id,record.seq,stratseq,proteins[sp][:-1],study_prot[study],sp,resfile)
 ##########################################################

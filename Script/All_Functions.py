@@ -574,16 +574,22 @@ def extract_prot_data(ID_prot,study,all_proteins,mail,Diff_name,chain_prot,vv_pr
 
         if 'region_name' in feature.qualifiers : 
             prot=(feature.qualifiers['region_name'][0])
-        
+            
             start=(feature.location.start)
             end=(feature.location.end)
             prot=modif_name_prot(prot,Diff_name) 
-            print(prot)
+            if start==0 : 
+                start=1
+            
             if "+" in prot : 
                 two_prot=prot.split("+")
-                proteins[two_prot[0]]=[start,end]
-                proteins[two_prot[1]]=[start,end]
+                
+                proteins[two_prot[0]]=[start,"nan"]
+                proteins[two_prot[1]]=["nan",end]
+                
+                
             else : 
+                
                 proteins[prot]=[start,end]    
     
     output=""  
@@ -592,12 +598,13 @@ def extract_prot_data(ID_prot,study,all_proteins,mail,Diff_name,chain_prot,vv_pr
         # print(f"{prot}-{chain_prot}-")
         # for ID_p in chain_prot : 
         #     print(prot.upper(),ID_p.upper(),prot.upper() in ID_p.upper(),prot.upper() in proteins)
+
         if prot.upper() in proteins and  any(prot.upper() in ID_p.upper() for ID_p in chain_prot)   : 
-            print("exacte")
+            
             output+=f'{str(proteins[prot.upper()][0])}\t{str(proteins[prot.upper()][1])}\t'
             output_pos+=f'{str(proteins[prot.upper()][0])}\t{str(proteins[prot.upper()][1])}\t'
         else : 
-            print("else 1")
+            
             output+=f"nan\tnan\t"
             output_pos+=f"nan\tnan\t"
             # if prot=="GP38" : 
@@ -608,7 +615,7 @@ def extract_prot_data(ID_prot,study,all_proteins,mail,Diff_name,chain_prot,vv_pr
             # else : 
             #     output_pos+=f'\t{str(proteins[prot][1])}\t'#     output_pos+=f'\t{str(proteins[prot][1])}\t'
 
-    #subprocess.run(['rm', f'{path}{study}/prot/{ID_prot}.gp'],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+    subprocess.run(['rm', f'{path}{study}/prot/{ID_prot}.gp'],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
 
     return output,output_pos
 
@@ -688,7 +695,7 @@ def delete_dbl(path,Doublon,study):
     
         subprocess.run(f"rm {name}",shell=True)
 
-        for record in SeqIO.parse(f"{path}{study}/{type_seq}_all_{study}.fasta","fasta") :
+        for record in SeqIO.parse(f"{path}{study}/{type_seq}_all_align_{study}.aln-fasta","fasta") :
         
             if record.id not in Doublon :
                 file = open(name,"a")
@@ -714,13 +721,22 @@ def onlygap(path,study,target,keep_list):
 # This function uses the position of the proteins of the target organism (proteic sequence) to identify the position of the proteins in the alignment.
 # It is important not to just translate the protein sequence into RNA in order to keep the intergenic regions.
 
-def nucleic_sequences(study,ID,sequence,debseq,pos_prot,proteins,sp,resfile) :
+def nucleic_sequences(study,ID,sequence,debseq,proteins,sp,resfile) :
 
-    position_proteines=[pos_prot[i:i+2] for i in range(0, len(pos_prot), 2)]
+    Pos_prot_final=pd.read_csv(f"{path}{study}/Pos_prot_Final_{study}.txt", delimiter="\t",header=0,index_col=0)
+    ligne = Pos_prot_final[Pos_prot_final.iloc[:, 0] == ID]
+    position_proteines=[]
+    end_col=Pos_prot_final.shape[1]
+    for col in range (1,end_col-1,2) : #Pos_prot_final.columns:
+        start = ligne.iloc[0,col]
+        end = ligne.iloc[0,col+1]
+        position_proteines.append([start,end])
+    #print(position_proteines)
     prot_position=dict(zip(proteins, position_proteines))
-
     for prot,pos in prot_position.items() : 
-        if pos !="ABS" : 
+        print(f"nucleic seq & OG : {prot}:{pos} : {not any("Na" in str(element) for element in pos)} ! {not any("ABS" in str(element) for element in pos)}!{pos!="Na"}")
+        if not any("ABS" in str(element) for element in pos) and not any("Na" in str(element) for element in pos) : 
+            pos = [int(float(x)) for x in pos]
             name=f"{path}{study}{resfile}{prot}_{sp}_nucl.fasta"
             mark_prot=""
             compt_AA=0
@@ -753,21 +769,71 @@ def nucleic_sequences(study,ID,sequence,debseq,pos_prot,proteins,sp,resfile) :
             file.write(f">{ID}\n{mark_prot}\n")
             file.close()
  
-  
-##Function compt_alignement
-# This function uses the position of the target organism's proteins (sequence proteic) to identify the position of the proteins in the alignment.
-
-def proteic_sequence (study,ID,sequence,pos_prot,proteins,sp,resfile) : 
-
+def nucleic_sequences_OG(study,ID,sequence,debseq,pos_prot,proteins,sp,resfile) :
 
     position_proteines=[pos_prot[i:i+2] for i in range(0, len(pos_prot), 2)]
     prot_position=dict(zip(proteins, position_proteines))
 
+    for prot,pos in prot_position.items() : 
+        print(f"nucleic seq & OG : {prot} :{pos}: {not any("Na" in str(element) for element in pos)} ! {not any("ABS" in str(element) for element in pos)}!{pos!="Na"}")
+        if not any("ABS" in str(element) for element in pos) and not any("Na" in str(element) for element in pos) : 
+            pos = [int(float(x)) for x in pos]
+            name=f"{path}{study}{resfile}{prot}_{sp}_nucl.fasta"
+            mark_prot=""
+            compt_AA=0
+            compt_nu=0
+            compt_codon=0
+            inprot=False
+    
+            for nu in sequence : 
+
+                if inprot==True : 
+                    mark_prot+=nu
+                if nu!='-' : 
+                    compt_nu+=1
+                    if compt_nu >= debseq :
+                        compt_codon+=1
+                
+                        if compt_codon==3 : 
+                            compt_codon=0
+                            compt_AA+=1
+
+                            if compt_AA in pos :
+                                mark_prot+=nu
+                                pos.remove(compt_AA)
+                                if inprot==False : 
+                                    inprot=True
+                                else : 
+                                    inprot=False
+            
+            file = open(f"{name}","a")
+            file.write(f">{ID}\n{mark_prot}\n")
+            file.close()
+##Function compt_alignement
+# This function uses the position of the target organism's proteins (sequence proteic) to identify the position of the proteins in the alignment.
+
+def proteic_sequence (study,ID,sequence,proteins,sp,resfile) : 
+ 
+    Pos_prot_final=pd.read_csv(f"{path}{study}/Pos_prot_Final_{study}.txt", delimiter="\t",header=0,index_col=0)
+    ligne = Pos_prot_final[Pos_prot_final.iloc[:, 0] == ID]
+    position_proteines=[]
+    end_col=Pos_prot_final.shape[1]
+    for col in range (1,end_col-1,2) : #Pos_prot_final.columns:
+        start = ligne.iloc[0,col]
+        end = ligne.iloc[0,col+1]
+        position_proteines.append([start,end])
+     
+ 
+    #position_proteines=[pos_prot[i:i+2] for i in range(0, len(pos_prot), 2)]
+    prot_position=dict(zip(proteins, position_proteines))
+ 
 
 
     for prot,pos in prot_position.items() : 
-        if pos !="ABS" : 
-            name=f"{path}{study}{resfile}{prot}_{sp}_prot.fasta"
+        print(f"proteic seq : {prot} :{pos}: {not any("Na" in str(element) for element in pos)} ! {not any("ABS" in str(element) for element in pos)}")
+        name=f"{path}{study}{resfile}{prot}_{sp}_prot.fasta"
+        if not any("ABS" in str(element) for element in pos) and not any("Na" in str(element) for element in pos): 
+            pos = [int(float(x)) for x in pos]
             mark_prot=""
             compt_AA=0
             inprot=False

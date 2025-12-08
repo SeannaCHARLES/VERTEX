@@ -14,20 +14,20 @@ Sseq="$5"
 
 ###########################Script##########################
 
-mkdir -p "${new_path}"
+mkdir -p "${new_path}"/
 
 
-echo -e ">${Query}\n${Qseq}\n>${subject}\n${Sseq}\n" > "${new_path}temp.fasta"
+echo -e ">${Query}\n${Qseq}\n>${subject}\n${Sseq}\n" > "${new_path}/temp.fasta"
 
-mafft --auto "${new_path}temp.fasta" > "${new_path}temp.aln-fasta"
-seqret -sequence "${new_path}temp.aln-fasta" -outseq "${new_path}temp.phy" -osformat phylip
-cp "${new_path}"temp.phy "${new_path}"infile
-cd "${new_path}"
+mafft --auto "${new_path}/temp.fasta" >"${new_path}/temp.aln-fasta"
+seqret -sequence "${new_path}/temp.aln-fasta" -outseq "${new_path}/temp.phy" -osformat phylip
+cp "${new_path}"/temp.phy "${new_path}"/infile
+cd "${new_path}"/
    
 echo -e "Y\n" | phylip protdist 
 
-    sed 's/   /	/g' "${new_path}outfile" > "${new_path}outfile_prot.txt"
-    sed 's/  /	/g' "${new_path}outfile" > "${new_path}outfile_prot.txt"
+    sed 's/   /	/g' "${new_path}/outfile" > "${new_path}/outfile_prot.txt"
+    sed 's/  /	/g' "${new_path}/outfile" > "${new_path}/outfile_prot.txt"
 
 
 
