@@ -55,9 +55,9 @@ def change_pos(line,end_col,Pos_prot_final) :
                         if col ==1 : 
                             Pos_prot_final.iloc[line,col]=1
                             Pos_prot_final.to_csv(f"{path}{study}/Pos_prot_Final_{study}.txt", sep="\t")
-                            print(f"Start- {Pos_prot_final.iloc[line,col]}={Pos_prot_final.index[line]}")
+                            #print(f"Start- {Pos_prot_final.iloc[line,col]}={Pos_prot_final.index[line]}")
                         else :
-                            print(f"Start-else {Pos_prot_final.iloc[line,col]}={Pos_prot_final.iloc[line,col-1]} : {Pos_prot_final.iloc[line,0]}")
+                            #print(f"Start-else {Pos_prot_final.iloc[line,col]}={Pos_prot_final.iloc[line,col-1]} : {Pos_prot_final.iloc[line,0]}")
                             Pos_prot_final.iloc[line,col]=int(Pos_prot_final.iloc[line,col-1])+1
                             Pos_prot_final.to_csv(f"{path}{study}/Pos_prot_Final_{study}.txt", sep="\t")
             elif "str" not in str(type(Pos_prot_final.iloc[line,col+1])) and "str" not in str(type(Pos_prot_final.iloc[line,col-1])) : 
@@ -86,37 +86,65 @@ def change_pos(line,end_col,Pos_prot_final) :
     
 #print(f"{INOUT}\n{protINOUT}")
 dicy={}
+#print(Allstudies,INOUT,protINOUT,orgaWIWO)
+print(Allstudies)
+print(INOUT)
+print(protINOUT)
+print(orgaWIWO)
 for all_s, IO,prots,virus in zip(Allstudies,INOUT,protINOUT,orgaWIWO) :
-    if all_s not in dicy : #and IO!='' :
-        dicy[all_s]=[IO,prots,virus]
-    else : #if IO!='' : 
-        dicy[all_s].append([IO,prots,virus])
+    print(all_s)
+    metadata = pd.read_csv(f"{path}{all_s}/Metadata_{all_s}.txt", sep="\t",header=0)
+    
+    if IO!='': #
+        dicy[all_s]={}
+        if IO=="OUT" : 
+            for v in virus.split(";") : 
+                dicy[all_s][v]=[prots]
+        else : 
+            list_ID=metadata["Nucleic accession number"].tolist()
+            for  ID in list_ID :
+                if ID not in virus.split(";") :
+                    if ID not in dicy[all_s] :
+                        dicy[all_s][ID]=[prots]
+                    elif prots not in  dicy[all_s][ID] : 
+                        dicy[all_s][ID].append(prots)
+    elif IO=='none' : 
+        dicy[all_s]={}
 
+if not dicy : 
+    for all_s in Allstudies : 
+        dicy[all_s]=["-","-","-"]
+#print(dicy)
+#print(dicy.items())
+#print(studies,target_list,dicy.items())
+for study,target in zip(studies,target_list) : 
 
-for study,target,element in zip(studies,target_list,dicy.items()) : 
-    print(study)
-    pos_prot = pd.read_csv(f"{path}{study}/Pos_prot_{study}.txt", delimiter="\t",header=0,index_col=0)
-    metadata = pd.read_csv(f"{path}{study}/Metadata_{study}.txt", delimiter="\t",header=0,index_col=0)
+    pos_prot = pd.read_csv(f"{path}{study}/Pos_prot_{study}.txt", sep="\t",header=0)
+    metadata = pd.read_csv(f"{path}{study}/Metadata_{study}.txt", sep="\t",header=0)
     pos_prot.iloc[:, 1:]=pos_prot.iloc[:, 1:].astype(str)
     pos_prot.to_csv(f"{path}{study}/Pos_prot_Final_{study}.txt",sep="\t")
-    Pos_prot_final=pd.read_csv(f"{path}{study}/Pos_prot_Final_{study}.txt", delimiter="\t",header=0,index_col=0)
-    OG_protOUT={}
-  
-    if element[1][0]=="OUT" : 
-        for virus in element[1][2].split(";") :
-            OG_protOUT[virus]=element[1][1]
-    elif element[1][0]=="IN":
-        list_ID=metadata["Nucleic accession number"].tolist()
+    Pos_prot_final=pd.read_csv(f"{path}{study}/Pos_prot_Final_{study}.txt", sep="\t",header=0)
+    #OG_protOUT={}
+    #print(pos_prot)
+    # for element in dicy[study] : 
+    #     print(element)
+    #     print(element[1][0],element[1][1],element[1][2],element)
+    #     if element[1][0]=="OUT" : 
+    #         for virus in element[1][2].split(";") :
+    #             OG_protOUT[virus]=element[1][1]
+    #     elif element[1][0]=="IN":
+    #         list_ID=metadata["Nucleic accession number"].tolist()
        
-        for  ID in list_ID :
-            if ID not in element[1][2].split(";") :
-                if ID not in OG_protOUT :
-                    OG_protOUT[ID]=[element[1][1]]
-                elif element[1][1] not in  OG_protOUT[ID] : 
-                    OG_protOUT[ID].append(element[1][1])
+    #         for  ID in list_ID :
+    #             if ID not in element[1][2].split(";") :
+    #                 if ID not in OG_protOUT :
+    #                     OG_protOUT[ID]=[element[1][1]]
+    #                 elif element[1][1] not in  OG_protOUT[ID] : 
+    #                     OG_protOUT[ID].append(element[1][1])
     #print(f"OG_protOUT : {OG_protOUT}")
     end_line=metadata.shape[0]
     end_col=metadata.shape[1]
+    #print(end_line)
     match_ID={}
     for line in range(0,end_line) : 
         ID_itol=metadata.columns.get_loc('ID itol tree')
@@ -132,12 +160,12 @@ for study,target,element in zip(studies,target_list,dicy.items()) :
                 DB = str(f"{path}{study}/{target}_ref")
                 File=str(f"{path}{study}/prot/{match_ID[pos_prot.iloc[line,0]]}_prot.fasta")
                 output=str(f"{path}{study}/Align/{target}_{match_ID[pos_prot.iloc[line,0]]}")
-                print(output)
+                #print(output)
                 protein=(str(f"{pos_prot.columns[col]}"))
                 #print(f"{OG_protOUT}")
-                if match_ID[pos_prot.iloc[line,0]] in OG_protOUT :
+                if match_ID[pos_prot.iloc[line,0]] in dicy[study] :
                     #print(f"element {str(pos_prot.columns[col]).lower()}")
-                    if not any(str(elem).lower() in str(pos_prot.columns[col]).lower()  for elem in OG_protOUT[match_ID[pos_prot.iloc[line,0]]]) : 
+                    if not any(str(elem).lower() in str(pos_prot.columns[col]).lower()  for elem in dicy[study][match_ID[pos_prot.iloc[line,0]]]) : 
                         
                         
                         if pos_prot.iloc[line,0] not in missing_val : 
@@ -187,11 +215,11 @@ for study,target,element in zip(studies,target_list,dicy.items()) :
                         #     Pos_prot_final.iloc[line,col].astype(str)
                         Pos_prot_final.iloc[line,col]=new_pos
                         Pos_prot_final.to_csv(f"{path}{study}/Pos_prot_Final_{study}.txt", sep="\t")
-                        Pos_prot_final=pd.read_csv(f"{path}{study}/Pos_prot_Final_{study}.txt", delimiter="\t",header=0,index_col=0)
+                        Pos_prot_final=pd.read_csv(f"{path}{study}/Pos_prot_Final_{study}.txt", sep="\t",header=0,index_col=0)
         change_pos(line,end_col-1,Pos_prot_final)
-        Pos_prot_final=pd.read_csv(f"{path}{study}/Pos_prot_Final_{study}.txt", delimiter="\t",header=0,index_col=0)
+        Pos_prot_final=pd.read_csv(f"{path}{study}/Pos_prot_Final_{study}.txt", sep="\t",header=0,index_col=0)
         change_pos(line,end_col-1,Pos_prot_final)
-    Pos_prot_final=pd.read_csv(f"{path}{study}/Pos_prot_Final_{study}.txt", delimiter="\t",header=0,index_col=0)
+    Pos_prot_final=pd.read_csv(f"{path}{study}/Pos_prot_Final_{study}.txt", sep="\t",header=0,index_col=0)
 
     #print(f"{missing_val}")
                 

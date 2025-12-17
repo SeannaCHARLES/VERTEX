@@ -16,14 +16,50 @@ positionspeOG=list(sys.argv[8].split(" "))
 OG_prot=list(sys.argv[9].split(" "))
 Diff_name=list(sys.argv[10].split(" "))
 Diff_name_OG=list(sys.argv[11].split(" "))
+speci_order=list(sys.argv[12].split(";"))
+orgaWIWO=list(sys.argv[13].replace(" ", "\n").splitlines())
+INOUT=list(sys.argv[14].replace(" ", "\n").splitlines())
+protINOUT=list(sys.argv[15].replace(" ", "\n").splitlines())
+Allstudies=list(sys.argv[16].split(" "))
+ALLNUID=list(sys.argv[17].split(" "))
 chain_prot=""
-print(f"List ={Diff_name}")
-# print(email)
-# print(positionspeOG)
-# print(list_prot_speOG)
-# print(Diff_name)
+
+dicy={}
+for all_s, IO,prots,virus,list_ID in zip(Allstudies,INOUT,protINOUT,orgaWIWO,ALLNUID) :
+   
+    list_ID=list_ID.split(";")
+    #metadata = pd.read_csv(f"{path}{all_s}/Metadata_{all_s}.txt", delimiter="\t",header=0,index_col=0)
+    
+    if IO!='' :
+        if all_s not in dicy : 
+            dicy[all_s]={}
+       
+        if IO=="OUT" : 
+            for v in virus.split(";") : 
+                if v not in dicy[all_s] :
+                    dicy[all_s][v]=[prots] 
+                else : 
+                    dicy[all_s][v].append([prots])
+
+        elif IO=="IN" : 
+            for  ID in list_ID :
+                if ID not in virus.split(";") :
+                    if ID not in dicy[all_s] :
+                        dicy[all_s][ID]=[prots]
+                    elif prots not in  dicy[all_s][ID] : 
+                        dicy[all_s][ID].append(prots)
+        elif IO=='none' :
+            if all_s not in dicy : 
+                dicy[all_s]={}
+
+if not dicy : 
+    for all_s in Allstudies : 
+        dicy[all_s]=["-","-","-"]
+
+
+
 vv_prot={}
-i=0
+
 for study,prot,prot_names in zip(studies,list_prot,Diff_name) :
 
     subprocess.run(f"rm {path}{study}/nucl/* {path}{study}/prot/* >/dev/null",shell=True)
@@ -33,21 +69,21 @@ for study,prot,prot_names in zip(studies,list_prot,Diff_name) :
     for p in prot : 
 
         chain_prot+=f"Start{p}\tEnd{p}\t"
-    subprocess.run(f"echo 'Study\tVirus name\tID itol tree\tTaxonomy\tSerogroup\tProtein accesion number\tSize Proteic sequence\t{chain_prot}Nucleic accession number\tSize Nucleic sequence\tStrand\tStrain\tGeographical region\tHost or vector\tReferences' >{path}{study}/Metadata_{study}.txt",shell=True)
+    subprocess.run(f"echo 'Study\tVirus name\tID itol tree\tTaxonomy\tSerogroup\tProtein accesion number\tSize Proteic sequence\t{chain_prot[-1]}Nucleic accession number\tSize Nucleic sequence\tStrand\tStrain\tGeographical region\tHost or vector\tReferences' >{path}{study}/Metadata_{study}.txt",shell=True)
 
     subprocess.run(f"echo 'Study\tID itol tree\t{chain_prot}' >{path}{study}/Pos_prot_{study}.txt",shell=True)
     with open(f"{path}{study}/sequences_{study}.gb","r") as Datas:
         sp=''
         first_call(path,study)
-        extract_id(path,Datas,study,sp,prot,email,prot_names.split(";"),chain_prot[:-1].split("\t"),vv_prot[study])
+        extract_id(path,Datas,study,sp,prot,email,prot_names.split(";"),vv_prot[study],speci_order,dicy)
         concatenates(path,study)
 
     subprocess.run(f"mafft --auto {path}{study}/prot_all_{study}.fasta > {path}{study}/prot_all_align_{study}.aln-fasta",shell=True)
     subprocess.run(f"mafft --auto {path}{study}/nucl_all_{study}.fasta > {path}{study}/nucl_all_align_{study}.aln-fasta",shell=True)
-    i+=1
 
 for study,ID,prot,prot_names in zip(studiesspeOG, NUIDspeOG,list_prot_speOG,Diff_name_OG):
     
     with open(f"{path}{study}/{ID}.gb","r") as Datas:
         sp='OGspe'
-        extract_id(path,Datas,study,sp,prot,email,prot_names.split(";"),chain_prot[:-1].split("\t"),vv_prot[study])
+   
+        extract_id(path,Datas,study,sp,prot,email,prot_names.split(";"),vv_prot[study],speci_order,dicy)

@@ -167,22 +167,25 @@ def geographic_region(pays) :
 ### Function modif host
 # For each host, it is important to keep only those elements that allow the species to be identified
 
-def modif_host(host) : 
-    if "culex" in host.lower() : 
-        host ="Culex"
-    elif "homo sapiens" in host.lower():
-        host="Homo sapiens"
-    elif "midge" in host.lower() :
-        host="Midge"
-    elif "tick" in host.lower() : 
-        host="Ticks"
-    elif "pigeon" in host.lower():
-        host="Columba livia"
-    elif "hamster" in host.lower():
-        host="Cricetinae"
-    elif "mosquito" in host.lower() : 
-	    host='Culicidae'
-    
+def modif_host(host,list_speci_order) : 
+    # if "culex" in host.lower() : 
+    #     host ="Culex"
+    # elif "homo sapiens" in host.lower():
+    #     host="Homo sapiens"
+    # elif "midge" in host.lower() :
+    #     host="Midge"
+    # elif "tick" in host.lower() : 
+    #     host="Ticks"
+    # elif "pigeon" in host.lower():
+    #     host="Columba livia"
+    # elif "hamster" in host.lower():
+    #     host="Cricetinae"
+    # elif "mosquito" in host.lower() : 
+	#     host='Culicidae'
+    for sp_or in list_speci_order : 
+        speci_order=sp_or.split("=")
+        if speci_order[0].lower() in host.lower() : 
+            host=speci_order[1]
     host=host.split(";")[0]
     host=host.replace("sp.",'')
     host=host.replace("sentinel.",'')
@@ -211,10 +214,10 @@ def deforder(species,mail) :
                     spepart=deforder(part,mail)
                     if spepart not in species : 
                         return spepart
-                print(f"\nThe species '{species}' was not identified by the NCBI taxonomy database\nPlease check the scientific name of this species and add a If statement in the modif_host function such as.\n elif {species.lower()} in host.lower() : \n\thost='Scientificname'")
+                print(f"\nThe species '{species}' was not identified by the NCBI taxonomy database\nPlease check the scientific name of this species and add a it in the corresponding line of the information_file.txt such as.\n {species.lower()}='Scientificname';")
                 return species
             else  : 
-                print(f"\nThe species '{species}' was not identified by the NCBI taxonomy database\nPlease check the scientific name of this species and add a If statement in the modif_host function such as.\n elif {species.lower()} in host.lower() : \n\thost='Scientificname'")
+                print(f"\nThe species '{species}' was not identified by the NCBI taxonomy database\nPlease check the scientific name of this species and add a it in the corresponding line of the information_file.txt such as.\n {species.lower()}='Scientificname';")
                 return species
 
         tax_id = record["IdList"][0]
@@ -235,10 +238,10 @@ def deforder(species,mail) :
                 spepart=deforder(part,mail)
                 if spepart not in species : 
                     return spepart
-            print(f"\nThe species '{species}' was not identified by the NCBI taxonomy database\nPlease check the scientific name of this species and add a If statement in the modif_host function such as.\n If {species.lower()} in host.lower() : \n\thost='Scientificname'")
+            print(f"\nThe species '{species}' was not identified by the NCBI taxonomy database\nPlease check the scientific name of this species and add a it in the corresponding line of the information_file.txt such as.\n {species.lower()}='Scientificname';")
             return species
         else  : 
-            print(f"\nThe species '{species}' was not identified by the NCBI taxonomy database\nPlease check the scientific name of this species and add a If statement in the modif_host function such as.\n If {species.lower()} in host.lower() : \n\thost='Scientificname'")
+            print(f"\nThe species '{species}' was not identified by the NCBI taxonomy database\nPlease check the scientific name of this species and add a it in the corresponding line of the information_file.txt such as.\n {species.lower()}='Scientificname';")
             return species
 
 ### Function write_file
@@ -433,7 +436,7 @@ region_colors=ratp_colors.copy()
 serogroup_colors=ratp_colors.copy()
 host_colors=ratp_colors.copy()
 
-def extract_id(path,Datas,study,sp,list_prot,mail,Diff_name,chain_prot,vv_prot) :
+def extract_id(path,Datas,study,sp,list_prot,mail,Diff_name,metadata_name_prot,speci_order,dicy) :
     global region_colors
     global serogroup_colors
     global host_colors
@@ -451,14 +454,15 @@ def extract_id(path,Datas,study,sp,list_prot,mail,Diff_name,chain_prot,vv_prot) 
         region="Na"
         ID=''
         serogroup='Na'
-
+        sizeprot=0
         Nu= record.id
         Sequence_nu = record.seq
         sizenu=len(Sequence_nu)
         organism= record.annotations.get('organism',"Inconnu")
-        organism=organism.replace('virus','')
+        #organism=organism.replace('virus','')
         fullorganisme=organism
-
+        Sequence_aa=""
+        ID_prot=[]
         taxonomy=record.annotations.get('taxonomy')[7:]
         taxonomy=' : '.join(taxonomy)
 
@@ -468,7 +472,7 @@ def extract_id(path,Datas,study,sp,list_prot,mail,Diff_name,chain_prot,vv_prot) 
         for feature in record.features : 
             if "host" in feature.qualifiers : 
                 host = feature.qualifiers['host'][0]
-                host=modif_host(host)
+                host=modif_host(host,speci_order)
                 order = deforder(host,mail) 
 
             if "country" in feature.qualifiers :
@@ -487,43 +491,43 @@ def extract_id(path,Datas,study,sp,list_prot,mail,Diff_name,chain_prot,vv_prot) 
             elif "isolate" in feature.qualifiers :
                 strain = re.sub(r"[/\\?%*:|\"<>]","|",feature.qualifiers['isolate'][0])
 
-            if feature.type == "CDS" and "translation" in feature.qualifiers :
-                Sequence_aa=feature.qualifiers["translation"][0] 
-                sizeprot=len(Sequence_aa)    
+            if feature.type == "CDS" and "translation" in feature.qualifiers : 
                 strand = feature.location.strand          
             if "protein_id" in feature.qualifiers :
-                ID_prot = feature.qualifiers['protein_id'][0]
-        output_prot=""        
-        output_prot,output_pos=extract_prot_data(ID_prot,study,list_prot,mail,Diff_name,chain_prot,vv_prot)
+                ID_prot.append(feature.qualifiers['protein_id'][0])
+        #print(f"ID proteins : {ID_prot}   ID nu : {Nu} ") 
+        if not ID_prot : 
+            print(f"This ID : {Nu} does not have any proteins ID It will not be inclued in this study")
+        else :       
+            output_prot,output_pos,sizeprot,Sequence_aa=extract_prot_data(ID_prot,study,list_prot,mail,Diff_name,metadata_name_prot,dicy)
         
-        order_color,host_colors=colour_choice(order,host_colors,"order")
-        region_color,region_colors=colour_choice(region,region_colors,"region")
-        serogroup=find_serogroup(fullorganisme)
-        color_sero,serogroup_colors=colour_choice(serogroup,serogroup_colors,"serogroup")
+            order_color,host_colors=colour_choice(order,host_colors,"order")
+            region_color,region_colors=colour_choice(region,region_colors,"region")
+            serogroup=find_serogroup(fullorganisme)
+            color_sero,serogroup_colors=colour_choice(serogroup,serogroup_colors,"serogroup")
 
-        ID=Modif_ID(str(organism[:3]+Nu[3:]))
-        Description_nu = f"{ID}"
-        Description_prot = f"{ID}"
+            ID=Modif_ID(str(organism[:3]+Nu[3:]))
+            Description_nu = f"{ID}"
+            Description_prot = f"{ID}"
 
-        write_file(path,Description_nu,Description_prot,Sequence_aa,Sequence_nu,localisation,region,region_color,order,order_color,host,strain,Nu,ID_prot,study,organism,ID,serogroup,color_sero,sp)
+            write_file(path,Description_nu,Description_prot,Sequence_aa,Sequence_nu,localisation,region,region_color,order,order_color,host,strain,Nu,ID_prot,study,organism,ID,serogroup,color_sero,sp)
         
         
-        line=f"{study}\t{fullorganisme}\t{ID}\t{taxonomy}\t{serogroup}\t{ID_prot}\t{sizeprot}\t{output_prot}{Nu}\t{sizenu}\t{strand}\t{strain}\t{region}: {localisation}\t{order}: {host}\t{ref}\n"
-        line_prot_=f"{study}\t{ID}\t{output_pos}\n"
+            line=f"{study}\t{fullorganisme}\t{ID}\t{taxonomy}\t{serogroup}\t{"-".join(ID_prot)}\t{sizeprot}\t{output_prot}{Nu}\t{sizenu}\t{strand}\t{strain}\t{region}: {localisation}\t{order}: {host}\t{ref}\n"
+            line_prot_=f"{study}\t{ID}\t{output_pos}\n"
 
-        # line_prot_=line_prot_.replace("GP38","")
-        # line_prot_=line_prot_.replace("Gn","")
-        line_prot_=line_prot_.replace(":","")
-        name=f"{path}{study}/Metadata_{study}.txt"
-        allmetadata=open(name,'a')
-        allmetadata.write(line)
-        allmetadata.close()
-        line_prot_=line_prot_.replace(">","")
-        line_prot_=line_prot_.replace("<","")
-        name=f"{path}{study}/Pos_prot_{study}.txt"
-        protfile=open(name,"a")
-        protfile.write(line_prot_)
-        protfile.close()
+            line_prot_=line_prot_.replace(":","")
+            name=f"{path}{study}/Metadata_{study}.txt"
+            allmetadata=open(name,'a')
+            allmetadata.write(line)
+            allmetadata.close()
+            line_prot_=line_prot_.replace(">","")
+            line_prot_=line_prot_.replace("<","")
+
+            name=f"{path}{study}/Pos_prot_{study}.txt"
+            protfile=open(name,"a")
+            protfile.write(line_prot_)
+            protfile.close()
 
     
 
@@ -532,92 +536,98 @@ def extract_id(path,Datas,study,sp,list_prot,mail,Diff_name,chain_prot,vv_prot) 
 ###Function modif_name_prot
 #The purpose of this function is to identify the protein present in the gp
 
-def modif_name_prot(prot,Diff_name) :
-    
+def modif_name_prot(prot,Diff_name,metadata_name_prot) :
+    #print(metadata_name_prot)
     for diff_prot in Diff_name :
         
         DP=diff_prot.split("=")
         #print (DP)
         prot=prot.upper().replace(DP[0].upper(),DP[1].upper())
+        for Inf_prot in metadata_name_prot : 
+            #print(f"inf_prot : {Inf_prot} -> {prot}")
+            if Inf_prot.upper() in prot :
+                prot=Inf_prot
         prot=prot.upper().replace("-","").replace("\xa0", " ").replace(" ","")
-        #print(f"Pour la protéine {p} on veut replace {DP[0]} par {DP[1]} résultat = {prot} \n")
-    # name_prot=name_prot.upper()airovirus_M=GP38+Gn
-    # if "HANTA_G2" in name_prot  : 
-    #     name_prot="Gc"
-    # name_prot=name_prot.replace("BUNYA","")
-    # name_prot=name_prot.replace("_","")
-    # name_prot=name_prot.replace("G2","Gn")
-    # name_prot=name_prot.replace("G1","Gc")
-    # name_prot=name_prot.replace("NSM","NSm")
-    # name_prot=name_prot.replace("DUF5585","MLD")
-    # name_prot=name_prot.replace("NAIROVIRUSM","GP38+Gn")
+
     
     return prot
 
 ##Function extract_prot_data
 #This function extract the position of each proteins of each organism in order to save everything in the metadatafiles
 
-def extract_prot_data(ID_prot,study,all_proteins,mail,Diff_name,chain_prot,vv_prot) : 
+def extract_prot_data(ID_prot_list,study,all_proteins,mail,Diff_name,metadata_name_prot,dicy) : 
 
     Entrez.email = mail
-    handle = Entrez.efetch(db="protein", id=ID_prot, rettype="gp", retmode="text")
-    record = SeqIO.read(handle, "genbank")
-    handle.close()
-    time.sleep(2)  
-    with open(f"{path}{study}/prot/{ID_prot}.gp", "w") as output_handle:
-        SeqIO.write(record, output_handle, "genbank")
-        output_handle
-
-    record = SeqIO.read(f"{path}{study}/prot/{ID_prot}.gp", "genbank")
-    proteins={}
-    for feature in record.features :
-
-        if 'region_name' in feature.qualifiers : 
-            prot=(feature.qualifiers['region_name'][0])
-            
-            start=(feature.location.start)
-            end=(feature.location.end)
-            prot=modif_name_prot(prot,Diff_name) 
-            if start==0 : 
-                start=1
-            
-            if "+" in prot : 
-                two_prot=prot.split("+")
-                
-                proteins[two_prot[0]]=[start,"nan"]
-                proteins[two_prot[1]]=["nan",end]
-                
-                
-            else : 
-                
-                proteins[prot]=[start,end]    
-    
     output=""  
-    output_pos=""    
-    for prot in vv_prot : 
-        # print(f"{prot}-{chain_prot}-")
-        # for ID_p in chain_prot : 
-        #     print(prot.upper(),ID_p.upper(),prot.upper() in ID_p.upper(),prot.upper() in proteins)
+    output_pos=""
+    proteins={}
+    All_end=0
+    Sequence_aa=''
+    for ID_prot in ID_prot_list : 
+        handle = Entrez.efetch(db="protein", id=ID_prot, rettype="gp", retmode="text")
+        record = SeqIO.read(handle, "genbank")
+        handle.close()
+        time.sleep(2)  
+        with open(f"{path}{study}/prot/{ID_prot}.gp", "w") as output_handle:
+            SeqIO.write(record, output_handle, "genbank")
+            output_handle
 
-        if prot.upper() in proteins and  any(prot.upper() in ID_p.upper() for ID_p in chain_prot)   : 
+        record = SeqIO.read(f"{path}{study}/prot/{ID_prot}.gp", "genbank")
+        
+        for feature in record.features :
             
+            if 'region_name' in feature.qualifiers : 
+                
+                prot=(feature.qualifiers['region_name'][0])
+            
+                start=(feature.location.start)+All_end
+                end=(feature.location.end)+All_end
+                prot=modif_name_prot(prot,Diff_name,metadata_name_prot) 
+
+                #print(f"prot_newname = {prot}")
+                if start==0 : 
+                    start=1
+         
+                if "+" in prot : 
+                    two_prot=prot.split("+")
+                    
+                    if any(two_prot[1].upper() in p.upper() for p in proteins) : 
+                        proteins[two_prot[1]][1]=end
+                    else : 
+                        proteins[two_prot[0]]=[start,"nan"]
+                        proteins[two_prot[1]]=["nan",end]
+                          
+                else : 
+                    if prot.upper() in proteins : 
+                        #print(proteins)
+                        if proteins[prot][1]< end :
+                            proteins[prot][1]=end
+
+                    else : 
+                        proteins[prot]=[start,end]  
+
+        Sequence_aa+=record.seq
+        All_end+=len(record.seq)
+
+        subprocess.run(['rm', f'{path}{study}/prot/{ID_prot}.gp'],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+ 
+    for prot in metadata_name_prot : 
+
+        if prot.upper() in proteins  :
+                #if any(prot.upper() in ID_p.upper() for ID_p in metadata_name_prot)   : 
+                #print(f"position : {proteins[prot.upper()]}")
             output+=f'{str(proteins[prot.upper()][0])}\t{str(proteins[prot.upper()][1])}\t'
             output_pos+=f'{str(proteins[prot.upper()][0])}\t{str(proteins[prot.upper()][1])}\t'
-        else : 
-            
+        elif any(prot.upper() in ID_p.upper() for ID_p in metadata_name_prot): 
+                #print(f"prot : {prot}")
             output+=f"nan\tnan\t"
             output_pos+=f"nan\tnan\t"
-            # if prot=="GP38" : 
-            #     output_pos+=f'{str(proteins[prot][0])}\tnan\t'
-            # else : 
-                        # if prot=="GP38" : 
-            #     output_pos+=f'{str(proteins[prot][0])}\tnan\t'
-            # else : 
-            #     output_pos+=f'\t{str(proteins[prot][1])}\t'#     output_pos+=f'\t{str(proteins[prot][1])}\t'
 
-    subprocess.run(['rm', f'{path}{study}/prot/{ID_prot}.gp'],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
 
-    return output,output_pos
+
+    
+
+    return output,output_pos,All_end,Sequence_aa
 
 #The serogroup file 
 df = pd.read_csv(f"{path}Serogroup.txt", delimiter="|",header=0)
@@ -734,7 +744,7 @@ def nucleic_sequences(study,ID,sequence,debseq,proteins,sp,resfile) :
     #print(position_proteines)
     prot_position=dict(zip(proteins, position_proteines))
     for prot,pos in prot_position.items() : 
-        print(f"nucleic seq & OG : {prot}:{pos} : {not any("Na" in str(element) for element in pos)} ! {not any("ABS" in str(element) for element in pos)}!{pos!="Na"}")
+        #print(f"nucleic seq & OG : {prot}:{pos} : {not any("Na" in str(element) for element in pos)} ! {not any("ABS" in str(element) for element in pos)}!{pos!="Na"}")
         if not any("ABS" in str(element) for element in pos) and not any("Na" in str(element) for element in pos) : 
             pos = [int(float(x)) for x in pos]
             name=f"{path}{study}{resfile}{prot}_{sp}_nucl.fasta"
@@ -775,7 +785,7 @@ def nucleic_sequences_OG(study,ID,sequence,debseq,pos_prot,proteins,sp,resfile) 
     prot_position=dict(zip(proteins, position_proteines))
 
     for prot,pos in prot_position.items() : 
-        print(f"nucleic seq & OG : {prot} :{pos}: {not any("Na" in str(element) for element in pos)} ! {not any("ABS" in str(element) for element in pos)}!{pos!="Na"}")
+        #print(f"nucleic seq & OG : {prot} :{pos}: {not any("Na" in str(element) for element in pos)} ! {not any("ABS" in str(element) for element in pos)}!{pos!="Na"}")
         if not any("ABS" in str(element) for element in pos) and not any("Na" in str(element) for element in pos) : 
             pos = [int(float(x)) for x in pos]
             name=f"{path}{study}{resfile}{prot}_{sp}_nucl.fasta"
@@ -830,7 +840,7 @@ def proteic_sequence (study,ID,sequence,proteins,sp,resfile) :
 
 
     for prot,pos in prot_position.items() : 
-        print(f"proteic seq : {prot} :{pos}: {not any("Na" in str(element) for element in pos)} ! {not any("ABS" in str(element) for element in pos)}")
+        #print(f"proteic seq : {prot} :{pos}: {not any("Na" in str(element) for element in pos)} ! {not any("ABS" in str(element) for element in pos)}")
         name=f"{path}{study}{resfile}{prot}_{sp}_prot.fasta"
         if not any("ABS" in str(element) for element in pos) and not any("Na" in str(element) for element in pos): 
             pos = [int(float(x)) for x in pos]

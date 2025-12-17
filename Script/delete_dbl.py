@@ -44,7 +44,7 @@ for study,ths,target in zip(studies,ths_list,target_list) :
     for db in Doublon : 
         dbl_file=open(doublon_file,'a')
         dbl_file.write(f"{db}\n")
-    dbl_file.close()
+        dbl_file.close()
 
 ##########################################################
 

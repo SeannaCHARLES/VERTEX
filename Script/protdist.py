@@ -13,7 +13,7 @@ from multiprocessing import Pool
 
 path = sys.argv[1]
 studies=list(sys.argv[2].split(" "))
-spe_prot=list(sys.argv[3].replace(" ","").split("\n")) 
+spe_prot_list=list(sys.argv[3].replace(" ","").split("\n")) 
 names=list(sys.argv[4].split(" "))
 path_script=sys.argv[5]
 resfile=str(sys.argv[6])
@@ -41,9 +41,10 @@ def Lauch_MSP(list_record) :
     #out=pd.read_csv(f"{path}{name}/Align_all/{Query}{subject}/{Query}{subject}_table.txt",sep="\t",index_col=0,header=0)
 
 
-
-for name,spe_prot in zip(names,spe_prot) : 
-    if name in studies :
+print(spe_prot_list)
+for name,spe_prot in zip(names,spe_prot_list) : 
+    print(spe_prot)
+    if name in studies and spe_prot!='""' and spe_prot!='' :
         print(name)
         subprocess.run(f"rm -r {path}{name}/Align_all/*",shell=True)
         change_name={}

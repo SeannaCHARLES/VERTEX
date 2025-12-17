@@ -18,6 +18,8 @@ proteins=list(sys.argv[8].split(" "))
 
 
 
+
+
 dict_test={}
 mafftfiles={}
 
@@ -26,7 +28,8 @@ onlyOG= [x for x in names if x not in studies]
 for (study,name,prot,pp)in zip(Allstudies,names,spe_prot,proteins):
     prot=prot.replace('"',"")
     pp=pp.split(";")
-    if prot!='' :
+    
+    if prot!='':
         compo_prot=prot.split("=")[1].split("+")
         name_spe_prot=prot.split("=")[0].replace('"',"")
 
