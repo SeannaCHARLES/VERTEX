@@ -92,9 +92,8 @@ print(INOUT)
 print(protINOUT)
 print(orgaWIWO)
 for all_s, IO,prots,virus in zip(Allstudies,INOUT,protINOUT,orgaWIWO) :
+    metadata = pd.read_csv(f"{path}{all_s}/Metadata_{all_s}.txt", delimiter="\t",header=0,index_col=0)
     print(all_s)
-    metadata = pd.read_csv(f"{path}{all_s}/Metadata_{all_s}.txt", sep="\t",header=0)
-    
     if IO!='': #
         dicy[all_s]={}
         if IO=="OUT" : 
@@ -119,11 +118,11 @@ if not dicy :
 #print(studies,target_list,dicy.items())
 for study,target in zip(studies,target_list) : 
 
-    pos_prot = pd.read_csv(f"{path}{study}/Pos_prot_{study}.txt", sep="\t",header=0)
-    metadata = pd.read_csv(f"{path}{study}/Metadata_{study}.txt", sep="\t",header=0)
+    pos_prot = pd.read_csv(f"{path}{study}/Pos_prot_{study}.txt", delimiter="\t",header=0,index_col=0)
+    metadata = pd.read_csv(f"{path}{study}/Metadata_{study}.txt", delimiter="\t",header=0,index_col=0)
     pos_prot.iloc[:, 1:]=pos_prot.iloc[:, 1:].astype(str)
     pos_prot.to_csv(f"{path}{study}/Pos_prot_Final_{study}.txt",sep="\t")
-    Pos_prot_final=pd.read_csv(f"{path}{study}/Pos_prot_Final_{study}.txt", sep="\t",header=0)
+    Pos_prot_final=pd.read_csv(f"{path}{study}/Pos_prot_Final_{study}.txt", delimiter="\t",header=0,index_col=0)
     #OG_protOUT={}
     #print(pos_prot)
     # for element in dicy[study] : 
@@ -215,11 +214,11 @@ for study,target in zip(studies,target_list) :
                         #     Pos_prot_final.iloc[line,col].astype(str)
                         Pos_prot_final.iloc[line,col]=new_pos
                         Pos_prot_final.to_csv(f"{path}{study}/Pos_prot_Final_{study}.txt", sep="\t")
-                        Pos_prot_final=pd.read_csv(f"{path}{study}/Pos_prot_Final_{study}.txt", sep="\t",header=0,index_col=0)
+                        Pos_prot_final=pd.read_csv(f"{path}{study}/Pos_prot_Final_{study}.txt", delimiter="\t",header=0,index_col=0)
         change_pos(line,end_col-1,Pos_prot_final)
-        Pos_prot_final=pd.read_csv(f"{path}{study}/Pos_prot_Final_{study}.txt", sep="\t",header=0,index_col=0)
+        Pos_prot_final=pd.read_csv(f"{path}{study}/Pos_prot_Final_{study}.txt", delimiter="\t",header=0,index_col=0)
         change_pos(line,end_col-1,Pos_prot_final)
-    Pos_prot_final=pd.read_csv(f"{path}{study}/Pos_prot_Final_{study}.txt", sep="\t",header=0,index_col=0)
+    Pos_prot_final=pd.read_csv(f"{path}{study}/Pos_prot_Final_{study}.txt", delimiter="\t",header=0,index_col=0)
 
     #print(f"{missing_val}")
                 

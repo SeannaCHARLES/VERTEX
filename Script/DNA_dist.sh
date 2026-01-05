@@ -11,9 +11,9 @@ IFS=' ' read -ra studies <<< "$allstudies"
 
 ###########################Script##########################
 for study in "${studies[@]}"; do 
-
+        echo "${study}"
         echo A DNAdist table is created for the "${study}" study 
-
+        rm -f "${path}${study}/${study}_dnadist.txt"
         seqret -sequence "${path}${study}/nucl_all_align_${study}.aln-fasta" -outseq "${path}${study}/nucl_all_align_${study}.phy" -osformat phylip 
         #converts a fasta file into phylip
         
