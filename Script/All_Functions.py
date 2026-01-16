@@ -537,19 +537,15 @@ def extract_id(path,Datas,study,sp,list_prot,mail,Diff_name,metadata_name_prot,s
 #The purpose of this function is to identify the protein present in the gp
 
 def modif_name_prot(prot,Diff_name,metadata_name_prot) :
-    #print(metadata_name_prot)
+
     for diff_prot in Diff_name :
         
         DP=diff_prot.split("=")
-        #print (DP)
+        
         prot=prot.upper().replace(DP[0].upper(),DP[1].upper())
-        for Inf_prot in metadata_name_prot : 
-            #print(f"inf_prot : {Inf_prot} -> {prot}")
-            if Inf_prot.upper() in prot :
-                prot=Inf_prot
         prot=prot.upper().replace("-","").replace("\xa0", " ").replace(" ","")
 
-    
+ 
     return prot
 
 ##Function extract_prot_data
@@ -587,7 +583,7 @@ def extract_prot_data(ID_prot_list,study,all_proteins,mail,Diff_name,metadata_na
                 #print(f"prot_newname = {prot}")
                 if start==0 : 
                     start=1
-         
+                
                 if "+" in prot : 
                     two_prot=prot.split("+")
                     

@@ -54,46 +54,46 @@ echo "vide---"
 speprot=()
 fi
 
-########################################################DELETE THE FOLDER OF THE STUDY##################################################
-for study in "${studies[@]}"; do
-rm -r "${path}""${study:?}/"* >/dev/null 
-mkdir -p "${path}""${study}"/nucl "${path}""${study}"/prot "${path}""${study}""${res_file}"/treefolder "${path}""${study}"/legend "${path}""${study}"/blast/database/ "${path}""${study}"/Align/
-done
+# ########################################################DELETE THE FOLDER OF THE STUDY##################################################
+# for study in "${studies[@]}"; do
+# rm -r "${path}""${study:?}/"* >/dev/null 
+# mkdir -p "${path}""${study}"/nucl "${path}""${study}"/prot "${path}""${study}""${res_file}"/treefolder "${path}""${study}"/legend "${path}""${study}"/blast/database/ "${path}""${study}"/Align/
+# done
 
-echo -e "Serogroup\tRegion\tOrder\nNa\t#979a9a" > "${path}"/All_legend_caption.txt
-# #Common scripts for all studies
- echo The sequences are currently being downloaded ...
+# echo -e "Serogroup\tRegion\tOrder\nNa\t#979a9a" > "${path}"/All_legend_caption.txt
+# # #Common scripts for all studies
+#  echo The sequences are currently being downloaded ...
 
 
-# #######################################DOWNLOAD THE DATA IN GENBANK FORMAT FOR ALL THE ID FOR EACH STUDY##################################
-for i in "${!NUID[@]}"; do   
-    study="${studies[$i]}"
-    echo Download the nucleic sequences for the study : "${study}"
-    IFS=$';' read -ra IDprot <<< "${NUID[$i]}"
-    rm "${path}""${study}"/sequences_"${study}".gb
+# # #######################################DOWNLOAD THE DATA IN GENBANK FORMAT FOR ALL THE ID FOR EACH STUDY##################################
+# for i in "${!NUID[@]}"; do   
+#     study="${studies[$i]}"
+#     echo Download the nucleic sequences for the study : "${study}"
+#     IFS=$';' read -ra IDprot <<< "${NUID[$i]}"
+#     rm "${path}""${study}"/sequences_"${study}".gb
 
-   for ID in "${IDprot[@]}"; do 
+#    for ID in "${IDprot[@]}"; do 
 
-        esearch -db nucleotide -query "$ID" |efetch -format gb > "${path}""${study}"/"$ID".gb
-        cat "${path}""${study}"/"$ID".gb >> "${path}""${study}"/sequences_"${study}".gb
-        rm "${path}""${study}"/"$ID".gb >/dev/null
-    done
+#         esearch -db nucleotide -query "$ID" |efetch -format gb > "${path}""${study}"/"$ID".gb
+#         cat "${path}""${study}"/"$ID".gb >> "${path}""${study}"/sequences_"${study}".gb
+#         rm "${path}""${study}"/"$ID".gb >/dev/null
+#     done
 
-done
+# done
 
-# ###########################################################SPECIFIQUE OUTGROUP###########################################################
+# # ###########################################################SPECIFIQUE OUTGROUP###########################################################
 
-for i in "${!NUIDspeOG[@]}"; do   
-    study="${studiesspeOG[$i]}"
-    IFS=$';' read -ra IDprotspeOG <<< "${NUIDspeOG[$i]}"
+# for i in "${!NUIDspeOG[@]}"; do   
+#     study="${studiesspeOG[$i]}"
+#     IFS=$';' read -ra IDprotspeOG <<< "${NUIDspeOG[$i]}"
 
-    for ID in "${IDprotspeOG[@]}"; do 
+#     for ID in "${IDprotspeOG[@]}"; do 
 
-        esearch -db nucleotide -query "$ID" |efetch -format gb > "${path}""${study}"/"$ID".gb
+#         esearch -db nucleotide -query "$ID" |efetch -format gb > "${path}""${study}"/"$ID".gb
 
-    done
+#     done
 
-done
+# done
 
 
 ##############################################EXTRACT ALL THE DATA FROM THE GENBANK FILES#################################################
@@ -145,7 +145,7 @@ echo "${path}""${path_script}"prot_position.py
 
 # # #####################################MESURE THE DIVERGENCE BETWEEN ALL THE SEQUENCES FOR EACH STUDY######################################
 ./"${path_script}"DNA_dist.sh "${path}" "${studies[*]}" 
-
+######EQUIVALENT DNADIST - PROTDIST
 # # ##################################################DELETE THE SEQUENCES THAT ARE TOO CLOSE#################################################
 echo The duplicate sequences are being deleted
 for study in "${studies[@]}"; do

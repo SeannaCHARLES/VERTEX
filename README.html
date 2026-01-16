@@ -368,8 +368,8 @@ phylogenetic trees, captions of these phylogenetic trees.</p>
 <table style="width:58%;">
 <caption>Input-Output Main.sh</caption>
 <colgroup>
-<col width="30%" />
-<col width="27%" />
+<col width="31%" />
+<col width="26%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -379,9 +379,9 @@ phylogenetic trees, captions of these phylogenetic trees.</p>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="center"><p>All_information.txt</p>
+<td align="center"><p>A ll_information.txt</p>
 <p>(From user)</p></td>
-<td align="center">A ll_sequences.gb</td>
+<td align="center">All_sequences.gb</td>
 </tr>
 </tbody>
 </table>
@@ -406,8 +406,8 @@ Host.</li>
 <table style="width:83%;">
 <caption>Input-Output Genbank.py</caption>
 <colgroup>
-<col width="26%" />
-<col width="56%" />
+<col width="27%" />
+<col width="55%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -417,14 +417,14 @@ Host.</li>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="center"><p>All_sequences.gb</p>
+<td align="center"><p>A ll_sequences.gb</p>
 <p>(From Main.sh)</p></td>
 <td align="center"><p>proteic_sequence.fasta</p>
 <p>nucleic_sequence.fasta</p>
 <p>All_proteic_sequences.fasta</p>
 <p>All_nucleic_sequences.fasta</p>
-<p>A ll_proteic_sequences_align.aln-fasta</p>
-<p>A ll_nucleic_sequences_align.aln-fasta</p>
+<p>All_proteic_sequences_align.aln-fasta</p>
+<p>All_nucleic_sequences_align.aln-fasta</p>
 <p><strong>Serogroup_caption.txt</strong></p>
 <p><strong>Geographical_caption.txt</strong></p>
 <p><strong>Host_caption.txt</strong></p>
@@ -441,11 +441,11 @@ Host.</li>
 with proteins whose positions are missing.</li>
 </ul>
 <p><code>This file ensures that as many protein positions as possible are retrieved in cases where the information is not available in the Gp file format.</code></p>
-<table style="width:71%;">
+<table style="width:62%;">
 <caption>Input-Output Prot_position.py</caption>
 <colgroup>
 <col width="27%" />
-<col width="43%" />
+<col width="34%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -457,9 +457,7 @@ with proteins whose positions are missing.</li>
 <tr class="odd">
 <td align="center"><p>Pos_prot.txt</p>
 <p>(From Genbank.py)</p></td>
-<td align="center"><ul>
-<li>*Final_pos_prot.txt**</li>
-</ul></td>
+<td align="center"><strong>Final_pos_prot.txt</strong></td>
 </tr>
 </tbody>
 </table>
@@ -470,11 +468,11 @@ with proteins whose positions are missing.</li>
 <li>Create a Blast database of all the reference virus/organisms
 proteins</li>
 </ul>
-<table style="width:81%;">
+<table style="width:79%;">
 <caption>Input-Output Main.sh</caption>
 <colgroup>
 <col width="38%" />
-<col width="41%" />
+<col width="40%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -486,7 +484,7 @@ proteins</li>
 <tr class="odd">
 <td align="center"><p>Ref_prot.fasta</p>
 <p>(From Genbank_extract.py)</p></td>
-<td align="center">P roteic_prot_1-n_ref.fasta</td>
+<td align="center">Proteic_prot_1-n_ref.fasta</td>
 </tr>
 </tbody>
 </table>
@@ -512,12 +510,11 @@ sequence table.</li>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="center"><p>All _n ucleic_sequences_align.aln-fasta</p>
+<td align="center"><p>All _nu cleic_sequences_align.aln-fasta</p>
 <p>(From Main.sh)</p></td>
 <td align="center"><ul>
-<li>*</li>
-</ul>
-<p>Divergence_nucleic_table.txt**</p></td>
+<li>* Divergence_nucleic_table.txt**</li>
+</ul></td>
 </tr>
 </tbody>
 </table>
@@ -528,11 +525,11 @@ sequence table.</li>
 <li>This file delete de sequences that are too close using the
 <strong>DNA_dist.sh</strong> output table</li>
 </ul>
-<table style="width:92%;">
+<table style="width:94%;">
 <caption>Input-Output Delete_dbl.py</caption>
 <colgroup>
-<col width="43%" />
-<col width="48%" />
+<col width="44%" />
+<col width="50%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -542,10 +539,10 @@ sequence table.</li>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="center"><p>Divergence_nucleic_table.txt</p>
+<td align="center"><p>D ivergence_nucleic_table.txt</p>
 <p>(From DNA_dist.sh)</p></td>
-<td align="center"><p>All_nucleic_sequences_sdbl.fasta</p>
-<p>All_proteic_sequences_sdbl.fasta</p></td>
+<td align="center"><p>A ll_nucleic_sequences_sdbl.fasta</p>
+<p>A ll_proteic_sequences_sdbl.fasta</p></td>
 </tr>
 </tbody>
 </table>
@@ -556,11 +553,11 @@ sequence table.</li>
 <li>Seperate the different proteins and save them</li>
 </ul>
 <p>One file for each proteins.</p>
-<table style="width:83%;">
+<table style="width:86%;">
 <caption>Input-Output Test_sript_mark_spe.py</caption>
 <colgroup>
-<col width="48%" />
-<col width="34%" />
+<col width="50%" />
+<col width="36%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -570,12 +567,12 @@ sequence table.</li>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="center"><p>All_nucleic_sequences_sdbl.fasta</p>
+<td align="center"><p>A ll_nucleic_sequences_sdbl.fasta</p>
 <p>(From Delete_dbl.py)</p>
-<p>All_proteic_sequences_sdbl.fasta</p>
+<p>A ll_proteic_sequences_sdbl.fasta</p>
 <p>(From Delete_dbl.py)</p></td>
-<td align="center"><p>Nucleic_prot_1-n.fasta</p>
-<p>Proteic_prot_1-n.fasta</p>
+<td align="center"><p>N ucleic_prot_1-n.fasta</p>
+<p>P roteic_prot_1-n.fasta</p>
 <p>Nucleic_prot_OG.fasta</p>
 <p>Proteic_prot_OG.fasta</p></td>
 </tr>
@@ -588,11 +585,11 @@ sequence table.</li>
 <li>This file merge the specific OG species, with the specific
 study.</li>
 </ul>
-<table style="width:79%;">
+<table style="width:81%;">
 <caption>Input-Output Merge_spe_prot.py</caption>
 <colgroup>
 <col width="44%" />
-<col width="34%" />
+<col width="36%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -610,8 +607,8 @@ study.</li>
 <p>(From Test_sript_mark_spe.py)</p>
 <p>Proteic_prot_OG.fasta</p>
 <p>(From Test_sript_mark_spe.py)</p></td>
-<td align="center"><p>Nucleic_prot_spe.fasta</p>
-<p>Proteic_prot_spe.fasta</p></td>
+<td align="center"><p>N ucleic_prot_spe.fasta</p>
+<p>P roteic_prot_spe.fasta</p></td>
 </tr>
 </tbody>
 </table>
@@ -622,11 +619,11 @@ study.</li>
 <li>This file lauch Protdist from phyllip and create a sequences
 divergence table</li>
 </ul>
-<table style="width:92%;">
+<table>
 <caption>Input-Output Protdist.py</caption>
 <colgroup>
 <col width="44%" />
-<col width="47%" />
+<col width="55%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -644,7 +641,9 @@ divergence table</li>
 <p>(From Merge_spe_prot.py)</p>
 <p>Proteic_prot_spe.fasta</p>
 <p>(From Merge_spe_prot.py)</p></td>
-<td align="center"><strong>Divergence_proteic_table.py</strong></td>
+<td align="center"><ul>
+<li>*Divergence_proteic_table.py**</li>
+</ul></td>
 </tr>
 </tbody>
 </table>
@@ -661,11 +660,11 @@ divergence table</li>
 <li>Create the phylogenetic tree using the best model identified (using
 iqtree2)</li>
 </ul>
-<table style="width:89%;">
+<table style="width:97%;">
 <caption>Input-Output Protdist.py</caption>
 <colgroup>
 <col width="44%" />
-<col width="44%" />
+<col width="52%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -679,8 +678,10 @@ iqtree2)</li>
 <p>(From Test_sript_mark_spe.py)</p>
 <p>Proteic_prot_spe.fasta</p>
 <p>(From Merge_spe_prot.py)</p></td>
-<td align="center"><p><strong>Proteic_prot_1-n.treefile</strong></p>
-<p><strong>Proteic_prot_spe.treefile</strong></p></td>
+<td align="center"><ul>
+<li><p>*Proteic_prot_1-n.treefile**</p></li>
+<li><p>*Proteic_prot_spe.treefile**</p></li>
+</ul></td>
 </tr>
 </tbody>
 </table>
