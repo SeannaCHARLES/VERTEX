@@ -1,4 +1,4 @@
-#Creation by CHARLES Seanna seanna.charles@univ-lyon1.fr
+#Created by CHARLES Seanna 
 #Import
 import matplotlib.pyplot as plt
 
@@ -23,9 +23,6 @@ import requests
 from geopy.geocoders import Nominatim
 from itertools import combinations
 import time
-
-#You email addresse for NCBI request
-mail="seanna.charles@univ-lyon1.fr"
 
 #The path may need to change
 path = "/home/seannacharles/"
@@ -137,9 +134,9 @@ def modif_localisation(localisation) :
 # At the moment I can't get pycountry_convert to work, which would simplify this function.
 # If the geographical region can't be find the country will be kept
 
-def geographic_region(pays) : 
+def geographic_region(pays,email) : 
 
-    geolocator = Nominatim(user_agent=f"{pays}continentseanna.charles@univ-lyon1.fr")
+    geolocator = Nominatim(user_agent=f"{pays}continent{email}")
     location = geolocator.geocode(pays,timeout=10)
 
 
@@ -248,10 +245,19 @@ def deforder(species,mail) :
 # This function writes the caption files required for itol
 # This function writes individual files for each nucleotide and protein sequence 
 
-def write_file(path,Description_nu,Description_prot,Sequence_aa,Sequence_nu,localisation,region,region_color,order,order_color,host,strain,Nu,ID_prot,study,organism,ID,serogroup,color_sero,sp) : 
+def write_file(path,Description_nu,Description_prot,Sequence_aa,Sequence_nu,localisation,region,region_color,order,order_color,host,strain,Nu,ID_prot,study,organism,ID,serogroup,color_sero,sp,ccprot) : 
     global type_files
+    namespeprot={}
+    
+    for pos,element in enumerate(ccprot) : 
+        if element !="" : 
+            if len(element.split("=")[1].split("+"))>=1:
+                namespeprot[element.split("=")[0]]=element.split("=")[1].split("+")
 
-
+            
+        #ccprot.append(element.split("=")[1].split("+")[0],element.split("=")[1].split("+")[1])
+    
+    
     organism.replace(" ","")
     name_geol=f"{path}{study}/legend/{type_files[0]}_{study}_itol.txt"
     name_host=f"{path}{study}/legend/{type_files[1]}_{study}_itol.txt"
@@ -280,7 +286,7 @@ def write_file(path,Description_nu,Description_prot,Sequence_aa,Sequence_nu,loca
 
     sero=open(name_sero,'a')
     sero.write(f"##{serogroup}\n")
-    text=str (f"{ID}\trange\t{color_sero}\t{serogroup}\n{ID}\tbranch\t{color_sero}\tdashed\t5\n")
+    text=str (f"{ID}\trange\t{color_sero}\t{serogroup}\n{ID}\tbranch\t{color_sero}\tdashed\t7\n")
     sero.write(text)
     sero.close()
 
@@ -290,54 +296,50 @@ def write_file(path,Description_nu,Description_prot,Sequence_aa,Sequence_nu,loca
     HostI_f.write(text)
     HostI_f.close()
 
+    for speprot,values in namespeprot.items() : 
+        name_geol=f"{path}{study}/legend/{type_files[0]}_{study}{speprot}_itol.txt"
+        name_host=f"{path}{study}/legend/{type_files[1]}_{study}{speprot}_itol.txt"
+        name_label=f"{path}{study}/legend/Label_{study}{speprot}_itol.txt"
+        name_sero=f"{path}{study}/legend/{type_files[2]}_{study}{speprot}_itol.txt"
+        name_host_images=f"{path}{study}/legend/Host_images{study}{speprot}_itol.txt"
+        name_range=f"{path}{study}/legend/Range_{study}{speprot}_itol.txt"
+
+
+        geoloc=open(name_geol,'a')
+        geoloc.write(f"\n##{localisation}\n")
+        text="\n".join(f"{element}{ID}\trange\t{region_color}\t{region}" for element in values)
+        geoloc.write(text)
+        geoloc.close()
+
+        Host_f=open(name_host,'a')
+        Host_f.write(f"\n##{host}\n")
+        text="\n".join(f"{element}{ID}\trange\t{order_color}\t{order}" for element in values)
+        Host_f.write(text)
+        Host_f.close()
+
+        label=open(name_label,'a')
+        label.write(f"\n##{organism}\n")
+        text="\n".join(f"{element}{ID}\t{element}_{organism}" for element in values)
+        label.write(text)
+        label.close() 
+
+        sero=open(name_sero,'a')
+        sero.write(f"\n##{serogroup}\n")
+        text="\n".join(f"{element}{ID}\trange\t{color_sero}\t{serogroup}\n{element}{ID}\tbranch\t{color_sero}\tdashed\t7" for element in values)
+        sero.write(text)
+        sero.close()
     
-    name_geol=f"{path}{study}/legend/{type_files[0]}_{study}NSmGn_itol.txt"
-    name_host=f"{path}{study}/legend/{type_files[1]}_{study}NSmGn_itol.txt"
-    name_label=f"{path}{study}/legend/Label_{study}NSmGn_itol.txt"
-    name_sero=f"{path}{study}/legend/{type_files[2]}_{study}NSmGn_itol.txt"
-    name_host_images=f"{path}{study}/legend/Host_images{study}NSmGn_itol.txt"
-    name_range=f"{path}{study}/legend/Range_{study}NSmGn_itol.txt"
-    name_accol=f"{path}{study}/legend/accolade_{study}NSmGn_itol.txt"
-    name_collapse=f"{path}{study}/legend/Collapse_{study}NSmGn_itol.txt"
-    geoloc=open(name_geol,'a')
-    geoloc.write(f"##{localisation}\n")
-    text=str (f"N{ID}\trange\t{region_color}\t{region}\nG{ID}\trange\t{region_color}\t{region}\n")
-    geoloc.write(text)
-    geoloc.close()
+        label=open(name_range,'a')
+        label.write(f"\n##{organism}\n")
+        text="\n".join(f"{element}{ID}\t{color_sero}" for element in values)
+        label.write(text)
+        label.close() 
 
-    Host_f=open(name_host,'a')
-    Host_f.write(f"##{host}\n")
-    text=str (f"N{ID}\trange\t{order_color}\t{order}\nG{ID}\trange\t{order_color}\t{order}\n")
-    Host_f.write(text)
-    Host_f.close()
-
-
-    label=open(name_label,'a')
-    label.write(f"##{organism}\n")
-    text=str (f"N{ID}\t{organism}\nG{ID}\t{organism}\n")
-    label.write(text)
-    label.close() 
-
-    sero=open(name_sero,'a')
-    sero.write(f"##{serogroup}\n")
-    text=str (f"N{ID}\trange\t{color_sero}\t{serogroup}\nG{ID}\trange\t{color_sero}\t{serogroup}\nN{ID}\tbranch\t{color_sero}\tdashed\t5\nG{ID}\tbranch\t{color_sero}\tdashed\t5\n")
-    sero.write(text)
-    sero.close()
-    
-    label=open(name_range,'a')
-    label.write(f"##{organism}\n")
-    text=str (f"N{ID}\t{color_sero}\nG{ID}\t{color_sero}\n")
-    label.write(text)
-    label.close() 
-   
-
-
-    HostI_f=open(name_host_images,'a')
-    HostI_f.write(f"##{host}\n")
-    text=str (f"N{ID}\t-1\t1\t0\t0\t0\thttps://raw.githubusercontent.com/SeannaCHARLES/Images/main/{order}.png\nG{ID}\t-1\t1\t0\t0\t0\thttps://raw.githubusercontent.com/SeannaCHARLES/Images/main/{order}.png\n")
-    HostI_f.write(text)
-    HostI_f.close()
-
+        HostI_f=open(name_host_images,'a')
+        HostI_f.write(f"\n##{host}\n")
+        text="\n".join(f"{element}{ID}\t-1\t1\t0\t0\t0\thttps://raw.githubusercontent.com/SeannaCHARLES/Images/main/{order}.png"for element in values)
+        HostI_f.write(text)
+        HostI_f.close()
 
     nomprot_file=f"{Nu}_prot"
     nomprot_file=nomprot_file.replace(" ","")
@@ -365,27 +367,26 @@ def write_file(path,Description_nu,Description_prot,Sequence_aa,Sequence_nu,loca
 ### Function first_call 
 # This function writes the header for caption files for Itol
       
-def first_call(path,study) : 
+def first_call(path,study,cop) : 
     global type_files
-
-
+    subprocess.run(['rm', f'{path}{study}/legend/*'],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+    namespeprot=cop.copy()
+    for pos,element in enumerate(namespeprot) : 
+        namespeprot[pos]=element.split("=")[0]
+ 
     for name in type_files : 
         name_files = f"{path}{study}/legend/{name}_{study}_itol.txt"
         file = open(name_files,"w")
         file.write(f"TREE_COLORS\nSEPARATOR TAB\nDATASET_LABEL\t{name}\nDATA\n")       
         file.close()
     for name in type_files : 
-        name_files = f"{path}{study}/legend/{name}_{study}NSmGn_itol.txt"
-        file = open(name_files,"w")
-        file.write(f"TREE_COLORS\nSEPARATOR TAB\nDATASET_LABEL\t{name}\nDATA\n")       
-        file.close()
+        for speprot in namespeprot : 
+            name_files = f"{path}{study}/legend/{name}_{study}{speprot}_itol.txt"
+            file = open(name_files,"w")
+            file.write(f"TREE_COLORS\nSEPARATOR TAB\nDATASET_LABEL\t{name}\nDATA\n")       
+            file.close()
 
     name_files = f"{path}{study}/legend/Label_{study}_itol.txt"
-    file = open(name_files,"w")
-    file.write(f"LABELS\nSEPARATOR TAB\nDATASET_LABEL\tOrganisme Label\nDATA\n")       
-    file.close()
-
-    name_files = f"{path}{study}/legend/Label_{study}NSmGn_itol.txt"
     file = open(name_files,"w")
     file.write(f"LABELS\nSEPARATOR TAB\nDATASET_LABEL\tOrganisme Label\nDATA\n")       
     file.close()
@@ -395,26 +396,32 @@ def first_call(path,study) :
     file.write(f"DATASET_IMAGE\nSEPARATOR TAB\nDATASET_LABEL\tHost with images\nCOLOR\t#000000\nSIZE_FACTOR\t0.6\nIMAGE_ROTATION\t0\nIMAGE_SHIFT_V\t0\nIMAGE_SHIFT_H\t0\nSHOW_INTERNAL\t0\nMARGIN\t400\nDATA\n")       
     file.close()
 
-    name_files = f"{path}{study}/legend/Host_images{study}NSmGn_itol.txt"
-    file = open(name_files,"w")
-    file.write(f"DATASET_IMAGE\nSEPARATOR TAB\nDATASET_LABEL\tHost with images\nCOLOR\t#000000\nSIZE_FACTOR\t0.2\nIMAGE_ROTATION\t0\nIMAGE_SHIFT_V\t0\nIMAGE_SHIFT_H\t0\nSHOW_INTERNAL\t0\nMARGIN\t250\nDATA\n")       
-    file.close()
+    for speprot in namespeprot : 
+        name_files = f"{path}{study}/legend/Label_{study}{speprot}_itol.txt"
+        file = open(name_files,"w")
+        file.write(f"LABELS\nSEPARATOR TAB\nDATASET_LABEL\tOrganisme Label\nDATA\n")       
+        file.close()
 
-    name_files = f"{path}{study}/legend/Range_{study}NSmGn_itol.txt"
-    file = open(name_files,"w")
-    file.write(f"DATASET_COLORSTRIP\nSEPARATOR TAB\nDATASET_LABEL	RectZoneExample\tCOLOR\t#000000\nDATA\n")       
-    file.close()
+        name_files = f"{path}{study}/legend/Host_images{study}{speprot}_itol.txt"
+        file = open(name_files,"w")
+        file.write(f"DATASET_IMAGE\nSEPARATOR TAB\nDATASET_LABEL\tHost with images\nCOLOR\t#000000\nSIZE_FACTOR\t0.2\nIMAGE_ROTATION\t0\nIMAGE_SHIFT_V\t0\nIMAGE_SHIFT_H\t0\nSHOW_INTERNAL\t0\nMARGIN\t250\nDATA\n")       
+        file.close()
+
+        name_files = f"{path}{study}/legend/Range_{study}{speprot}_itol.txt"
+        file = open(name_files,"w")
+        file.write(f"DATASET_COLORSTRIP\nSEPARATOR TAB\nDATASET_LABEL	RectZoneExample\tCOLOR\t#000000\nDATA\n")       
+        file.close()
     
 
-    name_files = f"{path}{study}/legend/accolade_{study}NSmGn_itol.txt"
-    file = open(name_files,"w")
-    file.write(f"DATASET_STYLE\nSEPARATOR TAB\nDATASET_LABEL\tCOLOR\t#000000\nDATA\n")       
-    file.close()
+        # name_files = f"{path}{study}/legend/accolade_{study}{speprot}_itol.txt"
+        # file = open(name_files,"w")
+        # file.write(f"DATASET_STYLE\nSEPARATOR TAB\nDATASET_LABEL\tCOLOR\t#000000\nDATA\n")       
+        # file.close()
 
-    name_files = f"{path}{study}/legend/Collapse_{study}NSmGn_itol.txt"
-    file = open(name_files,"w")
-    file.write(f"DATASET_COLORSTRIP\nSEPARATOR TAB\nCOLOR	#ff0000\nSTRIP_WIDTH	25\nSHOW_INTERNAL	0\nMARGIN	5\nBORDER_WIDTH 1\nDATA\n")       
-    file.close()
+        # name_files = f"{path}{study}/legend/Collapse_{study}{speprot}_itol.txt"
+        # file = open(name_files,"w")
+        # file.write(f"DATASET_COLORSTRIP\nSEPARATOR TAB\nCOLOR	#ff0000\nSTRIP_WIDTH	25\nSHOW_INTERNAL	0\nMARGIN	5\nBORDER_WIDTH 1\nDATA\n")       
+        # file.close()
 
 
 
@@ -436,13 +443,13 @@ region_colors=ratp_colors.copy()
 serogroup_colors=ratp_colors.copy()
 host_colors=ratp_colors.copy()
 
-def extract_id(path,Datas,study,sp,list_prot,mail,Diff_name,metadata_name_prot,speci_order,dicy) :
+def extract_id(path,Datas,study,sp,list_prot,email,Diff_name,metadata_name_prot,speci_order,dicy,namepeprot) :
     global region_colors
     global serogroup_colors
     global host_colors
     global allmetadata
     global collaps
-
+    namespeprot=namepeprot.copy()
     
 
     for record in SeqIO.parse(Datas,"genbank"): 
@@ -458,9 +465,9 @@ def extract_id(path,Datas,study,sp,list_prot,mail,Diff_name,metadata_name_prot,s
         Nu= record.id
         Sequence_nu = record.seq
         sizenu=len(Sequence_nu)
-        organism= record.annotations.get('organism',"Inconnu")
+        organism= record.annotations.get('organism',"Inconnu").replace("virus","")
         #organism=organism.replace('virus','')
-        fullorganisme=organism
+        fullorganisme=organism.replace("virus","")
         Sequence_aa=""
         ID_prot=[]
         taxonomy=record.annotations.get('taxonomy')[7:]
@@ -473,17 +480,17 @@ def extract_id(path,Datas,study,sp,list_prot,mail,Diff_name,metadata_name_prot,s
             if "host" in feature.qualifiers : 
                 host = feature.qualifiers['host'][0]
                 host=modif_host(host,speci_order)
-                order = deforder(host,mail) 
+                order = deforder(host,email) 
 
             if "country" in feature.qualifiers :
                 localisation = feature.qualifiers['country'][0]
                 localisation=modif_localisation(localisation)
-                region = geographic_region(localisation)
+                region = geographic_region(localisation,email)
 
             elif "geo_loc_name" in feature.qualifiers :
                 localisation = feature.qualifiers['geo_loc_name'][0]
                 localisation=modif_localisation(localisation)
-                region = geographic_region(localisation)
+                region = geographic_region(localisation,email)
 
             if "strain" in feature.qualifiers :
                 strain = re.sub(r"[/\\?%*:|\"<>]","|",feature.qualifiers['strain'][0])
@@ -499,7 +506,7 @@ def extract_id(path,Datas,study,sp,list_prot,mail,Diff_name,metadata_name_prot,s
         if not ID_prot : 
             print(f"This ID : {Nu} does not have any proteins ID It will not be inclued in this study")
         else :       
-            output_prot,output_pos,sizeprot,Sequence_aa=extract_prot_data(ID_prot,study,list_prot,mail,Diff_name,metadata_name_prot,dicy)
+            output_prot,output_pos,sizeprot,Sequence_aa=extract_prot_data(ID_prot,study,list_prot,email,Diff_name,metadata_name_prot,dicy)
         
             order_color,host_colors=colour_choice(order,host_colors,"order")
             region_color,region_colors=colour_choice(region,region_colors,"region")
@@ -509,8 +516,8 @@ def extract_id(path,Datas,study,sp,list_prot,mail,Diff_name,metadata_name_prot,s
             ID=Modif_ID(str(organism[:3]+Nu[3:]))
             Description_nu = f"{ID}"
             Description_prot = f"{ID}"
-
-            write_file(path,Description_nu,Description_prot,Sequence_aa,Sequence_nu,localisation,region,region_color,order,order_color,host,strain,Nu,ID_prot,study,organism,ID,serogroup,color_sero,sp)
+            
+            write_file(path,Description_nu,Description_prot,Sequence_aa,Sequence_nu,localisation,region,region_color,order,order_color,host,strain,Nu,ID_prot,study,organism,ID,serogroup,color_sero,sp,namespeprot)
         
         
             line=f"{study}\t{fullorganisme}\t{ID}\t{taxonomy}\t{serogroup}\t{"-".join(ID_prot)}\t{sizeprot}\t{output_prot}{Nu}\t{sizenu}\t{strand}\t{strain}\t{region}: {localisation}\t{order}: {host}\t{ref}\n"
@@ -836,7 +843,7 @@ def proteic_sequence (study,ID,sequence,proteins,sp,resfile) :
 
 
     for prot,pos in prot_position.items() : 
-        #print(f"proteic seq : {prot} :{pos}: {not any("Na" in str(element) for element in pos)} ! {not any("ABS" in str(element) for element in pos)}")
+        print(f"proteic seq : {prot} :{pos}: ")
         name=f"{path}{study}{resfile}{prot}_{sp}_prot.fasta"
         if not any("ABS" in str(element) for element in pos) and not any("Na" in str(element) for element in pos): 
             pos = [int(float(x)) for x in pos]
@@ -851,6 +858,7 @@ def proteic_sequence (study,ID,sequence,proteins,sp,resfile) :
                     mark_prot+=aa
 
                 if compt_AA in pos :
+                    print(f"{compt_AA} to remove")
                     mark_prot+=aa
                     pos.remove(compt_AA)
                     if inprot==False : 

@@ -22,6 +22,13 @@ INOUT=list(sys.argv[14].replace(" ", "\n").splitlines())
 protINOUT=list(sys.argv[15].replace(" ", "\n").splitlines())
 Allstudies=list(sys.argv[16].split(" "))
 ALLNUID=list(sys.argv[17].split(" "))
+namespeprot=list(sys.argv[18].split(" "))
+namespeprotOG=list(sys.argv[19].split(" "))
+for pos,element in enumerate(namespeprot) : 
+    namespeprot[pos]=element.split(";")
+for pos,element in enumerate(namespeprotOG) : 
+    namespeprotOG[pos]=element.split(";")
+
 chain_prot=""
 
 dicy={}
@@ -60,8 +67,8 @@ if not dicy :
 
 vv_prot={}
 
-for study,prot,prot_names in zip(studies,list_prot,Diff_name) :
-
+for study,prot,prot_names,spe_prot in zip(studies,list_prot,Diff_name,namespeprot) :
+    
     subprocess.run(f"rm {path}{study}/nucl/* {path}{study}/prot/* >/dev/null",shell=True)
     chain_prot=""
     vv_prot[study]=prot
@@ -74,16 +81,16 @@ for study,prot,prot_names in zip(studies,list_prot,Diff_name) :
     subprocess.run(f"echo 'Study\tID itol tree\t{chain_prot}' >{path}{study}/Pos_prot_{study}.txt",shell=True)
     with open(f"{path}{study}/sequences_{study}.gb","r") as Datas:
         sp=''
-        first_call(path,study)
-        extract_id(path,Datas,study,sp,prot,email,prot_names.split(";"),vv_prot[study],speci_order,dicy)
+        first_call(path,study,spe_prot)
+        
+        extract_id(path,Datas,study,sp,prot,email,prot_names.split(";"),vv_prot[study],speci_order,dicy,spe_prot)
         concatenates(path,study)
 
     subprocess.run(f"mafft --auto {path}{study}/prot_all_{study}.fasta > {path}{study}/prot_all_align_{study}.aln-fasta",shell=True)
     subprocess.run(f"mafft --auto {path}{study}/nucl_all_{study}.fasta > {path}{study}/nucl_all_align_{study}.aln-fasta",shell=True)
 
-for study,ID,prot,prot_names in zip(studiesspeOG, NUIDspeOG,list_prot_speOG,Diff_name_OG):
+for study,ID,prot,prot_names,spe_prot in zip(studiesspeOG, NUIDspeOG,list_prot_speOG,Diff_name_OG,namespeprotOG):
     
     with open(f"{path}{study}/{ID}.gb","r") as Datas:
         sp='OGspe'
-   
-        extract_id(path,Datas,study,sp,prot,email,prot_names.split(";"),vv_prot[study],speci_order,dicy)
+        extract_id(path,Datas,study,sp,prot,email,prot_names.split(";"),vv_prot[study],speci_order,dicy,spe_prot)

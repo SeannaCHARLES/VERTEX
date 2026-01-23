@@ -93,7 +93,7 @@ for name,spe_prot in zip(names,spe_prot_list) :
                 Final_table_v=final_table.combine_first(table)
                 Final_table_v.to_csv(f"{path}{name}/temp_protdist_filter.txt",sep="\t")
    
-            subprocess.run(f"rm -r {path}{name}/Align_all/{record_1.id}{record_2.id}/",shell=True)
+            #subprocess.run(f"rm -r {path}{name}/Align_all/{record_1.id}{record_2.id}/",shell=True)
 
         final_table=pd.read_csv(f"{path}{name}/temp_protdist_filter.txt",sep="\t",index_col=0,header=0)    
         final_table.drop(final_table.index[final_table.index.str.startswith(f'{proteins[0][0]}')],axis=0,inplace=True)

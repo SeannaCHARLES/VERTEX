@@ -44,7 +44,7 @@ for (study,name,prot,pp)in zip(Allstudies,names,spe_prot,proteins):
                     
                 file=open(OG_filename,"a")
                 for record in SeqIO.parse(f"{need_prot_namefile}","fasta") : 
-                    file.write(f">{OGprot[0]}{record.id}\n{record.seq}\n")
+                    file.write(f">{OGprot}{record.id}\n{record.seq}\n")
                 file.close()
             if len(pp)>1 :
                 for prot in pp : 

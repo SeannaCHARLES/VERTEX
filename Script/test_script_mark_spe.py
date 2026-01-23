@@ -89,7 +89,7 @@ for study in studies :
     #     file.write(f"\n")
 
     # file.close()
-    print(study)
+    
     for record in SeqIO.parse(f"{path}{study}/prot_sdbl_{study}.fasta","fasta") :
         proteic_sequence(study,record.id,record.seq,study_prot[study],sp,resfile)
 
@@ -117,12 +117,12 @@ for study,sp,ID,name,organismesAV,IO,proteinIO in zip(studiesspeOG,onlyOG,NUIDsp
     # file.close()
 
     for record in SeqIO.parse(f"{path}{study}/{ID}_prot.fasta","fasta") :
-        print(record)
+        
         proteic_sequence(study,record.id,record.seq,study_prot[study],sp,resfile)
 
 
     for record in SeqIO.parse(f"{path}{study}/{ID}_nucl.fasta","fasta") :
         stratseq=proteins[sp][-1]
-        print("--------------------------------------------------------------------------------------------",study_prot[study])
+        
         nucleic_sequences_OG(study,record.id,record.seq,stratseq,proteins[sp][:-1],study_prot[study],sp,resfile)
 ##########################################################
