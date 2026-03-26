@@ -292,17 +292,17 @@ def write_file(path,Description_nu,Description_prot,Sequence_aa,Sequence_nu,loca
 
     HostI_f=open(name_host_images,'a')
     HostI_f.write(f"##{host}\n")
-    text=str (f"{ID}\t-1\t1\t0\t0\t0\thttps://raw.githubusercontent.com/SeannaCHARLES/Images/main/{order}.png\n")
+    text=str (f"{ID}\t-1\t1\t0\t0\t0\thttps://raw.githubusercontent.com/SeannaCHARLES/Images/main/{order.lower()}.png\n")
     HostI_f.write(text)
     HostI_f.close()
 
     for speprot,values in namespeprot.items() : 
-        name_geol=f"{path}{study}/legend/{type_files[0]}_{study}{speprot}_itol.txt"
-        name_host=f"{path}{study}/legend/{type_files[1]}_{study}{speprot}_itol.txt"
-        name_label=f"{path}{study}/legend/Label_{study}{speprot}_itol.txt"
-        name_sero=f"{path}{study}/legend/{type_files[2]}_{study}{speprot}_itol.txt"
-        name_host_images=f"{path}{study}/legend/Host_images{study}{speprot}_itol.txt"
-        name_range=f"{path}{study}/legend/Range_{study}{speprot}_itol.txt"
+        name_geol=f"{path}{study}/legend/{type_files[0]}_{study}{speprot.lower()}_itol.txt"
+        name_host=f"{path}{study}/legend/{type_files[1]}_{study}{speprot.lower()}_itol.txt"
+        name_label=f"{path}{study}/legend/Label_{study}{speprot.lower()}_itol.txt"
+        name_sero=f"{path}{study}/legend/{type_files[2]}_{study}{speprot.lower()}_itol.txt"
+        name_host_images=f"{path}{study}/legend/Host_images{study}{speprot.lower()}_itol.txt"
+        name_range=f"{path}{study}/legend/Range_{study}{speprot.lower()}_itol.txt"
 
 
         geoloc=open(name_geol,'a')
@@ -337,7 +337,7 @@ def write_file(path,Description_nu,Description_prot,Sequence_aa,Sequence_nu,loca
 
         HostI_f=open(name_host_images,'a')
         HostI_f.write(f"\n##{host}\n")
-        text="\n".join(f"{element}{ID}\t-1\t1\t0\t0\t0\thttps://raw.githubusercontent.com/SeannaCHARLES/Images/main/{order}.png"for element in values)
+        text="\n".join(f"{element}{ID}\t-1\t1\t0\t0\t0\thttps://raw.githubusercontent.com/SeannaCHARLES/Images/main/{order.lower()}.png"for element in values)
         HostI_f.write(text)
         HostI_f.close()
 
@@ -381,7 +381,7 @@ def first_call(path,study,cop) :
         file.close()
     for name in type_files : 
         for speprot in namespeprot : 
-            name_files = f"{path}{study}/legend/{name}_{study}{speprot}_itol.txt"
+            name_files = f"{path}{study}/legend/{name}_{study}{speprot.lower()}_itol.txt"
             file = open(name_files,"w")
             file.write(f"TREE_COLORS\nSEPARATOR TAB\nDATASET_LABEL\t{name}\nDATA\n")       
             file.close()
@@ -397,17 +397,17 @@ def first_call(path,study,cop) :
     file.close()
 
     for speprot in namespeprot : 
-        name_files = f"{path}{study}/legend/Label_{study}{speprot}_itol.txt"
+        name_files = f"{path}{study}/legend/Label_{study}{speprot.lower()}_itol.txt"
         file = open(name_files,"w")
         file.write(f"LABELS\nSEPARATOR TAB\nDATASET_LABEL\tOrganisme Label\nDATA\n")       
         file.close()
 
-        name_files = f"{path}{study}/legend/Host_images{study}{speprot}_itol.txt"
+        name_files = f"{path}{study}/legend/Host_images{study}{speprot.lower()}_itol.txt"
         file = open(name_files,"w")
         file.write(f"DATASET_IMAGE\nSEPARATOR TAB\nDATASET_LABEL\tHost with images\nCOLOR\t#000000\nSIZE_FACTOR\t0.2\nIMAGE_ROTATION\t0\nIMAGE_SHIFT_V\t0\nIMAGE_SHIFT_H\t0\nSHOW_INTERNAL\t0\nMARGIN\t250\nDATA\n")       
         file.close()
 
-        name_files = f"{path}{study}/legend/Range_{study}{speprot}_itol.txt"
+        name_files = f"{path}{study}/legend/Range_{study}{speprot.lower()}_itol.txt"
         file = open(name_files,"w")
         file.write(f"DATASET_COLORSTRIP\nSEPARATOR TAB\nDATASET_LABEL	RectZoneExample\tCOLOR\t#000000\nDATA\n")       
         file.close()
@@ -750,7 +750,7 @@ def nucleic_sequences(study,ID,sequence,debseq,proteins,sp,resfile) :
         #print(f"nucleic seq & OG : {prot}:{pos} : {not any("Na" in str(element) for element in pos)} ! {not any("ABS" in str(element) for element in pos)}!{pos!="Na"}")
         if not any("ABS" in str(element) for element in pos) and not any("Na" in str(element) for element in pos) : 
             pos = [int(float(x)) for x in pos]
-            name=f"{path}{study}{resfile}{prot}_{sp}_nucl.fasta"
+            name=f"{path}{study}{resfile}{prot.lower()}_{sp}_nucl.fasta"
             mark_prot=""
             compt_AA=0
             compt_nu=0
@@ -791,7 +791,7 @@ def nucleic_sequences_OG(study,ID,sequence,debseq,pos_prot,proteins,sp,resfile) 
         #print(f"nucleic seq & OG : {prot} :{pos}: {not any("Na" in str(element) for element in pos)} ! {not any("ABS" in str(element) for element in pos)}!{pos!="Na"}")
         if not any("ABS" in str(element) for element in pos) and not any("Na" in str(element) for element in pos) : 
             pos = [int(float(x)) for x in pos]
-            name=f"{path}{study}{resfile}{prot}_{sp}_nucl.fasta"
+            name=f"{path}{study}{resfile}{prot.lower()}_{sp}_nucl.fasta"
             mark_prot=""
             compt_AA=0
             compt_nu=0
@@ -843,8 +843,8 @@ def proteic_sequence (study,ID,sequence,proteins,sp,resfile) :
 
 
     for prot,pos in prot_position.items() : 
-        print(f"proteic seq : {prot} :{pos}: ")
-        name=f"{path}{study}{resfile}{prot}_{sp}_prot.fasta"
+        
+        name=f"{path}{study}{resfile}{prot.lower()}_{sp}_prot.fasta"
         if not any("ABS" in str(element) for element in pos) and not any("Na" in str(element) for element in pos): 
             pos = [int(float(x)) for x in pos]
             mark_prot=""
@@ -858,7 +858,7 @@ def proteic_sequence (study,ID,sequence,proteins,sp,resfile) :
                     mark_prot+=aa
 
                 if compt_AA in pos :
-                    print(f"{compt_AA} to remove")
+                   
                     mark_prot+=aa
                     pos.remove(compt_AA)
                     if inprot==False : 
@@ -886,7 +886,7 @@ def final_pos_IO(study,prot,study_prot,proteins,concern_study) :
         for col in range(2,end_col-1,1) : 
   
             if df.iloc[line,col]=="nan" : 
-                print(f"{df.iloc[line,col]}",df.iloc[0,col],df.iloc[line,0])
+                
 
                 break
                 #subprocess.run(f"blastp  -db -query -out -max_target_seqs -outfmt "6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore sseq"")

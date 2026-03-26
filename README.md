@@ -18,13 +18,14 @@ phylogenetic trees, captions of these phylogenetic trees.
 
 `This step download all the sequences in a Genbank format concatenated all the Genbank file into one and delete the single sequences Genbank file.`
 
-+----------------------+------------------+
-| Input                | Output           |
-+:====================:+:================:+
-| A ll_information.txt | All_sequences.gb |
-|                      |                  |
-| (From user)          |                  |
-+----------------------+------------------+
++---------------------+-----------------+
+| Input               | Output          |
++:===================:+:===============:+
+| A                   | A               |
+| ll_information.txt  | ll_sequences.gb |
+|                     |                 |
+| (From user)         |                 |
++---------------------+-----------------+
 
 : Input-Output Main.sh
 
@@ -47,31 +48,33 @@ Create a **Metadata_files.txt** that contains different informations.
 
 `The Serogroup captions are created using the Serogroup.txt file. You have to provide you own Serogroup.txt file since this information cannot be found in the genbank files format`
 
-+-------------------+---------------------------------------+
-| Input             | Output                                |
-+:=================:+:=====================================:+
-| A ll_sequences.gb | proteic_sequence.fasta                |
-|                   |                                       |
-| (From Main.sh)    | nucleic_sequence.fasta                |
-|                   |                                       |
-|                   | All_proteic_sequences.fasta           |
-|                   |                                       |
-|                   | All_nucleic_sequences.fasta           |
-|                   |                                       |
-|                   | All_proteic_sequences_align.aln-fasta |
-|                   |                                       |
-|                   | All_nucleic_sequences_align.aln-fasta |
-|                   |                                       |
-|                   | **Serogroup_caption.txt**             |
-|                   |                                       |
-|                   | **Geographical_caption.txt**          |
-|                   |                                       |
-|                   | **Host_caption.txt**                  |
-|                   |                                       |
-|                   | **Metadata.txt**                      |
-|                   |                                       |
-|                   | Pos_prot.txt                          |
-+-------------------+---------------------------------------+
++------------------+--------------------------------------+
+| Input            | Output                               |
++:================:+:====================================:+
+| A                | proteic_sequence.fasta               |
+| ll_sequences.gb  |                                      |
+|                  | nucleic_sequence.fasta               |
+| (From Main.sh)   |                                      |
+|                  | All_proteic_sequences.fasta          |
+|                  |                                      |
+|                  | All_nucleic_sequences.fasta          |
+|                  |                                      |
+|                  | A                                    |
+|                  | ll_proteic_sequences_align.aln-fasta |
+|                  |                                      |
+|                  | A                                    |
+|                  | ll_nucleic_sequences_align.aln-fasta |
+|                  |                                      |
+|                  | **Serogroup_caption.txt**            |
+|                  |                                      |
+|                  | **Geographical_caption.txt**         |
+|                  |                                      |
+|                  | **Host_caption.txt**                 |
+|                  |                                      |
+|                  | **Metadata.txt**                     |
+|                  |                                      |
+|                  | Pos_prot.txt                         |
++------------------+--------------------------------------+
 
 : Input-Output Genbank.py
 
@@ -82,13 +85,14 @@ Create a **Metadata_files.txt** that contains different informations.
 
 `This file ensures that as many protein positions as possible are retrieved in cases where the information is not available in the Gp file format.`
 
-+-------------------+------------------------+
-| Input             | Output                 |
-+:=================:+:======================:+
-| Pos_prot.txt      | **Final_pos_prot.txt** |
-|                   |                        |
-| (From Genbank.py) |                        |
-+-------------------+------------------------+
++------------------+-----------------------+
+| Input            | Output                |
++:================:+:=====================:+
+| Pos_prot.txt     | *                     |
+|                  | *Final_pos_prot.txt** |
+| (From            |                       |
+| Genbank.py)      |                       |
++------------------+-----------------------+
 
 : Input-Output Prot_position.py
 
@@ -97,13 +101,14 @@ Create a **Metadata_files.txt** that contains different informations.
 -   Create a Blast database of all the reference virus/organisms
     proteins
 
-+---------------------------+----------------------------+
-| Input                     | Output                     |
-+:=========================:+:==========================:+
-| Ref_prot.fasta            | Proteic_prot_1-n_ref.fasta |
-|                           |                            |
-| (From Genbank_extract.py) |                            |
-+---------------------------+----------------------------+
++--------------------------+---------------------------+
+| Input                    | Output                    |
++:========================:+:=========================:+
+| Ref_prot.fasta           | P                         |
+|                          | roteic_prot_1-n_ref.fasta |
+| (From                    |                           |
+| Genbank_extract.py)      |                           |
++--------------------------+---------------------------+
 
 : Input-Output Main.sh
 
@@ -114,13 +119,14 @@ Create a **Metadata_files.txt** that contains different informations.
 
 This file used
 
-+------------------------------------------+----------------------------------+
-| Input                                    | Output                           |
-+:========================================:+:================================:+
-| All \_nu cleic_sequences_align.aln-fasta | -   \*                           |
-|                                          |                                  |
-| (From Main.sh)                           | Divergence_nucleic_table.txt\*\* |
-+------------------------------------------+----------------------------------+
++--------------------------------------+-------------------------------+
+| Input                                | Output                        |
++:====================================:+:=============================:+
+| All \_nu                             | -   \*\*Div                   |
+| cleic_sequences_align.aln-fasta      | ergence_nucleic_table.txt\*\* |
+|                                      |                               |
+| (From Main.sh)                       |                               |
++--------------------------------------+-------------------------------+
 
 : Input-Output DNA_dist.sh
 
@@ -129,13 +135,15 @@ This file used
 -   This file delete de sequences that are too close using the
     **DNA_dist.sh** output table
 
-+-------------------------------+-----------------------------------+
-| Input                         | Output                            |
-+:=============================:+:=================================:+
-| D ivergence_nucleic_table.txt | A ll_nucleic_sequences_sdbl.fasta |
-|                               |                                   |
-| (From DNA_dist.sh)            | A ll_proteic_sequences_sdbl.fasta |
-+-------------------------------+-----------------------------------+
++------------------------------+----------------------------------+
+| Input                        | Output                           |
++:============================:+:================================:+
+| D                            | A                                |
+| ivergence_nucleic_table.txt  | ll_nucleic_sequences_sdbl.fasta  |
+|                              |                                  |
+| (From DNA_dist.sh)           | A                                |
+|                              | ll_proteic_sequences_sdbl.fasta  |
++------------------------------+----------------------------------+
 
 : Input-Output Delete_dbl.py
 
@@ -145,17 +153,19 @@ This file used
 
 One file for each proteins.
 
-+-----------------------------------+-------------------------+
-| Input                             | Output                  |
-+:=================================:+:=======================:+
-| A ll_nucleic_sequences_sdbl.fasta | N ucleic_prot_1-n.fasta |
-|                                   |                         |
-| (From Delete_dbl.py)              | P roteic_prot_1-n.fasta |
-|                                   |                         |
-| A ll_proteic_sequences_sdbl.fasta | Nucleic_prot_OG.fasta   |
-|                                   |                         |
-| (From Delete_dbl.py)              | Proteic_prot_OG.fasta   |
-+-----------------------------------+-------------------------+
++----------------------------------+------------------------+
+| Input                            | Output                 |
++:================================:+:======================:+
+| A                                | N                      |
+| ll_nucleic_sequences_sdbl.fasta  | ucleic_prot_1-n.fasta  |
+|                                  |                        |
+| (From Delete_dbl.py)             | P                      |
+|                                  | roteic_prot_1-n.fasta  |
+| A                                |                        |
+| ll_proteic_sequences_sdbl.fasta  | Nucleic_prot_OG.fasta  |
+|                                  |                        |
+| (From Delete_dbl.py)             | Proteic_prot_OG.fasta  |
++----------------------------------+------------------------+
 
 : Input-Output Test_sript_mark_spe.py
 
@@ -163,25 +173,29 @@ One file for each proteins.
 
 -   This file merge the specific OG species, with the specific study.
 
-+-------------------------------+-------------------------+
-| Input                         | Output                  |
-+:=============================:+:=======================:+
-| Nucleic_prot_1-n.fasta        | N ucleic_prot_spe.fasta |
-|                               |                         |
-| (From Test_sript_mark_spe.py) | P roteic_prot_spe.fasta |
-|                               |                         |
-| Proteic_prot_1-n.fasta        |                         |
-|                               |                         |
-| (From Test_sript_mark_spe.py) |                         |
-|                               |                         |
-| Nucleic_prot_OG.fasta         |                         |
-|                               |                         |
-| (From Test_sript_mark_spe.py) |                         |
-|                               |                         |
-| Proteic_prot_OG.fasta         |                         |
-|                               |                         |
-| (From Test_sript_mark_spe.py) |                         |
-+-------------------------------+-------------------------+
++------------------------------+------------------------+
+| Input                        | Output                 |
++:============================:+:======================:+
+| Nucleic_prot_1-n.fasta       | N                      |
+|                              | ucleic_prot_spe.fasta  |
+| (From                        |                        |
+| Test_sript_mark_spe.py)      | P                      |
+|                              | roteic_prot_spe.fasta  |
+| Proteic_prot_1-n.fasta       |                        |
+|                              |                        |
+| (From                        |                        |
+| Test_sript_mark_spe.py)      |                        |
+|                              |                        |
+| Nucleic_prot_OG.fasta        |                        |
+|                              |                        |
+| (From                        |                        |
+| Test_sript_mark_spe.py)      |                        |
+|                              |                        |
+| Proteic_prot_OG.fasta        |                        |
+|                              |                        |
+| (From                        |                        |
+| Test_sript_mark_spe.py)      |                        |
++------------------------------+------------------------+
 
 : Input-Output Merge_spe_prot.py
 
@@ -190,25 +204,27 @@ One file for each proteins.
 -   This file lauch Protdist from phyllip and create a sequences
     divergence table
 
-+-------------------------------+---------------------------------------+
-| Input                         | Output                                |
-+:=============================:+:=====================================:+
-| Nucleic_prot_1-n.fasta        | -   \*Divergence_proteic_table.py\*\* |
-|                               |                                       |
-| (From Test_sript_mark_spe.py) |                                       |
-|                               |                                       |
-| Proteic_prot_1-n.fasta        |                                       |
-|                               |                                       |
-| (From Test_sript_mark_spe.py) |                                       |
-|                               |                                       |
-| Nucleic_prot_spe.fasta        |                                       |
-|                               |                                       |
-| (From Merge_spe_prot.py)      |                                       |
-|                               |                                       |
-| Proteic_prot_spe.fasta        |                                       |
-|                               |                                       |
-| (From Merge_spe_prot.py)      |                                       |
-+-------------------------------+---------------------------------------+
++------------------------------+--------------------------------------+
+| Input                        | Output                               |
++:============================:+:====================================:+
+| Nucleic_prot_1-n.fasta       | -                                    |
+|                              |    \*Divergence_proteic_table.py\*\* |
+| (From                        |                                      |
+| Test_sript_mark_spe.py)      |                                      |
+|                              |                                      |
+| Proteic_prot_1-n.fasta       |                                      |
+|                              |                                      |
+| (From                        |                                      |
+| Test_sript_mark_spe.py)      |                                      |
+|                              |                                      |
+| Nucleic_prot_spe.fasta       |                                      |
+|                              |                                      |
+| (From Merge_spe_prot.py)     |                                      |
+|                              |                                      |
+| Proteic_prot_spe.fasta       |                                      |
+|                              |                                      |
+| (From Merge_spe_prot.py)     |                                      |
++------------------------------+--------------------------------------+
 
 : Input-Output Protdist.py
 
@@ -225,17 +241,18 @@ One file for each proteins.
 -   Create the phylogenetic tree using the best model identified (using
     iqtree2)
 
-+-------------------------------+-------------------------------------+
-| Input                         | Output                              |
-+:=============================:+:===================================:+
-| Proteic_prot_1-n.fasta        | -   \*Proteic_prot_1-n.treefile\*\* |
-|                               |                                     |
-| (From Test_sript_mark_spe.py) | -   \*Proteic_prot_spe.treefile\*\* |
-|                               |                                     |
-| Proteic_prot_spe.fasta        |                                     |
-|                               |                                     |
-| (From Merge_spe_prot.py)      |                                     |
-+-------------------------------+-------------------------------------+
++------------------------------+------------------------------------+
+| Input                        | Output                             |
++:============================:+:==================================:+
+| Proteic_prot_1-n.fasta       | -                                  |
+|                              |    \*Proteic_prot_1-n.treefile\*\* |
+| (From                        |                                    |
+| Test_sript_mark_spe.py)      | -                                  |
+|                              |    \*Proteic_prot_spe.treefile\*\* |
+| Proteic_prot_spe.fasta       |                                    |
+|                              |                                    |
+| (From Merge_spe_prot.py)     |                                    |
++------------------------------+------------------------------------+
 
 : Input-Output Protdist.py
 

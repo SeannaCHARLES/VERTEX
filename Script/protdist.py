@@ -41,17 +41,17 @@ def Lauch_MSP(list_record) :
     #out=pd.read_csv(f"{path}{name}/Align_all/{Query}{subject}/{Query}{subject}_table.txt",sep="\t",index_col=0,header=0)
 
 
-print(spe_prot_list)
+
 for name,spe_prot in zip(names,spe_prot_list) : 
-    print(spe_prot)
+    
     if name in studies and spe_prot!='""' and spe_prot!='' :
-        print(name)
+   
         subprocess.run(f"rm -r {path}{name}/Align_all/*",shell=True)
         change_name={}
         couple_list=[]
         proteins=spe_prot.split("=")[1].replace('"',"").split("+") 
         
-        label=pd.read_csv(f"{path}{name}/legend/Label_{name}{proteins[0]}{proteins[1]}_itol.txt",sep="\t",skiprows=4,comment="#")
+        label=pd.read_csv(f"{path}{name}/legend/Label_{name}{proteins[0].lower()}{proteins[1].lower()}_itol.txt",sep="\t",skiprows=4,comment="#")
         
         end_line=label.shape[0]
         end_col=label.shape[1]
@@ -61,16 +61,16 @@ for name,spe_prot in zip(names,spe_prot_list) :
 
         open(f"{path}{name}/temp_protdist_filter.txt", "w").close()
         
-        cmd=f"sed 's/>/>{proteins[1][0]}/g' {path}{name}{resfile}{proteins[1]}_{name}_prot.fasta > {path}{name}{resfile}{proteins[1]}_{name}_prot_.fasta"
+        cmd=f"sed 's/>/>{proteins[1][0].upper()}/g' {path}{name}{resfile}{proteins[1].lower()}_{name}_prot.fasta > {path}{name}{resfile}{proteins[1].lower()}_{name}_prot_.fasta"
         subprocess.run(cmd,shell=True)
 
-        cmd=f"sed 's/>/>{proteins[0][0]}/g' {path}{name}{resfile}{proteins[0]}_{name}_prot.fasta > {path}{name}{resfile}{proteins[0]}_{name}_prot_.fasta"
+        cmd=f"sed 's/>/>{proteins[0][0].upper()}/g' {path}{name}{resfile}{proteins[0].lower()}_{name}_prot.fasta > {path}{name}{resfile}{proteins[0].lower()}_{name}_prot_.fasta"
         subprocess.run(cmd,shell=True)
 
 
-        for record_1 in SeqIO.parse(f"{path}{name}{resfile}{proteins[1]}_{name}_prot_.fasta","fasta") : 
+        for record_1 in SeqIO.parse(f"{path}{name}{resfile}{proteins[1].lower()}_{name}_prot_.fasta","fasta") : 
 
-            for record_2 in SeqIO.parse(f"{path}{name}{resfile}{proteins[0]}_{name}_prot_.fasta","fasta") : 
+            for record_2 in SeqIO.parse(f"{path}{name}{resfile}{proteins[0].lower()}_{name}_prot_.fasta","fasta") : 
 
                 couple_list.append([record_1,record_2,name])
 
@@ -96,7 +96,7 @@ for name,spe_prot in zip(names,spe_prot_list) :
             #subprocess.run(f"rm -r {path}{name}/Align_all/{record_1.id}{record_2.id}/",shell=True)
 
         final_table=pd.read_csv(f"{path}{name}/temp_protdist_filter.txt",sep="\t",index_col=0,header=0)    
-        final_table.drop(final_table.index[final_table.index.str.startswith(f'{proteins[0][0]}')],axis=0,inplace=True)
-        final_table.drop(final_table.columns[final_table.columns.str.startswith(f'{proteins[1][0]}')],axis=1,inplace=True) 
+        final_table.drop(final_table.index[final_table.index.str.startswith(f'{proteins[0][0].upper()}')],axis=0,inplace=True)
+        final_table.drop(final_table.columns[final_table.columns.str.startswith(f'{proteins[1][0].upper()}')],axis=1,inplace=True) 
         final_table.rename(columns=change_name, inplace=True,index=change_name)      
         final_table.to_csv(f"{path}{name}/temp_protdist_filter.txt",sep="\t")

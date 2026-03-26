@@ -36,7 +36,7 @@ for (study,name,prot,pp)in zip(Allstudies,names,spe_prot,proteins):
 
         for type_seq in types_seq :
             for OGprot in compo_prot : 
-                need_prot_namefile=clean_filename(f"{path}{study}{res_file}{OGprot}_{name}_{type_seq}.fasta")
+                need_prot_namefile=clean_filename(f"{path}{study}{res_file}{OGprot.lower()}_{name}_{type_seq}.fasta")
                 OG_filename=clean_filename(f"{path}{study}{res_file}{name_spe_prot}_{study}_{type_seq}_OG.fasta")
                 mafft_outfile=clean_filename(f"{path}{study}{res_file}{name_spe_prot}_{study}_{type_seq}_OG.aln-fasta")
                     
@@ -44,14 +44,14 @@ for (study,name,prot,pp)in zip(Allstudies,names,spe_prot,proteins):
                     
                 file=open(OG_filename,"a")
                 for record in SeqIO.parse(f"{need_prot_namefile}","fasta") : 
-                    file.write(f">{OGprot}{record.id}\n{record.seq}\n")
+                    file.write(f">{OGprot.lower()}{record.id}\n{record.seq}\n")
                 file.close()
             if len(pp)>1 :
                 for prot in pp : 
 
-                    need_prot_namefile=clean_filename(f"{path}{study}{res_file}{prot}_{name}_{type_seq}.fasta")
-                    OG_filename=clean_filename(f"{path}{study}{res_file}{prot}_{study}_{type_seq}_OG.fasta")
-                    mafft_outfile=clean_filename(f"{path}{study}{res_file}{prot}_{study}_{type_seq}_OG.aln-fasta")
+                    need_prot_namefile=clean_filename(f"{path}{study}{res_file}{prot.lower()}_{name}_{type_seq}.fasta")
+                    OG_filename=clean_filename(f"{path}{study}{res_file}{prot.lower()}_{study}_{type_seq}_OG.fasta")
+                    mafft_outfile=clean_filename(f"{path}{study}{res_file}{prot.lower()}_{study}_{type_seq}_OG.aln-fasta")
                 
                     mafftfiles[OG_filename]=mafft_outfile
                     
@@ -66,9 +66,9 @@ for (study,name,prot,pp)in zip(Allstudies,names,spe_prot,proteins):
         for type_seq in types_seq :
                 for prot in pp : 
 
-                    need_prot_namefile=clean_filename(f"{path}{study}{res_file}{prot}_{name}_{type_seq}.fasta")
-                    OG_filename=clean_filename(f"{path}{study}{res_file}{prot}_{study}_{type_seq}_OG.fasta")
-                    mafft_outfile=clean_filename(f"{path}{study}{res_file}{prot}_{study}_{type_seq}_OG.aln-fasta")
+                    need_prot_namefile=clean_filename(f"{path}{study}{res_file}{prot.lower()}_{name}_{type_seq}.fasta")
+                    OG_filename=clean_filename(f"{path}{study}{res_file}{prot.lower()}_{study}_{type_seq}_OG.fasta")
+                    mafft_outfile=clean_filename(f"{path}{study}{res_file}{prot.lower()}_{study}_{type_seq}_OG.aln-fasta")
                     
                     mafftfiles[OG_filename]=mafft_outfile
                     
