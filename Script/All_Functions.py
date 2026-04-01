@@ -251,8 +251,9 @@ def write_file(path,Description_nu,Description_prot,Sequence_aa,Sequence_nu,loca
     
     for pos,element in enumerate(ccprot) : 
         if element !="" : 
-            if len(element.split("=")[1].split("+"))>=1:
-                namespeprot[element.split("=")[0]]=element.split("=")[1].split("+")
+            if "=" in element : 
+                if len(element.split("=")[1].split("+"))>=1:
+                    namespeprot[element.split("=")[0]]=element.split("=")[1].split("+")
 
             
         #ccprot.append(element.split("=")[1].split("+")[0],element.split("=")[1].split("+")[1])
@@ -295,51 +296,53 @@ def write_file(path,Description_nu,Description_prot,Sequence_aa,Sequence_nu,loca
     text=str (f"{ID}\t-1\t1\t0\t0\t0\thttps://raw.githubusercontent.com/SeannaCHARLES/Images/main/{order.lower()}.png\n")
     HostI_f.write(text)
     HostI_f.close()
-
-    for speprot,values in namespeprot.items() : 
-        name_geol=f"{path}{study}/legend/{type_files[0]}_{study}{speprot.lower()}_itol.txt"
-        name_host=f"{path}{study}/legend/{type_files[1]}_{study}{speprot.lower()}_itol.txt"
-        name_label=f"{path}{study}/legend/Label_{study}{speprot.lower()}_itol.txt"
-        name_sero=f"{path}{study}/legend/{type_files[2]}_{study}{speprot.lower()}_itol.txt"
-        name_host_images=f"{path}{study}/legend/Host_images{study}{speprot.lower()}_itol.txt"
-        name_range=f"{path}{study}/legend/Range_{study}{speprot.lower()}_itol.txt"
-
-
-        geoloc=open(name_geol,'a')
-        geoloc.write(f"\n##{localisation}\n")
-        text="\n".join(f"{element}{ID}\trange\t{region_color}\t{region}" for element in values)
-        geoloc.write(text)
-        geoloc.close()
-
-        Host_f=open(name_host,'a')
-        Host_f.write(f"\n##{host}\n")
-        text="\n".join(f"{element}{ID}\trange\t{order_color}\t{order}" for element in values)
-        Host_f.write(text)
-        Host_f.close()
-
-        label=open(name_label,'a')
-        label.write(f"\n##{organism}\n")
-        text="\n".join(f"{element}{ID}\t{element}_{organism}" for element in values)
-        label.write(text)
-        label.close() 
-
-        sero=open(name_sero,'a')
-        sero.write(f"\n##{serogroup}\n")
-        text="\n".join(f"{element}{ID}\trange\t{color_sero}\t{serogroup}\n{element}{ID}\tbranch\t{color_sero}\tdashed\t7" for element in values)
-        sero.write(text)
-        sero.close()
     
-        label=open(name_range,'a')
-        label.write(f"\n##{organism}\n")
-        text="\n".join(f"{element}{ID}\t{color_sero}" for element in values)
-        label.write(text)
-        label.close() 
+    if namespeprot != {}: 
+        
+        for speprot,values in namespeprot.items() : 
+            name_geol=f"{path}{study}/legend/{type_files[0]}_{study}{speprot.lower()}_itol.txt"
+            name_host=f"{path}{study}/legend/{type_files[1]}_{study}{speprot.lower()}_itol.txt"
+            name_label=f"{path}{study}/legend/Label_{study}{speprot.lower()}_itol.txt"
+            name_sero=f"{path}{study}/legend/{type_files[2]}_{study}{speprot.lower()}_itol.txt"
+            name_host_images=f"{path}{study}/legend/Host_images{study}{speprot.lower()}_itol.txt"
+            name_range=f"{path}{study}/legend/Range_{study}{speprot.lower()}_itol.txt"
 
-        HostI_f=open(name_host_images,'a')
-        HostI_f.write(f"\n##{host}\n")
-        text="\n".join(f"{element}{ID}\t-1\t1\t0\t0\t0\thttps://raw.githubusercontent.com/SeannaCHARLES/Images/main/{order.lower()}.png"for element in values)
-        HostI_f.write(text)
-        HostI_f.close()
+
+            geoloc=open(name_geol,'a')
+            geoloc.write(f"\n##{localisation}\n")
+            text="\n".join(f"{element}{ID}\trange\t{region_color}\t{region}" for element in values)
+            geoloc.write(text)
+            geoloc.close()
+
+            Host_f=open(name_host,'a')
+            Host_f.write(f"\n##{host}\n")
+            text="\n".join(f"{element}{ID}\trange\t{order_color}\t{order}" for element in values)
+            Host_f.write(text)
+            Host_f.close()
+
+            label=open(name_label,'a')
+            label.write(f"\n##{organism}\n")
+            text="\n".join(f"{element}{ID}\t{element}_{organism}" for element in values)
+            label.write(text)
+            label.close() 
+
+            sero=open(name_sero,'a')
+            sero.write(f"\n##{serogroup}\n")
+            text="\n".join(f"{element}{ID}\trange\t{color_sero}\t{serogroup}\n{element}{ID}\tbranch\t{color_sero}\tdashed\t7" for element in values)
+            sero.write(text)
+            sero.close()
+    
+            label=open(name_range,'a')
+            label.write(f"\n##{organism}\n")
+            text="\n".join(f"{element}{ID}\t{color_sero}" for element in values)
+            label.write(text)
+            label.close() 
+
+            HostI_f=open(name_host_images,'a')
+            HostI_f.write(f"\n##{host}\n")
+            text="\n".join(f"{element}{ID}\t-1\t1\t0\t0\t0\thttps://raw.githubusercontent.com/SeannaCHARLES/Images/main/{order.lower()}.png"for element in values)
+            HostI_f.write(text)
+            HostI_f.close()
 
     nomprot_file=f"{Nu}_prot"
     nomprot_file=nomprot_file.replace(" ","")
@@ -396,27 +399,28 @@ def first_call(path,study,cop) :
     file.write(f"DATASET_IMAGE\nSEPARATOR TAB\nDATASET_LABEL\tHost with images\nCOLOR\t#000000\nSIZE_FACTOR\t0.6\nIMAGE_ROTATION\t0\nIMAGE_SHIFT_V\t0\nIMAGE_SHIFT_H\t0\nSHOW_INTERNAL\t0\nMARGIN\t400\nDATA\n")       
     file.close()
 
-    for speprot in namespeprot : 
-        name_files = f"{path}{study}/legend/Label_{study}{speprot.lower()}_itol.txt"
-        file = open(name_files,"w")
-        file.write(f"LABELS\nSEPARATOR TAB\nDATASET_LABEL\tOrganisme Label\nDATA\n")       
-        file.close()
+    if namespeprot != {}: 
+        for speprot in namespeprot : 
+            name_files = f"{path}{study}/legend/Label_{study}{speprot.lower()}_itol.txt"
+            file = open(name_files,"w")
+            file.write(f"LABELS\nSEPARATOR TAB\nDATASET_LABEL\tOrganisme Label\nDATA\n")       
+            file.close()
 
-        name_files = f"{path}{study}/legend/Host_images{study}{speprot.lower()}_itol.txt"
-        file = open(name_files,"w")
-        file.write(f"DATASET_IMAGE\nSEPARATOR TAB\nDATASET_LABEL\tHost with images\nCOLOR\t#000000\nSIZE_FACTOR\t0.2\nIMAGE_ROTATION\t0\nIMAGE_SHIFT_V\t0\nIMAGE_SHIFT_H\t0\nSHOW_INTERNAL\t0\nMARGIN\t250\nDATA\n")       
-        file.close()
+            name_files = f"{path}{study}/legend/Host_images{study}{speprot.lower()}_itol.txt"
+            file = open(name_files,"w")
+            file.write(f"DATASET_IMAGE\nSEPARATOR TAB\nDATASET_LABEL\tHost with images\nCOLOR\t#000000\nSIZE_FACTOR\t0.2\nIMAGE_ROTATION\t0\nIMAGE_SHIFT_V\t0\nIMAGE_SHIFT_H\t0\nSHOW_INTERNAL\t0\nMARGIN\t250\nDATA\n")       
+            file.close()
 
-        name_files = f"{path}{study}/legend/Range_{study}{speprot.lower()}_itol.txt"
-        file = open(name_files,"w")
-        file.write(f"DATASET_COLORSTRIP\nSEPARATOR TAB\nDATASET_LABEL	RectZoneExample\tCOLOR\t#000000\nDATA\n")       
-        file.close()
+            name_files = f"{path}{study}/legend/Range_{study}{speprot.lower()}_itol.txt"
+            file = open(name_files,"w")
+            file.write(f"DATASET_COLORSTRIP\nSEPARATOR TAB\nDATASET_LABEL	RectZoneExample\tCOLOR\t#000000\nDATA\n")       
+            file.close()
     
 
-        # name_files = f"{path}{study}/legend/accolade_{study}{speprot}_itol.txt"
-        # file = open(name_files,"w")
-        # file.write(f"DATASET_STYLE\nSEPARATOR TAB\nDATASET_LABEL\tCOLOR\t#000000\nDATA\n")       
-        # file.close()
+            name_files = f"{path}{study}/legend/accolade_{study}{speprot}_itol.txt"
+            file = open(name_files,"w")
+            file.write(f"DATASET_STYLE\nSEPARATOR TAB\nDATASET_LABEL\tCOLOR\t#000000\nDATA\n")       
+            file.close()
 
         # name_files = f"{path}{study}/legend/Collapse_{study}{speprot}_itol.txt"
         # file = open(name_files,"w")
@@ -550,7 +554,7 @@ def modif_name_prot(prot,Diff_name,metadata_name_prot) :
         DP=diff_prot.split("=")
         
         prot=prot.upper().replace(DP[0].upper(),DP[1].upper())
-        prot=prot.upper().replace("-","").replace("\xa0", " ").replace(" ","")
+        prot=prot.upper().replace("-","").replace("\xa0", " ").replace(" ","").replace("PROTEIN","")
 
  
     return prot

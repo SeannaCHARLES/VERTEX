@@ -50,7 +50,7 @@ for name,spe_prot in zip(names,spe_prot_list) :
         change_name={}
         couple_list=[]
         proteins=spe_prot.split("=")[1].replace('"',"").split("+") 
-        
+        print(f"{proteins[0].lower()}{proteins[1].lower()}")
         label=pd.read_csv(f"{path}{name}/legend/Label_{name}{proteins[0].lower()}{proteins[1].lower()}_itol.txt",sep="\t",skiprows=4,comment="#")
         
         end_line=label.shape[0]
