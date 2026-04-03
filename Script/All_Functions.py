@@ -83,12 +83,8 @@ def Modif_ID(ID) :
     #These changes are necessary to ensure the uniformity of the identifiers used by the various organisations.
     #Add you own modification if you feel the need
     ID=ID.lower()    
-    ID=ID.replace("_","")
-    ID=ID.replace("-","")
-    ID=ID.replace("'","")
-    ID=ID.replace(".","")
-    ID=ID.replace(" ","")
-
+    ID=ID.replace("_","").replace("-","").replace("'","").replace(".","").replace(" ","")
+    
     ID=ID[:9]
     return ID
 
@@ -106,8 +102,8 @@ name_legend=f"{path}/All_legend_caption.txt"
 
 def colour_choice (caption,colors_list,type_):
     global ratp_colors
-    if len(colors_list)==0 : 
-        colors_list=ratp_colors
+    if len(colors_list)<=0 : 
+        colors_list=ratp_colors.copy()
     if caption not in legencolors : 
         choice=colors_list[0]
         colors_list.remove(choice)
@@ -120,6 +116,7 @@ def colour_choice (caption,colors_list,type_):
         All_legend.close()
         return(choice,colors_list)
     else : 
+
         return(legencolors[caption][0],colors_list)
 
 ### Function modif_localisation
@@ -571,55 +568,56 @@ def extract_prot_data(ID_prot_list,study,all_proteins,mail,Diff_name,metadata_na
     All_end=0
     Sequence_aa=''
     for ID_prot in ID_prot_list : 
-        handle = Entrez.efetch(db="protein", id=ID_prot, rettype="gp", retmode="text")
-        record = SeqIO.read(handle, "genbank")
-        handle.close()
-        time.sleep(2)  
-        with open(f"{path}{study}/prot/{ID_prot}.gp", "w") as output_handle:
-            SeqIO.write(record, output_handle, "genbank")
-            output_handle
+        try :
+            handle = Entrez.efetch(db="protein", id=ID_prot, rettype="gp", retmode="text")
+            record = SeqIO.read(handle, "genbank")
+            handle.close()
+            time.sleep(2)  
+            with open(f"{path}{study}/prot/{ID_prot}.gp", "w") as output_handle:
+                SeqIO.write(record, output_handle, "genbank")
+                output_handle
 
-        record = SeqIO.read(f"{path}{study}/prot/{ID_prot}.gp", "genbank")
+            record = SeqIO.read(f"{path}{study}/prot/{ID_prot}.gp", "genbank")
         
-        for feature in record.features :
+            for feature in record.features :
             
-            if 'region_name' in feature.qualifiers : 
+                if 'region_name' in feature.qualifiers : 
                 
-                prot=(feature.qualifiers['region_name'][0])
+                    prot=(feature.qualifiers['region_name'][0])
             
-                start=(feature.location.start)+All_end
-                end=(feature.location.end)+All_end
-                prot=modif_name_prot(prot,Diff_name,metadata_name_prot) 
+                    start=(feature.location.start)+All_end
+                    end=(feature.location.end)+All_end
+                    prot=modif_name_prot(prot,Diff_name,metadata_name_prot) 
 
                 #print(f"prot_newname = {prot}")
-                if start==0 : 
-                    start=1
+                    if start==0 : 
+                        start=1
                 
-                if "+" in prot : 
-                    two_prot=prot.split("+")
+                    if "+" in prot : 
+                        two_prot=prot.split("+")
                     
-                    if any(two_prot[1].upper() in p.upper() for p in proteins) : 
-                        proteins[two_prot[1]][1]=end
-                    else : 
-                        proteins[two_prot[0]]=[start,"nan"]
-                        proteins[two_prot[1]]=["nan",end]
+                        if any(two_prot[1].upper() in p.upper() for p in proteins) : 
+                            proteins[two_prot[1]][1]=end
+                        else : 
+                            proteins[two_prot[0]]=[start,"nan"]
+                            proteins[two_prot[1]]=["nan",end]
                           
-                else : 
-                    if prot.upper() in proteins : 
-                        #print(proteins)
-                        if proteins[prot][1]< end :
-                            proteins[prot][1]=end
-
                     else : 
-                        proteins[prot]=[start,end]  
+                        if prot.upper() in proteins : 
+                        #print(proteins)
+                            if proteins[prot][1]< end :
+                                proteins[prot][1]=end
 
-        Sequence_aa+=record.seq
-        All_end+=len(record.seq)
+                        else : 
+                            proteins[prot]=[start,end]  
 
-        subprocess.run(['rm', f'{path}{study}/prot/{ID_prot}.gp'],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
- 
+            Sequence_aa+=record.seq
+            All_end+=len(record.seq)
+
+            subprocess.run(['rm', f'{path}{study}/prot/{ID_prot}.gp'],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+        except Exception as e :
+            print(f"This ID : {ID_prot} were not indentified by the NCBI database")
     for prot in metadata_name_prot : 
-
         if prot.upper() in proteins  :
                 #if any(prot.upper() in ID_p.upper() for ID_p in metadata_name_prot)   : 
                 #print(f"position : {proteins[prot.upper()]}")
