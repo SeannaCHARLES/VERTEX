@@ -21,50 +21,12 @@ import random
 import requests
 
 from geopy.geocoders import Nominatim
-from itertools import combinations
+
 import time
 
-#The path may need to change
-path = "/home/seannacharles/"
-res_file="/res_phylo/"
+
 #######Function for the Script Genbank extract##################
 #This part create a set of colors to create the itol legends 
-
-
-ratp_colors = [
-    # Métro
-    "#FFCD00", # M1
-    "#003CA6", # M2
-    "#837902", # M3
-    "#6EC4E8", # M3bis
-    "#CF009E", # M4
-    "#FF7E2E", # M5
-    "#6ECA97", # M6
-    "#FA9ABA", # M7
-    "#E19BDF", # M8
-    "#B6BD00", # M9
-    "#C9910D", # M10
-    "#704B1C", # M11
-    "#007852", # M12
-    "#62259D", # M14
-
-    # RER
-    "#E2231A", # RER A
-    "#003DA5", # RER B
-    "#F7A600", # RER C
-    "#008641", # RER D
-
-    # Tramways
-    "#BBBD00", # T1
-    "#006AB6", # T2
-    "#00A7E1", # T3b
-    "#BB77B7", # T4
-    "#FF5A00", # T5
-    "#6E4D8C", # T7
-    "#DA1A32"  # T8
-]
-
-
 
 
 #This is the diffent type of legends
@@ -84,7 +46,6 @@ def Modif_ID(ID) :
     #Add you own modification if you feel the need
     ID=ID.lower()    
     ID=ID.replace("_","").replace("-","").replace("'","").replace(".","").replace(" ","")
-    
     ID=ID[:9]
     return ID
 
@@ -94,16 +55,49 @@ def Modif_ID(ID) :
 # All families will have the same captions
 
 #Legencolors save for each legend label the associated colors to have the same color for the same label 
+ratp_colors = [
+   
+    "#FFCD00", 
+    "#003CA6", 
+    "#837902", 
+    "#6EC4E8", 
+    "#CF009E", 
+    "#FF7E2E", 
+    "#6ECA97", 
+    "#FA9ABA", 
+    "#E19BDF", 
+    "#B6BD00", 
+    "#C9910D", 
+    "#704B1C", 
+    "#007852", 
+    "#62259D", 
+
+    "#E2231A", 
+    "#003DA5", 
+    "#F7A600", 
+    "#008641", 
+
+    "#BBBD00", 
+    "#006AB6", 
+    "#00A7E1", 
+    "#BB77B7", 
+    "#FF5A00", 
+    "#6E4D8C", 
+    "#DA1A32"  
+]
+
 legencolors={}
 legencolors["Na"]=["#979a9a"]
-name_legend=f"{path}/All_legend_caption.txt"
 
 
 
-def colour_choice (caption,colors_list,type_):
+
+def colour_choice (caption,colors_list,type_,path):
     global ratp_colors
+    
     if len(colors_list)<=0 : 
         colors_list=ratp_colors.copy()
+
     if caption not in legencolors : 
         choice=colors_list[0]
         colors_list.remove(choice)
@@ -132,14 +126,17 @@ def modif_localisation(localisation) :
 # If the geographical region can't be find the country will be kept
 
 def geographic_region(pays,email) : 
+    latitude=0
+    longitude=0
 
     geolocator = Nominatim(user_agent=f"{pays}continent{email}")
     location = geolocator.geocode(pays,timeout=10)
 
-
     latitude=location.latitude
     longitude=location.longitude
-    if -35 <= latitude <= 37 and -20 <= longitude <= 55:
+    if latitude==0 or longitude==0 : 
+        return pays
+    elif -35 <= latitude <= 37 and -20 <= longitude <= 55:
         return "Africa"
     elif 35 <= latitude <= 70 and -10 <= longitude <= 40:
         return "Europe"
@@ -162,24 +159,12 @@ def geographic_region(pays,email) :
 # For each host, it is important to keep only those elements that allow the species to be identified
 
 def modif_host(host,list_speci_order) : 
-    # if "culex" in host.lower() : 
-    #     host ="Culex"
-    # elif "homo sapiens" in host.lower():
-    #     host="Homo sapiens"
-    # elif "midge" in host.lower() :
-    #     host="Midge"
-    # elif "tick" in host.lower() : 
-    #     host="Ticks"
-    # elif "pigeon" in host.lower():
-    #     host="Columba livia"
-    # elif "hamster" in host.lower():
-    #     host="Cricetinae"
-    # elif "mosquito" in host.lower() : 
-	#     host='Culicidae'
+
     for sp_or in list_speci_order : 
         speci_order=sp_or.split("=")
         if speci_order[0].lower() in host.lower() : 
             host=speci_order[1]
+
     host=host.split(";")[0]
     host=host.replace("sp.",'')
     host=host.replace("sentinel.",'')
@@ -191,52 +176,65 @@ def modif_host(host,list_speci_order) :
 # For the captions, each species is replaced by its order
 # If the order can't be find the species will be kept
 # This function send a request to the NCBI database
+def extract_id_tax(record,mail) : 
+    Entrez.email=mail
+
+    tax_id = record["IdList"][0]
+    tax_info= Entrez.efetch(db="taxonomy",id=tax_id,retmode="xml")
+    data=Entrez.read(tax_info)[0]
+
+    if data["Rank"]== "order" : 
+        return data["ScientificName"]
+
+    else :    
+        for tax_id_group in data["LineageEx"] : 
+            if tax_id_group["Rank"]=="order":
+                return tax_id_group["ScientificName"]
+
+
 
 def deforder(species,mail) : 
 
     Entrez.email=mail
-    sp =species
+    sp =species.split(" ")
+
     try : 
         search= Entrez.esearch(db="taxonomy",term=species)
         record=Entrez.read(search)
         
-        if not record["IdList"]:
-            if sp not in species:
-                return sp
-            elif (sp!="" or sp!=" " or sp==species)and len(species.split()) > 1 :
-                for part in species.split(" ") : 
-                    spepart=deforder(part,mail)
-                    if spepart not in species : 
-                        return spepart
-                print(f"\nThe species '{species}' was not identified by the NCBI taxonomy database\nPlease check the scientific name of this species and add a it in the corresponding line of the information_file.txt such as.\n {species.lower()}='Scientificname';")
-                return species
-            else  : 
-                print(f"\nThe species '{species}' was not identified by the NCBI taxonomy database\nPlease check the scientific name of this species and add a it in the corresponding line of the information_file.txt such as.\n {species.lower()}='Scientificname';")
-                return species
+        if not record["IdList"]: # Pas d'indentifiant taxonomy
+            
+            for element in sp : 
+                try : 
+                    search= Entrez.esearch(db="taxonomy",term=element)
+                    record=Entrez.read(search)
+                
+                    if record["IdList"] :
 
-        tax_id = record["IdList"][0]
-        tax_info= Entrez.efetch(db="taxonomy",id=tax_id,retmode="xml")
-        data=Entrez.read(tax_info)[0]
-
-        for rank, name in zip(data["LineageEx"],data["LineageEx"]):
-            if rank["Rank"]=="order" :
-                return name["ScientificName"]
-
-        return data["ScientificName"]
-
-    except Exception as e : 
-        if sp not in species:
-            return sp
-        elif (sp!="" or sp!=" " or sp==species)and len(species.split()) > 1 :
-            for part in species.split(" ") : 
-                spepart=deforder(part,mail)
-                if spepart not in species : 
-                    return spepart
-            print(f"\nThe species '{species}' was not identified by the NCBI taxonomy database\nPlease check the scientific name of this species and add a it in the corresponding line of the information_file.txt such as.\n {species.lower()}='Scientificname';")
+                        return extract_id_tax(record,mail)
+                except Exception as e :
+                    print()
+            print(f"\nThe species '{species}' was not identified by the NCBI taxonomy database\nPlease check the scientific name of this species and add it in the corresponding line of the information_file.txt such as.\n ;{species.lower()}='Scientificname'")
+      
             return species
-        else  : 
-            print(f"\nThe species '{species}' was not identified by the NCBI taxonomy database\nPlease check the scientific name of this species and add a it in the corresponding line of the information_file.txt such as.\n {species.lower()}='Scientificname';")
-            return species
+
+        else : 
+
+            return extract_id_tax(record,mail)
+
+    except Exception as e :
+
+        for element in sp : 
+            search= Entrez.esearch(db="taxonomy",term=element)
+            record=Entrez.read(search)
+
+            if record["IdList"] :
+                return extract_id_tax(record,mail)
+
+        print(f"\nThe species '{species}' was not identified by the NCBI taxonomy database\nPlease check the scientific name of this species and add it in the corresponding line of the information_file.txt such as.\n ;{species.lower()}='Scientificname'")
+        return species
+
+
 
 ### Function write_file
 # This function writes the caption files required for itol
@@ -253,7 +251,7 @@ def write_file(path,Description_nu,Description_prot,Sequence_aa,Sequence_nu,loca
                     namespeprot[element.split("=")[0]]=element.split("=")[1].split("+")
 
             
-        #ccprot.append(element.split("=")[1].split("+")[0],element.split("=")[1].split("+")[1])
+        
     
     
     organism.replace(" ","")
@@ -504,20 +502,24 @@ def extract_id(path,Datas,study,sp,list_prot,email,Diff_name,metadata_name_prot,
             if "protein_id" in feature.qualifiers :
                 ID_prot.append(feature.qualifiers['protein_id'][0])
         #print(f"ID proteins : {ID_prot}   ID nu : {Nu} ") 
+
         if not ID_prot : 
             print(f"This ID : {Nu} does not have any proteins ID It will not be inclued in this study")
         else :       
             output_prot,output_pos,sizeprot,Sequence_aa=extract_prot_data(ID_prot,study,list_prot,email,Diff_name,metadata_name_prot,dicy)
         
-            order_color,host_colors=colour_choice(order,host_colors,"order")
-            region_color,region_colors=colour_choice(region,region_colors,"region")
-            serogroup=find_serogroup(fullorganisme)
-            color_sero,serogroup_colors=colour_choice(serogroup,serogroup_colors,"serogroup")
+            order_color,host_colors=colour_choice(order,host_colors,"order",path)
+            region_color,region_colors=colour_choice(region,region_colors,"region",path)
+            serogroup=find_serogroup(fullorganisme,path)
+            color_sero,serogroup_colors=colour_choice(serogroup,serogroup_colors,"serogroup",path)
 
             ID=Modif_ID(str(organism[:3]+Nu[3:]))
             Description_nu = f"{ID}"
             Description_prot = f"{ID}"
             
+            if strand =="-" or strand =="-1" : 
+                Sequence_nu=Sequence_nu[::-1]
+                
             write_file(path,Description_nu,Description_prot,Sequence_aa,Sequence_nu,localisation,region,region_color,order,order_color,host,strain,Nu,ID_prot,study,organism,ID,serogroup,color_sero,sp,namespeprot)
         
         
@@ -635,13 +637,13 @@ def extract_prot_data(ID_prot_list,study,all_proteins,mail,Diff_name,metadata_na
     return output,output_pos,All_end,Sequence_aa
 
 #The serogroup file 
-df = pd.read_csv(f"{path}Serogroup.txt", delimiter="|",header=0)
-df.iloc[:, 1:]=df.iloc[:, 1:].astype(str)
+
 collaps={}
 ##Function find_serogroup 
 #This function 
-def find_serogroup(organism) : 
-    global df
+def find_serogroup(organism,path) : 
+    df = pd.read_csv(f"{path}Serogroup.txt", delimiter="|",header=0)
+    df.iloc[:, 1:]=df.iloc[:, 1:].astype(str)
     global collaps
 
     end_line=df.shape[0]
@@ -653,6 +655,7 @@ def find_serogroup(organism) :
                 collaps[df.iloc[line,1]].append(organism)
 
             return str(df.iloc[line,1])
+            
     name=f"{path}Serogroup.txt"
     file = open(name,"a")
     file.write(f"{organism}|Na\n")       
@@ -898,152 +901,6 @@ def final_pos_IO(study,prot,study_prot,proteins,concern_study) :
 
 
 
-
-
-
-
-
-
-
-    # pos_col_prot={}
-    # for col in df.columns : 
-    #     for item in prot :
-    #         item=item.split(";")
-    #         for pos_prot in item :
-    #             if pos_prot not in pos_col_prot :
-    #                 if pos_prot in col :
-    #                     pos_col_prot[pos_prot]=[df.columns.get_loc(col),df.columns.get_loc(col)+1]
-    # final_pos_prot={}
-   
-    # for line in range (0,end_line) :
-    #     pos_col=col_pos(str(df.index[line]),pos_col_prot,study_prot)
-    #     final_pos_prot[df.iloc[line,0]]=[] 
-    #     for col, prot in zip(range(1,end_col-1), proteins[str(df.index[line])]):
-    #         # print(any(df.iloc[line,0][3:] not in Concerna_orga for Concerna_orga in concern_study[study][0]))
-    #         # print(df.iloc[line,0][3:])
-    #         for orga in concern_study[study][0] : 
-    #             if df.iloc[line,0][3:]  in orga and "nsm" in df.columns[col].lower() : 
-    #                 print(orga)
-    #                 print(df.iloc[line,0][3:])
-    #                 print(concern_study[study][1].upper()=="IN")
-    #                 print(concern_study[study][2],df.columns[col])
-    #         # if  : 
-    #         #     print(df.iloc[line,0][3:])
-                
-    #         if concern_study[study][1].upper()=="IN" and concern_study[study][2] in df.columns[col] and not any (df.iloc[line,0][3:] in Concerna_orga for Concerna_orga in concern_study[study][0])  :
-    #             #print("in")
-    #             final_pos_prot[df.iloc[line,0]].append("ABS")
-    #         elif concern_study[study][1].upper()=="OUT" and concern_study[study][2] in df.columns[col] and any(df.iloc[line,0][3:] in Concerna_orga for Concerna_orga in concern_study[study][0])  :
-    #             print("out")
-    #             final_pos_prot[df.iloc[line,0]].append("ABS")
-    #         else : 
-    #             if "NSm" in df.columns[col] : 
-    #                 print(df.iloc[line,0][3:],"here")
-    #             if df.iloc[line,col]=="nan" :
-    #                 if col%2!=0   : 
-    #                     if col >1 : 
-    #                         if int(float(df.iloc[line,col-1]!="nan")) : 
-    #                             final_pos_prot[df.iloc[line,0]].append(int(float(df.iloc[line,col-1]))+1)
-                                    
-    #                         else : 
-
-    #                             pourcent =(proteins[str(df.index[line])][proteins[str(df.index[line])].index(prot)+1]-proteins[str(df.index[line])][proteins[str(df.index[line])].index(prot)]+1)/proteins[str(df.index[line])][len(proteins[str(df.index[line])])-2]
-
-    #                             if df.iloc[line,end_col-1] !="nan": 
-    #                                 end=int(df.iloc[line,end_col-1])
-    #                             else : 
-    #                                 end= proteins[str(df.index[line])][len(proteins[str(df.index[line])])-2]
-    #                             if df.iloc[line,3]!="nan" :
-    #                                 start = int(df.iloc[line,3])
-    #                             else : 
-    #                                 start=proteins[str(df.index[line])][0]
-
-    #                             new_size=int(((end-start+1)*pourcent))
-                                
-
-    #                             if df.iloc[line,col+1] !="nan":
-                                    
-    #                                 final_pos_prot[df.iloc[line,0]].append(int(df.iloc[line,col+1])-new_size)
-    #                             else : 
-                                    
-    #                                 final_pos_prot[df.iloc[line,0]].append(int(float(proteins[str(df.index[line])][proteins[str(df.index[line])].index(prot)-1]))-new_size)
-
-
-
-
-    #                     else : 
-    #                         final_pos_prot[df.iloc[line,0]].append(int(prot))
-    #                 else : 
-                        
-    #                     if col+1<end_col :
-
-    #                         if int(float(df.iloc[line,col+1]!="nan"))  :
-    #                                 final_pos_prot[df.iloc[line,0]].append(int(float(df.iloc[line,col+1]))-1)
-                                    
-    #                         else : 
-    #                             pourcent =(proteins[str(df.index[line])][proteins[str(df.index[line])].index(prot)]-proteins[str(df.index[line])][proteins[str(df.index[line])].index(prot)-1]+1)/proteins[str(df.index[line])][len(proteins[str(df.index[line])])-2]
-
-    #                             if df.iloc[line,end_col-1] !="nan": 
-    #                                 end=int(df.iloc[line,end_col-1])
-    #                             else : 
-    #                                 end= proteins[str(df.index[line])][len(proteins[str(df.index[line])])-2]
-    #                             if df.iloc[line,3]!="nan" :
-    #                                 start = int(df.iloc[line,3])
-    #                             else : 
-    #                                 start=proteins[str(df.index[line])][0]
-
-    #                             new_size=int(((end-start+1)*pourcent))
-
-
-    #                             if df.iloc[line,col-1] !="nan":
-    #                                 final_pos_prot[df.iloc[line,0]].append(int(df.iloc[line,col-1])+new_size)
-    #                             else : 
-                                    
-    #                                 final_pos_prot[df.iloc[line,0]].append(int(float(proteins[str(df.index[line])][proteins[str(df.index[line])].index(prot)-1]))+new_size)
-    #                     else : 
-
-    #                         final_pos_prot[df.iloc[line,0]].append(int(prot))
-    #             else : 
-    #                 final_pos_prot[df.iloc[line,0]].append(int(float(df.iloc[line,col])))
-         
-
-    #     for c in range(len(final_pos_prot[df.iloc[line, 0]]) - 1, 1, -1):
-    #         i=1
-    #         j=1
-    #         if c%2 ==0 : 
-    #             if final_pos_prot[df.iloc[line,0]][c+i] != "ABS" :
-    #                 if final_pos_prot[df.iloc[line,0]][c+i] <= final_pos_prot[df.iloc[line,0]][c] : 
-    #                     final_pos_prot[df.iloc[line,0]][c]=final_pos_prot[df.iloc[line,0]][c+i]-1
-    #             else : 
-    #                 i+=1
-    #             if c-j >len(final_pos_prot[df.iloc[line, 0]]) and  final_pos_prot[df.iloc[line,0]][c-j] != "ABS" :
-    #                 if final_pos_prot[df.iloc[line,0]][c-j] >= final_pos_prot[df.iloc[line,0]][c] : 
-    #                     final_pos_prot[df.iloc[line,0]][c]=final_pos_prot[df.iloc[line,0]][c-j]+1
-    #             else : 
-    #                     j+=1
-
-    #         else : 
-    #             if final_pos_prot[df.iloc[line,0]][c-j] != "ABS" :
-    #                 if final_pos_prot[df.iloc[line,0]][c-j] >= final_pos_prot[df.iloc[line,0]][c] : 
-    #                     final_pos_prot[df.iloc[line,0]][c]=final_pos_prot[df.iloc[line,0]][c-j]+1
-    #             else : 
-    #                 j+=1
-    #             if c+i<-1 and final_pos_prot[df.iloc[line,0]][c+i] != "ABS" :
-    #                 if c < (len(final_pos_prot[df.iloc[line, 0]]) - 1) :
-    #                     if final_pos_prot[df.iloc[line,0]][c+1] <= final_pos_prot[df.iloc[line,0]][c] : 
-    #                         final_pos_prot[df.iloc[line,0]][c]=final_pos_prot[df.iloc[line,0]][c+1]-1  
-    #             else :
-    #                 i+=1
-            
-
-
-    # ligne_chaine = '\t'.join(df.iloc[[0]].astype(str))
-    # name=f"{path}{study}/Pos_prot_final_{study}.fasta"
-    # file = open(f"{name}","w")
-    # file.write(f"study\t{ligne_chaine}\n")
-    # file.close()
-    # return final_pos_prot,name
-
 def final_pos(study,prot,study_prot,proteins) : 
     chain_prot=""
     df = pd.read_csv(f"{path}{study}/Pos_prot_{study}.txt", delimiter="\t",header=0,index_col=0)
@@ -1089,35 +946,7 @@ def final_pos(study,prot,study_prot,proteins) :
                 final_pos_prot[df.iloc[line,0]].append(int(float(df.iloc[line,col])))
    
 
-            
-
-        # for c in range(len(final_pos_prot[df.iloc[line, 0]]) - 1, 1, -1):
-        #     i=1
-        #     j=1
-        #     if c%2 ==0 : 
-        #         if final_pos_prot[df.iloc[line,0]][c+i] != "ABS" :
-        #             if final_pos_prot[df.iloc[line,0]][c+i] <= final_pos_prot[df.iloc[line,0]][c] : 
-        #                 final_pos_prot[df.iloc[line,0]][c]=final_pos_prot[df.iloc[line,0]][c+i]-1
-        #         else : 
-        #             i+=1
-        #         if c-j >len(final_pos_prot[df.iloc[line, 0]]) and  final_pos_prot[df.iloc[line,0]][c-j] != "ABS" :
-        #             if final_pos_prot[df.iloc[line,0]][c-j] >= final_pos_prot[df.iloc[line,0]][c] : 
-        #                 final_pos_prot[df.iloc[line,0]][c]=final_pos_prot[df.iloc[line,0]][c-j]+1
-        #         else : 
-        #                 j+=1
-
-        #     else : 
-        #         if final_pos_prot[df.iloc[line,0]][c-j] != "ABS" :
-        #             if final_pos_prot[df.iloc[line,0]][c-j] >= final_pos_prot[df.iloc[line,0]][c] : 
-        #                 final_pos_prot[df.iloc[line,0]][c]=final_pos_prot[df.iloc[line,0]][c-j]+1
-        #         else : 
-        #             j+=1
-        #         if c+i<-1 and final_pos_prot[df.iloc[line,0]][c+i] != "ABS" :
-        #             if c < (len(final_pos_prot[df.iloc[line, 0]]) - 1) :
-        #                 if final_pos_prot[df.iloc[line,0]][c+1] <= final_pos_prot[df.iloc[line,0]][c] : 
-        #                     final_pos_prot[df.iloc[line,0]][c]=final_pos_prot[df.iloc[line,0]][c+1]-1  
-        #         else :
-        #             i+=1
+        
         for c in range (1,len(final_pos_prot[df.iloc[line,0]] )-1) :
             if c%2 ==0 : 
                 if final_pos_prot[df.iloc[line,0]][c+1] <= final_pos_prot[df.iloc[line,0]][c] : 

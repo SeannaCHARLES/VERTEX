@@ -48,6 +48,7 @@ def change_pos(line,end_col,Pos_prot_final) :
             if "str" not in str(type(Pos_prot_final.iloc[line,col]))   :
 
                 if Pos_prot_final.iloc[line,col]==-1 :
+                    Pos_prot_final.iloc[line,col].astype('object')
                     Pos_prot_final.iloc[line,col]="Na"
                     Pos_prot_final.to_csv(f"{path}{study}/Pos_prot_Final_{study}.txt", sep="\t")
                 elif "str" not in str(type(Pos_prot_final.iloc[line,col+1])) and  Pos_prot_final.iloc[line,col+1]!=-1:
@@ -68,6 +69,7 @@ def change_pos(line,end_col,Pos_prot_final) :
             if "str" not in str(type(Pos_prot_final.iloc[line,col]))  :
 
                 if Pos_prot_final.iloc[line,col]==-1 :
+                    Pos_prot_final.iloc[line,col].astype('object')
                     Pos_prot_final.iloc[line,col]="Na"
                     Pos_prot_final.to_csv(f"{path}{study}/Pos_prot_Final_{study}.txt", sep="\t")
                 elif "str" not in str(type(Pos_prot_final.iloc[line,col-1])) and  Pos_prot_final.iloc[line,col-1]!=-1:
@@ -87,10 +89,10 @@ def change_pos(line,end_col,Pos_prot_final) :
 #print(f"{INOUT}\n{protINOUT}")
 dicy={}
 #print(Allstudies,INOUT,protINOUT,orgaWIWO)
-print(Allstudies)
-print(INOUT)
-print(protINOUT)
-print(orgaWIWO)
+# print(Allstudies)
+# print(INOUT)
+# print(protINOUT)
+# print(orgaWIWO)
 for all_s, IO,prots,virus in zip(Allstudies,INOUT,protINOUT,orgaWIWO) :
     metadata = pd.read_csv(f"{path}{all_s}/Metadata_{all_s}.txt", delimiter="\t",header=0,index_col=0)
     print(all_s)
