@@ -2,6 +2,35 @@
 SECONDS=0
 ########################################EXTRACT ALL THE INFORMATION FROM THE INFORMATION FILE############################################
 awk -F',' '$0 !~ /^#/ && $13 == "" { $13 = "none*nn=nn" } { print }' OFS=',' All_information.txt > tmp && mv tmp All_information.txt
+awk -F',' '$0 !~ /^#/ && $4 == "" { $4 = "N" } { print }' OFS=',' All_information.txt > tmp && mv tmp All_information.txt
+awk -F',' '$0 !~ /^#/ && $11 == "" { $11 = "0.01" } { print }' OFS=',' All_information.txt > tmp && mv tmp All_information.txt
+awk -F',' '$0 !~ /^#/ && $14 == "" { $14 = "Yes" } { print }' OFS=',' All_information.txt > tmp && mv tmp All_information.txt
+
+awk -F',' '$0 ~ /^#/ && NR==2 && $2=="" {$2="/"} { print }' OFS=',' All_information.txt > tmp && mv tmp All_information.txt
+awk -F',' '$0 ~ /^#/ && NR==3 && $2=="" {$2="/res_phylo/"} { print }' OFS=',' All_information.txt > tmp && mv tmp All_information.txt
+awk -F',' '$0 ~ /^#/ && NR==4 && $2=="" {$2="Phylogenetic/Script/"} { print }' OFS=',' All_information.txt > tmp && mv tmp All_information.txt
+awk -F',' '$0 ~ /^#/ && NR==5 && $2=="" {$2="nucl;prot"} { print }' OFS=',' All_information.txt > tmp && mv tmp All_information.txt
+
+
+while awk -F',' 'NR < 6 { next }  NR == 6 {if ($0 ~ /^#/ && $2 == "") {exit 0} else {exit 1}}' "All_information.txt"; do
+
+    echo "Please enter your email address :"
+    read -p "email address : " INFORMATION
+
+    if [ -z "$INFORMATION" ]; then
+        echo "You cannot leave this field blank."
+
+    else
+        echo "saved email address: $INFORMATION"
+        
+        awk -F',' -v email="$INFORMATION" '$0 ~ /^#/ && NR==6 && $2=="" {$2=email} { print }' OFS="," "All_information.txt" > "tmp_$$"
+        mv "tmp_$$" "All_information.txt"
+        
+
+    fi
+done
+
+echo "done"
 while IFS=$',' read -r col1 col2 col3 col4 col5 col6 col7 col8 col9 col10 col11 col12 col13 col14 col15 _; do
     
     [[ $col1 =~ ^# ]] && continue
@@ -38,19 +67,37 @@ done < All_information.txt
 
 #echo "${NUID[*]}"
 #NUID=$(grep -v "^#" All_information.txt |awk -F"," '{print $3}')
-path=$(grep '^#' All_information.txt | awk -F"=" 'NR==2 {print $2}'| tr -d ',')
-res_file=$(grep '^#' All_information.txt | awk -F"=" 'NR==3 {print $2}'| tr -d ',')
-path_script=$(grep '^#' All_information.txt | awk -F"=" 'NR==4 {print $2}'| tr -d ',')
-Type_seq=$(grep '^#' All_information.txt | awk -F"=" 'NR==5 {print $2}'| tr -d ',')
-email=$(grep '^#' All_information.txt | awk -F"=" 'NR==6 {print $2}'| tr -d ',')
-order=$(grep '^#' All_information.txt | awk -F":" 'NR==7 {print $2}'| tr -d ',')
+# path=$(grep '^#' All_information.txt | awk -F"=" 'NR==2 {print $2}'| tr -d ',')
+path=$(awk -F',' '$0 ~ /^#/ && NR==2 {print $2}'| tr -d ',')
+echo "$path"
+# res_file=$(grep '^#' All_information.txt | awk -F"=" 'NR==3 {print $2}'| tr -d ',')
+res_file=$(awk -F',' '$0 ~ /^#/ && NR==3 {print $2}'| tr -d ',')
+echo "$res_file"
+# path_script=$(grep '^#' All_information.txt | awk -F"=" 'NR==4 {print $2}'| tr -d ',')
+path_script=$(awk -F',' '$0 ~ /^#/ && NR==4 {print $2}'| tr -d ',')
+echo "$path_script"
+# Type_seq=$(grep '^#' All_information.txt | awk -F"=" 'NR==5 {print $2}'| tr -d ',')
+Type_seq=$(awk -F',' '$0 ~ /^#/ && NR==5 {print $2}'| tr -d ',')
+echo "$Type_seq"
+# email=$(grep '^#' All_information.txt | awk -F"=" 'NR==6 {print $2}'| tr -d ',')
+email=$(awk -F',' '$0 ~ /^#/ && NR==6 {print $2}'| tr -d ',')
+echo "$email"
+# order=$(grep '^#' All_information.txt | awk -F":" 'NR==7 {print $2}'| tr -d ',')
+order=$(awk -F',' '$0 ~ /^#/ && NR==7 {print $2}'| tr -d ',')
+echo "$order"
+
+
 keep_prot=$(grep -v "^#" All_information.txt |awk -F"," '{print $12}')
+echo "$keep_prot"
 #proteins=$(grep -v "^#" All_information.txt |awk -F"," '{print $6}'| grep -v '^["[:space:]"]*$'|sed 's/\,/" "/g'| uniq)
 speprot=$(grep -v "^#" All_information.txt |awk -F"," '{print "\"",$7,"\""}')
+echo "$speprot"
 orgaWIWO=$(grep -v "^#" All_information.txt | awk -F"," '{gsub(/\xc2\xa0/, "", $13); print $13}' | awk -F"=" '{print $2}')
+echo "$orgaWIWO"
 INOUT=$(grep -v "^#" All_information.txt |awk -F"," '{print $13}'|awk -F"=" '{print $1}'| awk -F "*" '{print $1}')
+echo "$INOUT"
 protINOUT=$(grep -v "^#" All_information.txt |awk -F"," '{print $13}'|awk -F"=" '{print $1}'| awk -F "*" '{print $2}')
-diff_name_prot=$(grep "^#" All_information.txt |awk -F":" 'NR==7 {print $2}'| tr -d ',')
+echo "$protINOUT"
 
 for element in "${speprot[@]}"; do
     if [ "$element" != " " ]; then
@@ -105,13 +152,13 @@ fi
 # fi
 
 ############################################EXTRACT ALL THE DATA FROM THE GENBANK FILES#################################################
-echo The captions, metadata files and files containing all the sequences are currently being created.
+# echo The captions, metadata files and files containing all the sequences are currently being created.
 
-for study in "${studies[@]}"; do
-rm -f "${path}""${study:?}/nucl/*" "${path}""${study:?}/prot/*" >/dev/null 
-done
+# for study in "${studies[@]}"; do
+# rm -f "${path}""${study:?}/nucl/*" "${path}""${study:?}/prot/*" >/dev/null 
+# done
 
-/usr/bin/python3 "${path}""${path_script}"genbank_extract.py "${path}" "${studies[*]}" "${studiesspeOG[*]}" "${names[*]}" "${NUIDspeOG[*]}" "${email}" "${proteins[*]}"  "${proteinsspe_OG[*]}"   "${OG_prot[*]}" "${diff_protname[*]}" "${diff_protname_OG[*]}" "${order[*]}" "${orgaWIWO[*]}" "${INOUT[*]}" "${protINOUT[*]}" "${Allstudies[*]}" "${allID[*]}" "${namespepro[*]}" "${namespeproOG[*]}"
+# /usr/bin/python3 "${path}""${path_script}"genbank_extract.py "${path}" "${studies[*]}" "${studiesspeOG[*]}" "${names[*]}" "${NUIDspeOG[*]}" "${email}" "${proteins[*]}"  "${proteinsspe_OG[*]}"   "${OG_prot[*]}" "${diff_protname[*]}" "${diff_protname_OG[*]}" "${order[*]}" "${orgaWIWO[*]}" "${INOUT[*]}" "${protINOUT[*]}" "${Allstudies[*]}" "${allID[*]}" "${namespepro[*]}" "${namespeproOG[*]}"
 
 
 
@@ -155,14 +202,14 @@ done
 # # # #####################################MESURE THE DIVERGENCE BETWEEN ALL THE SEQUENCES FOR EACH STUDY######################################
 # ./"${path_script}"DNA_dist.sh "${path}" "${studies[*]}" 
 # ######EQUIVALENT DNADIST - PROTDIST
-# # # ##################################################DELETE THE SEQUENCES THAT ARE TOO CLOSE#################################################
+# # # # ##################################################DELETE THE SEQUENCES THAT ARE TOO CLOSE#################################################
 # echo The duplicate sequences are being deleted
 # for study in "${studies[@]}"; do
 # rm -f "${path}""${study:?}"/nucl_sdbl_"${study}".fasta "${path}""${study:?}"/prot_sdbl_"${study}".fasta  >/dev/null 
 # done
 
 # /usr/bin/python3 "${path}""${path_script}"delete_dbl.py "${path}" "${studies[*]}" "${keep_prot[*]}" "${ths[*]}" "${target_list[*]}" 
-# # # ######################################################SEPERATE THE PROTEINES##############################################################
+# # # # ######################################################SEPERATE THE PROTEINES##############################################################
 # echo the proteins are being seperated
 # for study in "${studies[@]}"; do
 # echo 
@@ -173,7 +220,7 @@ done
 
 
 
-# # # # ##############################################ADD THE SPECIFIC OUTGROUP IN EACH FILE######################################################
+# # # # # ##############################################ADD THE SPECIFIC OUTGROUP IN EACH FILE######################################################
 # echo The outgroup of each studies are being added
 # for study in "${studies[@]}"; do
 # rm -f "${path}""${study:?}""${res_file}"/*_OG.fasta "${path}""${study:?}""${res_file}"/*_OG.aln-fasta  >/dev/null 
@@ -190,7 +237,7 @@ done
 # /usr/bin/python3 "${path}""${path_script}"protdist.py "${path}" "${studies[*]}" "${speprot[*]}" "${names[*]}" "${path_script}" "${res_file}" "${path_script}"
 # fi
 
-# # # ##########################################"#LAUCH TRIMAL FOR EACH SPECIFIC PROTEINES OF EACH STUDY########################################
+# ##########################################"#LAUCH TRIMAL FOR EACH SPECIFIC PROTEINES OF EACH STUDY########################################
 # if [ "${speprot[0]}" != '"  "' ];then
 #     speprotsse=$(echo "${speprot[@]}" | tr -d '" ' | cut -d'=' -f1 | paste -sd, -)
 #     IFS=$',' read -ra speprotsep <<< "${speprotsse[@]}"
