@@ -94,11 +94,11 @@ legencolors["Na"]=["#979a9a"]
 
 def colour_choice (caption,colors_list,type_,path):
     global ratp_colors
-    
+    print("caption",caption)
     if len(colors_list)<=0 : 
         colors_list=ratp_colors.copy()
 
-    if caption not in legencolors : 
+    if caption not in legencolors.keys() : 
         choice=colors_list[0]
         colors_list.remove(choice)
         legencolors[caption]=[choice]
@@ -410,17 +410,7 @@ def first_call(path,study,cop) :
             file = open(name_files,"w")
             file.write(f"DATASET_COLORSTRIP\nSEPARATOR TAB\nDATASET_LABEL	RectZoneExample\tCOLOR\t#000000\nDATA\n")       
             file.close()
-    
 
-            name_files = f"{path}{study}/legend/accolade_{study}{speprot}_itol.txt"
-            file = open(name_files,"w")
-            file.write(f"DATASET_STYLE\nSEPARATOR TAB\nDATASET_LABEL\tCOLOR\t#000000\nDATA\n")       
-            file.close()
-
-        # name_files = f"{path}{study}/legend/Collapse_{study}{speprot}_itol.txt"
-        # file = open(name_files,"w")
-        # file.write(f"DATASET_COLORSTRIP\nSEPARATOR TAB\nCOLOR	#ff0000\nSTRIP_WIDTH	25\nSHOW_INTERNAL	0\nMARGIN	5\nBORDER_WIDTH 1\nDATA\n")       
-        # file.close()
 
 
 
@@ -447,9 +437,10 @@ def extract_id(path,Datas,study,sp,list_prot,email,Diff_name,metadata_name_prot,
     global serogroup_colors
     global host_colors
     global allmetadata
-    global collaps
+
+
     namespeprot=namepeprot.copy()
-    
+ 
 
     for record in SeqIO.parse(Datas,"genbank"): 
         #Variable initialisation 
@@ -465,8 +456,8 @@ def extract_id(path,Datas,study,sp,list_prot,email,Diff_name,metadata_name_prot,
         Sequence_nu = record.seq
         sizenu=len(Sequence_nu)
         organism= record.annotations.get('organism',"Inconnu").replace("virus","")
-        #organism=organism.replace('virus','')
-        fullorganisme=organism.replace("virus","")
+        fullorganisme=organism
+
         Sequence_aa=""
         ID_prot=[]
         taxonomy=record.annotations.get('taxonomy')[7:]
@@ -501,12 +492,12 @@ def extract_id(path,Datas,study,sp,list_prot,email,Diff_name,metadata_name_prot,
                 strand = feature.location.strand          
             if "protein_id" in feature.qualifiers :
                 ID_prot.append(feature.qualifiers['protein_id'][0])
-        #print(f"ID proteins : {ID_prot}   ID nu : {Nu} ") 
+        
 
         if not ID_prot : 
             print(f"This ID : {Nu} does not have any proteins ID It will not be inclued in this study")
         else :       
-            output_prot,output_pos,sizeprot,Sequence_aa=extract_prot_data(ID_prot,study,list_prot,email,Diff_name,metadata_name_prot,dicy)
+            output_prot,output_pos,sizeprot,Sequence_aa=extract_prot_data(ID_prot,study,list_prot,email,Diff_name,metadata_name_prot,dicy,path)
         
             order_color,host_colors=colour_choice(order,host_colors,"order",path)
             region_color,region_colors=colour_choice(region,region_colors,"region",path)
@@ -548,20 +539,28 @@ def extract_id(path,Datas,study,sp,list_prot,email,Diff_name,metadata_name_prot,
 
 def modif_name_prot(prot,Diff_name,metadata_name_prot) :
 
+
+    for prot_name in metadata_name_prot : 
+        if prot_name.lower() in prot.lower() : 
+            prot=prot_name.lower()
+
     for diff_prot in Diff_name :
         
         DP=diff_prot.split("=")
         
-        prot=prot.upper().replace(DP[0].upper(),DP[1].upper())
-        prot=prot.upper().replace("-","").replace("\xa0", " ").replace(" ","").replace("PROTEIN","")
+        prot=prot.lower().replace(DP[0].lower(),DP[1].lower())
+        prot=prot.lower().replace("-","").replace("\xa0", " ").replace(" ","").replace("PROTEIN","").replace("_","")
 
- 
+    for prot_name in metadata_name_prot : 
+        if prot_name.lower() in prot.lower() : 
+            prot=prot_name.lower()
+    
     return prot
 
 ##Function extract_prot_data
 #This function extract the position of each proteins of each organism in order to save everything in the metadatafiles
 
-def extract_prot_data(ID_prot_list,study,all_proteins,mail,Diff_name,metadata_name_prot,dicy) : 
+def extract_prot_data(ID_prot_list,study,all_proteins,mail,Diff_name,metadata_name_prot,dicy,path) : 
 
     Entrez.email = mail
     output=""  
@@ -569,100 +568,102 @@ def extract_prot_data(ID_prot_list,study,all_proteins,mail,Diff_name,metadata_na
     proteins={}
     All_end=0
     Sequence_aa=''
+    prot_names=metadata_name_prot.copy()
+    
     for ID_prot in ID_prot_list : 
+        
         try :
             handle = Entrez.efetch(db="protein", id=ID_prot, rettype="gp", retmode="text")
             record = SeqIO.read(handle, "genbank")
             handle.close()
-            time.sleep(2)  
+            time.sleep(1)  
             with open(f"{path}{study}/prot/{ID_prot}.gp", "w") as output_handle:
                 SeqIO.write(record, output_handle, "genbank")
                 output_handle
 
             record = SeqIO.read(f"{path}{study}/prot/{ID_prot}.gp", "genbank")
-        
+            
             for feature in record.features :
             
-                if 'region_name' in feature.qualifiers : 
-                
-                    prot=(feature.qualifiers['region_name'][0])
-            
-                    start=(feature.location.start)+All_end
-                    end=(feature.location.end)+All_end
-                    prot=modif_name_prot(prot,Diff_name,metadata_name_prot) 
-
-                #print(f"prot_newname = {prot}")
-                    if start==0 : 
-                        start=1
-                
-                    if "+" in prot : 
-                        two_prot=prot.split("+")
+                if 'product' in feature.qualifiers : 
+                    prot=(feature.qualifiers['product'][0])
+                    prot=modif_name_prot(prot,Diff_name,metadata_name_prot)
+                    proteins=extract_start_end(prot,proteins,feature,All_end)
                     
-                        if any(two_prot[1].upper() in p.upper() for p in proteins) : 
-                            proteins[two_prot[1]][1]=end
-                        else : 
-                            proteins[two_prot[0]]=[start,"nan"]
-                            proteins[two_prot[1]]=["nan",end]
-                          
-                    else : 
-                        if prot.upper() in proteins : 
-                        #print(proteins)
-                            if proteins[prot][1]< end :
-                                proteins[prot][1]=end
-
-                        else : 
-                            proteins[prot]=[start,end]  
-
+                    
+                if 'region_name' in feature.qualifiers : 
+                    prot=(feature.qualifiers['region_name'][0])
+                    prot=modif_name_prot(prot,Diff_name,metadata_name_prot)
+                    proteins=extract_start_end(prot,proteins,feature,All_end)
+                    
+                    
             Sequence_aa+=record.seq
             All_end+=len(record.seq)
 
             subprocess.run(['rm', f'{path}{study}/prot/{ID_prot}.gp'],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
         except Exception as e :
-            print(f"This ID : {ID_prot} were not indentified by the NCBI database")
-    for prot in metadata_name_prot : 
-        if prot.upper() in proteins  :
-                #if any(prot.upper() in ID_p.upper() for ID_p in metadata_name_prot)   : 
-                #print(f"position : {proteins[prot.upper()]}")
-            output+=f'{str(proteins[prot.upper()][0])}\t{str(proteins[prot.upper()][1])}\t'
-            output_pos+=f'{str(proteins[prot.upper()][0])}\t{str(proteins[prot.upper()][1])}\t'
-        elif any(prot.upper() in ID_p.upper() for ID_p in metadata_name_prot): 
-                #print(f"prot : {prot}")
-            output+=f"nan\tnan\t"
-            output_pos+=f"nan\tnan\t"
-
-
+            print(f"This ID : {ID_prot} were not indentified by the NCBI database or error {e}")
 
     
+    for prot in metadata_name_prot : 
+        
+        if prot.lower() in proteins  :
+
+            output+=f'{str(proteins[prot.lower()][0])}\t{str(proteins[prot.lower()][1])}\t'
+            output_pos+=f'{str(proteins[prot.lower()][0])}\t{str(proteins[prot.lower()][1])}\t'
+        elif any(prot.lower() in ID_p.lower() for ID_p in metadata_name_prot): 
+                
+            output+=f"nan\tnan\t"
+            output_pos+=f"nan\tnan\t"
 
     return output,output_pos,All_end,Sequence_aa
 
 #The serogroup file 
+def extract_start_end(prot,proteins,feature,All_end):
+    start=(feature.location.start)+All_end+1
+    end=(feature.location.end)+All_end+1
+     
+    if start==0 : 
+        start=1
+                
+    if "+" in prot : 
+        two_prot=prot.split("+")
+                    
+        if any(two_prot[1].lower() in p.lower() for p in proteins) : 
+            proteins[two_prot[1]][1]=end
+        else : 
+            proteins[two_prot[0]]=[start,"nan"]
+            proteins[two_prot[1]]=["nan",end]
+                          
+    else : 
+        if prot.lower() in proteins : 
+       
+            if proteins[prot][1]< end :
+                proteins[prot][1]=end
 
-collaps={}
+        else : 
+            proteins[prot]=[start,end] 
+ 
+    return proteins
+
 ##Function find_serogroup 
 #This function 
 def find_serogroup(organism,path) : 
     df = pd.read_csv(f"{path}Serogroup.txt", delimiter="|",header=0)
     df.iloc[:, 1:]=df.iloc[:, 1:].astype(str)
-    global collaps
 
-    end_line=df.shape[0]
-    for line in range(0,end_line) : 
-        if df.iloc[line,0].lower() in organism.lower() or organism.lower() in df.iloc[line,0].lower() or organism.replace(" ","").lower() in df.iloc[line,0].replace(" ","").lower() : 
-            if df.iloc[line,1] not in collaps : 
-                collaps[df.iloc[line,1]]=[organism]
-            else : 
-                collaps[df.iloc[line,1]].append(organism)
+    if organism in df["Virus name"].values: 
+        print("identifier",df.iloc[organism,1])
+        print("line",df.loc[organism])
+        return(df.loc[organism].iloc[1])
+    else: 
+        name=f"{path}Serogroup.txt"
 
-            return str(df.iloc[line,1])
-            
-    name=f"{path}Serogroup.txt"
-    file = open(name,"a")
-    file.write(f"{organism}|Na\n")       
-    file.close()
-    df = pd.read_csv(f"{path}Serogroup.txt", delimiter="|",header=0)
-    df.iloc[:, 1:]=df.iloc[:, 1:].astype(str)
-    find_serogroup(organism)
+        file = open(name,"a")
+        file.write(f"{organism}|Na\n")       
+        file.close()
+        return "Na"
+
     
 
 
@@ -739,7 +740,7 @@ def onlygap(path,study,target,keep_list):
 # This function uses the position of the proteins of the target organism (proteic sequence) to identify the position of the proteins in the alignment.
 # It is important not to just translate the protein sequence into RNA in order to keep the intergenic regions.
 
-def nucleic_sequences(study,ID,sequence,debseq,proteins,sp,resfile) :
+def nucleic_sequences(study,ID,sequence,debseq,proteins,sp,resfile,path) :
 
     Pos_prot_final=pd.read_csv(f"{path}{study}/Pos_prot_Final_{study}.txt", delimiter="\t",header=0,index_col=0)
     ligne = Pos_prot_final[Pos_prot_final.iloc[:, 0] == ID]
@@ -752,8 +753,8 @@ def nucleic_sequences(study,ID,sequence,debseq,proteins,sp,resfile) :
     #print(position_proteines)
     prot_position=dict(zip(proteins, position_proteines))
     for prot,pos in prot_position.items() : 
-        #print(f"nucleic seq & OG : {prot}:{pos} : {not any("Na" in str(element) for element in pos)} ! {not any("ABS" in str(element) for element in pos)}!{pos!="Na"}")
-        if not any("ABS" in str(element) for element in pos) and not any("Na" in str(element) for element in pos) : 
+        #print(f"nucleic seq & OG : {prot}:{pos} : {not any("nan" in str(element) for element in pos)} ! {not any("ABS" in str(element) for element in pos)}!{pos!="nan"}")
+        if not any("ABS" in str(element) for element in pos) and not any("nan" in str(element) for element in pos) : 
             pos = [int(float(x)) for x in pos]
             name=f"{path}{study}{resfile}{prot.lower()}_{sp}_nucl.fasta"
             mark_prot=""
@@ -787,14 +788,14 @@ def nucleic_sequences(study,ID,sequence,debseq,proteins,sp,resfile) :
             file.write(f">{ID}\n{mark_prot}\n")
             file.close()
  
-def nucleic_sequences_OG(study,ID,sequence,debseq,pos_prot,proteins,sp,resfile) :
+def nucleic_sequences_OG(study,ID,sequence,debseq,pos_prot,proteins,sp,resfile,path) :
 
     position_proteines=[pos_prot[i:i+2] for i in range(0, len(pos_prot), 2)]
     prot_position=dict(zip(proteins, position_proteines))
 
     for prot,pos in prot_position.items() : 
-        #print(f"nucleic seq & OG : {prot} :{pos}: {not any("Na" in str(element) for element in pos)} ! {not any("ABS" in str(element) for element in pos)}!{pos!="Na"}")
-        if not any("ABS" in str(element) for element in pos) and not any("Na" in str(element) for element in pos) : 
+        #print(f"nucleic seq & OG : {prot} :{pos}: {not any("nan" in str(element) for element in pos)} ! {not any("ABS" in str(element) for element in pos)}!{pos!="nan"}")
+        if not any("ABS" in str(element) for element in pos) and not any("nan" in str(element) for element in pos) : 
             pos = [int(float(x)) for x in pos]
             name=f"{path}{study}{resfile}{prot.lower()}_{sp}_nucl.fasta"
             mark_prot=""
@@ -830,7 +831,7 @@ def nucleic_sequences_OG(study,ID,sequence,debseq,pos_prot,proteins,sp,resfile) 
 ##Function compt_alignement
 # This function uses the position of the target organism's proteins (sequence proteic) to identify the position of the proteins in the alignment.
 
-def proteic_sequence (study,ID,sequence,proteins,sp,resfile) : 
+def proteic_sequence (study,ID,sequence,proteins,sp,resfile,path) : 
  
     Pos_prot_final=pd.read_csv(f"{path}{study}/Pos_prot_Final_{study}.txt", delimiter="\t",header=0,index_col=0)
     ligne = Pos_prot_final[Pos_prot_final.iloc[:, 0] == ID]
@@ -850,7 +851,7 @@ def proteic_sequence (study,ID,sequence,proteins,sp,resfile) :
     for prot,pos in prot_position.items() : 
         
         name=f"{path}{study}{resfile}{prot.lower()}_{sp}_prot.fasta"
-        if not any("ABS" in str(element) for element in pos) and not any("Na" in str(element) for element in pos): 
+        if not any("ABS" in str(element) for element in pos) and not any("nan" in str(element) for element in pos): 
             pos = [int(float(x)) for x in pos]
             mark_prot=""
             compt_AA=0
@@ -879,7 +880,7 @@ def proteic_sequence (study,ID,sequence,proteins,sp,resfile) :
 #Function mark_sequence
 #This function marks the start and end of proteins in protein and nucleic acid sequences. 
 
-def final_pos_IO(study,prot,study_prot,proteins,concern_study) : 
+def final_pos_IO(study,prot,study_prot,proteins,concern_study,path) : 
     
    
     chain_prot=""
@@ -901,7 +902,7 @@ def final_pos_IO(study,prot,study_prot,proteins,concern_study) :
 
 
 
-def final_pos(study,prot,study_prot,proteins) : 
+def final_pos(study,prot,study_prot,proteins,path) : 
     chain_prot=""
     df = pd.read_csv(f"{path}{study}/Pos_prot_{study}.txt", delimiter="\t",header=0,index_col=0)
     df.iloc[:, 1:]=df.iloc[:, 1:].astype(str)
@@ -980,7 +981,7 @@ def col_pos(nm_study,pos_col_prot,study_prot) :
 ###################################################################Function for the Script WIWO###################################################################
 
 
-def deleteIN(study,IO,protein,organismes,res_file,types_seq) : 
+def deleteIN(study,IO,protein,organismes,res_file,types_seq,path) : 
 
     for type_seq in types_seq : 
         subprocess.run(f" cp {path}{study}{res_file}{protein}_{study}_{type_seq}.fasta {path}{study}{res_file}{protein}_{study}_{type_seq}_bef_WIWO.fasta" ,shell=True)
@@ -993,7 +994,7 @@ def deleteIN(study,IO,protein,organismes,res_file,types_seq) :
                 file.write(f">{record.id}\n{record.seq}\n")       
                 file.close()
 
-def deleteOUT(study,IO,protein,organismes,res_file,types_seq) : 
+def deleteOUT(study,IO,protein,organismes,res_file,types_seq,path) : 
 
     for type_seq in types_seq : 
         subprocess.run(f"cp {path}{study}{res_file}{protein}_{study}_{type_seq}.fasta {path}{study}{res_file}{protein}_{study}_{type_seq}_bef_WIWO.fasta",shell=True)
@@ -1012,7 +1013,7 @@ def deleteOUT(study,IO,protein,organismes,res_file,types_seq) :
 ##Function Extract_data
 # This function separates the different proteins that have been tagged for all sequences.
 
-def Extract_data(file,sp,Protname,study) : 
+def Extract_data(file,sp,Protname,study,path) : 
     if "nucl" in sp  :
         AA_L=["a","t","c","g","-","n"]
     else :
@@ -1029,13 +1030,13 @@ def Extract_data(file,sp,Protname,study) :
                         seq[index]=prot_mod
                     
             Data[record.description]=seq
-    write_file_prot(Data,sp,Protname,study)
+    write_file_prot(Data,sp,Protname,study,path)
 
 
 ## Function write_file_prot
 # This function writes a file for each protein with all the sequences studied.  
  
-def write_file_prot(Data,sp,Protname,study) : 
+def write_file_prot(Data,sp,Protname,study,path) : 
  
     for ID,seq in Data.items() : 
         for index,prot in enumerate(seq) : 
@@ -1046,4 +1047,69 @@ def write_file_prot(Data,sp,Protname,study) :
             file.close()
             
 
+def Blastp_run(DB,File,output) :
+    subprocess.run(f"rm -f {output}.txt",shell=True)
+    subprocess.run(f"blastp -db {DB}_DB -query {File} -outfmt 6 -out {output}.txt",shell=True)
 
+    
+def add_new_pos(protein,output) :
+    prot=protein.replace("Start","").replace("End","")
+    if "Start" in protein :
+        missing_pos=7
+    else : 
+        missing_pos=8
+
+
+    cmd=f"awk '/{prot}/ && (NR==1 || $4 > max) {{ max = $4; line = ${missing_pos} }} END {{ print line }}' {output}.txt"
+   
+    pos=subprocess.run(f"{cmd}",capture_output=True,shell=True, text=True)
+   
+    if pos.stdout=="\n" or pos.stdout=='' : 
+        return int(-1)
+    else  :
+        return int(pos.stdout)
+
+def change_pos(line,end_col,Pos_prot_final,path,study) : 
+    for col in range (1,end_col) :
+        if "Start" in str(Pos_prot_final.columns[col]) : 
+           
+            if "str" not in str(type(Pos_prot_final.iloc[line,col]))   :
+
+                if Pos_prot_final.iloc[line,col]==-1 :
+                   
+                    Pos_prot_final.iloc[line,col]="nan"
+                    Pos_prot_final.to_csv(f"{path}{study}/Pos_prot_Final_{study}.txt", sep="\t")
+                elif "str" not in str(type(Pos_prot_final.iloc[line,col+1])) and  Pos_prot_final.iloc[line,col+1]!=-1:
+                    if Pos_prot_final.iloc[line,col] > Pos_prot_final.iloc[line,col+1]  : 
+                        if col ==1 : 
+                            Pos_prot_final.iloc[line,col]=1
+                            Pos_prot_final.to_csv(f"{path}{study}/Pos_prot_Final_{study}.txt", sep="\t")
+                           
+                        else :
+                           
+                            Pos_prot_final.iloc[line,col]=int(Pos_prot_final.iloc[line,col-1])+1
+                            Pos_prot_final.to_csv(f"{path}{study}/Pos_prot_Final_{study}.txt", sep="\t")
+            elif "str" not in str(type(Pos_prot_final.iloc[line,col+1])) and "str" not in str(type(Pos_prot_final.iloc[line,col-1])) : 
+                Pos_prot_final.iloc[line,col]=int(Pos_prot_final.iloc[line,col-1])+1
+                Pos_prot_final.to_csv(f"{path}{study}/Pos_prot_Final_{study}.txt", sep="\t")
+                        
+        else : 
+            if "str" not in str(type(Pos_prot_final.iloc[line,col]))  :
+
+                if Pos_prot_final.iloc[line,col]==-1 :
+             
+                    Pos_prot_final.iloc[line,col]="nan"
+                    Pos_prot_final.to_csv(f"{path}{study}/Pos_prot_Final_{study}.txt", sep="\t")
+                elif "str" not in str(type(Pos_prot_final.iloc[line,col-1])) and  Pos_prot_final.iloc[line,col-1]!=-1:
+                    if  Pos_prot_final.iloc[line,col-1] > Pos_prot_final.iloc[line,col] :
+                        if col !=end_col : 
+                            Pos_prot_final.iloc[line,col]=int(Pos_prot_final.iloc[line,col+1])-1
+                            Pos_prot_final.to_csv(f"{path}{study}/Pos_prot_Final_{study}.txt", sep="\t")
+                        else : 
+                            Pos_prot_final.iloc[line,col]="END"
+                            Pos_prot_final.to_csv(f"{path}{study}/Pos_prot_Final_{study}.txt", sep="\t")
+            elif "str" not in str(type(Pos_prot_final.iloc[line,col+1])) and "str" not in str(type(Pos_prot_final.iloc[line,col-1])) : 
+                Pos_prot_final.iloc[line,col]=int(Pos_prot_final.iloc[line,col+1])-1
+                Pos_prot_final.to_csv(f"{path}{study}/Pos_prot_Final_{study}.txt", sep="\t")
+  
+    
