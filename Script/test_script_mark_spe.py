@@ -91,14 +91,14 @@ for study in studies :
     # file.close()
     
     for record in SeqIO.parse(f"{path}{study}/prot_sdbl_{study}.fasta","fasta") :
-        proteic_sequence(study,record.id,record.seq,study_prot[study],sp,resfile)
+        proteic_sequence(study,record.id,record.seq,study_prot[study],sp,resfile,path)
 
 
     for record in SeqIO.parse(f"{path}{study}/nucl_sdbl_{study}.fasta","fasta") :
         stratseq=proteins[sp][-1]
-        nucleic_sequences(study,record.id,record.seq,stratseq,study_prot[study],sp,resfile)
+        nucleic_sequences(study,record.id,record.seq,stratseq,study_prot[study],sp,resfile,path)
 
-for study,sp,ID,name,organismesAV,IO,proteinIO in zip(studiesspeOG,onlyOG,NUIDspeOG,names,orgaWIWO,INOUT,protINOUT) :
+for study,sp,OG_list,name,organismesAV,IO,proteinIO in zip(studiesspeOG,onlyOG,NUIDspeOG,names,orgaWIWO,INOUT,protINOUT) :
 
     # if study in concern_study : 
     #     #final_pos_prot,name=final_pos_(study,prot,study_prot,proteins,concern_study)
@@ -115,14 +115,15 @@ for study,sp,ID,name,organismesAV,IO,proteinIO in zip(studiesspeOG,onlyOG,NUIDsp
     #     file.write(f"\n")
 
     # file.close()
-
-    for record in SeqIO.parse(f"{path}{study}/{ID}_prot.fasta","fasta") :
+    OG=OG_list.split(";")
+    for ID in OG : 
+        for record in SeqIO.parse(f"{path}{study}/{ID}_prot.fasta","fasta") :
         
-        proteic_sequence(study,record.id,record.seq,study_prot[study],sp,resfile)
+            proteic_sequence(study,record.id,record.seq,study_prot[study],sp,resfile,path)
 
 
-    for record in SeqIO.parse(f"{path}{study}/{ID}_nucl.fasta","fasta") :
-        stratseq=proteins[sp][-1]
+        for record in SeqIO.parse(f"{path}{study}/{ID}_nucl.fasta","fasta") :
+            stratseq=proteins[sp][-1]
         
-        nucleic_sequences_OG(study,record.id,record.seq,stratseq,proteins[sp][:-1],study_prot[study],sp,resfile)
+            nucleic_sequences_OG(study,record.id,record.seq,stratseq,proteins[sp][:-1],study_prot[study],sp,resfile,path)
 ##########################################################

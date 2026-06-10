@@ -359,14 +359,14 @@ display: none;
 <p>The purpose of this script is to generate phylogenetic trees so that
 you can analyse and interpret them. This script allows you to generate
 phylogenetic trees, captions of these phylogenetic trees.</p>
-<div id="main.sh" class="section level3">
-<h3>Main.sh</h3>
+<div id="execution.sh" class="section level3">
+<h3>Execution.sh</h3>
 <ul>
 <li>Download all the sequences in the Genbank format.</li>
 </ul>
 <p><code>This step download all the sequences in a Genbank format concatenated all the Genbank file into one and delete the single sequences Genbank file.</code></p>
 <table style="width:60%;">
-<caption>Input-Output Main.sh</caption>
+<caption>Input-Output Execution.sh</caption>
 <colgroup>
 <col width="31%" />
 <col width="27%" />
@@ -403,10 +403,10 @@ Host.</li>
 <p><code>The caption are created based on the Itol format.</code></p>
 <p><code>One color will be associated with the same values for each studies.</code></p>
 <p><code>The Serogroup captions are created using the Serogroup.txt file. You have to provide you own Serogroup.txt file since this information cannot be found in the genbank files format</code></p>
-<table style="width:85%;">
+<table style="width:88%;">
 <caption>Input-Output Genbank.py</caption>
 <colgroup>
-<col width="27%" />
+<col width="30%" />
 <col width="56%" />
 </colgroup>
 <thead>
@@ -418,7 +418,7 @@ Host.</li>
 <tbody>
 <tr class="odd">
 <td align="center"><p>A ll_sequences.gb</p>
-<p>(From Main.sh)</p></td>
+<p>(From Execution.sh)</p></td>
 <td align="center"><p>proteic_sequence.fasta</p>
 <p>nucleic_sequence.fasta</p>
 <p>All_proteic_sequences.fasta</p>
@@ -441,11 +441,11 @@ Host.</li>
 with proteins whose positions are missing.</li>
 </ul>
 <p><code>This file ensures that as many protein positions as possible are retrieved in cases where the information is not available in the Gp file format.</code></p>
-<table style="width:71%;">
+<table style="width:62%;">
 <caption>Input-Output Prot_position.py</caption>
 <colgroup>
 <col width="27%" />
-<col width="43%" />
+<col width="34%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -457,21 +457,19 @@ with proteins whose positions are missing.</li>
 <tr class="odd">
 <td align="center"><p>Pos_prot.txt</p>
 <p>(From Genbank.py)</p></td>
-<td align="center"><ul>
-<li>*Final_pos_prot.txt**</li>
-</ul></td>
+<td align="center"><strong>Final_pos_prot.txt</strong></td>
 </tr>
 </tbody>
 </table>
 </div>
-<div id="main.sh-1" class="section level3">
-<h3>Main.sh</h3>
+<div id="execution.sh-1" class="section level3">
+<h3>Execution.sh</h3>
 <ul>
 <li>Create a Blast database of all the reference virus/organisms
 proteins</li>
 </ul>
 <table style="width:81%;">
-<caption>Input-Output Main.sh</caption>
+<caption>Input-Output Execution.sh</caption>
 <colgroup>
 <col width="38%" />
 <col width="41%" />
@@ -498,11 +496,11 @@ proteins</li>
 sequence table.</li>
 </ul>
 <p>This file used</p>
-<table style="width:97%;">
+<table style="width:99%;">
 <caption>Input-Output DNA_dist.sh</caption>
 <colgroup>
-<col width="48%" />
-<col width="48%" />
+<col width="52%" />
+<col width="45%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -512,12 +510,12 @@ sequence table.</li>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="center"><p>All _nu cleic_sequences_align.aln-fasta</p>
-<p>(From Main.sh)</p></td>
+<td align="center"><p>All _nu c leic_sequences_align.aln-fasta</p>
+<p>(From Execution.sh)</p></td>
 <td align="center"><ul>
-<li>**Div</li>
+<li>*Di</li>
 </ul>
-<p>ergence_nucleic_table.txt**</p></td>
+<p>vergence_nucleic_table.txt**</p></td>
 </tr>
 </tbody>
 </table>
@@ -622,11 +620,11 @@ study.</li>
 <li>This file lauch Protdist from phyllip and create a sequences
 divergence table</li>
 </ul>
-<table>
+<table style="width:92%;">
 <caption>Input-Output Protdist.py</caption>
 <colgroup>
 <col width="44%" />
-<col width="55%" />
+<col width="47%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -644,15 +642,13 @@ divergence table</li>
 <p>(From Merge_spe_prot.py)</p>
 <p>Proteic_prot_spe.fasta</p>
 <p>(From Merge_spe_prot.py)</p></td>
-<td align="center"><ul>
-<li>*Divergence_proteic_table.py**</li>
-</ul></td>
+<td align="center"><strong>Divergence_proteic_table.py</strong></td>
 </tr>
 </tbody>
 </table>
 </div>
-<div id="main.sh-2" class="section level3">
-<h3>Main.sh</h3>
+<div id="execution.sh-2" class="section level3">
+<h3>Execution.sh</h3>
 <ul>
 <li><p>Trimal</p></li>
 <li><p>IQtree2</p></li>
@@ -663,11 +659,11 @@ divergence table</li>
 <li>Create the phylogenetic tree using the best model identified (using
 iqtree2)</li>
 </ul>
-<table style="width:97%;">
+<table style="width:89%;">
 <caption>Input-Output Protdist.py</caption>
 <colgroup>
 <col width="44%" />
-<col width="52%" />
+<col width="44%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -681,10 +677,8 @@ iqtree2)</li>
 <p>(From Test_sript_mark_spe.py)</p>
 <p>Proteic_prot_spe.fasta</p>
 <p>(From Merge_spe_prot.py)</p></td>
-<td align="center"><ul>
-<li><p>*Proteic_prot_1-n.treefile**</p></li>
-<li><p>*Proteic_prot_spe.treefile**</p></li>
-</ul></td>
+<td align="center"><p><strong>Proteic_prot_1-n.treefile</strong></p>
+<p><strong>Proteic_prot_spe.treefile</strong></p></td>
 </tr>
 </tbody>
 </table>
@@ -693,11 +687,11 @@ iqtree2)</li>
 <div id="instructions-to-use" class="section level2">
 <h2>Instructions to use</h2>
 <p><code>Informations_file.txt</code></p>
-<p><code>This file is the main input file. You need to fill up all the information in this file in order to use the package.</code></p>
+<p><code>This file is the Execution input file. You need to fill up all the information in this file in order to use the package.</code></p>
 <p><code>If an information is missing it will not work.</code></p>
 <p><strong>DO NOT USE “,” AS A SEPARATOR INSIDE EACH COLONE USE “;”
 INSTEAD</strong></p>
-<p>A : Main Project name</p>
+<p>A : Execution Project name</p>
 <p>Ce nom sera utilisé comme nom de dossier. Il vous permet également
 d’indiquer à quelle projet sont rattaché les outgroup specific le cas
 écheant.</p>

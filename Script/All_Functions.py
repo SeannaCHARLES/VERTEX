@@ -92,9 +92,9 @@ legencolors["Na"]=["#979a9a"]
 
 
 
-def colour_choice (caption,colors_list,type_,path):
+def colour_choice (caption,colors_list,type_,path,study):
     global ratp_colors
-    print("caption",caption)
+
     if len(colors_list)<=0 : 
         colors_list=ratp_colors.copy()
 
@@ -103,7 +103,7 @@ def colour_choice (caption,colors_list,type_,path):
         colors_list.remove(choice)
         legencolors[caption]=[choice]
 
-        name_legend=f"{path}/All_legend_caption.txt"
+        name_legend=f"{path}/{study}/All_legend_caption.txt"
         All_legend=open(name_legend,'a')
         text=str (f"{caption}\t{choice}\n")
         All_legend.write(text)
@@ -423,9 +423,10 @@ def concatenates(path,study) :
     subprocess.run(['rm', f'{path}{study}/nucl_all_{study}.fasta'],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
     subprocess.run(['rm', f'{path}{study}/prot_all_{study}.fasta'],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
     
-    subprocess.run(f"cat {path}{study}/nucl/* >> {path}{study}/nucl_all_{study}.fasta",shell=True)
-    subprocess.run(f"cat {path}{study}/prot/* >> {path}{study}/prot_all_{study}.fasta",shell=True)
-
+    subprocess.run(f"cat {path}{study}/nucl/*.fasta >> {path}{study}/nucl_all_{study}.fasta",shell=True)
+    subprocess.run(f"cat {path}{study}/prot/*.fasta >> {path}{study}/prot_all_{study}.fasta",shell=True)
+    subprocess.run(f"cat {path}{study}/nucl/*.gp >> {path}{study}/nucl_all_{study}.gp",shell=True)
+    subprocess.run(f"cat {path}{study}/prot/*.gp >> {path}{study}/prot_all_{study}.gp",shell=True)
 ### Function extract_id
 # This function extracts the following information: Host, Host country, Strain, Nucleic identifier, Protein identifier for each genbank file.
 region_colors=ratp_colors.copy()
@@ -499,10 +500,10 @@ def extract_id(path,Datas,study,sp,list_prot,email,Diff_name,metadata_name_prot,
         else :       
             output_prot,output_pos,sizeprot,Sequence_aa=extract_prot_data(ID_prot,study,list_prot,email,Diff_name,metadata_name_prot,dicy,path)
         
-            order_color,host_colors=colour_choice(order,host_colors,"order",path)
-            region_color,region_colors=colour_choice(region,region_colors,"region",path)
+            order_color,host_colors=colour_choice(order,host_colors,"order",path,study)
+            region_color,region_colors=colour_choice(region,region_colors,"region",path,study)
             serogroup=find_serogroup(fullorganisme,path)
-            color_sero,serogroup_colors=colour_choice(serogroup,serogroup_colors,"serogroup",path)
+            color_sero,serogroup_colors=colour_choice(serogroup,serogroup_colors,"serogroup",path,study)
 
             ID=Modif_ID(str(organism[:3]+Nu[3:]))
             Description_nu = f"{ID}"
@@ -547,9 +548,9 @@ def modif_name_prot(prot,Diff_name,metadata_name_prot) :
     for diff_prot in Diff_name :
         
         DP=diff_prot.split("=")
-        
+        prot=prot.lower().replace("-","").replace("\xa0", " ").replace("PROTEIN","").replace("_","").replace(" ","")
         prot=prot.lower().replace(DP[0].lower(),DP[1].lower())
-        prot=prot.lower().replace("-","").replace("\xa0", " ").replace(" ","").replace("PROTEIN","").replace("_","")
+        
 
     for prot_name in metadata_name_prot : 
         if prot_name.lower() in prot.lower() : 
@@ -600,7 +601,7 @@ def extract_prot_data(ID_prot_list,study,all_proteins,mail,Diff_name,metadata_na
             Sequence_aa+=record.seq
             All_end+=len(record.seq)
 
-            subprocess.run(['rm', f'{path}{study}/prot/{ID_prot}.gp'],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+            # subprocess.run(['rm', f'{path}{study}/prot/{ID_prot}.gp'],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
         except Exception as e :
             print(f"This ID : {ID_prot} were not indentified by the NCBI database or error {e}")
 
@@ -649,20 +650,25 @@ def extract_start_end(prot,proteins,feature,All_end):
 ##Function find_serogroup 
 #This function 
 def find_serogroup(organism,path) : 
+
     df = pd.read_csv(f"{path}Serogroup.txt", delimiter="|",header=0)
     df.iloc[:, 1:]=df.iloc[:, 1:].astype(str)
+    global collaps
 
-    if organism in df["Virus name"].values: 
-        print("identifier",df.iloc[organism,1])
-        print("line",df.loc[organism])
-        return(df.loc[organism].iloc[1])
-    else: 
-        name=f"{path}Serogroup.txt"
+    end_line=df.shape[0]
+    for line in range(0,end_line) : 
+        if df.iloc[line,0].lower() in organism.lower() or organism.lower() in df.iloc[line,0].lower() or organism.replace(" ","").lower() in df.iloc[line,0].replace(" ","").lower() : 
 
-        file = open(name,"a")
-        file.write(f"{organism}|Na\n")       
-        file.close()
-        return "Na"
+            return str(df.iloc[line,1])
+            
+    name=f"{path}Serogroup.txt"
+    file = open(name,"a")
+    file.write(f"{organism}|Na\n")       
+    file.close()
+    df = pd.read_csv(f"{path}Serogroup.txt", delimiter="|",header=0)
+    df.iloc[:, 1:]=df.iloc[:, 1:].astype(str)
+    return "Na"
+    
 
     
 

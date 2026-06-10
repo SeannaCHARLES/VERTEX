@@ -39,7 +39,7 @@ for (study,name,prot,pp)in zip(Allstudies,names,spe_prot,proteins):
                 need_prot_namefile=clean_filename(f"{path}{study}{res_file}{OGprot.lower()}_{name}_{type_seq}.fasta")
                 OG_filename=clean_filename(f"{path}{study}{res_file}{name_spe_prot}_{study}_{type_seq}_OG.fasta")
                 mafft_outfile=clean_filename(f"{path}{study}{res_file}{name_spe_prot}_{study}_{type_seq}_OG.aln-fasta")
-                    
+                print(need_prot_namefile)
                 mafftfiles[OG_filename]=mafft_outfile
                     
                 file=open(OG_filename,"a")

@@ -9,6 +9,7 @@ This script need the DNA_dist matrix as input.
 ##########################Import##########################
 import sys
 import subprocess
+import pandas as pd
 
 from Bio import SeqIO
 
@@ -21,6 +22,7 @@ studies=list(sys.argv[2].split(" "))
 keep_list=list(sys.argv[3].replace("\n","").split(";"))
 ths_list=list(sys.argv[4].split())
 target_list=list(sys.argv[5].split())
+
 keep=[]
 ##########################################################
 
@@ -45,6 +47,22 @@ for study,ths,target in zip(studies,ths_list,target_list) :
         dbl_file=open(doublon_file,'a')
         dbl_file.write(f"{db}\n")
         dbl_file.close()
+        
+    change_name={}
+    
+    label=pd.read_csv(f"{path}{study}/legend/Label_{study}_itol.txt",sep="\t",skiprows=4,comment="#")
+        
+    end_line=label.shape[0]
+    end_col=label.shape[1]
+
+    for line in (range(0,end_line)) : 
+        change_name[label.iloc[line,0]]=label.iloc[line,1]
+
+    out=pd.read_csv(f"{path}{study}/{study}_dnadist.txt",sep="\t",skiprows=0,index_col=0)
+  
+    out.rename(columns=change_name, inplace=True,index=change_name)
+  
+    out.to_csv(f"{path}{study}/{study}_dnadist_filter.txt",sep="\t")
 
 ##########################################################
 
