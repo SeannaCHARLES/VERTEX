@@ -9,7 +9,7 @@ path = sys.argv[1]
 studies=list(sys.argv[2].split(" "))
 studiesspeOG=list(sys.argv[3].split(" "))
 names=list(sys.argv[4].split(" "))
-NUIDspeOG=list(sys.argv[5].split(" "))
+NUIDspeOG=list(sys.argv[5].split("''"))[0].split("  ")
 email=sys.argv[6]
 list_prot = [x.split(';') for x in sys.argv[7].split()]
 list_prot_speOG = [x.split(';') for x in sys.argv[8].split()]
@@ -25,6 +25,10 @@ Allstudies=list(sys.argv[16].split(" "))
 ALLNUID=list(sys.argv[17].split(" "))
 namespeprot=list(sys.argv[18].split(" "))
 namespeprotOG=list(sys.argv[19].split(" "))
+
+
+
+
 
 for pos,element in enumerate(namespeprot) : 
     namespeprot[pos]=element.split(";")
@@ -95,9 +99,11 @@ for study,allprot,prot_names,spe_prot in zip(studies,list_prot,Diff_name,namespe
     subprocess.run(f"mafft --auto {path}{study}/nucl_all_{study}.fasta > {path}{study}/nucl_all_align_{study}.aln-fasta",shell=True)
 
 for study,OG_list,prot,prot_names,spe_prot in zip(studiesspeOG, NUIDspeOG,list_prot_speOG,Diff_name_OG,namespeprotOG):
-    OG=OG_list.split(";")
-    print(OG)
+    OG=OG_list.split(" ")
+    
+  
     for ID in OG : 
-        with open(f"{path}{study}/{ID}.gb","r") as Datas:
-            sp='OGspe'
-            extract_id(path,Datas,study,sp,prot,email,prot_names.split(";"),vv_prot[study],speci_order,dicy,spe_prot)
+        if ID!="" : 
+            with open(f"{path}{study}/{ID}.gb","r") as Datas:
+                sp='OGspe'
+                extract_id(path,Datas,study,sp,prot,email,prot_names.split(";"),vv_prot[study],speci_order,dicy,spe_prot)

@@ -425,7 +425,6 @@ def concatenates(path,study) :
     
     subprocess.run(f"cat {path}{study}/nucl/*.fasta >> {path}{study}/nucl_all_{study}.fasta",shell=True)
     subprocess.run(f"cat {path}{study}/prot/*.fasta >> {path}{study}/prot_all_{study}.fasta",shell=True)
-    subprocess.run(f"cat {path}{study}/nucl/*.gp >> {path}{study}/nucl_all_{study}.gp",shell=True)
     subprocess.run(f"cat {path}{study}/prot/*.gp >> {path}{study}/prot_all_{study}.gp",shell=True)
 ### Function extract_id
 # This function extracts the following information: Host, Host country, Strain, Nucleic identifier, Protein identifier for each genbank file.
@@ -539,23 +538,25 @@ def extract_id(path,Datas,study,sp,list_prot,email,Diff_name,metadata_name_prot,
 #The purpose of this function is to identify the protein present in the gp
 
 def modif_name_prot(prot,Diff_name,metadata_name_prot) :
-
-
+    
     for prot_name in metadata_name_prot : 
-        if prot_name.lower() in prot.lower() : 
+        if prot_name.lower() in prot.lower() or prot.lower() in prot_name.lower() : 
             prot=prot_name.lower()
 
     for diff_prot in Diff_name :
         
         DP=diff_prot.split("=")
-        prot=prot.lower().replace("-","").replace("\xa0", " ").replace("PROTEIN","").replace("_","").replace(" ","")
-        prot=prot.lower().replace(DP[0].lower(),DP[1].lower())
         
+        if DP[0].lower() in prot : 
+            prot=DP[1].lower()
+        prot=prot.lower().replace("protein","").replace("_","").replace(" ","").replace("\xa0", " ").replace("-","")
+        if DP[0].lower() in prot : 
+            prot=DP[1].lower()
 
     for prot_name in metadata_name_prot : 
-        if prot_name.lower() in prot.lower() : 
+        if prot_name.lower() in prot.lower() or prot.lower() in prot_name.lower() : 
             prot=prot_name.lower()
-    
+
     return prot
 
 ##Function extract_prot_data
@@ -583,20 +584,20 @@ def extract_prot_data(ID_prot_list,study,all_proteins,mail,Diff_name,metadata_na
                 output_handle
 
             record = SeqIO.read(f"{path}{study}/prot/{ID_prot}.gp", "genbank")
-            
-            for feature in record.features :
-            
-                if 'product' in feature.qualifiers : 
-                    prot=(feature.qualifiers['product'][0])
-                    prot=modif_name_prot(prot,Diff_name,metadata_name_prot)
-                    proteins=extract_start_end(prot,proteins,feature,All_end)
+            if "partial" not in record.description :
+                for feature in record.features :
+                    if 'product' in feature.qualifiers : 
+                        prot=(feature.qualifiers['product'][0])
+                        prot=modif_name_prot(prot,Diff_name,metadata_name_prot)
+                        proteins=extract_start_end(prot,proteins,feature,All_end)
                     
                     
-                if 'region_name' in feature.qualifiers : 
-                    prot=(feature.qualifiers['region_name'][0])
-                    prot=modif_name_prot(prot,Diff_name,metadata_name_prot)
-                    proteins=extract_start_end(prot,proteins,feature,All_end)
-                    
+                    if 'region_name' in feature.qualifiers : 
+                        prot=(feature.qualifiers['region_name'][0])
+                        prot=modif_name_prot(prot,Diff_name,metadata_name_prot)
+                        proteins=extract_start_end(prot,proteins,feature,All_end)
+            else : 
+                print(f"The sequence for this ID : {ID_prot} is partial and will not be consider")
                     
             Sequence_aa+=record.seq
             All_end+=len(record.seq)

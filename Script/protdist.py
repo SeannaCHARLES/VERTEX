@@ -18,6 +18,7 @@ names=list(sys.argv[4].split(" "))
 path_script=sys.argv[5]
 resfile=str(sys.argv[6])
 script_path=str(sys.argv[7])
+list_prot = [x.split(';') for x in sys.argv[8].split()]
 #print(spe_prot)
 
 def Lauch_MSP(list_record) : 
@@ -41,17 +42,73 @@ def Lauch_MSP(list_record) :
     
 
 
-
-for name,spe_prot in zip(names,spe_prot_list) : 
+if spe_prot_list : 
+    for name,spe_prot in zip(names,spe_prot_list) : 
     
-    if name in studies and spe_prot!='""' and spe_prot!='' :
+        if name in studies and spe_prot!='""' and spe_prot!='' :
    
-        subprocess.run(f"rm -r {path}{name}/Align_all/*",shell=True)
-        change_name={}
-        couple_list=[]
-        proteins=spe_prot.split("=")[1].replace('"',"").split("+") 
-        print(f"{proteins[0].lower()}{proteins[1].lower()}")
-        label=pd.read_csv(f"{path}{name}/legend/Label_{name}{proteins[0].lower()}{proteins[1].lower()}_itol.txt",sep="\t",skiprows=4,comment="#")
+            subprocess.run(f"rm -r {path}{name}/Align_all/*",shell=True)
+            change_name={}
+            couple_list=[]
+            proteins=spe_prot.split("=")[1].replace('"',"").split("+") 
+            print(f"{proteins[0].lower()}{proteins[1].lower()}")
+            label=pd.read_csv(f"{path}{name}/legend/Label_{name}{proteins[0].lower()}{proteins[1].lower()}_itol.txt",sep="\t",skiprows=4,comment="#")
+       
+            end_line=label.shape[0]
+            end_col=label.shape[1]
+
+            for line in (range(0,end_line)) : 
+                change_name[label.iloc[line,0][1:10]]=label.iloc[line,1][1:10]
+
+            open(f"{path}{name}/temp_protdist_filter.txt", "w").close()
+        
+            cmd=f"sed 's/>/>{proteins[1].lower()}/g' {path}{name}{resfile}{proteins[1].lower()}_{name}_prot.fasta > {path}{name}{resfile}{proteins[1].lower()}_{name}_prot_.fasta"
+            subprocess.run(cmd,shell=True)
+
+            cmd=f"sed 's/>/>{proteins[0].lower()}/g' {path}{name}{resfile}{proteins[0].lower()}_{name}_prot.fasta > {path}{name}{resfile}{proteins[0].lower()}_{name}_prot_.fasta"
+            subprocess.run(cmd,shell=True)
+
+
+            for record_1 in SeqIO.parse(f"{path}{name}{resfile}{proteins[1].lower()}_{name}_prot_.fasta","fasta") : 
+
+                for record_2 in SeqIO.parse(f"{path}{name}{resfile}{proteins[0].lower()}_{name}_prot_.fasta","fasta") : 
+
+                    couple_list.append([record_1,record_2,name])
+
+            if __name__ == '__main__' : 
+                with Pool(10) as p : 
+                    p.map(Lauch_MSP,couple_list)
+   #lambda x : lauch_MSP(x,script_path,path,)
+
+            for elements in couple_list   :
+                record_1=elements[0]   
+                record_2=elements[1] 
+
+                table=pd.read_csv(f"{path}{name}/Align_all/{record_1.id}{record_2.id}/{record_1.id}{record_2.id}_table.txt",sep="\t",skiprows=0,index_col=0,header=0)
+            
+                if os.path.getsize(f"{path}{name}/temp_protdist_filter.txt")==0:
+             
+                    table.to_csv(f"{path}{name}/temp_protdist_filter.txt",sep="\t")
+                else:
+                    final_table=pd.read_csv(f"{path}{name}/temp_protdist_filter.txt",sep="\t",index_col=0,header=0)
+                    Final_table_v=final_table.combine_first(table)
+                    Final_table_v.to_csv(f"{path}{name}/temp_protdist_filter.txt",sep="\t")
+   
+            
+
+            final_table=pd.read_csv(f"{path}{name}/temp_protdist_filter.txt",sep="\t",index_col=0,header=0)    
+            final_table.drop(final_table.index[final_table.index.str.startswith(f'{proteins[0].lower()}')],axis=0,inplace=True)
+            final_table.drop(final_table.columns[final_table.columns.str.startswith(f'{proteins[1].lower()}')],axis=1,inplace=True) 
+            final_table.rename(columns=change_name, inplace=True,index=change_name)      
+            final_table.to_csv(f"{path}{name}/{name}_protdist_filter.txt",sep="\t")
+            subprocess.run(f"rm {path}{name}/temp_protdist_filter.txt",shell=True)
+
+for name,prot in zip(names,list_prot) : 
+    
+    if name in studies :
+   
+        print(f"{prot}")
+        label=pd.read_csv(f"{path}{name}/legend/Label_{name}_itol.txt",sep="\t",skiprows=4,comment="#")
        
         end_line=label.shape[0]
         end_col=label.shape[1]
@@ -59,18 +116,11 @@ for name,spe_prot in zip(names,spe_prot_list) :
         for line in (range(0,end_line)) : 
             change_name[label.iloc[line,0][1:10]]=label.iloc[line,1][1:10]
 
-        open(f"{path}{name}/temp_protdist_filter.txt", "w").close()
-        
-        cmd=f"sed 's/>/>{proteins[1].lower()}/g' {path}{name}{resfile}{proteins[1].lower()}_{name}_prot.fasta > {path}{name}{resfile}{proteins[1].lower()}_{name}_prot_.fasta"
-        subprocess.run(cmd,shell=True)
+        open(f"{path}{name}/temp_protdist_filter{prot}.txt", "w").close()
+    
+        for record_1 in SeqIO.parse(f"{path}{name}{resfile}{prot}_{name}_prot_.fasta","fasta") : 
 
-        cmd=f"sed 's/>/>{proteins[0].lower()}/g' {path}{name}{resfile}{proteins[0].lower()}_{name}_prot.fasta > {path}{name}{resfile}{proteins[0].lower()}_{name}_prot_.fasta"
-        subprocess.run(cmd,shell=True)
-
-
-        for record_1 in SeqIO.parse(f"{path}{name}{resfile}{proteins[1].lower()}_{name}_prot_.fasta","fasta") : 
-
-            for record_2 in SeqIO.parse(f"{path}{name}{resfile}{proteins[0].lower()}_{name}_prot_.fasta","fasta") : 
+            for record_2 in SeqIO.parse(f"{path}{name}{resfile}{prot}_{name}_prot_.fasta","fasta") : 
 
                 couple_list.append([record_1,record_2,name])
 
@@ -85,19 +135,17 @@ for name,spe_prot in zip(names,spe_prot_list) :
 
             table=pd.read_csv(f"{path}{name}/Align_all/{record_1.id}{record_2.id}/{record_1.id}{record_2.id}_table.txt",sep="\t",skiprows=0,index_col=0,header=0)
             
-            if os.path.getsize(f"{path}{name}/temp_protdist_filter.txt")==0:
+            if os.path.getsize(f"{path}{name}/temp_protdist_filter{prot}.txt")==0:
              
-                table.to_csv(f"{path}{name}/temp_protdist_filter.txt",sep="\t")
+                table.to_csv(f"{path}{name}/temp_protdist_filter{prot}.txt",sep="\t")
             else:
-                final_table=pd.read_csv(f"{path}{name}/temp_protdist_filter.txt",sep="\t",index_col=0,header=0)
+                final_table=pd.read_csv(f"{path}{name}/temp_protdist_filter{prot}.txt",sep="\t",index_col=0,header=0)
                 Final_table_v=final_table.combine_first(table)
-                Final_table_v.to_csv(f"{path}{name}/temp_protdist_filter.txt",sep="\t")
+                Final_table_v.to_csv(f"{path}{name}/temp_protdist_filter{prot}.txt",sep="\t")
    
             
 
-        final_table=pd.read_csv(f"{path}{name}/temp_protdist_filter.txt",sep="\t",index_col=0,header=0)    
-        final_table.drop(final_table.index[final_table.index.str.startswith(f'{proteins[0].lower()}')],axis=0,inplace=True)
-        final_table.drop(final_table.columns[final_table.columns.str.startswith(f'{proteins[1].lower()}')],axis=1,inplace=True) 
+        final_table=pd.read_csv(f"{path}{name}/temp_protdist_filter{prot}.txt",sep="\t",index_col=0,header=0)    
         final_table.rename(columns=change_name, inplace=True,index=change_name)      
-        final_table.to_csv(f"{path}{name}/{name}_protdist_filter.txt",sep="\t")
-        subprocess.run(f"rm {path}{name}/temp_protdist_filter.txt",shell=True)
+        final_table.to_csv(f"{path}{name}/{name}_protdist_filter{prot}.txt",sep="\t")
+        subprocess.run(f"rm {path}{name}/temp_protdist_filter{prot}.txt",shell=True)
