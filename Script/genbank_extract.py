@@ -85,9 +85,9 @@ for study,allprot,prot_names,spe_prot in zip(studies,list_prot,Diff_name,namespe
     for p in prot : 
 
         chain_prot+=f"Start{p}\tEnd{p}\t"
-    subprocess.run(f"echo 'Study\tVirus name\tID itol tree\tTaxonomy\tSerogroup\tProtein accesion number\tSize Proteic sequence\t{chain_prot}Nucleic accession number\tSize Nucleic sequence\tStrand\tStrain\tGeographical region\tHost or vector\tReferences' >{path}{study}/Metadata_{study}.txt",shell=True)
+    subprocess.run(f"echo 'Study\tVirus name\tID itol tree\tTaxonomy\tSerogroup\tProtein accesion number\tSize Proteic sequence\t{chain_prot}Nucleic accession number\tSize Nucleic sequence\tStrand\tStrain\tGeographical region\tHost or vector\tReferences' >{path}{study}/metadata_{study}.txt",shell=True)
     
-    subprocess.run(f"echo 'Study\tID itol tree\t{chain_prot}' >{path}{study}/Pos_prot_{study}.txt",shell=True)
+    subprocess.run(f"echo 'Study\tID itol tree\t{chain_prot}' >{path}{study}/pos_prot_{study}.txt",shell=True)
     with open(f"{path}{study}/sequences_{study}.gb","r") as Datas:
         sp=''
         first_call(path,study,spe_prot)

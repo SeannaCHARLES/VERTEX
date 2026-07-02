@@ -20,7 +20,7 @@ OG_protIN={}
 dicy={}
 
 for all_s, IO,prots,virus in zip(Allstudies,INOUT,protINOUT,orgaWIWO) :
-    metadata = pd.read_csv(f"{path}{all_s}/Metadata_{all_s}.txt", delimiter="\t",header=0,index_col=0)
+    metadata = pd.read_csv(f"{path}{all_s}/metadata_{all_s}.txt", delimiter="\t",header=0,index_col=0)
     print(all_s)
     if IO!='': #
         dicy[all_s]={}
@@ -46,13 +46,13 @@ if not dicy :
 #print(studies,target_list,dicy.items())
 for study,target in zip(studies,target_list) : 
 
-    pos_prot = pd.read_csv(f"{path}{study}/Pos_prot_{study}.txt", delimiter="\t",header=0,index_col=0)
-    metadata = pd.read_csv(f"{path}{study}/Metadata_{study}.txt", delimiter="\t",header=0,index_col=0)
+    pos_prot = pd.read_csv(f"{path}{study}/pos_prot_{study}.txt", delimiter="\t",header=0,index_col=0)
+    metadata = pd.read_csv(f"{path}{study}/metadata_{study}.txt", delimiter="\t",header=0,index_col=0)
     pos_prot.iloc[:, 1:]=pos_prot.iloc[:, 1:].astype(str)
-    pos_prot.to_csv(f"{path}{study}/Pos_prot_Final_{study}.txt",sep="\t")
-    Pos_prot_final=pd.read_csv(f"{path}{study}/Pos_prot_Final_{study}.txt", delimiter="\t",header=0,index_col=0)
+    pos_prot.to_csv(f"{path}{study}/pos_prot_final_{study}.txt",sep="\t")
+    pos_prot_final=pd.read_csv(f"{path}{study}/pos_prot_final_{study}.txt", delimiter="\t",header=0,index_col=0)
     pos_prot.convert_dtypes()
-    Pos_prot_final.convert_dtypes()
+    pos_prot_final.convert_dtypes()
     #OG_protOUT={}
     #print(pos_prot)
     # for element in dicy[study] : 
@@ -103,24 +103,24 @@ for study,target in zip(studies,target_list) :
                             
                             new_pos=add_new_pos(protein,output)
                             # if new_pos =="Aucune correspondance" :
-                            #     Pos_prot_final.iloc[line,col].astype(str)
-                            Pos_prot_final.iloc[line,col]=new_pos
-                            Pos_prot_final.to_csv(f"{path}{study}/Pos_prot_Final_{study}.txt", sep="\t")
+                            #     pos_prot_final.iloc[line,col].astype(str)
+                            pos_prot_final.iloc[line,col]=new_pos
+                            pos_prot_final.to_csv(f"{path}{study}/pos_prot_final_{study}.txt", sep="\t")
 
                         elif pos_prot.columns[col] not in missing_val[match_ID[pos_prot.iloc[line,0]]]: 
                             missing_val[match_ID[pos_prot.iloc[line,0]]].append(pos_prot.columns[col])
                             
                             new_pos=add_new_pos(protein,output)
                             # if new_pos =="Aucune correspondance" :
-                            #     Pos_prot_final.iloc[line,col].astype(str)
-                            Pos_prot_final.iloc[line,col]=new_pos
-                            Pos_prot_final.to_csv(f"{path}{study}/Pos_prot_Final_{study}.txt", sep="\t")
+                            #     pos_prot_final.iloc[line,col].astype(str)
+                            pos_prot_final.iloc[line,col]=new_pos
+                            pos_prot_final.to_csv(f"{path}{study}/pos_prot_final_{study}.txt", sep="\t")
                     else : 
                         #print("else")
                         
-                        #Pos_prot_final.iloc[line,col].astype(str)
-                        Pos_prot_final.iloc[line,col]="ABS"
-                        Pos_prot_final.to_csv(f"{path}{study}/Pos_prot_Final_{study}.txt", sep="\t")
+                        #pos_prot_final.iloc[line,col].astype(str)
+                        pos_prot_final.iloc[line,col]="ABS"
+                        pos_prot_final.to_csv(f"{path}{study}/pos_prot_final_{study}.txt", sep="\t")
                 else :  
                     
                     #Blastp_run(DB,File,output)
@@ -131,9 +131,9 @@ for study,target in zip(studies,target_list) :
                         new_pos=add_new_pos(protein,output)
                         
                         # if new_pos =="Aucune correspondance" :
-                        #     Pos_prot_final.iloc[line,col].astype(str)
-                        Pos_prot_final.iloc[line,col]=new_pos
-                        Pos_prot_final.to_csv(f"{path}{study}/Pos_prot_Final_{study}.txt", sep="\t")
+                        #     pos_prot_final.iloc[line,col].astype(str)
+                        pos_prot_final.iloc[line,col]=new_pos
+                        pos_prot_final.to_csv(f"{path}{study}/pos_prot_final_{study}.txt", sep="\t")
 
                     elif pos_prot.columns[col] not in missing_val[match_ID[pos_prot.iloc[line,0]]]: 
                         missing_val[match_ID[pos_prot.iloc[line,0]]].append(pos_prot.columns[col])
@@ -141,14 +141,14 @@ for study,target in zip(studies,target_list) :
                         new_pos=str(add_new_pos(protein,output))
                         
                         # if new_pos =="Aucune correspondance" :
-                        #     Pos_prot_final.iloc[line,col].astype(str)
-                        Pos_prot_final.iloc[line,col]=new_pos
-                        Pos_prot_final.to_csv(f"{path}{study}/Pos_prot_Final_{study}.txt", sep="\t")
-                        Pos_prot_final=pd.read_csv(f"{path}{study}/Pos_prot_Final_{study}.txt", delimiter="\t",header=0,index_col=0)
-        change_pos(line,end_col-1,Pos_prot_final,path,study)
-        Pos_prot_final=pd.read_csv(f"{path}{study}/Pos_prot_Final_{study}.txt", delimiter="\t",header=0,index_col=0)
-        change_pos(line,end_col-1,Pos_prot_final,path,study)
-    Pos_prot_final=pd.read_csv(f"{path}{study}/Pos_prot_Final_{study}.txt", delimiter="\t",header=0,index_col=0)
+                        #     pos_prot_final.iloc[line,col].astype(str)
+                        pos_prot_final.iloc[line,col]=new_pos
+                        pos_prot_final.to_csv(f"{path}{study}/pos_prot_final_{study}.txt", sep="\t")
+                        pos_prot_final=pd.read_csv(f"{path}{study}/pos_prot_final_{study}.txt", delimiter="\t",header=0,index_col=0)
+        change_pos(line,end_col-1,pos_prot_final,path,study)
+        pos_prot_final=pd.read_csv(f"{path}{study}/pos_prot_final_{study}.txt", delimiter="\t",header=0,index_col=0)
+        change_pos(line,end_col-1,pos_prot_final,path,study)
+    pos_prot_final=pd.read_csv(f"{path}{study}/pos_prot_final_{study}.txt", delimiter="\t",header=0,index_col=0)
 
     #print(f"{missing_val}")
                 

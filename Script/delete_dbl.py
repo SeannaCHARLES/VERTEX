@@ -40,17 +40,17 @@ for study,ths,target in zip(studies,ths_list,target_list) :
     Doublon=select_doublon(path,study,float(ths),keep,Modif_ID(target))
     delete_dbl(path,Doublon,study)
 
-    doublon_file=f"{path}{study}/Doublon_file_{study}.txt"
+    # doublon_file=f"{path}{study}/log_file_{study}.txt"
 
-    subprocess.run(f"rm {doublon_file}",shell=True)
-    for db in Doublon : 
-        dbl_file=open(doublon_file,'a')
-        dbl_file.write(f"{db}\n")
-        dbl_file.close()
+    # subprocess.run(f"rm {doublon_file}",shell=True)
+    # for db in Doublon : 
+    #     dbl_file=open(doublon_file,'a')
+    #     dbl_file.write(f"{db}\n")
+    #     dbl_file.close()
         
     change_name={}
     
-    label=pd.read_csv(f"{path}{study}/legend/Label_{study}_itol.txt",sep="\t",skiprows=4,comment="#")
+    label=pd.read_csv(f"{path}{study}/legend/label_{study}_itol.txt",sep="\t",skiprows=4,comment="#")
         
     end_line=label.shape[0]
     end_col=label.shape[1]
