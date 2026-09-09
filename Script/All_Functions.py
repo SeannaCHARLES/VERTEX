@@ -299,7 +299,7 @@ def write_file(path,Description_nu,Description_prot,Sequence_aa,Sequence_nu,loca
         for speprot,values in namespeprot.items() : 
             name_geol=f"{path}{study}/legend/{type_files[0]}_{study}{speprot.lower()}_itol.txt"
             name_host=f"{path}{study}/legend/{type_files[1]}_{study}{speprot.lower()}_itol.txt"
-            name_label=f"{path}{study}/legend/Label_{study}{speprot.lower()}_itol.txt"
+            name_label=f"{path}{study}/legend/label_{study}{speprot.lower()}_itol.txt"
             name_sero=f"{path}{study}/legend/{type_files[2]}_{study}{speprot.lower()}_itol.txt"
             name_host_images=f"{path}{study}/legend/host_images{study}{speprot.lower()}_itol.txt"
             name_range=f"{path}{study}/legend/range_{study}{speprot.lower()}_itol.txt"
@@ -388,7 +388,7 @@ def first_call(path,study,cop) :
 
     name_files = f"{path}{study}/legend/label_{study}_itol.txt"
     file = open(name_files,"w")
-    file.write(f"LABELS\nSEPARATOR TAB\nDATASET_LABEL\tOrganisme Label\nDATA\n")       
+    file.write(f"LABELS\nSEPARATOR TAB\nDATASET_LABEL\tOrganisme label\nDATA\n")       
     file.close()
 
     name_files = f"{path}{study}/legend/host_images{study}_itol.txt"
@@ -400,7 +400,7 @@ def first_call(path,study,cop) :
         for speprot in namespeprot : 
             name_files = f"{path}{study}/legend/label_{study}{speprot.lower()}_itol.txt"
             file = open(name_files,"w")
-            file.write(f"LABELS\nSEPARATOR TAB\nDATASET_LABEL\tOrganisme Label\nDATA\n")       
+            file.write(f"LABELS\nSEPARATOR TAB\nDATASET_LABEL\tOrganisme label\nDATA\n")       
             file.close()
 
             name_files = f"{path}{study}/legend/host_images{study}{speprot.lower()}_itol.txt"
@@ -542,17 +542,17 @@ def extract_id(path,Datas,study,sp,list_prot,email,Diff_name,metadata_name_prot,
 def modif_name_prot(prot,Diff_name,metadata_name_prot) :
     
     for prot_name in metadata_name_prot : 
-        if prot_name.lower() in prot.lower() or prot.lower() in prot_name.lower() : 
+        if prot_name.lower() in prot.lower() or prot.lower() in prot_name.lower() or prot.lower() == prot_name.lower()  : 
             prot=prot_name.lower()
-
+    
     for diff_prot in Diff_name :
         
         DP=diff_prot.split("=")
-        
-        if DP[0].lower() in prot : 
+        print(f"difference {prot}={DP[0].lower().replace("protein","").replace("_","").replace(" ","").replace("\xa0", " ").replace("-","")}")
+        if DP[0].lower().replace("protein","").replace("_","").replace(" ","").replace("\xa0", " ").replace("-","") in prot or prot in  DP[0].lower().replace("protein","").replace("_","").replace(" ","").replace("\xa0", " ").replace("-",""): 
             prot=DP[1].lower()
         prot=prot.lower().replace("protein","").replace("_","").replace(" ","").replace("\xa0", " ").replace("-","")
-        if DP[0].lower() in prot : 
+        if DP[0].lower().replace("protein","").replace("_","").replace(" ","").replace("\xa0", " ").replace("-","") in prot or prot in  DP[0].lower().replace("protein","").replace("_","").replace(" ","").replace("\xa0", " ").replace("-",""): 
             prot=DP[1].lower()
 
     for prot_name in metadata_name_prot : 
@@ -592,12 +592,13 @@ def extract_prot_data(ID_prot_list,study,all_proteins,mail,Diff_name,metadata_na
                         prot=(feature.qualifiers['product'][0])
                         prot=modif_name_prot(prot,Diff_name,metadata_name_prot)
                         proteins=extract_start_end(prot,proteins,feature,All_end)
-                    
+                        
                     
                     if 'region_name' in feature.qualifiers : 
                         prot=(feature.qualifiers['region_name'][0])
                         prot=modif_name_prot(prot,Diff_name,metadata_name_prot)
                         proteins=extract_start_end(prot,proteins,feature,All_end)
+                        
             else : 
                 print(f"The sequence for this ID : {ID_prot} is partial and will not be consider")
                     
@@ -619,14 +620,14 @@ def extract_prot_data(ID_prot_list,study,all_proteins,mail,Diff_name,metadata_na
                 
             output+=f"nan\tnan\t"
             output_pos+=f"nan\tnan\t"
-
+    print("----------------------------------------------------------------------------------------------------------------------")
     return output,output_pos,All_end,Sequence_aa
 
 #The serogroup file 
 def extract_start_end(prot,proteins,feature,All_end):
     start=int((feature.location.start)+All_end+1)
     end=int((feature.location.end)+All_end+1)
-     
+    print(f"start {start} end {end}")
     if start==0 : 
         start=1
                 
@@ -760,6 +761,7 @@ def select_doublon(path,study,ths,keep_list,target) :
                 if (df.index[line] not in target[9:].lower() or target[9:].lower() not in df.index[line])  and (df.index[line] not in keep_list or any(prot[9:].lower() not in df.index[line] for prot in keep_list)): #or any(og not in df.index[line] for og in keep_list):
                     ID=str(df.index[line])
                     Doublon.append(ID)
+                    subprocess.run(f"echo {ID} is too close from {str(df.index[col])} {ID} will be deleted >> {path}{study}/log_file_{study}.txt",shell=True)
                     df=df.drop(columns=ID)
                     df=df.drop(index=ID)
                     end_line=df.shape[0]
@@ -817,21 +819,40 @@ def nucleic_sequences(study,ID,sequence,debseq,proteins,sp,resfile,path) :
     end_col=pos_prot_final.shape[1]
     for col in range (1,end_col-1,2) : #pos_prot_final.columns:
         if "nan" not in str(ligne.iloc[0,col]) and "nan" not in str(ligne.iloc[0,col+1]) and "ABS" not in str(ligne.iloc[0,col]) and "ABS" not in str(ligne.iloc[0,col+1]) :
-            starts = ast.literal_eval(ligne.iloc[0,col])
-            ends = ast.literal_eval(ligne.iloc[0,col+1])
+            if isinstance(ligne.iloc[0, col], (int, float)):
+
+                starts = int(ligne.iloc[0, col])
+            else:
+ 
+                starts = ast.literal_eval(ligne.iloc[0, col])
+            if isinstance(ligne.iloc[0, col], (int, float)):
+
+                ends = int(ligne.iloc[0, col+1])
+            else:
+ 
+                ends = ast.literal_eval(ligne.iloc[0, col+1])
             if isinstance(starts, list):
                 start = ",".join(str(st) for st in starts)
             if isinstance(ends, list):
                 end = ",".join(str(en) for en in ends)
+            else :
+                start =starts
+                end =ends            
             position_proteines.append([start,end])
     #print(position_proteines)
     prot_position=dict(zip(proteins, position_proteines))
     for prot,position in prot_position.items() : 
         #print(f"nucleic seq & OG : {prot}:{pos} : {not any("nan" in str(element) for element in pos)} ! {not any("ABS" in str(element) for element in pos)}!{pos!="nan"}")
         if not any("ABS" in str(element) for element in position) and not any("nan" in str(element) for element in position) : 
-            pos1 = list(map(int, position[0].split(",")))
-        
-            pos2 = list(map(int, position[1].split(",")))
+            if "," in str(position[0]) :
+                pos1 = list(map(int, position[0].split(",")))
+            else : 
+                pos1=[position[0]]
+            if "," in str(position[1]) :
+                pos2 = list(map(int, position[1].split(",")))
+            else : 
+            
+                pos2=[position[1]]
             pos = pos1 + pos2
             name=f"{path}{study}{resfile}{prot.lower()}_{sp}_nucl.fasta"
             mark_prot=""
@@ -854,12 +875,12 @@ def nucleic_sequences(study,ID,sequence,debseq,proteins,sp,resfile,path) :
                             compt_AA+=1
 
                             if compt_AA in pos1 and inprot==False :
-                                print(f"oke_nu : {compt_AA}")
+                              
                                 mark_prot+=nu
                                 pos1.remove(compt_AA)
                                 inprot=True
                             elif compt_AA in pos2 and inprot==True :
-                                print(f"out_nu {compt_AA}")
+                               
                                 mark_prot+=nu
                                 pos2.remove(compt_AA)
                                 inprot=False
@@ -872,13 +893,21 @@ def nucleic_sequences_OG(study,ID,sequence,debseq,pos_prot,proteins,sp,resfile,p
 
     position_proteines=[pos_prot[i:i+2] for i in range(0, len(pos_prot), 2)]
     prot_position=dict(zip(proteins, position_proteines))
-    print(prot_position)
+    print(position_proteines)
     for prot,position in prot_position.items() : 
         #print(f"nucleic seq & OG : {prot} :{pos}: {not any("nan" in str(element) for element in pos)} ! {not any("ABS" in str(element) for element in pos)}!{pos!="nan"}")
-        pos1 = list(map(int, position[0].split(",")))
-        
-        pos2 = list(map(int, position[1].split(",")))
-        pos = pos1 + pos2
+        if not any("ABS" in str(element) for element in position) and not any("nan" in str(element) for element in position) : 
+            if "," in str(position[0]) :
+                pos1 = list(map(int, position[0].split(",")))
+            else : 
+               
+                pos1=[position[0]]
+            if "," in str(position[1]) :
+                pos2 = list(map(int, position[1].split(",")))
+            else : 
+               
+                pos2=[position[1]]
+            pos = pos1 + pos2
         if not any("ABS" in str(element) for element in pos) and not any("nan" in str(element) for element in pos) : 
 
             name=f"{path}{study}{resfile}{prot.lower()}_{sp}_nucl.fasta"
@@ -901,14 +930,16 @@ def nucleic_sequences_OG(study,ID,sequence,debseq,pos_prot,proteins,sp,resfile,p
                             compt_codon=0
                             compt_AA+=1
 
-                            if compt_AA in pos :
+                            if compt_AA in pos1 and inprot==False :
+                              
                                 mark_prot+=nu
-                                pos.remove(compt_AA)
-                                if inprot==False : 
-                                    inprot=True
-                                else : 
-                                    inprot=False
-            
+                                pos1.remove(compt_AA)
+                                inprot=True
+                            elif compt_AA in pos2 and inprot==True :
+                               
+                                mark_prot+=nu
+                                pos2.remove(compt_AA)
+                                inprot=False
             file = open(f"{name}","a")
             file.write(f">{ID}\n{mark_prot}\n")
             file.close()
@@ -916,22 +947,37 @@ def nucleic_sequences_OG(study,ID,sequence,debseq,pos_prot,proteins,sp,resfile,p
 # This function uses the position of the target organism's proteins (sequence proteic) to identify the position of the proteins in the alignment.
 
 def proteic_sequence (study,ID,sequence,proteins,sp,resfile,path) : 
- 
+    
     pos_prot_final=pd.read_csv(f"{path}{study}/pos_prot_final_{study}.txt", delimiter="\t",header=0,index_col=0)
     ligne = pos_prot_final[pos_prot_final.iloc[:, 0] == ID]
     position_proteines=[]
     end_col=pos_prot_final.shape[1]
     is_pos=False
-    print(ID)
+   
     for col in range (1,end_col-1,2) : #pos_prot_final.columns:
         if "nan" not in str(ligne.iloc[0,col]) and "nan" not in str(ligne.iloc[0,col+1]) and "ABS" not in str(ligne.iloc[0,col]) and "ABS" not in str(ligne.iloc[0,col+1]) :
-    
-            starts = ast.literal_eval(ligne.iloc[0,col])
-            ends = ast.literal_eval(ligne.iloc[0,col+1])
+            if isinstance(ligne.iloc[0, col], (int, float)):
+
+                starts = int(ligne.iloc[0, col])
+            else:
+ 
+                starts = ast.literal_eval(ligne.iloc[0, col])
+            if isinstance(ligne.iloc[0, col], (int, float)):
+
+                ends = int(ligne.iloc[0, col+1])
+            else:
+ 
+                ends = ast.literal_eval(ligne.iloc[0, col+1])
+
+            # starts = ast.literal_eval(ligne.iloc[0,col])
+            # ends = ast.literal_eval(ligne.iloc[0,col+1])
             if isinstance(starts, list):
                 start = ",".join(str(st) for st in starts)
             if isinstance(ends, list):
                 end = ",".join(str(en) for en in ends)
+            else :
+                start =starts
+                end =ends
             position_proteines.append([start,end])
 
     
@@ -947,35 +993,49 @@ def proteic_sequence (study,ID,sequence,proteins,sp,resfile,path) :
         # pos1 = [int(float(x)) for x in position[0].split(",")]
         # pos2 = [int(float(x)) for x in position[1].split(",")]
         if not any("ABS" in str(element) for element in position) and not any("nan" in str(element) for element in position): 
-            pos1 = list(map(int, position[0].split(",")))
-        
-            pos2 = list(map(int, position[1].split(",")))
+            if "," in str(position[0]) :
+                pos1 = list(map(int, position[0].split(",")))
+                
+            else : 
+          
+                pos1=[position[0]]
+            if "," in str(position[1]) :
+                pos2 = list(map(int, position[1].split(",")))
+            else : 
+             
+                pos2=[position[1]]
+            pos1=[int(x) for x in pos1]
+            pos2=[int(x) for x in pos2]    
             pos = pos1 + pos2
-            print(f"Pos1 : {pos1} \n Pos2 : {pos2} \n")
+            
        
             
 
             mark_prot=""
             compt_AA=0
             inprot=False
+            mark_prot=""
+            
             for aa in sequence : 
+                
                 if aa!='-' : 
                     compt_AA+=1
 
                 if inprot==True : 
                     mark_prot+=aa
-
+                
                 if compt_AA in pos1 and inprot==False :
-                    print(f"oke : {compt_AA}")
+                    
                     mark_prot+=aa
+                    
                     pos1.remove(compt_AA)
                     inprot=True
                 elif compt_AA in pos2 and inprot==True :
-                    print(f"out {compt_AA}")
+                   
                     mark_prot+=aa
                     pos2.remove(compt_AA)
                     inprot=False
-               
+           
             file = open(f"{name}","a")
             file.write(f">{ID}\n{mark_prot}\n")
             file.close()
