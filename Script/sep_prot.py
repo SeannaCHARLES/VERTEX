@@ -91,6 +91,7 @@ for study in studies :
     # file.close()
     
     for record in SeqIO.parse(f"{path}{study}/prot_sdbl_{study}.fasta","fasta") :
+       
         proteic_sequence(study,record.id,record.seq,study_prot[study],sp,resfile,path)
 
 

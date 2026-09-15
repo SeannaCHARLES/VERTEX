@@ -132,11 +132,11 @@ speprot=()
 fi
 allID=("${NUID[@]}" "${NUIDspeOG[@]}")
 #echo "${NUID[*]}"
-#######################################DELETE THE FOLDER OF THE STUDY##################################################
+######################################DELETE THE FOLDER OF THE STUDY##################################################
 for study in "${studies[@]}"; do
 #rm -r "${path}""${study:?}/"* >/dev/null 
 rm -r "${path}""${study:?}"/* >/dev/null 
-mkdir -p "${path}""${study}"/nucl "${path}""${study}"/prot "${path}""${study}""${res_file}"treefolder "${path}""${study}"/legend "${path}""${study}"/blast/database/ "${path}""${study}"/Align/
+mkdir -p "${path}""${study}"/nucl "${path}""${study}"/prot "${path}""${study}""${res_file}"treefolder "${path}""${study}"/legend "${path}""${study}"/blast/database/ "${path}""${study}"/Align/ "${path}""${study}"/All_table/
 echo -e "legend\tcolor\nNa\t#979a9a" > "${path}""${study}"/all_legend_caption.txt
 done
 
@@ -144,7 +144,7 @@ done
 echo The sequences are currently being downloaded ...
 
 
-# #################################DOWNLOAD THE DATA IN GENBANK FORMAT FOR ALL THE ID FOR EACH STUDY##################################
+#################################DOWNLOAD THE DATA IN GENBANK FORMAT FOR ALL THE ID FOR EACH STUDY##################################
 for i in "${!NUID[@]}"; do   
     study="${studies[$i]}"
     echo Download the nucleic sequences for the study : "${study}"
@@ -164,10 +164,9 @@ for i in "${!NUID[@]}"; do
     Sec=$(("${SECONDS}" % 60))
     echo -e "-------------------------------------------------- ${Hours} Hours ${Minutes} Minutes ${Sec} Seconds" >> "${path}""${study}"/log_file_"${study}".txt
 
-
-
 done
-# # #########################################################SPECIFIQUE OUTGROUP###########################################################
+
+# #########################################################SPECIFIQUE OUTGROUP###########################################################
 if [ "$speprot_empty" = "false" ]; then
 for i in "${!NUIDspeOG[@]}"; do   
     study="${studiesspeOG[$i]}"
@@ -183,7 +182,7 @@ for i in "${!NUIDspeOG[@]}"; do
 done
 fi
 
-#######################################EXTRACT ALL THE DATA FROM THE GENBANK FILES#################################################
+######################################EXTRACT ALL THE DATA FROM THE GENBANK FILES#################################################
 echo The captions, metadata files and files containing all the sequences are currently being created.
 
 for study in "${studies[@]}"; do
@@ -210,7 +209,7 @@ Hours=$(("${SECONDS}" / 3600))
     Minutes=$((("${SECONDS}" % 3600) / 60))
     Sec=$(("${SECONDS}" % 60))
     echo -e "-------------------------------------------------- ${Hours} Hours ${Minutes} Minutes ${Sec} Seconds" >> "${path}""${study}"/log_file_"${study}".txt
-
+######################################BLAST#################################################
 
 for i in "${!studies[@]}"; do
     IFS=$';' read -ra prot <<< "${proteins[i]}"
@@ -253,10 +252,7 @@ for study in "${studies[@]}"; do
     # fi
 
 done
-# for study in "${studies[@]}"; do
-# cp "${path}""${study}"/pos_prot_"${study}".txt "${path}""${study}"/pos_prot_final_"${study}".txt
 
-# done
 
 #####################################MESURE THE DIVERGENCE BETWEEN ALL THE SEQUENCES FOR EACH STUDY######################################
 ./"${path_script}"DNA_dist.sh "${path}" "${studies[*]}" 
@@ -330,7 +326,7 @@ for study in "${studies[@]}"; do
 done
 
 
-############################################ADD THE SPECIFIC OUTGROUP IN EACH FILE######################################################
+##########################################ADD THE SPECIFIC OUTGROUP IN EACH FILE######################################################
 echo The outgroup of each studies are being added
 for study in "${studies[@]}"; do
 rm -f "${path}""${study:?}""${res_file}"*_OG.fasta "${path}""${study:?}""${res_file}"*_OG.aln-fasta  >/dev/null 
@@ -367,16 +363,16 @@ for study in "${studies[@]}"; do
 done
 
 
-################################CREATE A TABLE WITH THE DIVERGENCE OF THE SPECIFIC PROTEINS############################################
-# if [ "$speprot_empty" = "false" ]; then
-# for study in "${studies[@]}"; do
-#     mkdir -p "${path}""${study}"/Align_all
-# done
+###############################CREATE A TABLE WITH THE DIVERGENCE OF THE SPECIFIC PROTEINS############################################
+if [ "$speprot_empty" = "false" ]; then
+for study in "${studies[@]}"; do
+    mkdir -p "${path}""${study}"/Align_all
+done
 
-# /usr/bin/python3 "${path}""${path_script}"protdist.py "${path}" "${studies[*]}" "${speprot[*]}" "${names[*]}" "${path_script}" "${res_file}" "${path_script}" "${proteins[*]}"  "${studiesspeprot[*]}"
-# fi
+/usr/bin/python3 "${path}""${path_script}"protdist.py "${path}" "${studies[*]}" "${speprot[*]}" "${names[*]}" "${path_script}" "${res_file}" "${path_script}" "${proteins[*]}"  "${studiesspeprot[*]}"
+fi
 
-###################################LAUCH TRIMAL FOR EACH SPECIFIC PROTEINES OF EACH STUDY########################################
+##################################LAUCH TRIMAL FOR EACH SPECIFIC PROTEINES OF EACH STUDY########################################
 if [ "${speprot[0]}" != '"  "' ];then
     speprotsse=$(echo "${speprot[@]}" | tr -d '" ' | cut -d'=' -f1 | paste -sd, -)
     IFS=$',' read -ra speprotsep <<< "${speprotsse[@]}"
@@ -494,7 +490,7 @@ echo -e "-------------------------------------------------- ${Hours} Hours ${Min
 done
 
 
-######################################LAUCH IQTREE2 FOR EACH  SPECIFIC PROTEINES FOR EACH STUDY###########################################
+#####################################LAUCH IQTREE2 FOR EACH  SPECIFIC PROTEINES FOR EACH STUDY###########################################
 if [ "$speprot_empty" = "false" ]; then
     for pair in "${unique_pairs[@]}" ; do 
         IFS=$',' read -ra protstud <<< "${pair[@]}"

@@ -160,12 +160,17 @@ def geographic_region(pays,email) :
 ### Function modif host
 # For each host, it is important to keep only those elements that allow the species to be identified
 
-def modif_host(host,list_speci_order) : 
+def modif_host(host) : 
+    df=pd.read_csv(f"{path}species_equivalent.txt",comment="#",sep="\t",header=None)
 
-    for sp_or in list_speci_order : 
-        speci_order=sp_or.split("=")
-        if speci_order[0].lower() in host.lower() : 
-            host=speci_order[1]
+    end_line=df.shape[0]
+
+    for line in range(0,end_line-1,1) :
+        speci_order[df.iloc[line,0]]=df.iloc[line,1]
+    
+    for species,SCspecies in speci_order.items() :
+        if species[0].lower() in host.lower() : 
+            host=SCspecies
 
     host=host.split(";")[0]
     host=host.replace("sp.",'')
@@ -434,7 +439,7 @@ region_colors=ratp_colors.copy()
 serogroup_colors=ratp_colors.copy()
 host_colors=ratp_colors.copy()
 
-def extract_id(path,Datas,study,sp,list_prot,email,Diff_name,metadata_name_prot,speci_order,dicy,namepeprot) :
+def extract_id(path,Datas,study,sp,list_prot,email,metadata_name_prot,dicy,namepeprot) :
     global region_colors
     global serogroup_colors
     global host_colors
@@ -471,7 +476,7 @@ def extract_id(path,Datas,study,sp,list_prot,email,Diff_name,metadata_name_prot,
         for feature in record.features : 
             if "host" in feature.qualifiers : 
                 host = feature.qualifiers['host'][0]
-                host=modif_host(host,speci_order)
+                host=modif_host(host)
                 order = deforder(host,email) 
 
             if "country" in feature.qualifiers :
@@ -499,7 +504,7 @@ def extract_id(path,Datas,study,sp,list_prot,email,Diff_name,metadata_name_prot,
         if not ID_prot : 
             print(f"This ID : {Nu} does not have any proteins ID It will not be inclued in this study")
         else :       
-            output_prot,output_pos,sizeprot,Sequence_aa=extract_prot_data(ID_prot,study,list_prot,email,Diff_name,metadata_name_prot,dicy,path)
+            output_prot,output_pos,sizeprot,Sequence_aa=extract_prot_data(ID_prot,study,list_prot,email,metadata_name_prot,dicy,path)
         
             order_color,host_colors=colour_choice(order,host_colors,"order",path,study)
             region_color,region_colors=colour_choice(region,region_colors,"region",path,study)
@@ -537,23 +542,31 @@ def extract_id(path,Datas,study,sp,list_prot,email,Diff_name,metadata_name_prot,
     return strain,ID_prot,Nu
 
 ###Function modif_name_prot
-#The purpose of this function is to identify the protein present in the gp
+#The purpose of this function is to identtify the protein present in the gp
 
-def modif_name_prot(prot,Diff_name,metadata_name_prot) :
-    
+def modif_name_prot(prot,metadata_name_prot) :
+    Diff_name={}
+
+    df=pd.read_csv(f"{path}Protein_equivalent.txt",comment="#",sep="\t",header=None)
+
+    end_line=df.shape[0]
+
+    for line in range(0,end_line-1,1) :
+        Diff_name[df.iloc[line,0]]=df.iloc[line,1]
+
     for prot_name in metadata_name_prot : 
         if prot_name.lower() in prot.lower() or prot.lower() in prot_name.lower() or prot.lower() == prot_name.lower()  : 
             prot=prot_name.lower()
     
-    for diff_prot in Diff_name :
+    for diff_prot,Prot_name in Diff_name.items() :
         
         DP=diff_prot.split("=")
-        print(f"difference {prot}={DP[0].lower().replace("protein","").replace("_","").replace(" ","").replace("\xa0", " ").replace("-","")}")
-        if DP[0].lower().replace("protein","").replace("_","").replace(" ","").replace("\xa0", " ").replace("-","") in prot or prot in  DP[0].lower().replace("protein","").replace("_","").replace(" ","").replace("\xa0", " ").replace("-",""): 
-            prot=DP[1].lower()
+        print(f"difference {prot}={diff_prot.lower().replace("protein","").replace("_","").replace(" ","").replace("\xa0", " ").replace("-","")}")
+        if diff_prot.lower().replace("protein","").replace("_","").replace(" ","").replace("\xa0", " ").replace("-","") in prot or prot in  diff_prot.lower().replace("protein","").replace("_","").replace(" ","").replace("\xa0", " ").replace("-",""): 
+            prot=Prot_name.lower()
         prot=prot.lower().replace("protein","").replace("_","").replace(" ","").replace("\xa0", " ").replace("-","")
-        if DP[0].lower().replace("protein","").replace("_","").replace(" ","").replace("\xa0", " ").replace("-","") in prot or prot in  DP[0].lower().replace("protein","").replace("_","").replace(" ","").replace("\xa0", " ").replace("-",""): 
-            prot=DP[1].lower()
+        if diff_prot.lower().replace("protein","").replace("_","").replace(" ","").replace("\xa0", " ").replace("-","") in prot or prot in  diff_prot.lower().replace("protein","").replace("_","").replace(" ","").replace("\xa0", " ").replace("-",""): 
+            prot=Prot_name.lower()
 
     for prot_name in metadata_name_prot : 
         if prot_name.lower() in prot.lower() or prot.lower() in prot_name.lower() : 
@@ -564,7 +577,7 @@ def modif_name_prot(prot,Diff_name,metadata_name_prot) :
 ##Function extract_prot_data
 #This function extract the position of each proteins of each organism in order to save everything in the metadatafiles
 
-def extract_prot_data(ID_prot_list,study,all_proteins,mail,Diff_name,metadata_name_prot,dicy,path) : 
+def extract_prot_data(ID_prot_list,study,all_proteins,mail,metadata_name_prot,dicy,path) : 
 
     Entrez.email = mail
     output=""  
@@ -573,7 +586,7 @@ def extract_prot_data(ID_prot_list,study,all_proteins,mail,Diff_name,metadata_na
     All_end=0
     Sequence_aa=''
     prot_names=metadata_name_prot.copy()
-    
+    #pd.read_csv("")
     for ID_prot in ID_prot_list : 
         
         try :
@@ -590,13 +603,13 @@ def extract_prot_data(ID_prot_list,study,all_proteins,mail,Diff_name,metadata_na
                 for feature in record.features :
                     if 'product' in feature.qualifiers : 
                         prot=(feature.qualifiers['product'][0])
-                        prot=modif_name_prot(prot,Diff_name,metadata_name_prot)
+                        prot=modif_name_prot(prot,metadata_name_prot)
                         proteins=extract_start_end(prot,proteins,feature,All_end)
                         
                     
                     if 'region_name' in feature.qualifiers : 
                         prot=(feature.qualifiers['region_name'][0])
-                        prot=modif_name_prot(prot,Diff_name,metadata_name_prot)
+                        prot=modif_name_prot(prot,metadata_name_prot)
                         proteins=extract_start_end(prot,proteins,feature,All_end)
                         
             else : 
@@ -839,9 +852,15 @@ def nucleic_sequences(study,ID,sequence,debseq,proteins,sp,resfile,path) :
                 start =starts
                 end =ends            
             position_proteines.append([start,end])
+        else : 
+            position_proteines.append(["nan","nan"])
     #print(position_proteines)
     prot_position=dict(zip(proteins, position_proteines))
+
+    #
     for prot,position in prot_position.items() : 
+
+        name=f"{path}{study}{resfile}{prot.lower()}_{sp}_nucl.fasta"
         #print(f"nucleic seq & OG : {prot}:{pos} : {not any("nan" in str(element) for element in pos)} ! {not any("ABS" in str(element) for element in pos)}!{pos!="nan"}")
         if not any("ABS" in str(element) for element in position) and not any("nan" in str(element) for element in position) : 
             if "," in str(position[0]) :
@@ -854,7 +873,8 @@ def nucleic_sequences(study,ID,sequence,debseq,proteins,sp,resfile,path) :
             
                 pos2=[position[1]]
             pos = pos1 + pos2
-            name=f"{path}{study}{resfile}{prot.lower()}_{sp}_nucl.fasta"
+
+            
             mark_prot=""
             compt_AA=0
             compt_nu=0
@@ -888,12 +908,16 @@ def nucleic_sequences(study,ID,sequence,debseq,proteins,sp,resfile,path) :
             file = open(f"{name}","a")
             file.write(f">{ID}\n{mark_prot}\n")
             file.close()
+        else : 
+            file = open(f"{name}","a")
+            file.write(f">{ID}\n\t\n")
+            file.close()
  
 def nucleic_sequences_OG(study,ID,sequence,debseq,pos_prot,proteins,sp,resfile,path) :
 
     position_proteines=[pos_prot[i:i+2] for i in range(0, len(pos_prot), 2)]
     prot_position=dict(zip(proteins, position_proteines))
-    print(position_proteines)
+    
     for prot,position in prot_position.items() : 
         #print(f"nucleic seq & OG : {prot} :{pos}: {not any("nan" in str(element) for element in pos)} ! {not any("ABS" in str(element) for element in pos)}!{pos!="nan"}")
         if not any("ABS" in str(element) for element in position) and not any("nan" in str(element) for element in position) : 
@@ -908,9 +932,12 @@ def nucleic_sequences_OG(study,ID,sequence,debseq,pos_prot,proteins,sp,resfile,p
                
                 pos2=[position[1]]
             pos = pos1 + pos2
+        else : 
+            pos = "nan" + "nan"
+        name=f"{path}{study}{resfile}{prot.lower()}_{sp}_nucl.fasta"
         if not any("ABS" in str(element) for element in pos) and not any("nan" in str(element) for element in pos) : 
 
-            name=f"{path}{study}{resfile}{prot.lower()}_{sp}_nucl.fasta"
+            
             mark_prot=""
             compt_AA=0
             compt_nu=0
@@ -942,6 +969,10 @@ def nucleic_sequences_OG(study,ID,sequence,debseq,pos_prot,proteins,sp,resfile,p
                                 inprot=False
             file = open(f"{name}","a")
             file.write(f">{ID}\n{mark_prot}\n")
+            file.close()
+        else : 
+            file = open(f"{name}","a")
+            file.write(f">{ID}\n\t\n")
             file.close()
 ##Function compt_alignement
 # This function uses the position of the target organism's proteins (sequence proteic) to identify the position of the proteins in the alignment.
@@ -979,15 +1010,17 @@ def proteic_sequence (study,ID,sequence,proteins,sp,resfile,path) :
                 start =starts
                 end =ends
             position_proteines.append([start,end])
+        else : 
+            position_proteines.append(["nan","nan"])
 
     
     #position_proteines=[pos_prot[i:i+2] for i in range(0, len(pos_prot), 2)]
     prot_position=dict(zip(proteins, position_proteines))
-    
+
 
 
     for prot,position in prot_position.items() : 
-        
+
         name=f"{path}{study}{resfile}{prot.lower()}_{sp}_prot.fasta"
         #position[0]
         # pos1 = [int(float(x)) for x in position[0].split(",")]
@@ -1039,7 +1072,10 @@ def proteic_sequence (study,ID,sequence,proteins,sp,resfile,path) :
             file = open(f"{name}","a")
             file.write(f">{ID}\n{mark_prot}\n")
             file.close()
-
+        else : 
+            file = open(f"{name}","a")
+            file.write(f">{ID}\n\t\n")
+            file.close()
 
 
 #Function mark_sequence

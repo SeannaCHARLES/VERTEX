@@ -92,7 +92,7 @@ for study,allprot,prot_names,spe_prot in zip(studies,list_prot,Diff_name,namespe
         sp=''
         first_call(path,study,spe_prot)
         
-        extract_id(path,Datas,study,sp,prot,email,prot_names.split(";"),vv_prot[study],speci_order,dicy,spe_prot)
+        extract_id(path,Datas,study,sp,prot,email,vv_prot[study],dicy,spe_prot)
         concatenates(path,study)
 
     subprocess.run(f"mafft --auto {path}{study}/prot_all_{study}.fasta > {path}{study}/prot_all_align_{study}.aln-fasta",shell=True)
@@ -106,4 +106,4 @@ for study,OG_list,prot,prot_names,spe_prot in zip(studiesspeOG, NUIDspeOG,list_p
         if ID!="" : 
             with open(f"{path}{study}/{ID}.gb","r") as Datas:
                 sp='OGspe'
-                extract_id(path,Datas,study,sp,prot,email,prot_names.split(";"),vv_prot[study],speci_order,dicy,spe_prot)
+                extract_id(path,Datas,study,sp,prot,email,vv_prot[study],speci_order,dicy,spe_prot)

@@ -147,7 +147,7 @@ for study,target,blast in zip(studies,target_list,blastapprox) :
             change_pos(line,end_col-1,pos_prot_final,path,study)
         pos_prot_final=pd.read_csv(f"{path}{study}/pos_prot_final_{study}.txt", delimiter="\t",header=0,index_col=0)
     else : 
-        subprocess.run(f"cp {path}{study}/pos_prot_{study}.txt {path}{study}/pos_prot_final_{study}.txt")
+        subprocess.run(f"cp {path}{study}/pos_prot_{study}.txt {path}{study}/pos_prot_final_{study}.txt",shell=True)
 
     #print(f"{missing_val}")
                 
