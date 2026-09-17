@@ -92,8 +92,6 @@ legencolors={}
 legencolors["Na"]=["#979a9a"]
 
 
-
-
 def colour_choice (caption,colors_list,type_,path,study):
     global ratp_colors
 
@@ -179,10 +177,7 @@ def modif_host(path,host) :
 
     return host
 
-### Function deforder 
-# For the captions, each species is replaced by its order
-# If the order can't be find the species will be kept
-# This function send a request to the NCBI database
+
 def extract_id_tax(record,mail) : 
     Entrez.email=mail
 
@@ -198,7 +193,10 @@ def extract_id_tax(record,mail) :
             if tax_id_group["Rank"]=="order":
                 return tax_id_group["ScientificName"]
 
-
+### Function deforder 
+# For the captions, each species is replaced by its order
+# If the order can't be find the species will be kept
+# This function send a request to the NCBI database
 
 def deforder(species,mail) : 
 

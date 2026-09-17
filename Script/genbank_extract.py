@@ -39,6 +39,7 @@ for pos,element in enumerate(namespeprotOG) :
 chain_prot=""
 
 dicy={}
+vv_prot={}
 
 for all_s, IO,prots,virus,list_ID in zip(Allstudies,INOUT,protINOUT,orgaWIWO,ALLNUID) :
    
@@ -73,22 +74,25 @@ if not dicy :
 
 
 
-vv_prot={}
+
 
 for study,allprot,prot_names,spe_prot in zip(studies,list_prot,Diff_name,namespeprot) :
    
-    print(f"For the study : {study}")
-    subprocess.run(f"rm {path}{study}/nucl/* {path}{study}/prot/* ",shell=True)
     chain_prot=""
+    print(f"For the study : {study}")
+    subprocess.run(f"rm {path}{study}/nucl/* {path}{study}/prot/* 2>/dev/null || true",shell=True)
+    
     prot=list(dict.fromkeys(allprot))
     vv_prot[study]=prot
     
     for p in prot : 
 
         chain_prot+=f"Start{p}\tEnd{p}\t"
+
     subprocess.run(f"echo 'Study\tVirus name\tID itol tree\tTaxonomy\tInformations\tProtein accesion number\tSize Proteic sequence\t{chain_prot}Nucleic accession number\tSize Nucleic sequence\tStrand\tStrain\tGeographical region\tHost or vector\tReferences' >{path}{study}/metadata_{study}.txt",shell=True)
     
     subprocess.run(f"echo 'Study\tID itol tree\t{chain_prot}' >{path}{study}/pos_prot_{study}.txt",shell=True)
+
     with open(f"{path}{study}/sequences_{study}.gb","r") as Datas:
         sp=''
         first_call(path,study,spe_prot)
@@ -99,13 +103,13 @@ for study,allprot,prot_names,spe_prot in zip(studies,list_prot,Diff_name,namespe
 
     print(f"Mafft alignement for the file {path}{study}/prot_all_{study}.fasta save in the output file : {path}{study}/prot_all_align_{study}.aln-fasta IN PROGRESS...")
     subprocess.run(f"echo Mafft for the outfile {path}{study}/prot_all_align_{study}.aln-fasta >> {path}{study}/Maffts.log && mafft --auto {path}{study}/prot_all_{study}.fasta > {path}{study}/prot_all_align_{study}.aln-fasta 2>> {path}{study}/Maffts.log",shell=True)
+
     print(f"Mafft alignement for the file {path}{study}/nucl_all_{study}.fasta save in the output file : {path}{study}/nucl_all_align_{study}.aln-fasta IN PROGRESS...")
     subprocess.run(f"echo Mafft for the outfile {path}{study}/nucl_all_align_{study}.aln-fasta >> {path}{study}/Maffts.log && mafft --auto {path}{study}/nucl_all_{study}.fasta > {path}{study}/nucl_all_align_{study}.aln-fasta 2>> {path}{study}/Maffts.log",shell=True)
 
 for study,OG_list,prot,prot_names,spe_prot in zip(studiesspeOG, NUIDspeOG,list_prot_speOG,Diff_name_OG,namespeprotOG):
+   
     OG=OG_list.split(" ")
-    
-  
     for ID in OG : 
         if ID!="" : 
             with open(f"{path}{study}/{ID}.gb","r") as Datas:
