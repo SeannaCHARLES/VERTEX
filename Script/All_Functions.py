@@ -32,7 +32,7 @@ import ast
 
 
 #This is the diffent type of legends
-type_files=["Geolocalisation","Host","Serogroup"]
+type_files=["Geolocalisation","Host","Informations"]
 
 ### Function Modif_ID 
 # It is necessary to shorten the sequence identifier for dnadist (maximum 10 characters)
@@ -160,9 +160,9 @@ def geographic_region(pays,email) :
 ### Function modif host
 # For each host, it is important to keep only those elements that allow the species to be identified
 
-def modif_host(host) : 
+def modif_host(path,host) : 
     df=pd.read_csv(f"{path}species_equivalent.txt",comment="#",sep="\t",header=None)
-
+    speci_order={}
     end_line=df.shape[0]
 
     for line in range(0,end_line-1,1) :
@@ -247,7 +247,7 @@ def deforder(species,mail) :
 # This function writes the caption files required for itol
 # This function writes individual files for each nucleotide and protein sequence 
 
-def write_file(path,Description_nu,Description_prot,Sequence_aa,Sequence_nu,localisation,region,region_color,order,order_color,host,strain,Nu,ID_prot,study,organism,ID,serogroup,color_sero,sp,ccprot) : 
+def write_file(path,Description_nu,Description_prot,Sequence_aa,Sequence_nu,localisation,region,region_color,order,order_color,host,strain,Nu,ID_prot,study,organism,ID,Informations,color_sero,sp,ccprot) : 
     global type_files
     namespeprot={}
     
@@ -288,8 +288,8 @@ def write_file(path,Description_nu,Description_prot,Sequence_aa,Sequence_nu,loca
     label.close()
 
     sero=open(name_sero,'a')
-    sero.write(f"##{serogroup}\n")
-    text=str (f"{ID}\trange\t{color_sero}\t{serogroup}\n{ID}\tbranch\t{color_sero}\tdashed\t7\n")
+    sero.write(f"##{Informations}\n")
+    text=str (f"{ID}\trange\t{color_sero}\t{Informations}\n{ID}\tbranch\t{color_sero}\tdashed\t7\n")
     sero.write(text)
     sero.close()
 
@@ -329,8 +329,8 @@ def write_file(path,Description_nu,Description_prot,Sequence_aa,Sequence_nu,loca
             label.close() 
 
             sero=open(name_sero,'a')
-            sero.write(f"\n##{serogroup}\n")
-            text="\n".join(f"{element}{ID}\trange\t{color_sero}\t{serogroup}\n{element}{ID}\tbranch\t{color_sero}\tdashed\t7" for element in values)
+            sero.write(f"\n##{Informations}\n")
+            text="\n".join(f"{element}{ID}\trange\t{color_sero}\t{Informations}\n{element}{ID}\tbranch\t{color_sero}\tdashed\t7" for element in values)
             sero.write(text)
             sero.close()
     
@@ -436,12 +436,12 @@ def concatenates(path,study) :
 ### Function extract_id
 # This function extracts the following information: Host, Host country, Strain, Nucleic identifier, Protein identifier for each genbank file.
 region_colors=ratp_colors.copy()
-serogroup_colors=ratp_colors.copy()
+Informations_colors=ratp_colors.copy()
 host_colors=ratp_colors.copy()
 
 def extract_id(path,Datas,study,sp,list_prot,email,metadata_name_prot,dicy,namepeprot) :
     global region_colors
-    global serogroup_colors
+    global Informations_colors
     global host_colors
     global allmetadata
 
@@ -457,7 +457,7 @@ def extract_id(path,Datas,study,sp,list_prot,email,metadata_name_prot,dicy,namep
         order="Na"
         region="Na"
         ID=''
-        serogroup='Na'
+        Informations='Na'
         sizeprot=0
         Nu= record.id
         Sequence_nu = record.seq
@@ -476,7 +476,7 @@ def extract_id(path,Datas,study,sp,list_prot,email,metadata_name_prot,dicy,namep
         for feature in record.features : 
             if "host" in feature.qualifiers : 
                 host = feature.qualifiers['host'][0]
-                host=modif_host(host)
+                host=modif_host(path,host)
                 order = deforder(host,email) 
 
             if "country" in feature.qualifiers :
@@ -508,8 +508,8 @@ def extract_id(path,Datas,study,sp,list_prot,email,metadata_name_prot,dicy,namep
         
             order_color,host_colors=colour_choice(order,host_colors,"order",path,study)
             region_color,region_colors=colour_choice(region,region_colors,"region",path,study)
-            serogroup=find_serogroup(fullorganisme,path)
-            color_sero,serogroup_colors=colour_choice(serogroup,serogroup_colors,"serogroup",path,study)
+            Informations=find_Informations(fullorganisme,path)
+            color_sero,Informations_colors=colour_choice(Informations,Informations_colors,"Informations",path,study)
 
             ID=Modif_ID(str(organism[:3]+Nu[3:]))
             Description_nu = f"{ID}"
@@ -518,10 +518,10 @@ def extract_id(path,Datas,study,sp,list_prot,email,metadata_name_prot,dicy,namep
             if strand =="-" or strand =="-1" : 
                 Sequence_nu=Sequence_nu[::-1]
                 
-            write_file(path,Description_nu,Description_prot,Sequence_aa,Sequence_nu,localisation,region,region_color,order,order_color,host,strain,Nu,ID_prot,study,organism,ID,serogroup,color_sero,sp,namespeprot)
+            write_file(path,Description_nu,Description_prot,Sequence_aa,Sequence_nu,localisation,region,region_color,order,order_color,host,strain,Nu,ID_prot,study,organism,ID,Informations,color_sero,sp,namespeprot)
         
         
-            line=f"{study}\t{fullorganisme}\t{ID}\t{taxonomy}\t{serogroup}\t{"-".join(ID_prot)}\t{sizeprot}\t{output_prot}{Nu}\t{sizenu}\t{strand}\t{strain}\t{region}: {localisation}\t{order}: {host}\t{ref}\n"
+            line=f"{study}\t{fullorganisme}\t{ID}\t{taxonomy}\t{Informations}\t{"-".join(ID_prot)}\t{sizeprot}\t{output_prot}{Nu}\t{sizenu}\t{strand}\t{strain}\t{region}: {localisation}\t{order}: {host}\t{ref}\n"
             line_prot_=f"{study}\t{ID}\t{output_pos}\n"
 
             line_prot_=line_prot_.replace(":","")
@@ -544,7 +544,7 @@ def extract_id(path,Datas,study,sp,list_prot,email,metadata_name_prot,dicy,namep
 ###Function modif_name_prot
 #The purpose of this function is to identtify the protein present in the gp
 
-def modif_name_prot(prot,metadata_name_prot) :
+def modif_name_prot(path,prot,metadata_name_prot) :
     Diff_name={}
 
     df=pd.read_csv(f"{path}Protein_equivalent.txt",comment="#",sep="\t",header=None)
@@ -561,7 +561,7 @@ def modif_name_prot(prot,metadata_name_prot) :
     for diff_prot,Prot_name in Diff_name.items() :
         
         DP=diff_prot.split("=")
-        print(f"difference {prot}={diff_prot.lower().replace("protein","").replace("_","").replace(" ","").replace("\xa0", " ").replace("-","")}")
+
         if diff_prot.lower().replace("protein","").replace("_","").replace(" ","").replace("\xa0", " ").replace("-","") in prot or prot in  diff_prot.lower().replace("protein","").replace("_","").replace(" ","").replace("\xa0", " ").replace("-",""): 
             prot=Prot_name.lower()
         prot=prot.lower().replace("protein","").replace("_","").replace(" ","").replace("\xa0", " ").replace("-","")
@@ -603,13 +603,13 @@ def extract_prot_data(ID_prot_list,study,all_proteins,mail,metadata_name_prot,di
                 for feature in record.features :
                     if 'product' in feature.qualifiers : 
                         prot=(feature.qualifiers['product'][0])
-                        prot=modif_name_prot(prot,metadata_name_prot)
+                        prot=modif_name_prot(path,prot,metadata_name_prot)
                         proteins=extract_start_end(prot,proteins,feature,All_end)
                         
                     
                     if 'region_name' in feature.qualifiers : 
                         prot=(feature.qualifiers['region_name'][0])
-                        prot=modif_name_prot(prot,metadata_name_prot)
+                        prot=modif_name_prot(path,prot,metadata_name_prot)
                         proteins=extract_start_end(prot,proteins,feature,All_end)
                         
             else : 
@@ -633,14 +633,14 @@ def extract_prot_data(ID_prot_list,study,all_proteins,mail,metadata_name_prot,di
                 
             output+=f"nan\tnan\t"
             output_pos+=f"nan\tnan\t"
-    print("----------------------------------------------------------------------------------------------------------------------")
+
     return output,output_pos,All_end,Sequence_aa
 
-#The serogroup file 
+#The Informations file 
 def extract_start_end(prot,proteins,feature,All_end):
     start=int((feature.location.start)+All_end+1)
     end=int((feature.location.end)+All_end+1)
-    print(f"start {start} end {end}")
+
     if start==0 : 
         start=1
                 
@@ -671,17 +671,10 @@ def extract_start_end(prot,proteins,feature,All_end):
                 
                 proteins[prot][1].append(end)
                 proteins[prot][0].append(start)
-            #starts,ends=intervall_check(proteins[prot][0],proteins[prot][1])
-            # for int1 in range(0,len(proteins[prot][1])-1):
-            #     for int2 in range(int1+1,len(proteins[prot][1])):
-            #         inter1={int(proteins[prot][0][int1]),int(proteins[prot][1][int1])}
-            #         inter2={int(proteins[prot][0][int2]),int(proteins[prot][1][int2])}
-            #         print(f"{prot}: \n{inter1}\n{inter2}\n")
-            #         print(inter1.issubset(inter2))
-            #         print(inter2.issubset(inter1))
+
             
             for int1 in range(0, len(proteins[prot][1]) - 1):
-                #print(proteins[prot][0][int1])
+
                 start1, end1 = int(proteins[prot][0][int1]), int(proteins[prot][1][int1])
     
                 for int2 in range(int1 + 1, len(proteins[prot][1])):
@@ -705,8 +698,10 @@ def extract_start_end(prot,proteins,feature,All_end):
 
 
     return proteins
+
+
 def intervall_check(starts,ends) :
-    print(f"start : {proteins[prot][1]}, end : {proteins[prot][0]}")
+
     for int1 in range(0, len(proteins[prot][1]) - 1):
 
         start1, end1 = int(proteins[prot][0][int1]), int(proteins[prot][1][int1])
@@ -724,9 +719,9 @@ def intervall_check(starts,ends) :
                     proteins[prot][0].pop([int2])
                     proteins[prot][1].pop([int2])
       
-##Function find_serogroup 
+##Function find_Informations 
 #This function 
-def find_serogroup(organism,path) : 
+def find_Informations(organism,path) : 
 
     df = pd.read_csv(f"{path}user_legend.txt", delimiter="|",header=0)
     df.iloc[:, 1:]=df.iloc[:, 1:].astype(str)
@@ -854,14 +849,14 @@ def nucleic_sequences(study,ID,sequence,debseq,proteins,sp,resfile,path) :
             position_proteines.append([start,end])
         else : 
             position_proteines.append(["nan","nan"])
-    #print(position_proteines)
+
     prot_position=dict(zip(proteins, position_proteines))
 
-    #
+    
     for prot,position in prot_position.items() : 
 
         name=f"{path}{study}{resfile}{prot.lower()}_{sp}_nucl.fasta"
-        #print(f"nucleic seq & OG : {prot}:{pos} : {not any("nan" in str(element) for element in pos)} ! {not any("ABS" in str(element) for element in pos)}!{pos!="nan"}")
+
         if not any("ABS" in str(element) for element in position) and not any("nan" in str(element) for element in position) : 
             if "," in str(position[0]) :
                 pos1 = list(map(int, position[0].split(",")))
@@ -919,7 +914,7 @@ def nucleic_sequences_OG(study,ID,sequence,debseq,pos_prot,proteins,sp,resfile,p
     prot_position=dict(zip(proteins, position_proteines))
     
     for prot,position in prot_position.items() : 
-        #print(f"nucleic seq & OG : {prot} :{pos}: {not any("nan" in str(element) for element in pos)} ! {not any("ABS" in str(element) for element in pos)}!{pos!="nan"}")
+
         if not any("ABS" in str(element) for element in position) and not any("nan" in str(element) for element in position) : 
             if "," in str(position[0]) :
                 pos1 = list(map(int, position[0].split(",")))

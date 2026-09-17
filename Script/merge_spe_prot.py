@@ -79,4 +79,6 @@ for (study,name,prot,pp)in zip(Allstudies,names,spe_prot,proteins):
 
 
 for filename,outfile in mafftfiles.items() : 
-    subprocess.run(f"mafft --auto {filename} > {outfile}",shell=True)
+
+    print(f"Mafft alignement for the file {filename} save in the output file : {outfile} IN PROGRESS...")
+    subprocess.run(f"echo Mafft for the outfile {outfile} >> {path}{study}/Maffts.log && mafft --auto {filename} > {outfile} 2>> {path}{study}/Maffts.log",shell=True)

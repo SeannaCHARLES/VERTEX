@@ -38,15 +38,6 @@ def Lauch_MSP(list_record) :
     
     subprocess.run(f"./{script_path}PROT_dist.sh {new_path} {Query} {Qseq} {subject} {Sseq} {name_prot}",shell=True)
 
-    #out=pd.read_csv(f"{new_path}/outfile_prot.txt",sep="\t",skiprows=0,index_col=0)
-
-    # try :
-    #     out = pd.read_csv(f"{path}{name}/Align_all/{Query}{subject}/outfile_prot.txt", sep="\t", skiprows=0, index_col=0)
-    #     #out.columns=out.index
-    #     out.to_csv(f"{path}{name}/All_table/{name_prot}{Query}{subject}_table.txt",sep="\t")
-
-    # except Exception as e :
-    #     print(f"{e}\n{Query}{subject}/{Query}{subject}_table\n")
 
 
 if studiesspeprot : 
@@ -77,12 +68,12 @@ if studiesspeprot :
             cmd=f"sed 's/>/>{proteins[0].lower()}/g' {path}{name}{resfile}{proteins[0].lower()}_{name}_prot.fasta > {path}{name}{resfile}{proteins[0].lower()}_{name}_prot_.fasta"
             subprocess.run(cmd,shell=True)
 
+            if os.path.exists(f"{path}{name}{resfile}{proteins[1].lower()}_{name}_prot.fasta") and os.path.exists(f"{path}{name}{resfile}{proteins[0].lower()}_{name}_prot.fasta") :
+                for record_1 in SeqIO.parse(f"{path}{name}{resfile}{proteins[1].lower()}_{name}_prot.fasta","fasta") : 
 
-            for record_1 in SeqIO.parse(f"{path}{name}{resfile}{proteins[1].lower()}_{name}_prot.fasta","fasta") : 
-
-                for record_2 in SeqIO.parse(f"{path}{name}{resfile}{proteins[0].lower()}_{name}_prot.fasta","fasta") : 
-                    name_prot=str(proteins[0].lower())+str(proteins[1].lower())
-                    couple_list.append([record_1,record_2,name,name_prot])
+                    for record_2 in SeqIO.parse(f"{path}{name}{resfile}{proteins[0].lower()}_{name}_prot.fasta","fasta") : 
+                        name_prot=str(proteins[0].lower())+str(proteins[1].lower())
+                        couple_list.append([record_1,record_2,name,name_prot])
 
             if __name__ == '__main__' : 
                 with Pool(10) as p : 
@@ -92,6 +83,8 @@ if studiesspeprot :
             for elements in couple_list   :
                 record_1=elements[0]   
                 record_2=elements[1] 
+                name=elements[2]
+                name_prot=elements[3]
                 try :
                     table=pd.read_csv(f"{path}{name}/All_table/{name_prot}{record_1.id}{record_2.id}_table.txt",sep="\t",skiprows=0,index_col=0,header=0)
             
@@ -102,8 +95,7 @@ if studiesspeprot :
                         final_table=pd.read_csv(f"{path}{name}/temp_protdist_filter.txt",sep="\t",index_col=0,header=0)
                         Final_table_v=final_table.combine_first(table)
                         Final_table_v.to_csv(f"{path}{name}/temp_protdist_filter.txt",sep="\t")
-                        #subprocess.run(f"mv {path}{name}/Align_all/{record_1.id}{record_2.id}/{name_prot}{record_1.id}{record_2.id}_table.txt {path}{name}/All_table/",shell=True)
-                        #subprocess.run(f"rm -r {path}{name}/Align_all/{record_1.id}{record_2.id}/",shell=True)
+
                 except Exception as e :
                     Lauch_MSP([record_1,record_2,name,name_prot])
                     table=pd.read_csv(f"{path}{name}/All_table/{name_prot}{record_1.id}{record_2.id}_table.txt",sep="\t",skiprows=0,index_col=0,header=0)
@@ -123,7 +115,7 @@ if studiesspeprot :
 for name,prots in zip(names,list_prot) : 
     
     if name in studies :
-        #subprocess.run(f"rm -r {path}{name}/Align_all/*",shell=True)
+
         change_name={}
         couple_list=[]
         
@@ -138,11 +130,11 @@ for name,prots in zip(names,list_prot) :
         for prot in prots:
             couple_list=[]
             open(f"{path}{name}/temp_protdist_filter{prot}.txt", "w").close()
-            for record_1 in SeqIO.parse(f"{path}{name}{resfile}{prot}_{name}_prot.fasta","fasta") : 
-
-                for record_2 in SeqIO.parse(f"{path}{name}{resfile}{prot}_{name}_prot.fasta","fasta") : 
-                    if record_1.id != record_2.id and (record_1.seq!="\t" and record_2.seq!="\t"):
-                        couple_list.append([record_1,record_2,name,prot])
+            if os.path.exists(f"{path}{name}{resfile}{prot}_{name}_prot.fasta") :
+                for record_1 in SeqIO.parse(f"{path}{name}{resfile}{prot}_{name}_prot.fasta","fasta") : 
+                    for record_2 in SeqIO.parse(f"{path}{name}{resfile}{prot}_{name}_prot.fasta","fasta") : 
+                        if record_1.id != record_2.id and (record_1.seq!="\t" and record_2.seq!="\t"):
+                            couple_list.append([record_1,record_2,name,prot])
                     
 
             if __name__ == '__main__' : 
@@ -153,6 +145,8 @@ for name,prots in zip(names,list_prot) :
             for elements in couple_list   :
                 record_1=elements[0]   
                 record_2=elements[1] 
+                name=elements[2]
+                prot=elements[3]
                 print(f"{record_1.id}{record_2.id}")
                 try :
                     table=pd.read_csv(f"{path}{name}/All_table/{prot}{record_1.id}{record_2.id}_table.txt",sep="\t",skiprows=0,index_col=0,header=0)
@@ -166,8 +160,7 @@ for name,prots in zip(names,list_prot) :
                         Final_table_v=final_table.combine_first(table)
                         print(f"combine table : \n {Final_table_v}")
                         Final_table_v.to_csv(f"{path}{name}/temptable_protdist_filter{prot}.txt",sep="\t")
-                        #subprocess.run(f"mv {path}{name}/Align_all/{record_1.id}{record_2.id}/{prot}{record_1.id}{record_2.id}_table.txt {path}{name}/All_table/",shell=True)
-                        #subprocess.run(f"rm -r {path}{name}/Align_all/{record_1.id}{record_2.id}/",shell=True)
+
                 except Exception as e :
                     print(f"{e}")
 

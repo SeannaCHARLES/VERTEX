@@ -14,15 +14,15 @@ prot="$6"
 
 ###########################Script##########################
 rm -f "${new_path}"Align_all/"${Query}""${subject}"/* > /dev/null
-#rm -f "${new_path}"All_table/"${Query}""${subject}"/* > /dev/null
-#echo "${new_path}"
+
 mkdir -p "${new_path}"Align_all/"${Query}""${subject}"/
 mkdir -p "${new_path}"All_table/
 
 echo -e ">${Query}\n${Qseq}\n>${subject}\n${Sseq}\n" > "${new_path}Align_all/${Query}${subject}/temp.fasta"
 
-mafft --auto "${new_path}Align_all/${Query}${subject}/temp.fasta" >"${new_path}Align_all/${Query}${subject}/temp.aln-fasta" #2>> log_mafft.txt
+mafft --auto "${new_path}Align_all/${Query}${subject}/temp.fasta" >"${new_path}Align_all/${Query}${subject}/temp.aln-fasta"
 seqret -sequence "${new_path}Align_all/${Query}${subject}/temp.aln-fasta" -outseq "${new_path}Align_all/${Query}${subject}/temp.phy" -osformat phylip
+
 cp "${new_path}"Align_all/"${Query}""${subject}"/temp.phy "${new_path}"Align_all/"${Query}""${subject}"/infile
 cd "${new_path}"Align_all/"${Query}""${subject}"/
    
@@ -30,15 +30,8 @@ echo -e "Y\n" | phylip protdist > /dev/null
 
     sed 's/   /	/g' "${new_path}Align_all/${Query}${subject}/outfile" > "${new_path}Align_all/${Query}${subject}/outfile_prot_res.txt"
     sed 's/  /	/g' "${new_path}Align_all/${Query}${subject}/outfile_prot_res.txt" > "${new_path}Align_all/${Query}${subject}/outfile_prot_.txt"
-    #sed 's/  /	/g' "${new_path}/outfile" > "${new_path}/outfile_prot.txt"
-    #sed 's/ //g' "${new_path}/outfile" > "${new_path}/outfile_prot.txt"
     sed -i '1d' "${new_path}Align_all/${Query}${subject}/outfile_prot_.txt" > /dev/null
-    #awk 'NR==1 {header1=$1; next} NR==2 {header2=$1; print header1 "\t" header2; print $2 "\t" $3}' "${new_path}/outfile_prot_.txt" > "${new_path}/outfile_prot.txt"
-    #awk '{print $1 "\t" $2 "\t" $3}' "${new_path}/outfile_prot_.txt" > "${new_path}/outfile_prot.txt"
-    #awk 'NR==1 {print "\t" $1 "\t" $2 "\t"; next} {print "\t" $1 "\t" $2 "\t" $3}' "${new_path}/outfile_prot_.txt" > "${new_path}/outfile_prot.txt"
-    #awk 'NR==1 {print $1 "\t" $2 "\t"; next} 1' "${new_path}/outfile_prot_.txt" > "${new_path}/outfile_prot.txt"
-    #awk 'NR==1 {print $1 "\t" $2 "\t"; next} {print $1 "\t" $2 "\t" $3}' "${new_path}/outfile_prot_.txt" > "${new_path}/outfile_prot.txt"
-    #awk 'NR==1 {print "\t" $1 "\t" $2 "\t"; print $1 "\t" $2 "\t" $3; next} {print $1 "\t" $2 "\t" $3}' "${new_path}/outfile_prot_.txt" > "${new_path}/outfile_prot.txt"
+
     awk 'BEGIN{OFS="\t"} {id[NR]=$1; for(i=2;i<=NF;i++) val[NR,i-1]=$i} END{printf OFS; for(i=1;i<=NR;i++) printf "%s%s", id[i], (i==NR?ORS:OFS); for(i=1;i<=NR;i++){ printf "%s", id[i]; for(j=1;j<=NR;j++) printf OFS "%s", val[i,j]; printf ORS }}' "${new_path}Align_all/${Query}${subject}/outfile_prot_.txt" > "${new_path}Align_all/${Query}${subject}/outfile_prot.txt"
 
     cp "${new_path}Align_all/${Query}${subject}/outfile_prot.txt" "${new_path}All_table/${prot}${Query}${subject}_table.txt"

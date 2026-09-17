@@ -2,6 +2,7 @@
 import subprocess
 import sys 
 import numpy as np
+
 from All_Functions import first_call,concatenates,extract_id
 from itertools import chain
 
@@ -42,7 +43,7 @@ dicy={}
 for all_s, IO,prots,virus,list_ID in zip(Allstudies,INOUT,protINOUT,orgaWIWO,ALLNUID) :
    
     list_ID=list_ID.split(";")
-    #metadata = pd.read_csv(f"{path}{all_s}/Metadata_{all_s}.txt", delimiter="\t",header=0,index_col=0)
+ 
     
     if IO!='' :
         if all_s not in dicy : 
@@ -77,7 +78,7 @@ vv_prot={}
 for study,allprot,prot_names,spe_prot in zip(studies,list_prot,Diff_name,namespeprot) :
    
     print(f"For the study : {study}")
-    subprocess.run(f"rm {path}{study}/nucl/* {path}{study}/prot/* >/dev/null",shell=True)
+    subprocess.run(f"rm {path}{study}/nucl/* {path}{study}/prot/* ",shell=True)
     chain_prot=""
     prot=list(dict.fromkeys(allprot))
     vv_prot[study]=prot
@@ -85,7 +86,7 @@ for study,allprot,prot_names,spe_prot in zip(studies,list_prot,Diff_name,namespe
     for p in prot : 
 
         chain_prot+=f"Start{p}\tEnd{p}\t"
-    subprocess.run(f"echo 'Study\tVirus name\tID itol tree\tTaxonomy\tSerogroup\tProtein accesion number\tSize Proteic sequence\t{chain_prot}Nucleic accession number\tSize Nucleic sequence\tStrand\tStrain\tGeographical region\tHost or vector\tReferences' >{path}{study}/metadata_{study}.txt",shell=True)
+    subprocess.run(f"echo 'Study\tVirus name\tID itol tree\tTaxonomy\tInformations\tProtein accesion number\tSize Proteic sequence\t{chain_prot}Nucleic accession number\tSize Nucleic sequence\tStrand\tStrain\tGeographical region\tHost or vector\tReferences' >{path}{study}/metadata_{study}.txt",shell=True)
     
     subprocess.run(f"echo 'Study\tID itol tree\t{chain_prot}' >{path}{study}/pos_prot_{study}.txt",shell=True)
     with open(f"{path}{study}/sequences_{study}.gb","r") as Datas:
@@ -95,8 +96,11 @@ for study,allprot,prot_names,spe_prot in zip(studies,list_prot,Diff_name,namespe
         extract_id(path,Datas,study,sp,prot,email,vv_prot[study],dicy,spe_prot)
         concatenates(path,study)
 
-    subprocess.run(f"mafft --auto {path}{study}/prot_all_{study}.fasta > {path}{study}/prot_all_align_{study}.aln-fasta",shell=True)
-    subprocess.run(f"mafft --auto {path}{study}/nucl_all_{study}.fasta > {path}{study}/nucl_all_align_{study}.aln-fasta",shell=True)
+
+    print(f"Mafft alignement for the file {path}{study}/prot_all_{study}.fasta save in the output file : {path}{study}/prot_all_align_{study}.aln-fasta IN PROGRESS...")
+    subprocess.run(f"echo Mafft for the outfile {path}{study}/prot_all_align_{study}.aln-fasta >> {path}{study}/Maffts.log && mafft --auto {path}{study}/prot_all_{study}.fasta > {path}{study}/prot_all_align_{study}.aln-fasta 2>> {path}{study}/Maffts.log",shell=True)
+    print(f"Mafft alignement for the file {path}{study}/nucl_all_{study}.fasta save in the output file : {path}{study}/nucl_all_align_{study}.aln-fasta IN PROGRESS...")
+    subprocess.run(f"echo Mafft for the outfile {path}{study}/nucl_all_align_{study}.aln-fasta >> {path}{study}/Maffts.log && mafft --auto {path}{study}/nucl_all_{study}.fasta > {path}{study}/nucl_all_align_{study}.aln-fasta 2>> {path}{study}/Maffts.log",shell=True)
 
 for study,OG_list,prot,prot_names,spe_prot in zip(studiesspeOG, NUIDspeOG,list_prot_speOG,Diff_name_OG,namespeprotOG):
     OG=OG_list.split(" ")
