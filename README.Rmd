@@ -3,9 +3,9 @@ title: "VERTEX README"
 author: "CHARLES Seanna"
 date: "2026-09-18"
 output:
+  pdf_document: default
   html_document:
     df_print: paged
-  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -266,11 +266,15 @@ This name will be used as the folder name. It also allows you to specify which p
 
 If you wish to analyse several segments or polyproteins from the same family or species, you must enter two different project names; otherwise, all the files produced by the pipeline for both projects will be stored in the same folder.
 
++-------------------+
 | Project name      |
-|-------------------|
++===================+
 | Orthobunyaviridae |
++-------------------+
 | Orthobunyaviridae |
++-------------------+
 | Orthobunyaviridae |
++-------------------+
 
 : Project name
 
@@ -282,11 +286,15 @@ If the row does not concern a specific outgroup, enter the project name. Otherwi
 
 If you wish to use different specific outgroups for the same project,you must have one row per outgroup.
 
++-------------------+-------------------+
 | A                 | Study name        |
-|-------------------|-------------------|
++===================+===================+
 | Orthobunyaviridae | Khurdun           |
++-------------------+-------------------+
 | Orthobunyaviridae | Pacuvirus         |
++-------------------+-------------------+
 | Orthobunyaviridae | Orthobunyaviridae |
++-------------------+-------------------+
 
 : Study name : Where Khurdun and Pacuvirus will be used as outgroups
 
@@ -294,11 +302,15 @@ C : ID files
 
 The name of the file that contains the virus IDs. This file must be in the same folder as the pipeline.
 
++-------------------+-------------------+----------------------------+
 | A                 | B                 | ID files                   |
-|-------------------|-------------------|----------------------------|
++===================+===================+============================+
 | Orthobunyaviridae | Khurdun           | Khurdun_file.txt           |
++-------------------+-------------------+----------------------------+
 | Orthobunyaviridae | Pacuvirus         | Pacuvirus_file.txt         |
++-------------------+-------------------+----------------------------+
 | Orthobunyaviridae | Orthobunyaviridae | Orthobunyaviridae_file.txt |
++-------------------+-------------------+----------------------------+
 
 : ID files
 
@@ -308,11 +320,15 @@ Y : if your project have a specific outgroup for one or multiple proteines.
 
 N : If your project doesn't have a specific outgroup.
 
-| A                 | B                 | C   | Outgroup Spe |
-|-------------------|-------------------|-----|--------------|
-| Orthobunyaviridae | Khurdun           | IDk | Y            |
-| Orthobunyaviridae | Pacuvirus         | IDp | Y            |
-| Orthobunyaviridae | Orthobunyaviridae | IDn | N            |
++-------------------+-------------------+---------------+---------------+
+| A                 | B                 | C             | Outgroup Spe  |
++===================+===================+===============+===============+
+| Orthobunyaviridae | Khurdun           | IDk           | Y             |
++-------------------+-------------------+---------------+---------------+
+| Orthobunyaviridae | Pacuvirus         | IDp           | Y             |
++-------------------+-------------------+---------------+---------------+
+| Orthobunyaviridae | Orthobunyaviridae | IDn           | N             |
++-------------------+-------------------+---------------+---------------+
 
 : Outgroup Specific : Is it a specifc outgroup?
 
@@ -324,11 +340,15 @@ If this line refers to the project line, enter the names of the proteins from th
 
 If this line refers to specific outgroups, specify for which proteins this outgroup will be used
 
-| A                 | B                 | D   | For wich prot         |
-|-------------------|-------------------|-----|-----------------------|
-| Orthobunyaviridae | Khurdun           | Y   | nsmgn                 |
-| Orthobunyaviridae | Pacuvirus         | Y   | polyprotein;gn;nsm;gc |
-| Orthobunyaviridae | Orthobunyaviridae | N   | polyprotein;gn;nsm;gc |
++-------------------+-------------------+---------------+-----------------------+
+| A                 | B                 | D             | For wich prot         |
++===================+===================+===============+=======================+
+| Orthobunyaviridae | Khurdun           | Y             | nsmgn                 |
++-------------------+-------------------+---------------+-----------------------+
+| Orthobunyaviridae | Pacuvirus         | Y             | polyprotein;gn;nsm;gc |
++-------------------+-------------------+---------------+-----------------------+
+| Orthobunyaviridae | Orthobunyaviridae | N             | polyprotein;gn;nsm;gc |
++-------------------+-------------------+---------------+-----------------------+
 
 : For wich prot
 
@@ -336,11 +356,15 @@ F : Proteins name (in order)
 
 Proteins name of the study name (col B)
 
-| A                 | B                 | E     | Proteins name (in order) |
-|-------------------|-------------------|-------|--------------------------|
-| Orthobunyaviridae | Khurdun           | nsmgn | polyprotein;gn;gc        |
-| Orthobunyaviridae | Pacuvirus         | prots | polyprotein;gn;nsm;gc    |
-| Orthobunyaviridae | Orthobunyaviridae | prots | polyprotein;gn;nsm;gc    |
++-------------------+-------------------+---------------+--------------------------+
+| A                 | B                 | E             | Proteins name (in order) |
++===================+===================+===============+==========================+
+| Orthobunyaviridae | Khurdun           | nsmgn         | polyprotein;gn;gc        |
++-------------------+-------------------+---------------+--------------------------+
+| Orthobunyaviridae | Pacuvirus         | prots         | polyprotein;gn;nsm;gc    |
++-------------------+-------------------+---------------+--------------------------+
+| Orthobunyaviridae | Orthobunyaviridae | prots         | polyprotein;gn;nsm;gc    |
++-------------------+-------------------+---------------+--------------------------+
 
 : Proteins name (in order)
 
@@ -348,11 +372,15 @@ G : spe prot
 
 Identify the proteins that will be involved in the formation of the specific protein
 
-| A                 | B                 | F     | spe prot     |
-|-------------------|-------------------|-------|--------------|
-| Orthobunyaviridae | Khurdun           | prots | nsmgn=gn     |
-| Orthobunyaviridae | Pacuvirus         | prots |              |
-| Orthobunyaviridae | Orthobunyaviridae | prots | nsmgn=nsm+gn |
++-------------------+-------------------+---------------+---------------+
+| A                 | B                 | F             | spe prot      |
++===================+===================+===============+===============+
+| Orthobunyaviridae | Khurdun           | prots         | nsmgn=gn      |
++-------------------+-------------------+---------------+---------------+
+| Orthobunyaviridae | Pacuvirus         | prots         |               |
++-------------------+-------------------+---------------+---------------+
+| Orthobunyaviridae | Orthobunyaviridae | prots         | nsmgn=nsm+gn  |
++-------------------+-------------------+---------------+---------------+
 
 : spe prot
 
@@ -360,11 +388,15 @@ H : TargetID
 
 Enter an organisation ID to be used as a reference for the BLAST alignment.
 
-| A                 | B                 | G            | RefID       |
-|-------------------|-------------------|--------------|-------------|
-| Orthobunyaviridae | Khurdun           | nsmgn=gn     |             |
-| Orthobunyaviridae | Pacuvirus         |              |             |
-| Orthobunyaviridae | Orthobunyaviridae | nsmgn=nsm+gn | NC_001926.1 |
++-------------------+-------------------+---------------+---------------+
+| A                 | B                 | G             | RefID         |
++===================+===================+===============+===============+
+| Orthobunyaviridae | Khurdun           | nsmgn=gn      |               |
++-------------------+-------------------+---------------+---------------+
+| Orthobunyaviridae | Pacuvirus         |               |               |
++-------------------+-------------------+---------------+---------------+
+| Orthobunyaviridae | Orthobunyaviridae | nsmgn=nsm+gn  | NC_001926.1   |
++-------------------+-------------------+---------------+---------------+
 
 : RefID
 
@@ -372,31 +404,43 @@ I : reference proteins position
 
 The positions of the protein of the reference or the specific OG.
 
-| A                 | B                 | H     | reference /OG proteins position |
-|-------------------|-------------------|-------|---------------------------------|
-| Orthobunyaviridae | Khurdun           |       | 23;292;526;944                  |
-| Orthobunyaviridae | Pacuvirus         |       | 1;1458;23;305;308;476;598;1386  |
-| Orthobunyaviridae | Orthobunyaviridae | IDref | 22;302;303;476;509;1372         |
++-------------------+-------------------+--------------+---------------------------------+
+| A                 | B                 | H            | reference /OG proteins position |
++===================+===================+==============+=================================+
+| Orthobunyaviridae | Khurdun           |              | 23;292;526;944                  |
++-------------------+-------------------+--------------+---------------------------------+
+| Orthobunyaviridae | Pacuvirus         |              | 1;1458;23;305;308;476;598;1386  |
++-------------------+-------------------+--------------+---------------------------------+
+| Orthobunyaviridae | Orthobunyaviridae | IDref        | 22;302;303;476;509;1372         |
++-------------------+-------------------+--------------+---------------------------------+
 
 : RefID
 
 J : Start of the proteins in the nucleic sequence
 
-| A | B | I | Start of the proteins in the nucleic sequence |
-|----|----|----|----|
-| Orthobunyaviridae | Khurdun | pos | 34 |
-| Orthobunyaviridae | Pacuvirus | pos | 53 |
-| Orthobunyaviridae | Orthobunyaviridae | pos | 57 |
++-------------------+-------------------+------------+-----------------------------------------------+
+| A                 | B                 | I          | Start of the proteins in the nucleic sequence |
++===================+===================+============+===============================================+
+| Orthobunyaviridae | Khurdun           | pos        | 34                                            |
++-------------------+-------------------+------------+-----------------------------------------------+
+| Orthobunyaviridae | Pacuvirus         | pos        | 53                                            |
++-------------------+-------------------+------------+-----------------------------------------------+
+| Orthobunyaviridae | Orthobunyaviridae | pos        | 57                                            |
++-------------------+-------------------+------------+-----------------------------------------------+
 
 : Start of the proteins in the nucleic sequence
 
 K : DNAdist Threshold
 
-| A                 | B                 | J   | DNAdist Threshold |
-|-------------------|-------------------|-----|-------------------|
-| Orthobunyaviridae | Khurdun           | 34  | 0.01              |
-| Orthobunyaviridae | Pacuvirus         | 53  | 0.05              |
-| Orthobunyaviridae | Orthobunyaviridae | 57  | 0.01              |
++-------------------+-------------------+----------------+-------------------+
+| A                 | B                 | J              | DNAdist Threshold |
++===================+===================+================+===================+
+| Orthobunyaviridae | Khurdun           | 34             | 0.01              |
++-------------------+-------------------+----------------+-------------------+
+| Orthobunyaviridae | Pacuvirus         | 53             | 0.05              |
++-------------------+-------------------+----------------+-------------------+
+| Orthobunyaviridae | Orthobunyaviridae | 57             | 0.01              |
++-------------------+-------------------+----------------+-------------------+
 
 : DNAdist Threshold
 
@@ -404,21 +448,29 @@ L : Organism to keep ID
 
 organism you don't want to be deleted.
 
-| A                 | B                 | k    | Organism to keep ID             |
-|-------------------|-------------------|------|---------------------------------|
-| Orthobunyaviridae | Khurdun           | 0.01 |                                 |
-| Orthobunyaviridae | Pacuvirus         | 0.05 |                                 |
-| Orthobunyaviridae | Orthobunyaviridae | 0.01 | MH484340.1;NC_005775;EF990927.1 |
++-------------------+-------------------+--------------+---------------------------------+
+| A                 | B                 | k            | Organism to keep ID             |
++===================+===================+==============+=================================+
+| Orthobunyaviridae | Khurdun           | 0.01         |                                 |
++-------------------+-------------------+--------------+---------------------------------+
+| Orthobunyaviridae | Pacuvirus         | 0.05         |                                 |
++-------------------+-------------------+--------------+---------------------------------+
+| Orthobunyaviridae | Orthobunyaviridae | 0.01         | MH484340.1;NC_005775;EF990927.1 |
++-------------------+-------------------+--------------+---------------------------------+
 
 : ID Organism to keep
 
 M : Organism with.out a particular protein ID
 
-| A | B | L | Organism with.out a particular protein ID |
-|----|----|----|----|
-| Orthobunyaviridae | Khurdun |  | OUT\*NSM=NC_078560.1 |
-| Orthobunyaviridae | Pacuvirus |  | NONE\*NN=NN |
-| Orthobunyaviridae | Orthobunyaviridae | IDs | NONE\*NN=NN |
++-------------------+-------------------+-------------+-------------------------------------------+
+| A                 | B                 | L           | Organism with.out a particular protein ID |
++===================+===================+=============+===========================================+
+| Orthobunyaviridae | Khurdun           |             | OUT\*NSM=NC_078560.1                      |
++-------------------+-------------------+-------------+-------------------------------------------+
+| Orthobunyaviridae | Pacuvirus         |             | NONE\*NN=NN                               |
++-------------------+-------------------+-------------+-------------------------------------------+
+| Orthobunyaviridae | Orthobunyaviridae | IDs         | NONE\*NN=NN                               |
++-------------------+-------------------+-------------+-------------------------------------------+
 
 : Organism with.out a particular protein ID
 
@@ -426,11 +478,15 @@ N : Trimal
 
 Do you want to use trimal for this study.
 
-| A                 | B                 | M           | Trimal |
-|-------------------|-------------------|-------------|--------|
-| Orthobunyaviridae | Khurdun           | OUT\*NSM=ID | Yes    |
-| Orthobunyaviridae | Pacuvirus         | NONE        | Yes    |
-| Orthobunyaviridae | Orthobunyaviridae | NONE        | Yes    |
++-------------------+-------------------+---------------+---------------+
+| A                 | B                 | M             | Trimal        |
++===================+===================+===============+===============+
+| Orthobunyaviridae | Khurdun           | OUT\*NSM=ID   | Yes           |
++-------------------+-------------------+---------------+---------------+
+| Orthobunyaviridae | Pacuvirus         | NONE          | Yes           |
++-------------------+-------------------+---------------+---------------+
+| Orthobunyaviridae | Orthobunyaviridae | NONE          | Yes           |
++-------------------+-------------------+---------------+---------------+
 
 : Organism with.out a particular protein ID
 
@@ -438,11 +494,15 @@ O : Blast?
 
 Do you want to use blast in case of missing positions
 
-| A                 | B                 | N   | Blast |
-|-------------------|-------------------|-----|-------|
-| Orthobunyaviridae | Khurdun           | Y   | Y     |
-| Orthobunyaviridae | Pacuvirus         | Y   | Y     |
-| Orthobunyaviridae | Orthobunyaviridae | Y   | Y     |
++-------------------+-------------------+--------------+--------------+
+| A                 | B                 | N            | Blast        |
++===================+===================+==============+==============+
+| Orthobunyaviridae | Khurdun           | Y            | Y            |
++-------------------+-------------------+--------------+--------------+
+| Orthobunyaviridae | Pacuvirus         | Y            | Y            |
++-------------------+-------------------+--------------+--------------+
+| Orthobunyaviridae | Orthobunyaviridae | Y            | Y            |
++-------------------+-------------------+--------------+--------------+
 
 : Organism with.out a particular protein ID
 
