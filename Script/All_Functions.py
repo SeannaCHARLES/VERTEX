@@ -126,6 +126,7 @@ def modif_localisation(localisation) :
 # If the geographical region can't be find the country will be kept
 
 def geographic_region(pays,email) : 
+
     latitude=0
     longitude=0
 
@@ -134,6 +135,7 @@ def geographic_region(pays,email) :
 
     latitude=location.latitude
     longitude=location.longitude
+
     if latitude==0 or longitude==0 : 
         return pays
     elif -35 <= latitude <= 37 and -20 <= longitude <= 55:
@@ -173,14 +175,14 @@ def modif_host(path,host) :
     host=host.split(";")[0]
     host=host.replace("sp.",'')
     host=host.replace("sentinel.",'')
-    host=re.sub(r"\([^)]*\)", "", host) #replace all the text betwenn ()
+    host=re.sub(r"\([^)]*\)", "", host) 
 
     return host
 
 
 def extract_id_tax(record,mail) : 
+    
     Entrez.email=mail
-
     tax_id = record["IdList"][0]
     tax_info= Entrez.efetch(db="taxonomy",id=tax_id,retmode="xml")
     data=Entrez.read(tax_info)[0]
@@ -198,7 +200,7 @@ def extract_id_tax(record,mail) :
 # If the order can't be find the species will be kept
 # This function send a request to the NCBI database
 
-def deforder(species,mail) : 
+def deforder(species,mail,path_study) : 
 
     Entrez.email=mail
     sp =species.split(" ")
@@ -219,8 +221,10 @@ def deforder(species,mail) :
                         return extract_id_tax(record,mail)
                 except Exception as e :
                     print()
-            print(f"\nThe species '{species}' was not identified by the NCBI taxonomy database\nPlease check the scientific name of this species and add it in the corresponding line of the all_information_file.txt such as.\n ;{species.lower()}='Scientificname'")
-      
+            print(f"\nThe species '{species}' was not identified by the NCBI taxonomy database\nPlease check the scientific name of this species and add it in the file '{path_study}/species_equivalent.txt' as such  .\n ;{species.lower()}='Scientificname'")
+            species_equ=open (f"{path_study}/species_equivalent.txt","a")
+            species_equ.write(f"{species.lower()}='Scientificname")
+            species_equ.close()
             return species
 
         else : 
@@ -236,7 +240,10 @@ def deforder(species,mail) :
             if record["IdList"] :
                 return extract_id_tax(record,mail)
 
-        print(f"\nThe species '{species}' was not identified by the NCBI taxonomy database\nPlease check the scientific name of this species and add it in the corresponding line of the all_information_file.txt such as.\n ;{species.lower()}='Scientificname'")
+        print(f"\nThe species '{species}' was not identified by the NCBI taxonomy database\nPlease check the scientific name of this species and add it in the file '{path_study}/species_equivalent.txt' such as .\n ;{species.lower()}='Scientificname'")
+        species_equ=open (f"{path_study}/species_equivalent.txt","a")
+        species_equ.write(f"{species.lower()}='Scientificname")
+        species_equ.close()
         return species
 
 
@@ -245,8 +252,10 @@ def deforder(species,mail) :
 # This function writes the caption files required for itol
 # This function writes individual files for each nucleotide and protein sequence 
 
-def write_file(path,Description_nu,Description_prot,Sequence_aa,Sequence_nu,localisation,region,region_color,order,order_color,host,strain,Nu,ID_prot,study,organism,ID,Informations,color_sero,sp,ccprot) : 
+def write_file(path,Description_nu,Description_prot,Sequence_aa,Sequence_nu,localisation,region,region_color,order,order_color,host,strain,Nu,ID_prot,study,organism,ID,Informations,color_info,sp,ccprot) : 
+
     global type_files
+
     namespeprot={}
     
     for pos,element in enumerate(ccprot) : 
@@ -263,7 +272,7 @@ def write_file(path,Description_nu,Description_prot,Sequence_aa,Sequence_nu,loca
     name_geol=f"{path}{study}/legend/{type_files[0]}_{study}_itol.txt"
     name_host=f"{path}{study}/legend/{type_files[1]}_{study}_itol.txt"
     name_label=f"{path}{study}/legend/label_{study}_itol.txt"
-    name_sero=f"{path}{study}/legend/{type_files[2]}_{study}_itol.txt"
+    name_info=f"{path}{study}/legend/{type_files[2]}_{study}_itol.txt"
     name_host_images=f"{path}{study}/legend/host_images{study}_itol.txt"
 
     geoloc=open(name_geol,'a')
@@ -285,11 +294,11 @@ def write_file(path,Description_nu,Description_prot,Sequence_aa,Sequence_nu,loca
     label.write(text)
     label.close()
 
-    sero=open(name_sero,'a')
-    sero.write(f"##{Informations}\n")
-    text=str (f"{ID}\trange\t{color_sero}\t{Informations}\n{ID}\tbranch\t{color_sero}\tdashed\t7\n")
-    sero.write(text)
-    sero.close()
+    info=open(name_info,'a')
+    info.write(f"##{Informations}\n")
+    text=str (f"{ID}\trange\t{color_info}\t{Informations}\n{ID}\tbranch\t{color_info}\tdashed\t7\n")
+    info.write(text)
+    info.close()
 
     HostI_f=open(name_host_images,'a')
     HostI_f.write(f"##{host}\n")
@@ -303,7 +312,7 @@ def write_file(path,Description_nu,Description_prot,Sequence_aa,Sequence_nu,loca
             name_geol=f"{path}{study}/legend/{type_files[0]}_{study}{speprot.lower()}_itol.txt"
             name_host=f"{path}{study}/legend/{type_files[1]}_{study}{speprot.lower()}_itol.txt"
             name_label=f"{path}{study}/legend/label_{study}{speprot.lower()}_itol.txt"
-            name_sero=f"{path}{study}/legend/{type_files[2]}_{study}{speprot.lower()}_itol.txt"
+            name_info=f"{path}{study}/legend/{type_files[2]}_{study}{speprot.lower()}_itol.txt"
             name_host_images=f"{path}{study}/legend/host_images{study}{speprot.lower()}_itol.txt"
             name_range=f"{path}{study}/legend/range_{study}{speprot.lower()}_itol.txt"
 
@@ -326,15 +335,15 @@ def write_file(path,Description_nu,Description_prot,Sequence_aa,Sequence_nu,loca
             label.write(text)
             label.close() 
 
-            sero=open(name_sero,'a')
-            sero.write(f"\n##{Informations}\n")
-            text="\n".join(f"{element}{ID}\trange\t{color_sero}\t{Informations}\n{element}{ID}\tbranch\t{color_sero}\tdashed\t7" for element in values)
-            sero.write(text)
-            sero.close()
+            info=open(name_info,'a')
+            info.write(f"\n##{Informations}\n")
+            text="\n".join(f"{element}{ID}\trange\t{color_info}\t{Informations}\n{element}{ID}\tbranch\t{color_info}\tdashed\t7" for element in values)
+            info.write(text)
+            info.close()
     
             label=open(name_range,'a')
             label.write(f"\n##{organism}\n")
-            text="\n".join(f"{element}{ID}\t{color_sero}" for element in values)
+            text="\n".join(f"{element}{ID}\t{color_info}" for element in values)
             label.write(text)
             label.close() 
 
@@ -372,6 +381,7 @@ def write_file(path,Description_nu,Description_prot,Sequence_aa,Sequence_nu,loca
       
 def first_call(path,study,cop) : 
     global type_files
+    
     subprocess.run(['rm', f'{path}{study}/legend/*'],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
     namespeprot=cop.copy()
     for pos,element in enumerate(namespeprot) : 
@@ -417,9 +427,6 @@ def first_call(path,study,cop) :
             file.close()
 
 
-
-
-   
 ### Function concatenates 
 # This function concatenates all the species for each study into one file 
 
@@ -475,7 +482,8 @@ def extract_id(path,Datas,study,sp,list_prot,email,metadata_name_prot,dicy,namep
             if "host" in feature.qualifiers : 
                 host = feature.qualifiers['host'][0]
                 host=modif_host(path,host)
-                order = deforder(host,email) 
+                path_study=f"{path}{study}/"
+                order = deforder(host,email,path_study) 
 
             if "country" in feature.qualifiers :
                 localisation = feature.qualifiers['country'][0]
@@ -507,7 +515,7 @@ def extract_id(path,Datas,study,sp,list_prot,email,metadata_name_prot,dicy,namep
             order_color,host_colors=colour_choice(order,host_colors,"order",path,study)
             region_color,region_colors=colour_choice(region,region_colors,"region",path,study)
             Informations=find_Informations(fullorganisme,path)
-            color_sero,Informations_colors=colour_choice(Informations,Informations_colors,"Informations",path,study)
+            color_info,Informations_colors=colour_choice(Informations,Informations_colors,"Informations",path,study)
 
             ID=Modif_ID(str(organism[:3]+Nu[3:]))
             Description_nu = f"{ID}"
@@ -516,7 +524,7 @@ def extract_id(path,Datas,study,sp,list_prot,email,metadata_name_prot,dicy,namep
             if strand =="-" or strand =="-1" : 
                 Sequence_nu=Sequence_nu[::-1]
                 
-            write_file(path,Description_nu,Description_prot,Sequence_aa,Sequence_nu,localisation,region,region_color,order,order_color,host,strain,Nu,ID_prot,study,organism,ID,Informations,color_sero,sp,namespeprot)
+            write_file(path,Description_nu,Description_prot,Sequence_aa,Sequence_nu,localisation,region,region_color,order,order_color,host,strain,Nu,ID_prot,study,organism,ID,Informations,color_info,sp,namespeprot)
         
         
             line=f"{study}\t{fullorganisme}\t{ID}\t{taxonomy}\t{Informations}\t{"-".join(ID_prot)}\t{sizeprot}\t{output_prot}{Nu}\t{sizenu}\t{strand}\t{strain}\t{region}: {localisation}\t{order}: {host}\t{ref}\n"
@@ -789,7 +797,7 @@ def delete_dbl(path,Doublon,study):
     
         name=f"{path}{study}/{type_seq}_sdbl_{study}.fasta"
     
-        subprocess.run(f"rm {name}",shell=True)
+        subprocess.run(["rm", f"{name}"],shell=True,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
 
         for record in SeqIO.parse(f"{path}{study}/{type_seq}_all_align_{study}.aln-fasta","fasta") :
         
@@ -1247,7 +1255,7 @@ def write_file_prot(Data,sp,Protname,study,path) :
             
 
 def Blastp_run(DB,File,output) :
-    subprocess.run(f"rm -f {output}.txt",shell=True)
+    subprocess.run(["rm", "-f", f"{output}.txt"],shell=True,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
     subprocess.run(f"blastp -db {DB}_DB -query {File} -outfmt 6 -out {output}.txt",shell=True)
 
     

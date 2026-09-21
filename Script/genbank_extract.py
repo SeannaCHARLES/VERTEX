@@ -9,23 +9,27 @@ from itertools import chain
 path = sys.argv[1]
 studies=list(sys.argv[2].split(" "))
 studiesspeOG=list(sys.argv[3].split(" "))
+
 names=list(sys.argv[4].split(" "))
 NUIDspeOG=list(sys.argv[5].split("''"))[0].split("  ")
+
 email=sys.argv[6]
+
 list_prot = [x.split(';') for x in sys.argv[7].split()]
 list_prot_speOG = [x.split(';') for x in sys.argv[8].split()]
+
 positionspeOG=list(sys.argv[8].split(" "))
 OG_prot=list(sys.argv[9].split(" "))
-Diff_name=list(sys.argv[10].split(" "))
-Diff_name_OG=list(sys.argv[11].split(" "))
-speci_order=list(sys.argv[12].split(";"))
-orgaWIWO=list(sys.argv[13].replace(" ", "\n").splitlines())
-INOUT=list(sys.argv[14].replace(" ", "\n").splitlines())
-protINOUT=list(sys.argv[15].replace(" ", "\n").splitlines())
-Allstudies=list(sys.argv[16].split(" "))
-ALLNUID=list(sys.argv[17].split(" "))
-namespeprot=list(sys.argv[18].split(" "))
-namespeprotOG=list(sys.argv[19].split(" "))
+
+orgaWIWO=list(sys.argv[10].replace(" ", "\n").splitlines())
+INOUT=list(sys.argv[11].replace(" ", "\n").splitlines())
+protINOUT=list(sys.argv[12].replace(" ", "\n").splitlines())
+
+Allstudies=list(sys.argv[13].split(" "))
+ALLNUID=list(sys.argv[14].split(" "))
+
+namespeprot=list(sys.argv[15].split(" "))
+namespeprotOG=list(sys.argv[16].split(" "))
 
 
 
@@ -76,7 +80,7 @@ if not dicy :
 
 
 
-for study,allprot,prot_names,spe_prot in zip(studies,list_prot,Diff_name,namespeprot) :
+for study,allprot,spe_prot in zip(studies,list_prot,namespeprot) :
    
     chain_prot=""
     print(f"For the study : {study}")
@@ -107,7 +111,7 @@ for study,allprot,prot_names,spe_prot in zip(studies,list_prot,Diff_name,namespe
     print(f"Mafft alignement for the file {path}{study}/nucl_all_{study}.fasta save in the output file : {path}{study}/nucl_all_align_{study}.aln-fasta IN PROGRESS...")
     subprocess.run(f"echo Mafft for the outfile {path}{study}/nucl_all_align_{study}.aln-fasta >> {path}{study}/Maffts.log && mafft --auto {path}{study}/nucl_all_{study}.fasta > {path}{study}/nucl_all_align_{study}.aln-fasta 2>> {path}{study}/Maffts.log",shell=True)
 
-for study,OG_list,prot,prot_names,spe_prot in zip(studiesspeOG, NUIDspeOG,list_prot_speOG,Diff_name_OG,namespeprotOG):
+for study,OG_list,prot,spe_prot in zip(studiesspeOG, NUIDspeOG,list_prot_speOG,namespeprotOG):
    
     OG=OG_list.split(" ")
     for ID in OG : 
