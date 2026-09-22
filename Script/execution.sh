@@ -497,7 +497,7 @@ done
 ##################################################LAUCH IQTREE2 FOR EACH PROTEINES FOR EACH STUDY##########################################
 
 for study in "${!studies[@]}"; do
-    printf "The best model for each proteic sequence will be writen \n">"${path}""${studies[$study]}"/log_file_"${studies[$study]}".txt
+    printf "The best model for each proteic sequence will be writen \n">>"${path}""${studies[$study]}"/log_file_"${studies[$study]}".txt
     IFS=$';' read -ra sepprot <<< "${proteins[$study]}"
     for prot in "${sepprot[@]}"; do
             echo IQtree2 pour la proteine "${prot}" pour l étude "${studies[$study]}"
