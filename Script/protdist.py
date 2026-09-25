@@ -147,18 +147,18 @@ for name,prots in zip(names,list_prot) :
                 record_2=elements[1] 
                 name=elements[2]
                 prot=elements[3]
-                print(f"{record_1.id}{record_2.id}")
+                
                 try :
                     table=pd.read_csv(f"{path}{name}/All_table/{prot}{record_1.id}{record_2.id}_table.txt",sep="\t",skiprows=0,index_col=0,header=0)
-                    print(f"table_record : \n {table}")
+                    
                     if not os.path.exists(f"{path}{name}/temptable_protdist_filter{prot}.txt"):
              
                         table.to_csv(f"{path}{name}/temptable_protdist_filter{prot}.txt",sep="\t")
                     else:
                         final_table=pd.read_csv(f"{path}{name}/temptable_protdist_filter{prot}.txt",sep="\t",index_col=0,header=0)
-                        print(f"final_table temp table : \n {final_table}")
+                        
                         Final_table_v=final_table.combine_first(table)
-                        print(f"combine table : \n {Final_table_v}")
+                        
                         Final_table_v.to_csv(f"{path}{name}/temptable_protdist_filter{prot}.txt",sep="\t")
 
                 except Exception as e :

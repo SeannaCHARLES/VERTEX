@@ -161,22 +161,24 @@ def geographic_region(pays,email) :
 # For each host, it is important to keep only those elements that allow the species to be identified
 
 def modif_host(path,host) : 
+
+    global speci_order
+    host=host.split(";")[0]
+    host=host.replace("sp.",'')
+    host=host.replace("sentinel.",'')
+    host=re.sub(r"\([^)]*\)", "", host) 
+
     df=pd.read_csv(f"{path}species_equivalent.txt",comment="#",sep="\t",header=None)
     speci_order={}
     end_line=df.shape[0]
 
     for line in range(0,end_line-1,1) :
         speci_order[df.iloc[line,0]]=df.iloc[line,1]
-    
-    for species,SCspecies in speci_order.items() :
-        if species[0].lower() in host.lower() : 
-            host=SCspecies
 
-    host=host.split(";")[0]
-    host=host.replace("sp.",'')
-    host=host.replace("sentinel.",'')
-    host=re.sub(r"\([^)]*\)", "", host) 
-
+    for species,orderspecies in speci_order.items() :
+        
+        if species.lower() in host.lower() : 
+            host=orderspecies
     return host
 
 
@@ -761,7 +763,10 @@ def select_doublon(path,study,ths,keep_list,target) :
 
     df = pd.read_csv(f"{path}{study}/{study}_dnadist.txt", delimiter="\t",header=0,index_col=0)
     df.iloc[:, 1:]=df.iloc[:, 1:].astype(float)
-
+    rename=df.index.tolist()
+    rename.append("empty")
+    df.columns =rename
+    df=df.drop(columns="empty")
 
     Doublon=onlygap(path,study,target,keep_list)
     end_line=df.shape[0]
@@ -769,29 +774,38 @@ def select_doublon(path,study,ths,keep_list,target) :
     line=0
     col=0
     while line <end_line:
+        drop=False
         col=line+1
+     
+
         while col <end_col-1 :
+        
             if df.iloc[line,col] <=ths and df.iloc[line,col]!=-1  :
                 if (df.index[line] not in target[9:].lower() or target[9:].lower() not in df.index[line])  and (df.index[line] not in keep_list or any(prot[9:].lower() not in df.index[line] for prot in keep_list)): #or any(og not in df.index[line] for og in keep_list):
+                    drop=True
                     ID=str(df.index[line])
                     Doublon.append(ID)
-                    subprocess.run(f"echo {ID} is too close from {str(df.index[col])} {ID} will be deleted >> {path}{study}/log_file_{study}.txt",shell=True)
+                    subprocess.run(f"echo {ID} is too close from {str(df.columns[col])} {ID} will be deleted threshold at : {ths} DNAdist value : {df.iloc[line,col]} >> {path}{study}/log_file_{study}.txt",shell=True)
                     df=df.drop(columns=ID)
                     df=df.drop(index=ID)
                     end_line=df.shape[0]
                     end_col=df.shape[1]
-                    line=0
+                    #line=0
+                    
 
             col+=1
             
-
-        line+=1
+        if drop==True : 
+            line=0
+        else :
+            line+=1
     return Doublon
 
 ##Function delete_dbl
 #This function delete the identified duplicates for each protein for each study
 
 def delete_dbl(path,Doublon,study):
+    print (Doublon)
     types_seq=["nucl",'prot']
     for type_seq in types_seq :
     
