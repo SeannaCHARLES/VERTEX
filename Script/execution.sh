@@ -484,7 +484,7 @@ for study in "${studies[@]}"; do
     sort "${path}""${study}"/list_id_Trimal.txt > "${path}""${study}"/list_id_Trimal_sort.txt 
     rm "${path}""${study}"/list_id_Trimal.txt
     
-    echo -e "Deleted sequences : (composed only by gaps or )" >> "${path}""${study}"/log_file_"${study}".txt
+    echo -e "Deleted sequences : (possibly composed only by gaps , removed by trimal)" >> "${path}""${study}"/log_file_"${study}".txt
     diff  "${path}""${study}"/list_id_merge_sort.txt "${path}""${study}"/list_id_Trimal_sort.txt | grep "^<" >> "${path}""${study}"/log_file_"${study}".txt
     echo -e "---------------------" >> "${path}""${study}"/log_file_"${study}".txt
    
