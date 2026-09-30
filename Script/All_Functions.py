@@ -781,16 +781,16 @@ def select_doublon(path,study,ths,keep_list,target) :
         while col <end_col-1 :
         
             if df.iloc[line,col] <=ths and df.iloc[line,col]!=-1  :
-                if (df.index[line] not in target[9:].lower() or target[9:].lower() not in df.index[line])  and (df.index[line] not in keep_list or any(prot[9:].lower() not in df.index[line] for prot in keep_list)): #or any(og not in df.index[line] for og in keep_list):
+                if (df.index[line] not in target[9:].lower() or target[9:].lower() not in df.index[line])  and (df.index[line] not in keep_list or any(prot[9:].lower() not in df.index[line] for prot in keep_list)): 
                     drop=True
                     ID=str(df.index[line])
                     Doublon.append(ID)
-                    subprocess.run(f"echo {ID} is too close from {str(df.columns[col])} {ID} will be deleted threshold at : {ths} DNAdist value : {df.iloc[line,col]} >> {path}{study}/log_file_{study}.txt",shell=True)
+                    subprocess.run(f"echo {ID} is too close from {str(df.columns[col])}. {ID} will be deleted based on the threshold : {ths} and DNAdist value : {df.iloc[line,col]} >> {path}{study}/log_file_{study}.txt",shell=True)
                     df=df.drop(columns=ID)
                     df=df.drop(index=ID)
                     end_line=df.shape[0]
                     end_col=df.shape[1]
-                    #line=0
+                    
                     
 
             col+=1

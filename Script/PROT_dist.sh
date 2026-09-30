@@ -16,11 +16,13 @@ prot="$6"
 rm -f "${new_path}"Align_all/"${Query}""${subject}"/* > /dev/null
 
 mkdir -p "${new_path}"Align_all/"${Query}""${subject}"/
+
 mkdir -p "${new_path}"All_table/
 
 echo -e ">${Query}\n${Qseq}\n>${subject}\n${Sseq}\n" > "${new_path}Align_all/${Query}${subject}/temp.fasta"
 
-mafft --auto "${new_path}Align_all/${Query}${subject}/temp.fasta" >"${new_path}Align_all/${Query}${subject}/temp.aln-fasta"
+mafft --auto "${new_path}Align_all/${Query}${subject}/temp.fasta" >"${new_path}Align_all/${Query}${subject}/temp.aln-fasta" 2>> "${new_path}"Maffts.log
+
 seqret -sequence "${new_path}Align_all/${Query}${subject}/temp.aln-fasta" -outseq "${new_path}Align_all/${Query}${subject}/temp.phy" -osformat phylip
 
 cp "${new_path}"Align_all/"${Query}""${subject}"/temp.phy "${new_path}"Align_all/"${Query}""${subject}"/infile
@@ -28,13 +30,15 @@ cd "${new_path}"Align_all/"${Query}""${subject}"/
    
 echo -e "Y\n" | phylip protdist > /dev/null
 
-    sed 's/   /	/g' "${new_path}Align_all/${Query}${subject}/outfile" > "${new_path}Align_all/${Query}${subject}/outfile_prot_res.txt"
-    sed 's/  /	/g' "${new_path}Align_all/${Query}${subject}/outfile_prot_res.txt" > "${new_path}Align_all/${Query}${subject}/outfile_prot_.txt"
-    sed -i '1d' "${new_path}Align_all/${Query}${subject}/outfile_prot_.txt" > /dev/null
+sed 's/   /	/g' "${new_path}Align_all/${Query}${subject}/outfile" > "${new_path}Align_all/${Query}${subject}/outfile_prot_res.txt"
 
-    awk 'BEGIN{OFS="\t"} {id[NR]=$1; for(i=2;i<=NF;i++) val[NR,i-1]=$i} END{printf OFS; for(i=1;i<=NR;i++) printf "%s%s", id[i], (i==NR?ORS:OFS); for(i=1;i<=NR;i++){ printf "%s", id[i]; for(j=1;j<=NR;j++) printf OFS "%s", val[i,j]; printf ORS }}' "${new_path}Align_all/${Query}${subject}/outfile_prot_.txt" > "${new_path}Align_all/${Query}${subject}/outfile_prot.txt"
+sed 's/  /	/g' "${new_path}Align_all/${Query}${subject}/outfile_prot_res.txt" > "${new_path}Align_all/${Query}${subject}/outfile_prot_.txt"
 
-    cp "${new_path}Align_all/${Query}${subject}/outfile_prot.txt" "${new_path}All_table/${prot}${Query}${subject}_table.txt"
+sed -i '1d' "${new_path}Align_all/${Query}${subject}/outfile_prot_.txt" > /dev/null
+
+awk 'BEGIN{OFS="\t"} {id[NR]=$1; for(i=2;i<=NF;i++) val[NR,i-1]=$i} END{printf OFS; for(i=1;i<=NR;i++) printf "%s%s", id[i], (i==NR?ORS:OFS); for(i=1;i<=NR;i++){ printf "%s", id[i]; for(j=1;j<=NR;j++) printf OFS "%s", val[i,j]; printf ORS }}' "${new_path}Align_all/${Query}${subject}/outfile_prot_.txt" > "${new_path}Align_all/${Query}${subject}/outfile_prot.txt"
+
+cp "${new_path}Align_all/${Query}${subject}/outfile_prot.txt" "${new_path}All_table/${prot}${Query}${subject}_table.txt"
 
 
 
