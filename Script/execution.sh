@@ -1,8 +1,11 @@
 #!/bin/bash
 SECONDS=0
+
 ########################################EXTRACT ALL THE INFORMATION FROM THE INFORMATION FILE############################################
-echo All the information are being extracted ...
+echo All the information are being extracted 
+
 awk -F',' '$0 !~ /^#/ && $13 == "" { $13 = "none*nn=nn" } { print }' OFS=',' all_information.txt > tmp && mv tmp all_information.txt
+
 awk -F',' '$0 !~ /^#/ && $4 == "" { $4 = "N" } { print }' OFS=',' all_information.txt > tmp && mv tmp all_information.txt
 awk -F',' '$0 !~ /^#/ && $11 == "" { $11 = "0.05" } { print }' OFS=',' all_information.txt > tmp && mv tmp all_information.txt
 awk -F',' '$0 !~ /^#/ && $14 == "" { $14 = "Yes" } { print }' OFS=',' all_information.txt > tmp && mv tmp all_information.txt
@@ -36,23 +39,24 @@ awk -F',' '{ $5 = tolower($5); $6 = tolower($6); $7 = tolower($7);$13 = toupper(
 while IFS=$',' read -r col1 col2 col3 col4 col5 col6 col7 col8 col9 col10 col11 col12 col13 col14 col15 _; do
     
     [[ $col1 =~ ^# ]] && continue
-    names+=("$col2") 
-    Allstudies+=("$col1")
-    for_prot+=("$col5")
+
+    names+=("$col2") #All the study and specific study name
+    Allstudies+=("$col1") #All the Project name
+    for_prot+=("$col5") # All the proteins for all the project
     
     
     if [[ $col4 == N* ]]; then
-        studies+=("$col1")  #Studies associé aux names 
+        studies+=("$col1")  #Name of the study that are not specific 
         
         mapfile -t L1 < <(awk  '{ for (i=1; i<=NF; i++) print $i }' "${col3}") 
         NUID+=("$(printf '%s ' "${L1[@]}")")
 
-        target_list+=("$col8")  #Organisme représentant l'étude
-        position+=("$col9") #Positions des proteines de l'outgroup
-        start+=("$col10")   #Début de la séquence proteiques sur la séquence nucleique
-        ths+=("$col11") #Seuil pour DNAdist pour supprimer les doublons
-        proteins+=("$col6")
-        namespepro+=("$col7")
+        target_list+=("$col8")  #References organism
+        position+=("$col9") #References organism protein positions 
+        start+=("$col10")   #Start of the protein sequence in the nucleic acid sequence
+        ths+=("$col11") #Threshold for DNAdist 
+        proteins+=("$col6") # Name of the proteins of all the organism
+        namespepro+=("$col7")  # Name of the proteins of the
         if [[ $col14 == Y* ]]; then
             trim+=("$col1")
         fi
@@ -78,8 +82,6 @@ while IFS=$',' read -r col1 col2 col3 col4 col5 col6 col7 col8 col9 col10 col11 
     fi
 done < all_information.txt
 
-
- #!!!!!! COMMENT ÇA SE COMPORTE AVEC PLUSIEURS STUDY!!!!!!
 
 
 path=$(awk -F',' '$0 ~ /^#/ && NR==2 {print $2}' all_information.txt)
@@ -115,7 +117,40 @@ speprot=()
 fi
 allID=("${NUID[@]}" "${NUIDspeOG[@]}")
 
-######################################DELETE THE FOLDER OF THE STUDY##################################################
+logfile () {
+
+    echo -e "After $1.py/sh : " >> "${path}""$2"/log_file_"$2".txt
+    echo -e "Deleted sequences : " >> "${path}""$2"/log_file_"$2".txt
+    echo -e "Number of sequences : " >> "${path}""$2"/log_file_"$2".txt
+    
+    bioawk -c fastx '{print $name}' "$3" | wc -l >> "${path}""$2"/log_file_"$2".txt
+
+    echo -e "length of the Alignement : " >> "${path}""$2"/log_file_"$2".txt
+    bioawk -c fastx 'NR==1 {print length($seq)}' "$3" >> "${path}""$2"/log_file_"$2".txt
+
+    bioawk -c fastx '{print $name}' "$3" > "${path}""$2"/list_id_"$1".txt 
+    sort "${path}""$2"/list_id_"$1".txt  > "${path}""$2"/list_id_"$1"_sort.txt 
+    rm "${path}""$2"/list_id_"$1".txt
+
+
+    diff  "${path}""$2"/list_id_"$4"_sort.txt "${path}""$2"/list_id_"$1"_sort.txt |grep "^<" >> "${path}""$2"/log_file_"$2".txt
+
+    Hours=$(("${SECONDS}" / 3600))
+    Minutes=$((("${SECONDS}" % 3600) / 60))
+    Sec=$(("${SECONDS}" % 60))
+    
+    echo -e "-------------------------------------------------- ${Hours} Hours ${Minutes} Minutes ${Sec} Seconds" >> "${path}""$2"/log_file_"$2".txt
+
+
+
+}
+
+
+
+
+
+
+#################################################DELETE THE FOLDER OF THE STUDY#################################################
 
 # for study in "${studies[@]}"; do
 
@@ -129,7 +164,7 @@ allID=("${NUID[@]}" "${NUIDspeOG[@]}")
 # echo The sequences are currently being downloaded ...
 
 
-##################################DOWNLOAD THE DATA IN GENBANK FORMAT FOR ALL THE ID FOR EACH STUDY##################################
+####################################DOWNLOAD THE DATA IN GENBANK FORMAT FOR ALL THE ID FOR EACH STUDY####################################
 
 
 # for i in "${!NUID[@]}"; do   
@@ -156,7 +191,7 @@ allID=("${NUID[@]}" "${NUIDspeOG[@]}")
 
 # done
 
-#########################################################SPECIFIQUE OUTGROUP###########################################################
+#################################################SPECIFIQUE OUTGROUP#################################################
 
 # if [ "$speprot_empty" = "false" ]; then
 # for i in "${!NUIDspeOG[@]}"; do   
@@ -173,7 +208,7 @@ allID=("${NUID[@]}" "${NUIDspeOG[@]}")
 # done
 # fi
 
-######################################EXTRACT ALL THE DATA FROM THE GENBANK FILES#################################################
+###############################################EXTRACT ALL THE DATA FROM THE GENBANK FILES###############################################
 
 # echo The captions, metadata files and files containing all the sequences are currently being created.
 
@@ -197,14 +232,17 @@ allID=("${NUID[@]}" "${NUIDspeOG[@]}")
 
 #     echo -e "length of the Alignement : " >> "${path}""${study}"/log_file_"${study}".txt
 #     bioawk -c fastx 'NR==1 {print length($seq)}' "${path}""${study}"/prot_all_align_"${study}".aln-fasta >> "${path}""${study}"/log_file_"${study}".txt
+
+#     Hours=$(("${SECONDS}" / 3600))
+#     Minutes=$((("${SECONDS}" % 3600) / 60))
+#     Sec=$(("${SECONDS}" % 60))
+#     echo -e "-------------------------------------------------- ${Hours} Hours ${Minutes} Minutes ${Sec} Seconds" >> "${path}""${study}"/log_file_"${study}".txt
+
 # done
 
-# Hours=$(("${SECONDS}" / 3600))
-# Minutes=$((("${SECONDS}" % 3600) / 60))
-# Sec=$(("${SECONDS}" % 60))
-# echo -e "-------------------------------------------------- ${Hours} Hours ${Minutes} Minutes ${Sec} Seconds" >> "${path}""${study}"/log_file_"${study}".txt
 
-######################################BLAST#################################################
+
+#################################################BLAST#################################################
 
 # for i in "${!studies[@]}"; do
 #     IFS=$';' read -ra prot <<< "${proteins[i]}"
@@ -238,6 +276,18 @@ allID=("${NUID[@]}" "${NUIDspeOG[@]}")
 #     echo 
 # done
 
+for study in "${studies[@]}"; do
+    # if [[ "${blastapprox[$study]}" == Y* ]]; then
+        mkdir -p "${path}""${study}"/Align
+        rm -f "${path}""${study}"/Align/* >/dev/null 
+        echo "${path}""${path_script}"prot_position.py
+        /usr/bin/python3 "${path}""${path_script}"prot_position.py "${path}" "${studies[*]}" "${studiesspeOG[*]}" "${orgaWIWO[*]}" "${INOUT[*]}" "${protINOUT[*]}" "${target_list[*]}" "${names[*]}" "${Allstudies[*]}" "${blastapprox[*]}"
+    # fi
+
+done
+
+
+#################################################DON'T COMMENT THAT PART#################################################
 for study in "${!studies[@]}"; do
     
     IFS=$';' read -ra sepprot <<< "${proteins[$study]}"
@@ -245,12 +295,10 @@ for study in "${!studies[@]}"; do
     for (( i=3; i<=(maxprot*2)+2; i+=2 )); do
         resultat=$(awk -F"\t" -v col="$i" 'NR>1 && ($col!="nan" || $(col+1)!="nan"){found=1;exit} END{if(found)print "not only nan";else print "only nan"}' "${path}${studies[$study]}/pos_prot_final_${studies[$study]}.txt")
         todelprot=$(head -n1 "${path}${studies[$study]}/pos_prot_final_${studies[$study]}.txt" | awk -v col="$i" -F"\t" '{print $col}' | sed 's/Start//g')
-        echo "name prot ${todelprot} col ${i}" 
-        echo "resultat ${resultat}"
 
         if [ "$resultat" = "only nan" ]; then
             
-    
+            echo "The protein ${todelprot} does not have any positions and therefor will be deleted for the study ${studies[$study]}."
             newprotlist=""
             #newprotlistsep=""
             for element in "${sepprot[@]}"; do
@@ -302,21 +350,23 @@ for study in "${!studies[@]}"; do
 done
 
 
-#####################################MESURE THE DIVERGENCE BETWEEN ALL THE SEQUENCES FOR EACH STUDY######################################
+######################################MESURE THE DIVERGENCE BETWEEN ALL THE SEQUENCES FOR EACH STUDY######################################
 
-# ./"${path_script}"DNA_dist.sh "${path}" "${studies[*]}" 
+./"${path_script}"DNA_dist.sh "${path}" "${studies[*]}" 
 
 #################################################DELETE THE SEQUENCES THAT ARE TOO CLOSE#################################################
 
-# echo The duplicate sequences are being deleted
-# for study in "${studies[@]}"; do
-# rm -f "${path}""${study:?}"/nucl_sdbl_"${study}".fasta "${path}""${study:?}"/prot_sdbl_"${study}".fasta  >/dev/null 
+echo The duplicate sequences are being deleted
+for study in "${studies[@]}"; do
+rm -f "${path}""${study:?}"/nucl_sdbl_"${study}".fasta "${path}""${study:?}"/prot_sdbl_"${study}".fasta  >/dev/null 
 # echo -e "After delete_dbl.py : " >> "${path}""${study}"/log_file_"${study}".txt
 # echo -e "Deleted sequences : " >> "${path}""${study}"/log_file_"${study}".txt
-# done
+done
 
-# /usr/bin/python3 "${path}""${path_script}"delete_dbl.py "${path}" "${studies[*]}" "${keep_prot[*]}" "${ths[*]}" "${target_list[*]}" 
-# for study in "${studies[@]}"; do
+/usr/bin/python3 "${path}""${path_script}"delete_dbl.py "${path}" "${studies[*]}" "${keep_prot[*]}" "${ths[*]}" "${target_list[*]}" 
+for study in "${studies[@]}"; do
+
+    logfile "delete_dbl" "${study}" "${path}""${study}"/prot_sdbl_"${study}" "genbank"
 
 # echo -e "Number of sequences : " >> "${path}""${study}"/log_file_"${study}".txt
 # bioawk -c fastx '{print $name}' "${path}""${study}"/prot_sdbl_"${study}".fasta | wc -l >> "${path}""${study}"/log_file_"${study}".txt
@@ -336,103 +386,110 @@ done
 #     echo -e "-------------------------------------------------- ${Hours} Hours ${Minutes} Minutes ${Sec} Seconds" >> "${path}""${study}"/log_file_"${study}".txt
 
 
-# done
+done
 
-#################################################SEPERATE THE PROTEINES##############################################################
-
-
-# echo the proteins are being seperated
-
-# for study in "${studies[@]}"; do
-# IFS=$';' read -ra sepprot <<< "${proteins[$study]}"
-# echo "${sepprot[*]}"
-# rm -f "${path}""${study:?}""${res_file}"* >/dev/null 
-# done
-
-# /usr/bin/python3 "${path}""${path_script}"sep_prot.py "${path}" "${studies[*]}" "${position[*]}" "${names[*]}" "${positionspeOG[*]}" "${start[*]}" "${startspe_OG[*]}" "${proteins[*]}" "${proteinsspe_OG[*]}" "${res_file}" "${studiesspeOG[*]}" "${NUIDspeOG[*]}" "${orgaWIWO[*]}" "${INOUT[*]}" "${protINOUT[*]}"
+#################################################SEPERATE THE PROTEINES#################################################
 
 
-# for study in "${studies[@]}"; do
-#     echo -e "After sep_prot.py : " >> "${path}""${study}"/log_file_"${study}".txt
+echo the proteins are being seperated
+
+for study in "${studies[@]}"; do
+IFS=$';' read -ra sepprot <<< "${proteins[$study]}"
+echo "${sepprot[*]}"
+rm -f "${path}""${study:?}""${res_file}"* >/dev/null 
+done
+
+/usr/bin/python3 "${path}""${path_script}"sep_prot.py "${path}" "${studies[*]}" "${position[*]}" "${names[*]}" "${positionspeOG[*]}" "${start[*]}" "${startspe_OG[*]}" "${proteins[*]}" "${proteinsspe_OG[*]}" "${res_file}" "${studiesspeOG[*]}" "${NUIDspeOG[*]}" "${orgaWIWO[*]}" "${INOUT[*]}" "${protINOUT[*]}"
+
+
+for study in "${studies[@]}"; do
+    echo -e "After sep_prot.py : " >> "${path}""${study}"/log_file_"${study}".txt
     
-#     for prot in "${sepprot[@]}"; do
+    for prot in "${sepprot[@]}"; do
+        echo -e "${prot} : " >> "${path}""${study}"/log_file_"${study}".txt
+        logfile  "sep_prot" "${study}" "${path}""${study}""${res_file}""${prot}"_"${study}"_prot.fasta "delete_dbl"
+
+
     
-#     echo -e "${prot} : " >> "${path}""${study}"/log_file_"${study}".txt
-#     echo -e "Number of sequence : " >> "${path}""${study}"/log_file_"${study}".txt
-#     bioawk -c fastx '{print $name}' "${path}""${study}""${res_file}""${prot}"_"${study}"_prot.fasta | wc -l >> "${path}""${study}"/log_file_"${study}".txt
+    # echo -e "Number of sequence : " >> "${path}""${study}"/log_file_"${study}".txt
+    # bioawk -c fastx '{print $name}' "${path}""${study}""${res_file}""${prot}"_"${study}"_prot.fasta | wc -l >> "${path}""${study}"/log_file_"${study}".txt
     
-#     echo -e "length of the Alignement : " >> "${path}""${study}"/log_file_"${study}".txt
-#     bioawk -c fastx 'NR==1 {print length($seq)}' "${path}""${study}""${res_file}""${prot}"_"${study}"_prot.fasta >> "${path}""${study}"/log_file_"${study}".txt
+    # echo -e "length of the Alignement : " >> "${path}""${study}"/log_file_"${study}".txt
+    # bioawk -c fastx 'NR==1 {print length($seq)}' "${path}""${study}""${res_file}""${prot}"_"${study}"_prot.fasta >> "${path}""${study}"/log_file_"${study}".txt
 
-#     bioawk -c fastx '{print $name}' "${path}""${study}""${res_file}""${prot}"_"${study}"_prot.fasta > "${path}""${study}"/list_id_sep.txt 
+    # bioawk -c fastx '{print $name}' "${path}""${study}""${res_file}""${prot}"_"${study}"_prot.fasta > "${path}""${study}"/list_id_sep.txt 
 
-#     sort "${path}""${study}"/list_id_sep.txt > "${path}""${study}"/list_id_sep_sort.txt 
-#     rm "${path}""${study}"/list_id_sep.txt
+    # sort "${path}""${study}"/list_id_sep.txt > "${path}""${study}"/list_id_sep_sort.txt 
+    # rm "${path}""${study}"/list_id_sep.txt
     
-#     echo -e "Deleted sequences : " >> "${path}""${study}"/log_file_"${study}".txt
-#     diff  "${path}""${study}"/list_id_delete_sort.txt "${path}""${study}"/list_id_sep_sort.txt |grep "^<" >> "${path}""${study}"/log_file_"${study}".txt
-#     echo -e "---------------------" >> "${path}""${study}"/log_file_"${study}".txt
-#     #rm "${path}""${study}"/list_id_delete_sort.txt
+    # echo -e "Deleted sequences : " >> "${path}""${study}"/log_file_"${study}".txt
+    # diff  "${path}""${study}"/list_id_delete_sort.txt "${path}""${study}"/list_id_sep_sort.txt |grep "^<" >> "${path}""${study}"/log_file_"${study}".txt
+    #echo -e "---------------------" >> "${path}""${study}"/log_file_"${study}".txt
+    # #rm "${path}""${study}"/list_id_delete_sort.txt
 
-#     done
-#     Hours=$(("${SECONDS}" / 3600))
-#     Minutes=$((("${SECONDS}" % 3600) / 60))
-#     Sec=$(("${SECONDS}" % 60))
-#     echo -e "-------------------------------------------------- ${Hours} Hours ${Minutes} Minutes ${Sec} Seconds" >> "${path}""${study}"/log_file_"${study}".txt
-# done
+    done
+    # Hours=$(("${SECONDS}" / 3600))
+    # Minutes=$((("${SECONDS}" % 3600) / 60))
+    # Sec=$(("${SECONDS}" % 60))
+    # echo -e "-------------------------------------------------- ${Hours} Hours ${Minutes} Minutes ${Sec} Seconds" >> "${path}""${study}"/log_file_"${study}".txt
+done
 
 
-##########################################ADD THE SPECIFIC OUTGROUP IN EACH FILE######################################################
+#################################################ADD THE SPECIFIC OUTGROUP IN EACH FILE#################################################
 
-# echo The outgroup of each studies are being added
-# for study in "${studies[@]}"; do
-# rm -f "${path}""${study:?}""${res_file}"*_OG.fasta "${path}""${study:?}""${res_file}"*_OG.aln-fasta  >/dev/null 
-# done
+echo The outgroup of each studies are being added
+for study in "${studies[@]}"; do
+rm -f "${path}""${study:?}""${res_file}"*_OG.fasta "${path}""${study:?}""${res_file}"*_OG.aln-fasta  >/dev/null 
+done
 
-# /usr/bin/python3 "${path}""${path_script}"merge_spe_prot.py "${path}" "${names[*]}" "${speprot[*]}" "${Type_seq[*]}" "${res_file}" "${studies[*]}" "${Allstudies[*]}" "${for_prot[*]}" 
+/usr/bin/python3 "${path}""${path_script}"merge_spe_prot.py "${path}" "${names[*]}" "${speprot[*]}" "${Type_seq[*]}" "${res_file}" "${studies[*]}" "${Allstudies[*]}" "${for_prot[*]}" 
 
-# for study in "${studies[@]}"; do
-#    IFS=$';' read -ra sepprot <<< "${proteins[$study]}"
-#     echo -e "merge_spe_prot.py : " >> "${path}""${study}"/log_file_"${study}".txt
+for study in "${studies[@]}"; do
+   IFS=$';' read -ra sepprot <<< "${proteins[$study]}"
+    #echo -e "merge_spe_prot.py : " >> "${path}""${study}"/log_file_"${study}".txt
     
-#     for prot in "${sepprot[@]}"; do
+    for prot in "${sepprot[@]}"; do
+    logfile  "merge_spe_prot" "${study}" "${path}""${study}""${res_file}""${prot}"_"${study}"_prot_OG.aln-fasta "sep_prot"
+
+
     
-#     echo -e "${prot} : " >> "${path}""${study}"/log_file_"${study}".txt
-#     echo -e "Number of sequence : " >> "${path}""${study}"/log_file_"${study}".txt
-#     bioawk -c fastx '{print $name}' "${path}""${study}""${res_file}""${prot}"_"${study}"_prot_OG.aln-fasta | wc -l >> "${path}""${study}"/log_file_"${study}".txt
+    # echo -e "${prot} : " >> "${path}""${study}"/log_file_"${study}".txt
+    # echo -e "Number of sequence : " >> "${path}""${study}"/log_file_"${study}".txt
+    # bioawk -c fastx '{print $name}' "${path}""${study}""${res_file}""${prot}"_"${study}"_prot_OG.aln-fasta | wc -l >> "${path}""${study}"/log_file_"${study}".txt
     
-#     echo -e "length of the Alignement : " >> "${path}""${study}"/log_file_"${study}".txt
-#     bioawk -c fastx 'NR==1 {print length($seq)}' "${path}""${study}""${res_file}""${prot}"_"${study}"_prot_OG.aln-fasta >> "${path}""${study}"/log_file_"${study}".txt
+    # echo -e "length of the Alignement : " >> "${path}""${study}"/log_file_"${study}".txt
+    # bioawk -c fastx 'NR==1 {print length($seq)}' "${path}""${study}""${res_file}""${prot}"_"${study}"_prot_OG.aln-fasta >> "${path}""${study}"/log_file_"${study}".txt
 
-#     bioawk -c fastx '{print $name}' "${path}""${study}""${res_file}""${prot}"_"${study}"_prot_OG.aln-fasta > "${path}""${study}"/list_id_merge.txt
+    # bioawk -c fastx '{print $name}' "${path}""${study}""${res_file}""${prot}"_"${study}"_prot_OG.aln-fasta > "${path}""${study}"/list_id_merge.txt
 
-#     sort "${path}""${study}"/list_id_merge.txt > "${path}""${study}"/list_id_merge_sort.txt 
-#     rm "${path}""${study}"/list_id_merge.txt
+    # sort "${path}""${study}"/list_id_merge.txt > "${path}""${study}"/list_id_merge_sort.txt 
+    # rm "${path}""${study}"/list_id_merge.txt
     
-#     echo -e "Deleted sequences : " >> "${path}""${study}"/log_file_"${study}".txt
-#     diff  "${path}""${study}"/list_id_merge_sort.txt "${path}""${study}"/list_id_merge_sort.txt |grep "^<" >> "${path}""${study}"/log_file_"${study}".txt
-#     echo -e "---------------------" >> "${path}""${study}"/log_file_"${study}".txt
-#     #rm "${path}""${study}"/list_id_delete_sort.txt
+    # echo -e "Deleted sequences : " >> "${path}""${study}"/log_file_"${study}".txt
+    # diff  "${path}""${study}"/list_id_merge_sort.txt "${path}""${study}"/list_id_merge_sort.txt |grep "^<" >> "${path}""${study}"/log_file_"${study}".txt
+    # echo -e "---------------------" >> "${path}""${study}"/log_file_"${study}".txt
+    # #rm "${path}""${study}"/list_id_delete_sort.txt
 
-#     done
-#     Hours=$(("${SECONDS}" / 3600))
-#     Minutes=$((("${SECONDS}" % 3600) / 60))
-#     Sec=$(("${SECONDS}" % 60))
-#     echo -e "-------------------------------------------------- ${Hours} Hours ${Minutes} Minutes ${Sec} Seconds" >> "${path}""${study}"/log_file_"${study}".txt
-# done
+    done
+    # Hours=$(("${SECONDS}" / 3600))
+    # Minutes=$((("${SECONDS}" % 3600) / 60))
+    # Sec=$(("${SECONDS}" % 60))
+    # echo -e "-------------------------------------------------- ${Hours} Hours ${Minutes} Minutes ${Sec} Seconds" >> "${path}""${study}"/log_file_"${study}".txt
+
+done
 
 
-###############################CREATE A TABLE WITH THE DIVERGENCE OF THE SPECIFIC PROTEINS############################################
+#######################################CREATE A TABLE WITH THE DIVERGENCE OF THE SPECIFIC PROTEINS#######################################
 
-# if [ "$speprot_empty" = "false" ]; then
-# for study in "${studies[@]}"; do
-#     mkdir -p "${path}""${study}"/Align_all
-# done
+if [ "$speprot_empty" = "false" ]; then
+for study in "${studies[@]}"; do
+    mkdir -p "${path}""${study}"/Align_all
+done
 
-# /usr/bin/python3 "${path}""${path_script}"protdist.py "${path}" "${studies[*]}" "${speprot[*]}" "${names[*]}" "${path_script}" "${res_file}" "${path_script}" "${proteins[*]}"  "${studiesspeprot[*]}"
-# fi
+/usr/bin/python3 "${path}""${path_script}"protdist.py "${path}" "${studies[*]}" "${speprot[*]}" "${names[*]}" "${path_script}" "${res_file}" "${path_script}" "${proteins[*]}"  "${studiesspeprot[*]}"
+fi
 
-##################################LAUCH TRIMAL FOR EACH SPECIFIC PROTEINES OF EACH STUDY########################################
+##########################################LAUCH TRIMAL FOR EACH SPECIFIC PROTEINES OF EACH STUDY##########################################
 
 if [ "${speprot[0]}" != '"  "' ];then
     speprotsse=$(echo "${speprot[@]}" | tr -d '" ' | cut -d'=' -f1 | paste -sd, -)
@@ -476,7 +533,7 @@ fi
 
 
 
-#################################LAUCH TRIMAL FOR EACH PROTEINES OF EACH STUDY#############################################################
+##############################################LAUCH TRIMAL FOR EACH PROTEINES OF EACH STUDY##############################################
 
 for study in "${!studies[@]}"; do
   IFS=$';' read -ra sepprot <<< "${proteins[$study]}"
@@ -513,37 +570,39 @@ done
 
 for study in "${studies[@]}"; do
   IFS=$';' read -ra sepprot <<< "${proteins[$study]}"
-    echo -e "After Trimal : " >> "${path}""${study}"/log_file_"${study}".txt
+    #echo -e "After Trimal : " >> "${path}""${study}"/log_file_"${study}".txt
     
     for prot in "${sepprot[@]}"; do
-    echo -e "${prot} : " >> "${path}""${study}"/log_file_"${study}".txt
-    echo -e "Number of sequence : " >> "${path}""${study}"/log_file_"${study}".txt
-    bioawk -c fastx '{print $name}' "${path}${study}${res_file}treefolder/${prot}_${study}_prot_trimal.fasta" | wc -l >> "${path}""${study}"/log_file_"${study}".txt
-    
-    echo -e "length of the Alignement : " >> "${path}""${study}"/log_file_"${study}".txt
-    bioawk -c fastx 'NR==1 {print length($seq)}' "${path}${study}${res_file}treefolder/${prot}_${study}_prot_trimal.fasta" >> "${path}""${study}"/log_file_"${study}".txt
+        logfile  "trimal" "${study}" "${path}${study}${res_file}treefolder/${prot}_${study}_prot_trimal.fasta" "merge_spe_prot"
 
-    bioawk -c fastx '{print $name}' "${path}${study}${res_file}treefolder/${prot}_${study}_prot_trimal.fasta" > "${path}""${study}"/list_id_Trimal.txt 
-
-    sort "${path}""${study}"/list_id_Trimal.txt > "${path}""${study}"/list_id_Trimal_sort.txt 
-    rm "${path}""${study}"/list_id_Trimal.txt
+    # echo -e "${prot} : " >> "${path}""${study}"/log_file_"${study}".txt
+    # echo -e "Number of sequence : " >> "${path}""${study}"/log_file_"${study}".txt
+    # bioawk -c fastx '{print $name}' "${path}${study}${res_file}treefolder/${prot}_${study}_prot_trimal.fasta" | wc -l >> "${path}""${study}"/log_file_"${study}".txt
     
-    echo -e "Deleted sequences : (possibly composed only by gaps , removed by trimal)" >> "${path}""${study}"/log_file_"${study}".txt
-    diff  "${path}""${study}"/list_id_merge_sort.txt "${path}""${study}"/list_id_Trimal_sort.txt | grep "^<" >> "${path}""${study}"/log_file_"${study}".txt
-    echo -e "---------------------" >> "${path}""${study}"/log_file_"${study}".txt
+    # echo -e "length of the Alignement : " >> "${path}""${study}"/log_file_"${study}".txt
+    # bioawk -c fastx 'NR==1 {print length($seq)}' "${path}${study}${res_file}treefolder/${prot}_${study}_prot_trimal.fasta" >> "${path}""${study}"/log_file_"${study}".txt
+
+    # bioawk -c fastx '{print $name}' "${path}${study}${res_file}treefolder/${prot}_${study}_prot_trimal.fasta" > "${path}""${study}"/list_id_Trimal.txt 
+
+    # sort "${path}""${study}"/list_id_Trimal.txt > "${path}""${study}"/list_id_Trimal_sort.txt 
+    # rm "${path}""${study}"/list_id_Trimal.txt
+    
+    # echo -e "Deleted sequences : (possibly composed only by gaps , removed by trimal)" >> "${path}""${study}"/log_file_"${study}".txt
+    # diff  "${path}""${study}"/list_id_merge_sort.txt "${path}""${study}"/list_id_Trimal_sort.txt | grep "^<" >> "${path}""${study}"/log_file_"${study}".txt
+    # echo -e "---------------------" >> "${path}""${study}"/log_file_"${study}".txt
    
 
     done
-    Hours=$(("${SECONDS}" / 3600))
-    Minutes=$((("${SECONDS}" % 3600) / 60))
-    Sec=$(("${SECONDS}" % 60))
-    echo -e "-------------------------------------------------- ${Hours} Hours ${Minutes} Minutes ${Sec} Seconds" >> "${path}""${study}"/log_file_"${study}".txt
+    # Hours=$(("${SECONDS}" / 3600))
+    # Minutes=$((("${SECONDS}" % 3600) / 60))
+    # Sec=$(("${SECONDS}" % 60))
+    # echo -e "-------------------------------------------------- ${Hours} Hours ${Minutes} Minutes ${Sec} Seconds" >> "${path}""${study}"/log_file_"${study}".txt
 done
 
 
 
 
-#################################################LAUCH IQTREE2 FOR EACH PROTEINES FOR EACH STUDY##########################################
+#############################################LAUCH IQTREE2 FOR EACH PROTEINES FOR EACH STUDY#############################################
 
 for study in "${!studies[@]}"; do
     printf "The best model for each proteic sequence will be writen \n">>"${path}""${studies[$study]}"/log_file_"${studies[$study]}".txt
@@ -558,7 +617,7 @@ echo -e "-------------------------------------------------- ${Hours} Hours ${Min
 done
 
 
-######################################LAUCH IQTREE2 FOR EACH  SPECIFIC PROTEINES FOR EACH STUDY###########################################
+########################################LAUCH IQTREE2 FOR EACH  SPECIFIC PROTEINES FOR EACH STUDY########################################
 
 if [ "$speprot_empty" = "false" ]; then
     for pair in "${unique_pairs[@]}" ; do 
