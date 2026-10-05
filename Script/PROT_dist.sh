@@ -19,13 +19,16 @@ mkdir -p "${new_path}"Align_all/"${Query}""${subject}"/
 
 mkdir -p "${new_path}"All_table/
 
-echo -e ">${Query}\n${Qseq}\n>${subject}\n${Sseq}\n" > "${new_path}Align_all/${Query}${subject}/temp.fasta"
+echo -e ">${Query}\n${Qseq}\n>${subject}\n${Sseq}\n" > "${new_path}Align_all/${Query}${subject}/${Query}${subject}temp.fasta"
 
-mafft --auto "${new_path}Align_all/${Query}${subject}/temp.fasta" >"${new_path}Align_all/${Query}${subject}/temp.aln-fasta" 2>> "${new_path}"Maffts.log
+# mafft --auto --quiet "${new_path}Align_all/${Query}${subject}/${Query}${subject}temp.fasta" >"${new_path}Align_all/${Query}${subject}/${Query}${subject}temp.aln-fasta" 2>/dev/null
 
-seqret -sequence "${new_path}Align_all/${Query}${subject}/temp.aln-fasta" -outseq "${new_path}Align_all/${Query}${subject}/temp.phy" -osformat phylip
+mafft --auto "${new_path}Align_all/${Query}${subject}/temp.fasta" 2>>"${new_path}Maffts_protdist.log" | grep -v "^Read and write" >"${new_path}Align_all/${Query}${subject}/temp.aln-fasta"
+#> "${new_path}"Maffts_protdist.log 
 
-cp "${new_path}"Align_all/"${Query}""${subject}"/temp.phy "${new_path}"Align_all/"${Query}""${subject}"/infile
+seqret -sequence "${new_path}Align_all/${Query}${subject}/${Query}${subject}temp.aln-fasta" -outseq "${new_path}Align_all/${Query}${subject}/${Query}${subject}temp.phy" -osformat phylip
+
+cp "${new_path}"Align_all/"${Query}""${subject}"/"${Query}""${subject}"temp.phy "${new_path}"Align_all/"${Query}""${subject}"/infile
 cd "${new_path}"Align_all/"${Query}""${subject}"/
    
 echo -e "Y\n" | phylip protdist > /dev/null

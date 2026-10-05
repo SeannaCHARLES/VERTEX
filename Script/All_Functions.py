@@ -805,7 +805,7 @@ def select_doublon(path,study,ths,keep_list,target) :
 #This function delete the identified duplicates for each protein for each study
 
 def delete_dbl(path,Doublon,study):
-    print (Doublon)
+    
     types_seq=["nucl",'prot']
     for type_seq in types_seq :
     
@@ -833,7 +833,7 @@ def onlygap(path,study,target,keep_list):
     return Doublon
 
 
-###################################################################Function for the Script Mark_script###################################################################
+###################################################Function for the Script Mark_script###################################################
 
 ##Function compt_ali_nucl
 # This function uses the position of the proteins of the target organism (proteic sequence) to identify the position of the proteins in the alignment.
@@ -924,9 +924,10 @@ def nucleic_sequences(study,ID,sequence,debseq,proteins,sp,resfile,path) :
             file.write(f">{ID}\n{mark_prot}\n")
             file.close()
         else : 
-            file = open(f"{name}","a")
-            file.write(f">{ID}\n\t\n")
-            file.close()
+            logfile= open(f"{path}{study}/log_file_{study}.txt","a")
+            logfile.write(f"No positions for the protein {prot.lower()} for the virus {ID}")
+            logfile.close()
+            print(f"No positions for the protein {prot.lower()} for the virus {ID}")
  
 def nucleic_sequences_OG(study,ID,sequence,debseq,pos_prot,proteins,sp,resfile,path) :
 
@@ -986,9 +987,13 @@ def nucleic_sequences_OG(study,ID,sequence,debseq,pos_prot,proteins,sp,resfile,p
             file.write(f">{ID}\n{mark_prot}\n")
             file.close()
         else : 
-            file = open(f"{name}","a")
-            file.write(f">{ID}\n\t\n")
-            file.close()
+            logfile= open(f"{path}{study}/log_file_{study}.txt","a")
+            logfile.write(f"No positions for the protein {prot.lower()} for the virus {ID}")
+            logfile.close()
+            print(f"No positions for the protein {prot.lower()} for the virus {ID}")
+
+
+
 ##Function compt_alignement
 # This function uses the position of the target organism's proteins (sequence proteic) to identify the position of the proteins in the alignment.
 
@@ -1088,9 +1093,10 @@ def proteic_sequence (study,ID,sequence,proteins,sp,resfile,path) :
             file.write(f">{ID}\n{mark_prot}\n")
             file.close()
         else : 
-            file = open(f"{name}","a")
-            file.write(f">{ID}\n\t\n")
-            file.close()
+            logfile= open(f"{path}{study}/log_file_{study}.txt","a")
+            logfile.write(f"No positions for the protein {prot.lower()} for the virus {ID}")
+            logfile.close()
+            print(f"No positions for the protein {prot.lower()} for the virus {ID}")
 
 
 #Function mark_sequence
@@ -1199,7 +1205,7 @@ def col_pos(nm_study,pos_col_prot,study_prot) :
 
 
 
-###################################################################Function for the Script WIWO###################################################################
+######################################################Function for the Script WIWO######################################################
 
 
 def deleteIN(study,IO,protein,organismes,res_file,types_seq,path) : 

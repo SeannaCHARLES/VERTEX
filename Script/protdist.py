@@ -72,8 +72,9 @@ if studiesspeprot :
                 for record_1 in SeqIO.parse(f"{path}{name}{resfile}{proteins[1].lower()}_{name}_prot.fasta","fasta") : 
 
                     for record_2 in SeqIO.parse(f"{path}{name}{resfile}{proteins[0].lower()}_{name}_prot.fasta","fasta") : 
-                        name_prot=str(proteins[0].lower())+str(proteins[1].lower())
-                        couple_list.append([record_1,record_2,name,name_prot])
+                        if record_1.seq!="	" and record_2.seq!="	":
+                            name_prot=str(proteins[0].lower())+str(proteins[1].lower())
+                            couple_list.append([record_1,record_2,name,name_prot])
 
             if __name__ == '__main__' : 
                 with Pool(10) as p : 
@@ -133,7 +134,7 @@ for name,prots in zip(names,list_prot) :
             if os.path.exists(f"{path}{name}{resfile}{prot}_{name}_prot.fasta") :
                 for record_1 in SeqIO.parse(f"{path}{name}{resfile}{prot}_{name}_prot.fasta","fasta") : 
                     for record_2 in SeqIO.parse(f"{path}{name}{resfile}{prot}_{name}_prot.fasta","fasta") : 
-                        if record_1.id != record_2.id and (record_1.seq!="\t" and record_2.seq!="\t"):
+                        if record_1.id != record_2.id and (record_1.seq!="	" and record_2.seq!="	"):
                             couple_list.append([record_1,record_2,name,prot])
                     
 

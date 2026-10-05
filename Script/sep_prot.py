@@ -40,7 +40,7 @@ study_prot={}
 ##########################################################
 
 ###########################Script##########################
-
+print(prot)
 
 for study,start,position in zip(studies,start,position) :
     position=position.split(";")
@@ -60,14 +60,14 @@ for item,study in zip(protspe_OG,onlyOG) :
 
 for item,study in zip(prot,studies) :
         study_prot[study]=item.split(";")
-
+print(study_prot)
 concern_study={}
 for name_,orga,IO,proteinIO in zip(names,orgaWIWO,INOUT,protINOUT) : 
     if orga!="" : 
         orga=orga.split(";")
         conc_orga=[element.replace(".", "").lower() for element in orga]
-        
         concern_study[name_]=[conc_orga,IO,proteinIO]
+
 for study in studies : 
 #for name_all,organismesAV,IO,proteinIO in zip(names,orgaWIWO,INOUT,protINOUT) :
     #subprocess.run(["rm",f"{path}{study}{resfile}/*" ],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,shell=True)
