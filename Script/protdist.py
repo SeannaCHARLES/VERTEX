@@ -35,7 +35,7 @@ def Lauch_MSP(list_record) :
 
     new_path=f"{path}{name}/"
 
-    
+    #subprocess.run(f"echo Mafft for the outfile {path}{study}/prot_all_align_{study}.aln-fasta >> ${new_path}Maffts_protdist.log && mafft --auto  ${new_path}Align_all/${Query}${subject}/${Query}${subject}temp.fasta > ${new_path}Align_all/${Query}${subject}/${Query}${subject}temp.aln-fasta  2>> ${new_path}Maffts_protdist.log ",shell=True)
     subprocess.run(f"./{script_path}PROT_dist.sh {new_path} {Query} {Qseq} {subject} {Sseq} {name_prot}",shell=True)
 
 
@@ -114,7 +114,7 @@ if studiesspeprot :
             subprocess.run(f"rm {path}{name}/temp_protdist_filter.txt",shell=True)
 
 for name,prots in zip(names,list_prot) : 
-    
+    subprocess.run(f"rm {path}{name}/Maffts_protdist.log",shell=True)
     if name in studies :
 
         change_name={}
@@ -129,6 +129,7 @@ for name,prots in zip(names,list_prot) :
 
         
         for prot in prots:
+            print(f"prot {prot}")
             couple_list=[]
             open(f"{path}{name}/temp_protdist_filter{prot}.txt", "w").close()
             if os.path.exists(f"{path}{name}{resfile}{prot}_{name}_prot.fasta") :

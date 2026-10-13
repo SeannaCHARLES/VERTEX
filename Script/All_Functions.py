@@ -11,7 +11,10 @@ from Bio.Seq import Seq
 from Bio import Entrez
 from Bio import AlignIO
 from Bio import Phylo
-
+from statistics import mean
+from statistics import median
+from statistics import quantiles
+from statistics import stdev
 import re
 
 import subprocess
@@ -529,7 +532,26 @@ def extract_id(path,Datas,study,sp,list_prot,email,metadata_name_prot,dicy,namep
             write_file(path,Description_nu,Description_prot,Sequence_aa,Sequence_nu,localisation,region,region_color,order,order_color,host,strain,Nu,ID_prot,study,organism,ID,Informations,color_info,sp,namespeprot)
         
         
-            line=f"{study}\t{fullorganisme}\t{ID}\t{taxonomy}\t{Informations}\t{"-".join(ID_prot)}\t{sizeprot}\t{output_prot}{Nu}\t{sizenu}\t{strand}\t{strain}\t{region}: {localisation}\t{order}: {host}\t{ref}\n"
+
+            infoposprot=""
+            for nbprot in range(0,len(output_prot.split("\t"))-1,2) :
+
+                domain_size=0 
+                start=output_pos.split("\t")[nbprot].replace("[","").replace("]","").split(",")
+                end=output_pos.split("\t")[nbprot+1].replace("[","").replace("]","").split(",")
+
+                for S,E in zip(start,end) : 
+                    if S!="nan" and E!= "nan":
+                        domain_size+=int(E)-int(S)+1
+                    
+                starts= [int(item.strip()) if item.strip().lower() != 'nan' else None for item in start]
+                ends= [int(item.strip()) if item.strip().lower() != 'nan' else None for item in end]
+
+                infoposprot+=str(starts) +"\t"+ str(ends)+"\t"+ str(domain_size) +"\t"
+               
+                
+
+            line=f"{study}\t{fullorganisme}\t{ID}\t{taxonomy}\t{Informations}\t{"-".join(ID_prot)}\t{sizeprot}\t{infoposprot}{Nu}\t{sizenu}\t{strand}\t{strain}\t{region}: {localisation}\t{order}: {host}\t{ref}\n"
             line_prot_=f"{study}\t{ID}\t{output_pos}\n"
 
             line_prot_=line_prot_.replace(":","")
@@ -753,7 +775,7 @@ def find_Informations(organism,path) :
     
 
 
-###################################################################Function for the Script delete_dbl###################################################################
+###################################################Function for the Script delete_dbl###################################################
 
 ##Function select_doublon
 #This function identified all the possible duplicate sequences
@@ -773,13 +795,15 @@ def select_doublon(path,study,ths,keep_list,target) :
     end_col=df.shape[1]
     line=0
     col=0
+    dnadist_value=[]
     while line <end_line:
         drop=False
         col=line+1
      
 
         while col <end_col-1 :
-        
+            if df.iloc[line,col]>0:
+                dnadist_value.append(df.iloc[line,col])
             if df.iloc[line,col] <=ths and df.iloc[line,col]!=-1  :
                 if (df.index[line] not in target[9:].lower() or target[9:].lower() not in df.index[line])  and (df.index[line] not in keep_list or any(prot[9:].lower() not in df.index[line] for prot in keep_list)): 
                     drop=True
@@ -799,6 +823,9 @@ def select_doublon(path,study,ths,keep_list,target) :
             line=0
         else :
             line+=1
+    logfile= open(f"{path}{study}/log_file_{study}.txt","a")
+    logfile.write(f"Summary of the DNAdist values : \n Max : {max(dnadist_value)}\n Min : {min(dnadist_value)}\n Mean :{mean(dnadist_value)} \n Median : {median(dnadist_value)}\n standard deviation : {stdev(dnadist_value)}\n Quantiles : {quantiles(dnadist_value)}\n")
+    logfile.close()
     return Doublon
 
 ##Function delete_dbl
@@ -923,11 +950,7 @@ def nucleic_sequences(study,ID,sequence,debseq,proteins,sp,resfile,path) :
             file = open(f"{name}","a")
             file.write(f">{ID}\n{mark_prot}\n")
             file.close()
-        else : 
-            logfile= open(f"{path}{study}/log_file_{study}.txt","a")
-            logfile.write(f"No positions for the protein {prot.lower()} for the virus {ID}")
-            logfile.close()
-            print(f"No positions for the protein {prot.lower()} for the virus {ID}")
+
  
 def nucleic_sequences_OG(study,ID,sequence,debseq,pos_prot,proteins,sp,resfile,path) :
 
@@ -986,11 +1009,7 @@ def nucleic_sequences_OG(study,ID,sequence,debseq,pos_prot,proteins,sp,resfile,p
             file = open(f"{name}","a")
             file.write(f">{ID}\n{mark_prot}\n")
             file.close()
-        else : 
-            logfile= open(f"{path}{study}/log_file_{study}.txt","a")
-            logfile.write(f"No positions for the protein {prot.lower()} for the virus {ID}")
-            logfile.close()
-            print(f"No positions for the protein {prot.lower()} for the virus {ID}")
+
 
 
 
@@ -1092,11 +1111,6 @@ def proteic_sequence (study,ID,sequence,proteins,sp,resfile,path) :
             file = open(f"{name}","a")
             file.write(f">{ID}\n{mark_prot}\n")
             file.close()
-        else : 
-            logfile= open(f"{path}{study}/log_file_{study}.txt","a")
-            logfile.write(f"No positions for the protein {prot.lower()} for the virus {ID}")
-            logfile.close()
-            print(f"No positions for the protein {prot.lower()} for the virus {ID}")
 
 
 #Function mark_sequence

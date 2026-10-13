@@ -83,6 +83,7 @@ if not dicy :
 for study,allprot,spe_prot in zip(studies,list_prot,namespeprot) :
    
     chain_prot=""
+    chain_prot_metadata=""
     print(f"For the study : {study}")
     subprocess.run(f"rm {path}{study}/nucl/* {path}{study}/prot/* 2>/dev/null || true",shell=True)
     
@@ -90,10 +91,10 @@ for study,allprot,spe_prot in zip(studies,list_prot,namespeprot) :
     vv_prot[study]=prot
     
     for p in prot : 
-
         chain_prot+=f"Start{p}\tEnd{p}\t"
+        chain_prot_metadata+=f"Start{p}\tEnd{p}\tSize_extract\t"
 
-    subprocess.run(f"echo 'Study\tVirus name\tID itol tree\tTaxonomy\tInformations\tProtein accesion number\tSize Proteic sequence\t{chain_prot}Nucleic accession number\tSize Nucleic sequence\tStrand\tStrain\tGeographical region\tHost or vector\tReferences' >{path}{study}/metadata_{study}.txt",shell=True)
+    subprocess.run(f"echo 'Study\tVirus name\tID itol tree\tTaxonomy\tInformations\tProtein accesion number\tSize Proteic sequence\t{chain_prot_metadata}Nucleic accession number\tSize Nucleic sequence\tStrand\tStrain\tGeographical region\tHost or vector\tReferences' >{path}{study}/metadata_{study}.txt",shell=True)
     
     subprocess.run(f"echo 'Study\tID itol tree\t{chain_prot}' >{path}{study}/pos_prot_{study}.txt",shell=True)
 
