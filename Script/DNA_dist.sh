@@ -20,7 +20,7 @@ for study in "${studies[@]}"; do
         cp "${path}${study}/nucl_all_align_${study}.phy" infile
         #phylip DNAdist need a phylip format as input. The input need to be named infile
 
-        echo -e "Y\n" | phylip dnadist
+        echo -e "D\nY\n" | phylip dnadist
         { sed '1d' outfile | awk '$1 ~ /[a-zA-Z]/ {print $1}' | while read -r i; do 
         #All the id supposedly start with a letter this caracteristique is used to identify the organismes ID
 
@@ -39,7 +39,7 @@ for study in "${studies[@]}"; do
         }
         }
         END { if (count % max != 0) print ""; }' >> "${path}${study}/${study}_dnadist.txt"
-        rm outfile >/dev/null
-        rm infile >/dev/null
+        rm -f outfile >/dev/null
+        rm -f infile >/dev/null
 done # for the for loop
 ############################################################

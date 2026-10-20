@@ -51,8 +51,8 @@ for study,IO,protein,organismesAV in zip(names,INOUT,protINOUT,orgaWIWO) :
             organismes.append(Modif_ID(element[3:]))
 
         if IO.lower()=="in" :
-            print(f"for the study {study} the protein {protein} is {IO} the following organismes only {organismes}")
+            print(f"for the study {study} the protein {protein} is {IO} the following organismes only {organismes}\n")
             deleteIN(study,IO,protein,organismes,res_file,types_seq,path)
         else : 
-            print(f"for the study {study} the protein {protein} is {IO} the following organismes only {organismes}")
+            print(f"for the study {study} the protein {protein} is {IO} the following organismes only {organismes}\n")
             deleteOUT(study,IO,protein,organismes,res_file,types_seq,path) 

@@ -387,7 +387,7 @@ def write_file(path,Description_nu,Description_prot,Sequence_aa,Sequence_nu,loca
 def first_call(path,study,cop) : 
     global type_files
     
-    subprocess.run(['rm', f'{path}{study}/legend/*'],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+    subprocess.run(['rm','-f', f'{path}{study}/legend/*'],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
     namespeprot=cop.copy()
     for pos,element in enumerate(namespeprot) : 
         namespeprot[pos]=element.split("=")[0]
@@ -437,8 +437,8 @@ def first_call(path,study,cop) :
 
 def concatenates(path,study) :
 
-    subprocess.run(['rm', f'{path}{study}/nucl_all_{study}.fasta'],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
-    subprocess.run(['rm', f'{path}{study}/prot_all_{study}.fasta'],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+    subprocess.run(['rm','-f', f'{path}{study}/nucl_all_{study}.fasta'],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+    subprocess.run(['rm','-f', f'{path}{study}/prot_all_{study}.fasta'],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
     
     subprocess.run(f"cat {path}{study}/nucl/*.fasta >> {path}{study}/nucl_all_{study}.fasta",shell=True)
     subprocess.run(f"cat {path}{study}/prot/*.fasta >> {path}{study}/prot_all_{study}.fasta",shell=True)
@@ -838,7 +838,7 @@ def delete_dbl(path,Doublon,study):
     
         name=f"{path}{study}/{type_seq}_sdbl_{study}.fasta"
     
-        subprocess.run(["rm", f"{name}"],shell=True,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+        subprocess.run(["rm",'-f', f"{name}"],shell=True,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
 
         for record in SeqIO.parse(f"{path}{study}/{type_seq}_all_align_{study}.aln-fasta","fasta") :
         
@@ -1226,7 +1226,7 @@ def deleteIN(study,IO,protein,organismes,res_file,types_seq,path) :
 
     for type_seq in types_seq : 
         subprocess.run(f" cp {path}{study}{res_file}{protein}_{study}_{type_seq}.fasta {path}{study}{res_file}{protein}_{study}_{type_seq}_bef_WIWO.fasta" ,shell=True)
-        subprocess.run(["rm", f"{path}{study}{res_file}{protein}_{study}_{type_seq}.fasta"] ,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,shell=True)
+        subprocess.run(["rm",'-f', f"{path}{study}{res_file}{protein}_{study}_{type_seq}.fasta"] ,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,shell=True)
         filename=f"{path}{study}{res_file}{protein}_{study}_{type_seq}.fasta"
 
         for record in SeqIO.parse(f"{path}{study}{res_file}{protein}_{study}_{type_seq}_bef_WIWO.fasta","fasta") :
@@ -1239,7 +1239,7 @@ def deleteOUT(study,IO,protein,organismes,res_file,types_seq,path) :
 
     for type_seq in types_seq : 
         subprocess.run(f"cp {path}{study}{res_file}{protein}_{study}_{type_seq}.fasta {path}{study}{res_file}{protein}_{study}_{type_seq}_bef_WIWO.fasta",shell=True)
-        subprocess.run(["rm", f"{path}{study}{res_file}{protein}_{study}_{type_seq}.fasta"], stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,shell=True)
+        subprocess.run(["rm",'-f', f"{path}{study}{res_file}{protein}_{study}_{type_seq}.fasta"], stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,shell=True)
         filename=f"{path}{study}{res_file}{protein}_{study}_{type_seq}.fasta"
 
         for record in SeqIO.parse(f"{path}{study}{res_file}{protein}_{study}_{type_seq}_bef_WIWO.fasta","fasta") :

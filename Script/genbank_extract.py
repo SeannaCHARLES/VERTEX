@@ -85,7 +85,7 @@ for study,allprot,spe_prot in zip(studies,list_prot,namespeprot) :
     chain_prot=""
     chain_prot_metadata=""
     print(f"For the study : {study}")
-    subprocess.run(f"rm {path}{study}/nucl/* {path}{study}/prot/* 2>/dev/null || true",shell=True)
+    subprocess.run(f"rm -f {path}{study}/nucl/* {path}{study}/prot/* 2>/dev/null || true",shell=True)
     
     prot=list(dict.fromkeys(allprot))
     vv_prot[study]=prot
@@ -106,10 +106,10 @@ for study,allprot,spe_prot in zip(studies,list_prot,namespeprot) :
         concatenates(path,study)
 
 
-    print(f"Mafft alignement for the file {path}{study}/prot_all_{study}.fasta save in the output file : {path}{study}/prot_all_align_{study}.aln-fasta IN PROGRESS...")
+    print(f"Mafft alignement for the file {path}{study}/prot_all_{study}.fasta save in the output file : {path}{study}/prot_all_align_{study}.aln-fasta IN PROGRESS...\n")
     subprocess.run(f"echo Mafft for the outfile {path}{study}/prot_all_align_{study}.aln-fasta >> {path}{study}/Maffts.log && mafft --auto {path}{study}/prot_all_{study}.fasta > {path}{study}/prot_all_align_{study}.aln-fasta 2>> {path}{study}/Maffts.log",shell=True)
 
-    print(f"Mafft alignement for the file {path}{study}/nucl_all_{study}.fasta save in the output file : {path}{study}/nucl_all_align_{study}.aln-fasta IN PROGRESS...")
+    print(f"Mafft alignement for the file {path}{study}/nucl_all_{study}.fasta save in the output file : {path}{study}/nucl_all_align_{study}.aln-fasta IN PROGRESS...\n")
     subprocess.run(f"echo Mafft for the outfile {path}{study}/nucl_all_align_{study}.aln-fasta >> {path}{study}/Maffts.log && mafft --auto {path}{study}/nucl_all_{study}.fasta > {path}{study}/nucl_all_align_{study}.aln-fasta 2>> {path}{study}/Maffts.log",shell=True)
 
 for study,OG_list,prot,spe_prot in zip(studiesspeOG, NUIDspeOG,list_prot_speOG,namespeprotOG):
@@ -119,4 +119,4 @@ for study,OG_list,prot,spe_prot in zip(studiesspeOG, NUIDspeOG,list_prot_speOG,n
         if ID!="" : 
             with open(f"{path}{study}/{ID}.gb","r") as Datas:
                 sp='OGspe'
-                extract_id(path,Datas,study,sp,prot,email,vv_prot[study],speci_order,dicy,spe_prot)
+                extract_id(path,Datas,study,sp,prot,email,vv_prot[study],dicy,spe_prot)

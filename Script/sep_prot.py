@@ -40,7 +40,7 @@ study_prot={}
 ##########################################################
 
 ###########################Script##########################
-print(prot)
+
 
 for study,start,position in zip(studies,start,position) :
     position=position.split(";")
@@ -60,7 +60,7 @@ for item,study in zip(protspe_OG,onlyOG) :
 
 for item,study in zip(prot,studies) :
         study_prot[study]=item.split(";")
-print(study_prot)
+
 concern_study={}
 for name_,orga,IO,proteinIO in zip(names,orgaWIWO,INOUT,protINOUT) : 
     if orga!="" : 
@@ -69,26 +69,9 @@ for name_,orga,IO,proteinIO in zip(names,orgaWIWO,INOUT,protINOUT) :
         concern_study[name_]=[conc_orga,IO,proteinIO]
 
 for study in studies : 
-#for name_all,organismesAV,IO,proteinIO in zip(names,orgaWIWO,INOUT,protINOUT) :
-    #subprocess.run(["rm",f"{path}{study}{resfile}/*" ],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,shell=True)
-   
-    # if study in concern_study : 
-    #     final_pos_prot,name=final_pos_IO(study,prot,study_prot,proteins,concern_study)
-    #     #final_pos_prot,name=final_pos(study,prot,study_prot,proteins)
-    # else : 
-    #     final_pos_prot,name=final_pos(study,prot,study_prot,proteins)
+
 
     sp=study
-    # file = open(f"{name}","a")
-
-    # for key,positions in final_pos_prot.items() : 
-    #     file.write(f"{study}\t{key}\t")
-
-    #     for pos in positions : 
-    #         file.write(f"{pos}\t")
-    #     file.write(f"\n")
-
-    # file.close()
     
     for record in SeqIO.parse(f"{path}{study}/prot_sdbl_{study}.fasta","fasta") :
        
@@ -101,22 +84,8 @@ for study in studies :
 
 for study,sp,OG_list,name,organismesAV,IO,proteinIO in zip(studiesspeOG,onlyOG,NUIDspeOG,names,orgaWIWO,INOUT,protINOUT) :
     OG=OG_list.split(" ")
-    # if study in concern_study : 
-    #     #final_pos_prot,name=final_pos_(study,prot,study_prot,proteins,concern_study)
-    #     final_pos_prot,name=final_pos(study,prot,study_prot,proteins)
-    # else : 
-    #     final_pos_prot,name=final_pos(study,prot,study_prot,proteins)
-    # file = open(f"{name}","a")
-
-    # for key,positions in final_pos_prot.items() : 
-    #     file.write(f"{study}\t{key}\t")
-
-    #     for pos in positions : 
-    #         file.write(f"{pos}\t")
-    #     file.write(f"\n")
-
-    # file.close()
-    print(OG)
+ 
+  
     for ID in OG : 
          if ID!="" : 
             for record in SeqIO.parse(f"{path}{study}/{ID}_prot.fasta","fasta") :

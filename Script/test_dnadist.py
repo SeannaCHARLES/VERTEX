@@ -22,4 +22,4 @@ for line in range(0,end_line) :
     for col in range (0,end_col) : 
         #print(f"name line : {df.index[line]} name col : {df.columns[col]} Dist : {df.iloc[line,col]}")
         if df.iloc[line,col] <= 0.08 and df.iloc[line,col]>0 : 
-            print(f"need to delete : name line : {df.index[line]} name col : {df.columns[col]} Dist : {df.iloc[line,col]}")
+            print(f"need to delete : name line : {df.index[line]} name col : {df.columns[col]} Dist : {df.iloc[line,col]}\n")

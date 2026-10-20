@@ -21,12 +21,10 @@ mkdir -p "${new_path}"All_table/
 
 echo -e ">${Query}\n${Qseq}\n>${subject}\n${Sseq}\n" > "${new_path}Align_all/${Query}${subject}/${Query}${subject}temp.fasta"
 echo -e ">${Query}_${subject}_${prot}" >> "${new_path}Maffts_protdist.log"
-mafft --auto  "${new_path}Align_all/${Query}${subject}/${Query}${subject}temp.fasta" >"${new_path}Align_all/${Query}${subject}/${Query}${subject}temp.aln-fasta"  2>> "${new_path}Maffts_protdist.log" | grep -v "^Read and write" >>"${new_path}Maffts_protdist.log"
 
-#mafft --auto "${new_path}Align_all/${Query}${subject}/temp.fasta" >"${new_path}Align_all/${Query}${subject}/temp.aln-fasta" #2>>"${new_path}Maffts_protdist.log" #| grep -v "^Read and write" 
-#> "${new_path}"Maffts_protdist.log 
+mafft --auto "${new_path}Align_all/${Query}${subject}/${Query}${subject}temp.fasta" >"${new_path}Align_all/${Query}${subject}/${Query}${subject}temp.aln-fasta" 2>>"${new_path}Maffts_protdist.log" 
 
-seqret -sequence "${new_path}Align_all/${Query}${subject}/${Query}${subject}temp.aln-fasta" -outseq "${new_path}Align_all/${Query}${subject}/${Query}${subject}temp.phy" -osformat phylip
+seqret -sequence "${new_path}Align_all/${Query}${subject}/${Query}${subject}temp.aln-fasta" -outseq "${new_path}Align_all/${Query}${subject}/${Query}${subject}temp.phy" -osformat phylip 2>> "${new_path}Maffts_protdist.log"
 
 cp "${new_path}"Align_all/"${Query}""${subject}"/"${Query}""${subject}"temp.phy "${new_path}"Align_all/"${Query}""${subject}"/infile
 cd "${new_path}"Align_all/"${Query}""${subject}"/

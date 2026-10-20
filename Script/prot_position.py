@@ -50,27 +50,10 @@ for study,target,blast in zip(studies,target_list,blastapprox) :
         pos_prot_final=pd.read_csv(f"{path}{study}/pos_prot_final_{study}.txt", delimiter="\t",header=0,index_col=0)
         pos_prot.convert_dtypes()
         pos_prot_final.convert_dtypes()
-    #OG_protOUT={}
-    #print(pos_prot)
-    # for element in dicy[study] : 
-    #     print(element)
-    #     print(element[1][0],element[1][1],element[1][2],element)
-    #     if element[1][0]=="OUT" : 
-    #         for virus in element[1][2].split(";") :
-    #             OG_protOUT[virus]=element[1][1]
-    #     elif element[1][0]=="IN":
-    #         list_ID=metadata["Nucleic accession number"].tolist()
-       
-    #         for  ID in list_ID :
-    #             if ID not in element[1][2].split(";") :
-    #                 if ID not in OG_protOUT :
-    #                     OG_protOUT[ID]=[element[1][1]]
-    #                 elif element[1][1] not in  OG_protOUT[ID] : 
-    #                     OG_protOUT[ID].append(element[1][1])
-    #print(f"OG_protOUT : {OG_protOUT}")
+    
         end_line=metadata.shape[0]
         end_col=metadata.shape[1]
-    #print(end_line)
+ 
         match_ID={}
         for line in range(0,end_line) : 
             ID_itol=metadata.columns.get_loc('ID itol tree')
@@ -86,11 +69,11 @@ for study,target,blast in zip(studies,target_list,blastapprox) :
                     DB = str(f"{path}{study}/{target}_ref")
                     File=str(f"{path}{study}/prot/{match_ID[pos_prot.iloc[line,0]]}_prot.fasta")
                     output=str(f"{path}{study}/Align/{target}_{match_ID[pos_prot.iloc[line,0]]}")
-                #print(output)
+               
                     protein=(str(f"{pos_prot.columns[col]}"))
-                #print(f"{OG_protOUT}")
+             
                     if match_ID[pos_prot.iloc[line,0]] in dicy[study] :
-                    #print(f"element {str(pos_prot.columns[col]).lower()}")
+                  
                         if not any(str(elem).lower() in str(pos_prot.columns[col]).lower()  for elem in dicy[study][match_ID[pos_prot.iloc[line,0]]]) : 
                         
                         
@@ -99,8 +82,7 @@ for study,target,blast in zip(studies,target_list,blastapprox) :
                                 Blastp_run(DB,File,output)
                             
                                 new_pos=add_new_pos(protein,output)
-                            # if new_pos =="Aucune correspondance" :
-                            #     pos_prot_final.iloc[line,col].astype(str)
+                       
                                 pos_prot_final.iloc[line,col]=new_pos
                                 pos_prot_final.to_csv(f"{path}{study}/pos_prot_final_{study}.txt", sep="\t")
 
@@ -108,27 +90,23 @@ for study,target,blast in zip(studies,target_list,blastapprox) :
                                 missing_val[match_ID[pos_prot.iloc[line,0]]].append(pos_prot.columns[col])
                             
                                 new_pos=add_new_pos(protein,output)
-                            # if new_pos =="Aucune correspondance" :
-                            #     pos_prot_final.iloc[line,col].astype(str)
+                           
                                 pos_prot_final.iloc[line,col]=new_pos
                                 pos_prot_final.to_csv(f"{path}{study}/pos_prot_final_{study}.txt", sep="\t")
                         else : 
-                        #print("else")
-                        
-                        #pos_prot_final.iloc[line,col].astype(str)
+            
                             pos_prot_final.iloc[line,col]="ABS"
                             pos_prot_final.to_csv(f"{path}{study}/pos_prot_final_{study}.txt", sep="\t")
                     else :  
                     
-                    #Blastp_run(DB,File,output)
+                   
                         if pos_prot.iloc[line,0] not in missing_val : 
                             missing_val[match_ID[pos_prot.iloc[line,0]]]=[pos_prot.columns[col]]
                             Blastp_run(DB,File,output)
 
                             new_pos=add_new_pos(protein,output)
                         
-                        # if new_pos =="Aucune correspondance" :
-                        #     pos_prot_final.iloc[line,col].astype(str)
+                    
                             pos_prot_final.iloc[line,col]=new_pos
                             pos_prot_final.to_csv(f"{path}{study}/pos_prot_final_{study}.txt", sep="\t")
 
@@ -137,8 +115,7 @@ for study,target,blast in zip(studies,target_list,blastapprox) :
 
                             new_pos=str(add_new_pos(protein,output))
                         
-                        # if new_pos =="Aucune correspondance" :
-                        #     pos_prot_final.iloc[line,col].astype(str)
+                       
                             pos_prot_final.iloc[line,col]=new_pos
                             pos_prot_final.to_csv(f"{path}{study}/pos_prot_final_{study}.txt", sep="\t")
                             pos_prot_final=pd.read_csv(f"{path}{study}/pos_prot_final_{study}.txt", delimiter="\t",header=0,index_col=0)
@@ -149,6 +126,6 @@ for study,target,blast in zip(studies,target_list,blastapprox) :
     else : 
         subprocess.run(f"cp {path}{study}/pos_prot_{study}.txt {path}{study}/pos_prot_final_{study}.txt",shell=True)
 
-    #print(f"{missing_val}")
+   
                 
                     
