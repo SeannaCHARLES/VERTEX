@@ -44,11 +44,9 @@ Requests==2.34.2
 
 ## Project description
 
-The purpose of this pipeline is to automatically separate proteins or proteic domains from sequences, when you don't have a corresponding ID in the NCBI database. It can generate phylogenetic trees in newick format with the separate regions.
-
-This pipeline use the NCBI database and is therefore dependent not only on the information provided but also on the uniformity of that information.
-
-It will create caption that you can directly use on the website Itol. It will also allow you to create other files that may be useful for your research.
+This pipeline is designed to automatically download and extract protein sequences or functional domains of viral sequences from Genbank. It enables the generation of phylogenetic trees in Newick format, for each of the protein or protein domains extracted.
+The pipeline relies on the NCBI database and is therefore dependent on both the accuracy and the uniformity of the data provided in the input sequences.
+The pipeline produces iTOL-compatible captions that can be directly uploaded to the iTOL website for interactive tree visualization and additional files (e.g., FASTA alignments, metadata tables) to support downstream analyses.
 
 ## Pipeline description  
 
@@ -56,7 +54,7 @@ It will create caption that you can directly use on the website Itol. It will al
 
 - Download all the sequences in the Genbank format.
 
-This step download all the sequences in a Genbank format and concatenated all the Genbank files into one file name **sequences\<Study_name\>.gb**.
+This step performs the download of all the sequences in a Genbank format and the concatenation of all the Genbank files into one file called **sequences\<Study_name\>.gb**.
 
 +---------------------+----------------------------+
 | Input               | Output                     |
@@ -70,21 +68,20 @@ This step download all the sequences in a Genbank format and concatenated all th
 
 ### Genbank_extract.py
 
-- Separate all the nucleic sequences and the proteic sequences into single sequence file.
+- Separate all the nucleic sequences and the proteic sequences into single sequence files.
+The nucleic and proteic sequences are extracted from the **sequences\<Study_name\>.gb** file and saved in 2 folders **nucl** and **prot**.
 
-From the **sequences\<Study_name\>.gb** file the nucleic and proteic sequences are being extract and save in 2 folders **nucl** and **prot**.
+- The Gp ###il faudrait dire ce que c'est, Gp c'est pas tres parlant### files for each sequence are downloaded and concatenated in the ***prot_all\_\<Study_name\>.gp*** file.
+  
+- Create a file **Metadata_files.txt** that contains different information available in the genbank and the Gp files.
+This file contains the following information: Study | Virus name ID | Itol tree | Taxonomy | Information | Protein accession number | Size Protein sequence | Startproteins | Endproteins | Nucleic accession number | Size Nucleic sequence | Strand | Strain | Geographical region | Host or vector | References
 
-- The gp file format for each sequence are being downloaded and concatenate in the ***prot_all\_\<Study_name\>.gp*** file.
-- Create a **Metadata_files.txt** that contains different information available in the genbank file format and the Gp file format.
-
-This file contains the following information : Study–Virus name–ID itol tree–Taxonomy–Informations–Protein accession number–Size Proteic sequence–Startproteins–Endproteines–Nucleic accession number–Size Nucleic sequence–Strand–Strain–Geographical region–Host or vector References
-
-- Create a file that lits all the positions for each protein or domain available in the gp files format saved in the file **pos_prot\_\<Study_name\>.txt**.
+- Create a file **pos_prot\_\<Study_name\>.txt** that lists all the positions for each protein or domain available in the Gp files.
+  
 - Create the caption for the user_informations, Geographical region, and Host.
+The caption are created based on the Itol format. One colour will be associated with the same values for all the studies.
 
-The caption are created based on the Itol format. One color will be associated with the same values for all the studies.
-
-The personal information caption is created using the **user_informations.txt** file. You can put in that file all the information you want to use to caracterise you study (for example serogroup or precise taxonomy)
+The personal information caption is created using the **user_informations.txt** file. You can put in that file all the information you want to use to characterise your study (for example serogroup or precise taxonomy)
 
 +----------------------------+---------------------------------------+
 | Input                      | Output                                |
@@ -118,7 +115,7 @@ The personal information caption is created using the **user_informations.txt** 
 
 ### Execution.sh
 
-- Create a Blast database of all the reference virus/organisms proteins.
+- Create a Blast database of all the reference virus proteins.
 
 +----------------------------------+-----------------------------------+
 | Input                            | Output                            |
@@ -152,7 +149,7 @@ This file ensures that as many protein positions as possible are retrieved in ca
 
 ### DNA_dist.sh
 
-- This file lauch DNA dist from phylip and create a divergence sequence table.
+- Launch DNAdist from phylip and create a divergence sequence table.
 
 +-----------------------------------------+----------------------------------+
 | Input                                   | Output                           |
@@ -166,7 +163,7 @@ This file ensures that as many protein positions as possible are retrieved in ca
 
 ### Delete_dbl.py
 
-- This file delete de sequences that are judged too close using the **DNA_dist.sh** output table and the define threshold define in the **All_information.txt (from user)**.
+- Delete the sequences that are considered too closely related or similar using the **DNA_dist.sh** output table and the user defined threshold from the **All_information.txt (from user)**.
 
 +------------------------------+----------------------------------+
 | Input                        | Output                           |
@@ -180,7 +177,7 @@ This file ensures that as many protein positions as possible are retrieved in ca
 
 ### Mark_spe.py
 
-- Separate the different proteins and save them in one file for each proteins.
+- Separate the different proteins and save them in one file for each protein.
 
 +----------------------------------+------------------------+
 | Input                            | Output                 |
@@ -198,7 +195,7 @@ This file ensures that as many protein positions as possible are retrieved in ca
 
 ### Merge_spe_prot.py (optional)
 
-- This file merge the specific OG species, with the specific study.
+- Merge the specific outgroup (OG) species, with the specific study. %%c'est pas très clair%%
 
 +-------------------------------+------------------------+
 | Input                         | Output                 |
@@ -224,7 +221,7 @@ This file ensures that as many protein positions as possible are retrieved in ca
 
 ### Protdist.py
 
-- This file lauch Protdist from phyllip and create a sequence divergence table for each protein.
+- Launch Protdist from phyllip and create a sequence divergence table for each protein.
 
 +------------------------------+---------------------------------+
 | Input                        | Output                          |
@@ -250,13 +247,13 @@ This file ensures that as many protein positions as possible are retrieved in ca
 
 ### Execution.sh
 
-- Trimal
+- TrimAl
 
 - IQtree2
 
-Identified the best model (using iqtree2)
+Identify the best model (using IQtree2)
 
-iqtree2 was used because it can provide a test to identify the best model for the nucleic sequences(not present in this pipeline) and the proteic sequences. If you only want to study the proteic sequences you may used prottest instead.
+IQtree2 was used because it can provide a test to identify the best model for the nucleic and protein sequences. If you only want to study the protein sequences you may used prottest instead.
 
 - Create the phylogenetic tree using the best model identified (using iqtree2)
 
@@ -278,19 +275,19 @@ iqtree2 was used because it can provide a test to identify the best model for th
 
 ### Informations_file.txt
 
-This file is the Execution input file. You need to fill up all the information in this file in order to use the pipeline.
+This file is the execution input file. You need to fill up all the information in this file in order to use the pipeline.
 
 **!If an information is missing it may not work!**
 
 ### Separator
 
-DO NOT USE "," AS A SEPARATOR INSIDE EACH COLONE USE ";" INSTEAD
+DO NOT USE "," AS A SEPARATOR INSIDE EACH COLUMN USE ";" INSTEAD
 
 ### Example
 
-Example for the study Orthobunyaviridae with a specific outgroup
+Example for the study of Orthobunyaviridae with a specific outgroup
 
-#### A : Execution Project name
+#### A: Execution Project name
 
 This name will be used as the folder name. It also allows you to specify which project the outgroup-specific data is associated with, where necessary.
 
@@ -308,13 +305,13 @@ If you wish to analyse several segments or polyproteins from the same family or 
 
 : Project name
 
-#### B : Study name (if Specific OG)
+#### B: Study name (if specific OG) %%cette partie n'est pas tres claire pour moi%%%
 
-This name is used to distinguish specific outgroups.
+This name is used to distinguish specific outgroups (OG).
 
-If the row does not concern a specific outgroup, enter the project name. Otherwise, enter a name for the specific outgroup (ex. name).
+If the row ??%%terme pas clair%% does not concern a specific outgroup, enter the project name. Otherwise, enter a name for the specific outgroup (ex. name).
 
-If you wish to use different specific outgroups for the same project,you must have one row per outgroup.
+If you wish to use different specific outgroups for the same project, you must have one row per outgroup.
 
 +-------------------+-------------------+
 | A                 | Study name        |
@@ -326,9 +323,9 @@ If you wish to use different specific outgroups for the same project,you must ha
 | Orthobunyaviridae | Orthobunyaviridae |
 +-------------------+-------------------+
 
-: Study name : Where Khurdun and Pacuvirus will be used as outgroups
+: Study name : Khurdun and Pacuvirus will be used as outgroups
 
-#### C : ID files
+#### C: ID file
 
 The name of the file that contains the virus IDs. This file must be in the same folder as the pipeline.
 
@@ -342,11 +339,12 @@ The name of the file that contains the virus IDs. This file must be in the same 
 | Orthobunyaviridae | Orthobunyaviridae | Orthobunyaviridae_file.txt |
 +-------------------+-------------------+----------------------------+
 
-: ID files
+: ID file
 
-#### D : Outgroup Spe (Y/N)
+#### D: Outgroup choice (Y/N)
 
-Y : if this line concern a specific outgroup for one or multiple proteines.
+%%line => terme pas clair%%
+Y : if this line concern a specific outgroup for one or multiple proteins.
 
 N : If this line doesn't concern a specific outgroup.
 
@@ -362,10 +360,11 @@ N : If this line doesn't concern a specific outgroup.
 
 : Outgroup Specific : Is it a specifc outgroup?
 
-#### E : For wich prot
+#### E: For which protein
 
 Which proteins are concerned by this study/line?
 
+%%pas clair pour moi, surtout ce qui est écrit en dessous%%%
 If this line doesn't concern a specific outgroup, enter the names of the proteins from the studied species .
 
 If this line refers to a specific outgroups, specify for which proteins this outgroup will be used
@@ -380,14 +379,14 @@ If this line refers to a specific outgroups, specify for which proteins this out
 | Orthobunyaviridae | Orthobunyaviridae | N | polyprotein;gn;nsm;gc |
 +-------------------+-------------------+---+-----------------------+
 
-: For wich prot
+: For which proteins
 
-#### F : Proteins name (in order)
+#### F: Protein names (in order)
 
-Proteins name of the study name (col B)
+Protein names of the study name (col B)
 
 +-------------------+-------------------+-------+--------------------------+
-| A                 | B                 | E     | Proteins name (in order) |
+| A                 | B                 | E     | Protein names (in order) |
 +===================+===================+=======+==========================+
 | Orthobunyaviridae | Khurdun           | nsmgn | polyprotein;gn;gc        |
 +-------------------+-------------------+-------+--------------------------+
@@ -396,29 +395,29 @@ Proteins name of the study name (col B)
 | Orthobunyaviridae | Orthobunyaviridae | prots | polyprotein;gn;nsm;gc    |
 +-------------------+-------------------+-------+--------------------------+
 
-: Proteins name (in order)
+: Protein names (in order)
 
-#### G : spe prot
+#### G: specific protein
 
-Identify the proteins that will be involved in the specific protein
+Identify the proteins that will be involved in the specific protein %%phrase pas claire%%
 
-+-------------------+-------------------+-------+---------------+
-| A                 | B                 | F     | spe prot      |
-+===================+===================+=======+===============+
-| Orthobunyaviridae | Khurdun           | prots | nsmgn=gn      |
-+-------------------+-------------------+-------+---------------+
-| Orthobunyaviridae | Pacuvirus         | prots |               |
-+-------------------+-------------------+-------+---------------+
-| Orthobunyaviridae | Orthobunyaviridae | prots | nsmgn=nsm+gn  |
-+-------------------+-------------------+-------+---------------+
++-------------------+-------------------+-------+------------------+
+| A                 | B                 | F     | specific protein |
++===================+===================+=======+==================+
+| Orthobunyaviridae | Khurdun           | prots | nsmgn=gn         |
++-------------------+-------------------+-------+------------------+
+| Orthobunyaviridae | Pacuvirus         | prots |                  |
++-------------------+-------------------+-------+------------------+
+| Orthobunyaviridae | Orthobunyaviridae | prots | nsmgn=nsm+gn     |
++-------------------+-------------------+-------+------------------+
 
-: spe prot
+: specific protein
 
 The protein Gn of Khurdun will be used as the outgroup.
 
-#### H : TargetID
+#### H: TargetID
 
-Enter an reference ID that will be used for BLAST alignment in case some positions are missing.
+Enter a reference ID that will be used for BLAST alignment in case some positions are missing.
 
 +-------------------+-------------------+--------------+-------------+
 | A                 | B                 | G            | RefID       |
@@ -432,12 +431,12 @@ Enter an reference ID that will be used for BLAST alignment in case some positio
 
 : RefID
 
-#### I : reference proteins position
+#### I: reference protein positions
 
 The positions of the proteins for the reference or the specific outgroup.
 
 +-------------------+-------------------+-------+---------------------------------+
-| A                 | B                 | H     | reference /OG proteins position |
+| A                 | B                 | H     | reference /OG protein positions |
 +===================+===================+=======+=================================+
 | Orthobunyaviridae | Khurdun           |       | 23;292;526;944                  |
 +-------------------+-------------------+-------+---------------------------------+
@@ -448,7 +447,7 @@ The positions of the proteins for the reference or the specific outgroup.
 
 : RefID
 
-#### J : Start of the proteins in the nucleic sequence
+#### J: Start of the proteins in the nucleic sequence
 
 +-------------------+-------------------+-----+-----------------------------------------------+
 | A                 | B                 | I   | Start of the proteins in the nucleic sequence |
@@ -464,7 +463,7 @@ The positions of the proteins for the reference or the specific outgroup.
 
 This position will be used as the start of the protein sequence within the nucleic acid sequence (for all sequences).
 
-**K : DNAdist Threshold**
+**K: DNAdist Threshold**
 
 +-------------------+-------------------+----+-------------------+
 | A                 | B                 | J  | DNAdist Threshold |
@@ -478,7 +477,7 @@ This position will be used as the start of the protein sequence within the nucle
 
 : DNAdist Threshold
 
-#### L : Organism to keep ID
+#### L: Organism to keep ID
 
 a list of the IDs that you do not want to be deleted.
 
@@ -496,10 +495,10 @@ a list of the IDs that you do not want to be deleted.
 
 : ID Organism to keep
 
-#### M : Organism with.out a particular protein ID
+#### M: Organism without a particular protein ID
 
 +-------------------+-------------------+-----+-------------------------------------------+
-| A                 | B                 | L   | Organism with.out a particular protein ID |
+| A                 | B                 | L   | Organism without a particular protein ID  |
 +===================+===================+=====+===========================================+
 | Orthobunyaviridae | Khurdun           |     | OUT\*NSM=NC_078560.1                      |
 +-------------------+-------------------+-----+-------------------------------------------+
@@ -508,15 +507,15 @@ a list of the IDs that you do not want to be deleted.
 | Orthobunyaviridae | Orthobunyaviridae | IDs | NONE\*NN=NN                               |
 +-------------------+-------------------+-----+-------------------------------------------+
 
-: Organism with.out a particular protein ID
+: Organism without a particular protein ID
 
 OUT\*\<prot\>=list of IDs
 
 IN\*\<prot\>=liste of IDs
 
-**N : Trimal**
+**N: Trimal**
 
-Do you want to use trimal for this study.
+Do you want to use TrimAl for this study.
 
 +-------------------+-------------------+-------------+--------+
 | A                 | B                 | M           | Trimal |
@@ -528,9 +527,9 @@ Do you want to use trimal for this study.
 | Orthobunyaviridae | Orthobunyaviridae | NONE        | Yes    |
 +-------------------+-------------------+-------------+--------+
 
-: Do you want to use Trimal
+: Do you want to use TrimAl
 
-O : Blast
+**O: Blast**
 
 Do you want to use blast in case of missing proteins positions
 
@@ -550,42 +549,36 @@ Do you want to use blast in case of missing proteins positions
 
 ### Proteins positions
 
-Please pay attention to the ***Final_pos_prot.txt*** file. The blast alignement is only an approximation
+Please pay attention to the ***Final_pos_prot.txt*** file. The blast alignment is only an approximation
 
-This is not a completely reliable solution. We strongly advise against using Vertex if you have very few organisations with records in the databases.
+This is not a completely reliable solution. We strongly advise against using VERTEX if you have very few virus with records in the databases.
 
-It is also strongly recommended that you check the coherence between the actual positions of the proteins and the predicted positions. The **Pos_prot.txt** file contains all the positions extracted from the databases.
+It is also strongly recommended that you check the consistency between the actual positions of the proteins and the predicted positions. The **Pos_prot.txt** file contains all the positions extracted from the database.
 
 If you are not satisfied with the positions, you can change them manually. After that, simply restart the pipeline from the **mark_spe.py** file.
 
 ### Region name in the database
 
-The same proteins may have different region names from one organism to another.
-
-If you have very few results for a protein, and you are certain that this is not normal, it may be because the protein’s name has not been recognised.
-
-You can use the file ***prot_all\_\<Study\>.gp*** to help you identified the different region name.
+The same proteins may have different region names from one virus to another. If a protein returns very few results and you know this is unexpected, its name may not have been recognised. You can use the file ***prot_all\_\<Study\>.gp*** to help you identified the different region names.
 
 Whether it differs from the name you entered in the various protein names (red rectangle).
 
 ![Gc and Gn different name](images/Diff_G1_G2.pdf)
 
-Or that it differs from the various names of the same protein (blue rectangles)
+Or that it differs from the various names of the same protein (blue rectangle)
 
 ![Polyprotein different name](images/diff_nom_polyprot.pdf)
 
 You can add protein name equivalents to the file **protein_equivalent.txt**
 
-such as : ***glycoproteinprecursor\<\\t\>polyprotein***
+such as: ***glycoproteinprecursor\<\\t\>polyprotein***
 
 ### Host/vectors caption
 
-The names of the hosts/vectors are not all uniform and some are not recognised by the NCBI databases. To get past this, you can add equivalents for the host/vector name and the scientific name in the **species_equivalent.txt**
+The names of the hosts/vectors are not all uniform and some are not recognized by the NCBI database. To get pass this, you can add equivalents for the host/vector name and the scientific name in the **species_equivalent.txt**
 
-such as : ***mosquito\<\\t\> Culicidae***
+such as: ***mosquito\<\\t\> Culicidae***
 
-The Images of the various orders of hosts/vectors are available on another public GitHub repository.
-
-Feel free to add new illustrations, this GitHub repository does not yet contain all the orders.
+The Images of the various orders of hosts/vectors are available on another public GitHub repository. Feel free to add new illustrations, this GitHub repository does not yet contain all the orders.
 
 The images were generated by AI.
