@@ -40,13 +40,6 @@ for study,ths,target in zip(studies,ths_list,target_list) :
     Doublon=select_doublon(path,study,float(ths),keep,Modif_ID(target))
     delete_dbl(path,Doublon,study)
 
-    # doublon_file=f"{path}{study}/log_file_{study}.txt"
-
-    # subprocess.run(f"rm {doublon_file}",shell=True)
-    # for db in Doublon : 
-    #     dbl_file=open(doublon_file,'a')
-    #     dbl_file.write(f"{db}\n")
-    #     dbl_file.close()
         
     change_name={}
     

@@ -616,7 +616,7 @@ def extract_prot_data(ID_prot_list,study,all_proteins,mail,metadata_name_prot,di
     All_end=0
     Sequence_aa=''
     prot_names=metadata_name_prot.copy()
-    #pd.read_csv("")
+
     for ID_prot in ID_prot_list : 
         
         try :
@@ -648,7 +648,6 @@ def extract_prot_data(ID_prot_list,study,all_proteins,mail,metadata_name_prot,di
             Sequence_aa+=record.seq
             All_end+=len(record.seq)
 
-            # subprocess.run(['rm', f'{path}{study}/prot/{ID_prot}.gp'],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
         except Exception as e :
             print(f"This ID : {ID_prot} were not indentified by the NCBI database or error {e}")
 
@@ -1053,7 +1052,7 @@ def proteic_sequence (study,ID,sequence,proteins,sp,resfile,path) :
             position_proteines.append(["nan","nan"])
 
     
-    #position_proteines=[pos_prot[i:i+2] for i in range(0, len(pos_prot), 2)]
+
     prot_position=dict(zip(proteins, position_proteines))
 
 
@@ -1061,9 +1060,7 @@ def proteic_sequence (study,ID,sequence,proteins,sp,resfile,path) :
     for prot,position in prot_position.items() : 
 
         name=f"{path}{study}{resfile}{prot.lower()}_{sp}_prot.fasta"
-        #position[0]
-        # pos1 = [int(float(x)) for x in position[0].split(",")]
-        # pos2 = [int(float(x)) for x in position[1].split(",")]
+
         if not any("ABS" in str(element) for element in position) and not any("nan" in str(element) for element in position): 
             if "," in str(position[0]) :
                 pos1 = list(map(int, position[0].split(",")))
@@ -1131,7 +1128,7 @@ def final_pos_IO(study,prot,study_prot,proteins,concern_study,path) :
                 
 
                 break
-                #subprocess.run(f"blastp  -db -query -out -max_target_seqs -outfmt "6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore sseq"")
+
 
 
     return (df.iloc[line,col],df.iloc[line,col])
@@ -1187,19 +1184,6 @@ def final_pos(study,prot,study_prot,proteins,path) :
             else :
                 final_pos_prot[df.iloc[line,0]].append(int(float(df.iloc[line,col])))
    
-
-        
-        # for c in range (1,len(final_pos_prot[df.iloc[line,0]] )-1) :
-        #     if c%2 ==0 : 
-        #         if final_pos_prot[df.iloc[line,0]][c+1] <= final_pos_prot[df.iloc[line,0]][c] : 
-        #             final_pos_prot[df.iloc[line,0]][c]=final_pos_prot[df.iloc[line,0]][c+1]-1
-        #         if final_pos_prot[df.iloc[line,0]][c-1] >= final_pos_prot[df.iloc[line,0]][c] : 
-        #             final_pos_prot[df.iloc[line,0]][c]=final_pos_prot[df.iloc[line,0]][c-1]+1
-        #     else : 
-        #         if final_pos_prot[df.iloc[line,0]][c-1] >= final_pos_prot[df.iloc[line,0]][c] : 
-        #             final_pos_prot[df.iloc[line,0]][c]=final_pos_prot[df.iloc[line,0]][c-1]+1
-        #         if final_pos_prot[df.iloc[line,0]][c+1] <= final_pos_prot[df.iloc[line,0]][c] : 
-        #             final_pos_prot[df.iloc[line,0]][c]=final_pos_prot[df.iloc[line,0]][c+1]-1
 
     ligne_chaine = '\t'.join(df.iloc[[0]].astype(str))
     name=f"{path}{study}/pos_prot_final_{study}.fasta"

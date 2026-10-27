@@ -11,6 +11,8 @@ from Bio import AlignIO
 from Bio import Phylo
 from multiprocessing import Pool
 
+
+
 path = sys.argv[1]
 studies=list(sys.argv[2].split(" "))
 spe_prot_list=list(sys.argv[3].replace(" ","").split("\n")) 
@@ -62,16 +64,18 @@ if studiesspeprot :
             name_prot=str(proteins[0].lower())+str(proteins[1].lower())
         
             subprocess.run(f"rm -f {path}{name}/temp_protdist_filter{name_prot}.txt",shell=True)
-            cmd=f"sed 's/>/>{proteins[1].lower()}/g' {path}{name}{resfile}{proteins[1].lower()}_{name}_prot.fasta > {path}{name}{resfile}{proteins[1].lower()}_{name}_prot_.fasta"
+            cmd=f"sed 's/>/>{proteins[1].upper()[0]}/g' {path}{name}{resfile}{proteins[1].lower()}_{name}_prot.fasta > {path}{name}{resfile}{proteins[1].lower()}_{name}_prot_.fasta"
             subprocess.run(cmd,shell=True)
 
-            cmd=f"sed 's/>/>{proteins[0].lower()}/g' {path}{name}{resfile}{proteins[0].lower()}_{name}_prot.fasta > {path}{name}{resfile}{proteins[0].lower()}_{name}_prot_.fasta"
+            cmd=f"sed 's/>/>{proteins[0].upper()[0]}/g' {path}{name}{resfile}{proteins[0].lower()}_{name}_prot.fasta > {path}{name}{resfile}{proteins[0].lower()}_{name}_prot_.fasta"
             subprocess.run(cmd,shell=True)
+
+
             name_prot=str(proteins[0].lower())+str(proteins[1].lower())
             if os.path.exists(f"{path}{name}{resfile}{proteins[1].lower()}_{name}_prot.fasta") and os.path.exists(f"{path}{name}{resfile}{proteins[0].lower()}_{name}_prot.fasta") :
-                for record_1 in SeqIO.parse(f"{path}{name}{resfile}{proteins[1].lower()}_{name}_prot.fasta","fasta") : 
+                for record_1 in SeqIO.parse(f"{path}{name}{resfile}{proteins[1].lower()}_{name}_prot_.fasta","fasta") : 
 
-                    for record_2 in SeqIO.parse(f"{path}{name}{resfile}{proteins[0].lower()}_{name}_prot.fasta","fasta") : 
+                    for record_2 in SeqIO.parse(f"{path}{name}{resfile}{proteins[0].lower()}_{name}_prot_.fasta","fasta") : 
                         if record_1.seq!="	" and record_2.seq!="	":
                             
                             Lauch_MSP([record_1,record_2,name,name_prot])
@@ -94,14 +98,14 @@ if studiesspeprot :
                                 Final_table_v.to_csv(f"{path}{name}/temp_protdist_filter{name_prot}.txt",sep="\t")
 
                 if os.path.exists(f"{path}{name}/temp_protdist_filter{name_prot}.txt") :
-                    print(f"DONE create the protdist table for the protein : {name_prot} study :{name}")           
-                    final_table=pd.read_csv(f"{path}{name}/temp_protdist_filter.txt",sep="\t",index_col=0,header=0)    
-                    final_table.drop(final_table.index[final_table.index.str.startswith(f'{proteins[0].lower()}')],axis=0,inplace=True)
-                    final_table.drop(final_table.columns[final_table.columns.str.startswith(f'{proteins[1].lower()}')],axis=1,inplace=True) 
+                    print(f"Creating the protdist table for the protein : {name_prot} study :{name}")           
+                    final_table=pd.read_csv(f"{path}{name}/temp_protdist_filter{name_prot}.txt",sep="\t",index_col=0,header=0)    
+                    final_table.drop(final_table.index[final_table.index.str.startswith(f'{proteins[0].upper()[0]}')],axis=0,inplace=True)
+                    final_table.drop(final_table.columns[final_table.columns.str.startswith(f'{proteins[1].upper()[0]}')],axis=1,inplace=True) 
                     final_table.rename(columns=change_name, inplace=True,index=change_name)   
-                    subprocess.run(f"rm -f {path}{name}/{name}_protdist_filter.txt",shell=True)   
-                    final_table.to_csv(f"{path}{name}/{name}_protdist_filter.txt",sep="\t")
-                    subprocess.run(f"rm -f {path}{name}/temp_protdist_filter.txt",shell=True)
+                    subprocess.run(f"rm -f {path}{name}/{name}_protdist_filter{name_prot}.txt",shell=True)   
+                    final_table.to_csv(f"{path}{name}/{name}_protdist_filter{name_prot}.txt",sep="\t")
+                    subprocess.run(f"rm -f {path}{name}/temp_protdist_filter{name_prot}.txt",shell=True)
 
                             
 
@@ -151,7 +155,7 @@ for name,prots in zip(names,list_prot) :
                             except Exception as e :
                                 print(f"{e}")
             if os.path.exists(f"{path}{name}/temptable_protdist_filter{prot}.txt") :
-                print(f"DONE create the protdist table for the protein : {prot} study :{name}")
+                print(f"Creating the protdist table for the protein : {prot} study :{name}")
                 final_table=pd.read_csv(f"{path}{name}/temptable_protdist_filter{prot}.txt",sep="\t",index_col=0,header=0)    
                 final_table.rename(columns=change_name, inplace=True,index=change_name)      
                 subprocess.run(f"rm -f {path}{name}/{name}_protdist_filter{prot}.txt",shell=True)  

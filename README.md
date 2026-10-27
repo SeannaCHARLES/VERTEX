@@ -40,20 +40,24 @@ Requests==2.34.2
 
 [requirements for python](requirements.txt) & [requirements for bash](requirements_bash.txt)
 
-![Workflow of the vertex](images/Workflow_v6.pdf)
+![VERTEX Workflow](images/Workflow_V8.pdf)
 
 ## Project description
 
 This pipeline is designed to automatically download and extract protein sequences or functional domains of viral sequences from Genbank. It enables the generation of phylogenetic trees in Newick format, for each of the protein or protein domains extracted.
 The pipeline relies on the NCBI database and is therefore dependent on both the accuracy and the uniformity of the data provided in the input sequences.
 The pipeline produces iTOL-compatible captions that can be directly uploaded to the iTOL website for interactive tree visualization and additional files (e.g., FASTA alignments, metadata tables) to support downstream analyses.
+This pipeline is designed to automatically download and extract protein sequences or functional domains of viral sequences from Genbank. It enables the generation of phylogenetic trees in Newick format, for each of the protein or protein domains extracted.
+The pipeline relies on the NCBI database and is therefore dependent on both the accuracy and the uniformity of the data provided in the input sequences.
+The pipeline produces iTOL-compatible captions that can be directly uploaded to the iTOL website for interactive tree visualization and additional files (e.g., FASTA alignments, metadata tables) to support downstream analyses.
 
-## Pipeline description  
+## Pipeline description
 
 ### Execution.sh
 
 - Download all the sequences in the Genbank format.
 
+This step performs the download of all the sequences in a Genbank format and the concatenation of all the Genbank files into one file called **sequences\<Study_name\>.gb**.
 This step performs the download of all the sequences in a Genbank format and the concatenation of all the Genbank files into one file called **sequences\<Study_name\>.gb**.
 
 +---------------------+----------------------------+
@@ -68,20 +72,25 @@ This step performs the download of all the sequences in a Genbank format and the
 
 ### Genbank_extract.py
 
-- Separate all the nucleic sequences and the proteic sequences into single sequence files.
+- Separate all the nucleic sequences and the protein sequences into single sequence files.
 The nucleic and proteic sequences are extracted from the **sequences\<Study_name\>.gb** file and saved in 2 folders **nucl** and **prot**.
 
-- The Gp ###il faudrait dire ce que c'est, Gp c'est pas tres parlant### files for each sequence are downloaded and concatenated in the ***prot_all\_\<Study_name\>.gp*** file.
-  
-- Create a file **Metadata_files.txt** that contains different information available in the genbank and the Gp files.
-This file contains the following information: Study | Virus name ID | Itol tree | Taxonomy | Information | Protein accession number | Size Protein sequence | Startproteins | Endproteins | Nucleic accession number | Size Nucleic sequence | Strand | Strain | Geographical region | Host or vector | References
+The nucleic and protein sequences are extracted from the **sequences\<Study_name\>.gb** file and saved in 2 folders **nucl** and **prot**.
 
-- Create a file **pos_prot\_\<Study_name\>.txt** that lists all the positions for each protein or domain available in the Gp files.
-  
-- Create the caption for the user_informations, Geographical region, and Host.
-The caption are created based on the Itol format. One colour will be associated with the same values for all the studies.
+- The GenPept(Gp) file format for each sequence are downloaded and concatenated in the ***prot_all\_\<Study_name\>.gp*** file.
 
-The personal information caption is created using the **user_informations.txt** file. You can put in that file all the information you want to use to characterise your study (for example serogroup or precise taxonomy)
+The Gp file format is very similar to the Gb file format, except that Gp includes the positions of the various proteins and protein domains. This format can be downloaded in the same way as the Gb format from the protein identifier record in the NCBI database or website.
+
+- Create a **Metadata_files.txt** that contains different information available in the genbank file format and the Gp file format.
+
+This file contains the following information : Study | Virus name ID | Itol tree | Taxonomy | Information | Protein accession number | Size Protein sequence | Startproteins | Endproteins | extract_size | Nucleic accession number | Size Nucleic sequence | Strand | Strain | Geographical region | Host or vector | References
+
+- Create a file that lists all the positions for each protein or domain available in the gp files format saved in the file **pos_prot\_\<Study_name\>.txt**.
+- Create the caption for the user_legend, Geographical region, and Host.
+
+The caption are created based on the Itol format. One color will be associated with the same values for all the studies.
+
+The personal information caption is created using the **user_legend.txt** file. You can put in that file all the information you want to use to characteristise you study (for example serogroup or precise taxonomy)
 
 +----------------------------+---------------------------------------+
 | Input                      | Output                                |
@@ -90,21 +99,23 @@ The personal information caption is created using the **user_informations.txt** 
 |                            |                                       |
 | (From Genbank_extract.py)  | \<ID_nucl\>\_nucl.fasta               |
 |                            |                                       |
-| user_informations.txt      | prot_all\_.fasta \|                   |
+| user_legend.txt            | prot_all\_.fasta \|                   |
 |                            |                                       |
 | **(from user)**            | All_nucleic_sequences.fasta           |
 |                            |                                       |
-|                            | All_proteic_sequences_align.aln-fasta |
+|                            | All_protein_sequences_align.aln-fasta |
 |                            |                                       |
 |                            | All_nucleic_sequences_align.aln-fasta |
 |                            |                                       |
-|                            | All_proteic_sequences.gp              |
+|                            | All_protein_sequences.gp              |
 |                            |                                       |
 |                            | **Informations_caption.txt**          |
 |                            |                                       |
 |                            | **Geographical_caption.txt**          |
 |                            |                                       |
 |                            | **Host_caption.txt**                  |
+|                            |                                       |
+|                            | **Label_caption.txt**                 |
 |                            |                                       |
 |                            | **Metadata.txt**                      |
 |                            |                                       |
@@ -117,13 +128,13 @@ The personal information caption is created using the **user_informations.txt** 
 
 - Create a Blast database of all the reference virus proteins.
 
-+----------------------------------+-----------------------------------+
-| Input                            | Output                            |
-+:================================:+:=================================:+
-| \<Id_ref\>\_Ref.fasta            | Proteic_prot_1-n_ref.fasta        |
-|                                  |                                   |
-| (From Genbank_extract.py)        |                                   |
-+----------------------------------+-----------------------------------+
++---------------------------+----------------------------+
+| Input                     | Output                     |
++:=========================:+:==========================:+
+| \<Id_ref\>\_Ref.fasta     | protein_prot_1-n_ref.fasta |
+|                           |                            |
+| (From Genbank_extract.py) |                            |
++---------------------------+----------------------------+
 
 : Input-Output Execution.sh
 
@@ -140,7 +151,7 @@ This file ensures that as many protein positions as possible are retrieved in ca
 |                                  |                                      |
 | (From Genbank.py)                |                                      |
 |                                  |                                      |
-| Proteic_prot_1-n_ref.fasta       |                                      |
+| protein_prot_1-n_ref.fasta       |                                      |
 |                                  |                                      |
 | (from Execution.sh)              |                                      |
 +----------------------------------+--------------------------------------+
@@ -149,7 +160,7 @@ This file ensures that as many protein positions as possible are retrieved in ca
 
 ### DNA_dist.sh
 
-- Launch DNAdist from phylip and create a divergence sequence table.
+- Lauch DNAdist from phylip and create a divergence sequence table.
 
 +-----------------------------------------+----------------------------------+
 | Input                                   | Output                           |
@@ -170,12 +181,12 @@ This file ensures that as many protein positions as possible are retrieved in ca
 +:============================:+:================================:+
 | Divergence_nucleic_table.txt | All_nucleic_sequences_sdbl.fasta |
 |                              |                                  |
-| (From DNA_dist.sh)           | All_proteic_sequences_sdbl.fasta |
+| (From DNA_dist.sh)           | All_protein_sequences_sdbl.fasta |
 +------------------------------+----------------------------------+
 
 : Input-Output Delete_dbl.py
 
-### Mark_spe.py
+### Sep_prot.py
 
 - Separate the different proteins and save them in one file for each protein.
 
@@ -184,66 +195,40 @@ This file ensures that as many protein positions as possible are retrieved in ca
 +:================================:+:======================:+
 | All_nucleic_sequences_sdbl.fasta | Nucleic_prot_1-n.fasta |
 |                                  |                        |
-| (From Delete_dbl.py)             | Proteic_prot_1-n.fasta |
+| (From Delete_dbl.py)             | protein_prot_1-n.fasta |
 |                                  |                        |
-| All_proteic_sequences_sdbl.fasta | Nucleic_prot_OG.fasta  |
+| All_protein_sequences_sdbl.fasta | Nucleic_prot_OG.fasta  |
 |                                  |                        |
-| (From Delete_dbl.py)             | Proteic_prot_OG.fasta  |
+| (From Delete_dbl.py)             | protein_prot_OG.fasta  |
 +----------------------------------+------------------------+
 
-: Input-Output Test_sript_mark_spe.py
+: Input-Output Sep_prot.py
 
 ### Merge_spe_prot.py (optional)
 
-- Merge the specific outgroup (OG) species, with the specific study. %%c'est pas très clair%%
+- Aligns all proteins with their outgroup. Also creates a file containing the proteins you wish to use for the specific protein
 
-+-------------------------------+------------------------+
-| Input                         | Output                 |
-+:=============================:+:======================:+
-| Nucleic_prot_1-n.fasta        | Nucleic_prot_spe.fasta |
-|                               |                        |
-| (From Test_sript_mark_spe.py) | Proteic_prot_spe.fasta |
-|                               |                        |
-| Proteic_prot_1-n.fasta        |                        |
-|                               |                        |
-| (From Test_sript_mark_spe.py) |                        |
-|                               |                        |
-| Nucleic_prot_OG.fasta         |                        |
-|                               |                        |
-| (From Test_sript_mark_spe.py) |                        |
-|                               |                        |
-| Proteic_prot_OG.fasta         |                        |
-|                               |                        |
-| (From Test_sript_mark_spe.py) |                        |
-+-------------------------------+------------------------+
++-------------------------------+----------------------------+
+| Input                         | Output                     |
++:=============================:+:==========================:+
+| Nucleic_prot_1-n.fasta        | Nucleic_prot_spe.fasta     |
+|                               |                            |
+| (From Test_sript_Sep_prot.py) | protein_prot_spe.fasta     |
+|                               |                            |
+| protein_prot_1-n.fasta        | protein_prot_spe.aln-fasta |
+|                               |                            |
+| (From Test_sript_Sep_prot.py) | protein_prot_1-n.aln-fasta |
+|                               |                            |
+| Nucleic_prot_OG.fasta         |                            |
+|                               |                            |
+| (From Test_sript_Sep_prot.py) |                            |
+|                               |                            |
+| protein_prot_OG.fasta         |                            |
+|                               |                            |
+| (From Test_sript_Sep_prot.py) |                            |
++-------------------------------+----------------------------+
 
 : Input-Output Merge_spe_prot.py
-
-### Protdist.py
-
-- Launch Protdist from phyllip and create a sequence divergence table for each protein.
-
-+------------------------------+---------------------------------+
-| Input                        | Output                          |
-+:============================:+:===============================:+
-| Nucleic_prot_1-n.fasta       | **Divergence_proteic_table.py** |
-|                              |                                 |
-| (From mark_spe.py)           |                                 |
-|                              |                                 |
-| Proteic_prot_1-n.fasta       |                                 |
-|                              |                                 |
-| (From mark_spe.py)           |                                 |
-|                              |                                 |
-| Nucleic_prot_spe.fasta       |                                 |
-|                              |                                 |
-| (From Merge_spe_prot.py)     |                                 |
-|                              |                                 |
-| Proteic_prot_spe.fasta       |                                 |
-|                              |                                 |
-| (From Merge_spe_prot.py)     |                                 |
-+------------------------------+---------------------------------+
-
-: Input-Output Protdist.py
 
 ### Execution.sh
 
@@ -251,25 +236,58 @@ This file ensures that as many protein positions as possible are retrieved in ca
 
 - IQtree2
 
+Identify the best model (using iqtree2)
 Identify the best model (using IQtree2)
 
 IQtree2 was used because it can provide a test to identify the best model for the nucleic and protein sequences. If you only want to study the protein sequences you may used prottest instead.
 
 - Create the phylogenetic tree using the best model identified (using iqtree2)
 
-+------------------------------+-------------------------------+
-| Input                        | Output                        |
-+:============================:+:=============================:+
-| Proteic_prot_1-n.fasta       | **Proteic_prot_1-n.treefile** |
-|                              |                               |
-| (From Merge_spe_prot.py)     | **Proteic_prot_spe.treefile** |
-|                              |                               |
-| Proteic_prot_spe.fasta       |                               |
-|                              |                               |
-| (From Merge_spe_prot.py)     |                               |
-+------------------------------+-------------------------------+
++----------------------------+-------------------------------+
+| Input                      | Output                        |
++:==========================:+:=============================:+
+| protein_prot_1-n.aln-fasta | **protein_prot_1-n.treefile** |
+|                            |                               |
+| (From Merge_spe_prot.py)   | **protein_prot_spe.treefile** |
+|                            |                               |
+| protein_prot_spe.aln-fasta |                               |
+|                            |                               |
+| (From Merge_spe_prot.py)   |                               |
++----------------------------+-------------------------------+
+
+: Input-Output Execution.sh
+
+### Protdist.py
+
+- Lauch Protdist from phyllip and create a sequence divergence table for each protein.
+
++---------------------------+---------------------------------+
+| Input                     | Output                          |
++:=========================:+:===============================:+
+| Nucleic_prot_1-n.fasta    | **Divergence_protein_table.py** |
+|                           |                                 |
+| (From Sep_prot.py)        |                                 |
+|                           |                                 |
+| protein_prot_1-n.fasta    |                                 |
+|                           |                                 |
+| (From Sep_prot.py)        |                                 |
+|                           |                                 |
+| Nucleic_prot_spe.fasta    |                                 |
+|                           |                                 |
+| (From Merge_spe_prot.py)  |                                 |
+|                           |                                 |
+| protein_prot_spe.fasta    |                                 |
+|                           |                                 |
+| (From Merge_spe_prot.py)  |                                 |
+|                           |                                 |
+| Label_caption.txt         |                                 |
+|                           |                                 |
+| (From Genbank_extract.py) |                                 |
++---------------------------+---------------------------------+
 
 : Input-Output Protdist.py
+
+This step is executed at the end as it can be very long. It enables a pair-wise comparison of each virus for each protein or protein domain, and of specific proteins whenever applicable.
 
 ## Instructions to use
 
@@ -293,15 +311,11 @@ This name will be used as the folder name. It also allows you to specify which p
 
 If you wish to analyse several segments or polyproteins from the same family or species, you must enter two different project names; otherwise, all the files produced by the pipeline for both projects will be stored in the same folder.
 
-+-------------------+
 | Project name      |
-+===================+
+|-------------------|
 | Orthobunyaviridae |
-+-------------------+
 | Orthobunyaviridae |
-+-------------------+
 | Orthobunyaviridae |
-+-------------------+
 
 : Project name
 
@@ -313,15 +327,11 @@ If the row ??%%terme pas clair%% does not concern a specific outgroup, enter the
 
 If you wish to use different specific outgroups for the same project, you must have one row per outgroup.
 
-+-------------------+-------------------+
 | A                 | Study name        |
-+===================+===================+
+|-------------------|-------------------|
 | Orthobunyaviridae | Khurdun           |
-+-------------------+-------------------+
 | Orthobunyaviridae | Pacuvirus         |
-+-------------------+-------------------+
 | Orthobunyaviridae | Orthobunyaviridae |
-+-------------------+-------------------+
 
 : Study name : Khurdun and Pacuvirus will be used as outgroups
 
@@ -329,15 +339,11 @@ If you wish to use different specific outgroups for the same project, you must h
 
 The name of the file that contains the virus IDs. This file must be in the same folder as the pipeline.
 
-+-------------------+-------------------+----------------------------+
 | A                 | B                 | ID files                   |
-+===================+===================+============================+
+|-------------------|-------------------|----------------------------|
 | Orthobunyaviridae | Khurdun           | Khurdun_file.txt           |
-+-------------------+-------------------+----------------------------+
 | Orthobunyaviridae | Pacuvirus         | Pacuvirus_file.txt         |
-+-------------------+-------------------+----------------------------+
 | Orthobunyaviridae | Orthobunyaviridae | Orthobunyaviridae_file.txt |
-+-------------------+-------------------+----------------------------+
 
 : ID file
 
@@ -348,15 +354,11 @@ Y : if this line concern a specific outgroup for one or multiple proteins.
 
 N : If this line doesn't concern a specific outgroup.
 
-+-------------------+-------------------+---------------+---------------+
-| A                 | B                 | C             | Outgroup Spe  |
-+===================+===================+===============+===============+
-| Orthobunyaviridae | Khurdun           | IDk           | Y             |
-+-------------------+-------------------+---------------+---------------+
-| Orthobunyaviridae | Pacuvirus         | IDp           | Y             |
-+-------------------+-------------------+---------------+---------------+
-| Orthobunyaviridae | Orthobunyaviridae | IDn           | N             |
-+-------------------+-------------------+---------------+---------------+
+| A                 | B                 | C   | Outgroup Spe |
+|-------------------|-------------------|-----|--------------|
+| Orthobunyaviridae | Khurdun           | IDk | Y            |
+| Orthobunyaviridae | Pacuvirus         | IDp | Y            |
+| Orthobunyaviridae | Orthobunyaviridae | IDn | N            |
 
 : Outgroup Specific : Is it a specifc outgroup?
 
@@ -369,15 +371,11 @@ If this line doesn't concern a specific outgroup, enter the names of the protein
 
 If this line refers to a specific outgroups, specify for which proteins this outgroup will be used
 
-+-------------------+-------------------+---+-----------------------+
-| A                 | B                 | D | For wich prot         |
-+===================+===================+===+=======================+
-| Orthobunyaviridae | Khurdun           | Y | nsmgn                 |
-+-------------------+-------------------+---+-----------------------+
-| Orthobunyaviridae | Pacuvirus         | Y | polyprotein;gn;nsm;gc |
-+-------------------+-------------------+---+-----------------------+
-| Orthobunyaviridae | Orthobunyaviridae | N | polyprotein;gn;nsm;gc |
-+-------------------+-------------------+---+-----------------------+
+| A                 | B                 | D   | For wich prot         |
+|-------------------|-------------------|-----|-----------------------|
+| Orthobunyaviridae | Khurdun           | Y   | nsmgn                 |
+| Orthobunyaviridae | Pacuvirus         | Y   | polyprotein;gn;nsm;gc |
+| Orthobunyaviridae | Orthobunyaviridae | N   | polyprotein;gn;nsm;gc |
 
 : For which proteins
 
@@ -385,15 +383,15 @@ If this line refers to a specific outgroups, specify for which proteins this out
 
 Protein names of the study name (col B)
 
-+-------------------+-------------------+-------+--------------------------+
-| A                 | B                 | E     | Protein names (in order) |
-+===================+===================+=======+==========================+
-| Orthobunyaviridae | Khurdun           | nsmgn | polyprotein;gn;gc        |
-+-------------------+-------------------+-------+--------------------------+
-| Orthobunyaviridae | Pacuvirus         | prots | polyprotein;gn;nsm;gc    |
-+-------------------+-------------------+-------+--------------------------+
-| Orthobunyaviridae | Orthobunyaviridae | prots | polyprotein;gn;nsm;gc    |
-+-------------------+-------------------+-------+--------------------------+
++-------------------+-------------------+--------------+--------------------------+
+| A                 | B                 | E            | Proteins name (in order) |
++===================+===================+==============+==========================+
+| Orthobunyaviridae | Khurdun           | nsmgn        | polyprotein;gn;gc        |
++-------------------+-------------------+--------------+--------------------------+
+| Orthobunyaviridae | Pacuvirus         | prots        | polyprotein;gn;nsm;gc    |
++-------------------+-------------------+--------------+--------------------------+
+| Orthobunyaviridae | Orthobunyaviridae | prots        | polyprotein;gn;nsm;gc    |
++-------------------+-------------------+--------------+--------------------------+
 
 : Protein names (in order)
 
@@ -401,15 +399,11 @@ Protein names of the study name (col B)
 
 Identify the proteins that will be involved in the specific protein %%phrase pas claire%%
 
-+-------------------+-------------------+-------+------------------+
-| A                 | B                 | F     | specific protein |
-+===================+===================+=======+==================+
-| Orthobunyaviridae | Khurdun           | prots | nsmgn=gn         |
-+-------------------+-------------------+-------+------------------+
-| Orthobunyaviridae | Pacuvirus         | prots |                  |
-+-------------------+-------------------+-------+------------------+
-| Orthobunyaviridae | Orthobunyaviridae | prots | nsmgn=nsm+gn     |
-+-------------------+-------------------+-------+------------------+
+| A                 | B                 | F     | spe prot     |
+|-------------------|-------------------|-------|--------------|
+| Orthobunyaviridae | Khurdun           | prots | nsmgn=gn     |
+| Orthobunyaviridae | Pacuvirus         | prots |              |
+| Orthobunyaviridae | Orthobunyaviridae | prots | nsmgn=nsm+gn |
 
 : specific protein
 
@@ -419,15 +413,11 @@ The protein Gn of Khurdun will be used as the outgroup.
 
 Enter a reference ID that will be used for BLAST alignment in case some positions are missing.
 
-+-------------------+-------------------+--------------+-------------+
 | A                 | B                 | G            | RefID       |
-+===================+===================+==============+=============+
+|-------------------|-------------------|--------------|-------------|
 | Orthobunyaviridae | Khurdun           | nsmgn=gn     |             |
-+-------------------+-------------------+--------------+-------------+
 | Orthobunyaviridae | Pacuvirus         |              |             |
-+-------------------+-------------------+--------------+-------------+
 | Orthobunyaviridae | Orthobunyaviridae | nsmgn=nsm+gn | NC_001926.1 |
-+-------------------+-------------------+--------------+-------------+
 
 : RefID
 
@@ -435,29 +425,25 @@ Enter a reference ID that will be used for BLAST alignment in case some position
 
 The positions of the proteins for the reference or the specific outgroup.
 
-+-------------------+-------------------+-------+---------------------------------+
-| A                 | B                 | H     | reference /OG protein positions |
-+===================+===================+=======+=================================+
-| Orthobunyaviridae | Khurdun           |       | 23;292;526;944                  |
-+-------------------+-------------------+-------+---------------------------------+
-| Orthobunyaviridae | Pacuvirus         |       | 1;1458;23;305;308;476;598;1386  |
-+-------------------+-------------------+-------+---------------------------------+
-| Orthobunyaviridae | Orthobunyaviridae | IDref | 22;302;303;476;509;1372         |
-+-------------------+-------------------+-------+---------------------------------+
++-------------------+-------------------+-------------+---------------------------------+
+| A                 | B                 | H           | reference /OG proteins position |
++===================+===================+=============+=================================+
+| Orthobunyaviridae | Khurdun           |             | 23;292;526;944                  |
++-------------------+-------------------+-------------+---------------------------------+
+| Orthobunyaviridae | Pacuvirus         |             | 1;1458;23;305;308;476;598;1386  |
++-------------------+-------------------+-------------+---------------------------------+
+| Orthobunyaviridae | Orthobunyaviridae | IDref       | 22;302;303;476;509;1372         |
++-------------------+-------------------+-------------+---------------------------------+
 
 : RefID
 
 #### J: Start of the proteins in the nucleic sequence
 
-+-------------------+-------------------+-----+-----------------------------------------------+
-| A                 | B                 | I   | Start of the proteins in the nucleic sequence |
-+===================+===================+=====+===============================================+
-| Orthobunyaviridae | Khurdun           | pos | 34                                            |
-+-------------------+-------------------+-----+-----------------------------------------------+
-| Orthobunyaviridae | Pacuvirus         | pos | 53                                            |
-+-------------------+-------------------+-----+-----------------------------------------------+
-| Orthobunyaviridae | Orthobunyaviridae | pos | 57                                            |
-+-------------------+-------------------+-----+-----------------------------------------------+
+| A | B | I | Start of the proteins in the nucleic sequence |
+|----|----|----|----|
+| Orthobunyaviridae | Khurdun | pos | 34 |
+| Orthobunyaviridae | Pacuvirus | pos | 53 |
+| Orthobunyaviridae | Orthobunyaviridae | pos | 57 |
 
 : Start of the proteins in the nucleic sequence
 
@@ -465,15 +451,11 @@ This position will be used as the start of the protein sequence within the nucle
 
 **K: DNAdist Threshold**
 
-+-------------------+-------------------+----+-------------------+
-| A                 | B                 | J  | DNAdist Threshold |
-+===================+===================+====+===================+
-| Orthobunyaviridae | Khurdun           | 34 | 0.01              |
-+-------------------+-------------------+----+-------------------+
-| Orthobunyaviridae | Pacuvirus         | 53 | 0.05              |
-+-------------------+-------------------+----+-------------------+
-| Orthobunyaviridae | Orthobunyaviridae | 57 | 0.01              |
-+-------------------+-------------------+----+-------------------+
+| A                 | B                 | J   | DNAdist Threshold |
+|-------------------|-------------------|-----|-------------------|
+| Orthobunyaviridae | Khurdun           | 34  | 0.01              |
+| Orthobunyaviridae | Pacuvirus         | 53  | 0.05              |
+| Orthobunyaviridae | Orthobunyaviridae | 57  | 0.01              |
 
 : DNAdist Threshold
 
@@ -483,29 +465,25 @@ a list of the IDs that you do not want to be deleted.
 
 **SEPARATED BY ‘;’**
 
-+-------------------+-------------------+------+---------------------------------+
-| A                 | B                 | k    | Organism to keep ID             |
-+===================+===================+======+=================================+
-| Orthobunyaviridae | Khurdun           | 0.01 |                                 |
-+-------------------+-------------------+------+---------------------------------+
-| Orthobunyaviridae | Pacuvirus         | 0.05 |                                 |
-+-------------------+-------------------+------+---------------------------------+
-| Orthobunyaviridae | Orthobunyaviridae | 0.01 | MH484340.1;NC_005775;EF990927.1 |
-+-------------------+-------------------+------+---------------------------------+
++-------------------+-------------------+-------------+---------------------------------+
+| A                 | B                 | k           | Organism to keep ID             |
++===================+===================+=============+=================================+
+| Orthobunyaviridae | Khurdun           | 0.01        |                                 |
++-------------------+-------------------+-------------+---------------------------------+
+| Orthobunyaviridae | Pacuvirus         | 0.05        |                                 |
++-------------------+-------------------+-------------+---------------------------------+
+| Orthobunyaviridae | Orthobunyaviridae | 0.01        | MH484340.1;NC_005775;EF990927.1 |
++-------------------+-------------------+-------------+---------------------------------+
 
 : ID Organism to keep
 
 #### M: Organism without a particular protein ID
 
-+-------------------+-------------------+-----+-------------------------------------------+
-| A                 | B                 | L   | Organism without a particular protein ID  |
-+===================+===================+=====+===========================================+
-| Orthobunyaviridae | Khurdun           |     | OUT\*NSM=NC_078560.1                      |
-+-------------------+-------------------+-----+-------------------------------------------+
-| Orthobunyaviridae | Pacuvirus         |     | NONE\*NN=NN                               |
-+-------------------+-------------------+-----+-------------------------------------------+
-| Orthobunyaviridae | Orthobunyaviridae | IDs | NONE\*NN=NN                               |
-+-------------------+-------------------+-----+-------------------------------------------+
+| A | B | L | Organism without a particular protein ID  |
+|----|----|----|----|
+| Orthobunyaviridae | Khurdun |  | OUT\*NSM=NC_078560.1 |
+| Orthobunyaviridae | Pacuvirus |  | NONE\*NN=NN |
+| Orthobunyaviridae | Orthobunyaviridae | IDs | NONE\*NN=NN |
 
 : Organism without a particular protein ID
 
@@ -517,15 +495,11 @@ IN\*\<prot\>=liste of IDs
 
 Do you want to use TrimAl for this study.
 
-+-------------------+-------------------+-------------+--------+
 | A                 | B                 | M           | Trimal |
-+===================+===================+=============+========+
+|-------------------|-------------------|-------------|--------|
 | Orthobunyaviridae | Khurdun           | OUT\*NSM=ID | Yes    |
-+-------------------+-------------------+-------------+--------+
 | Orthobunyaviridae | Pacuvirus         | NONE        | Yes    |
-+-------------------+-------------------+-------------+--------+
 | Orthobunyaviridae | Orthobunyaviridae | NONE        | Yes    |
-+-------------------+-------------------+-------------+--------+
 
 : Do you want to use TrimAl
 
@@ -533,29 +507,34 @@ Do you want to use TrimAl for this study.
 
 Do you want to use blast in case of missing proteins positions
 
-+-------------------+-------------------+---+-------+
-| A                 | B                 | N | Blast |
-+===================+===================+===+=======+
-| Orthobunyaviridae | Khurdun           | Y | Y     |
-+-------------------+-------------------+---+-------+
-| Orthobunyaviridae | Pacuvirus         | Y | Y     |
-+-------------------+-------------------+---+-------+
-| Orthobunyaviridae | Orthobunyaviridae | Y | Y     |
-+-------------------+-------------------+---+-------+
+| A                 | B                 | N   | Blast |
+|-------------------|-------------------|-----|-------|
+| Orthobunyaviridae | Khurdun           | Y   | Y     |
+| Orthobunyaviridae | Pacuvirus         | Y   | Y     |
+| Orthobunyaviridae | Orthobunyaviridae | Y   | Y     |
 
 : Do you want to use blast?
 
 ## Additional Instructions and warnings
 
+### Files path
+
+**protein_equivalent.txt** must be at the root
+
+**species_equivalent.txt** must be at the root
+
+**all_information.txt** must be at the root
+
 ### Proteins positions
 
+Please pay attention to the ***Final_pos_prot.txt*** file. The blast alignment is only an approximation
 Please pay attention to the ***Final_pos_prot.txt*** file. The blast alignment is only an approximation
 
 This is not a completely reliable solution. We strongly advise against using VERTEX if you have very few virus with records in the databases.
 
 It is also strongly recommended that you check the consistency between the actual positions of the proteins and the predicted positions. The **Pos_prot.txt** file contains all the positions extracted from the database.
 
-If you are not satisfied with the positions, you can change them manually. After that, simply restart the pipeline from the **mark_spe.py** file.
+If you are not satisfied with the positions, you can change them manually. After that, simply restart the pipeline from the **Sep_prot.py** file.
 
 ### Region name in the database
 
