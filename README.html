@@ -353,8 +353,9 @@ display: none;
 
 
 <hr />
-<div id="vertex" class="section level1">
-<h1>VERTEX</h1>
+<div id="vertex-viral-sequence-extraction-reconstruction-and-tree-exploration" class="section level1">
+<h1>VERTEX (Viral sequence Extraction, Reconstruction and Tree
+EXploration)</h1>
 <div id="requirements" class="section level2">
 <h2>requirements</h2>
 <div id="bash-requirements" class="section level3">
@@ -368,8 +369,8 @@ display: none;
 <p>phylip 1:3.697+dfsg-4build1</p>
 <p>ncbi-blast+ 2.12.0+ds-4build2</p>
 </div>
-<div id="pyhton-requirements" class="section level3">
-<h3>Pyhton requirements</h3>
+<div id="python-requirements" class="section level3">
+<h3>Python requirements</h3>
 <p>Bio==1.8.4</p>
 <p>geopy==2.5.0</p>
 <p>matplotlib==3.11.2</p>
@@ -406,23 +407,19 @@ analyses.</p>
 <p>This step performs the download of all the sequences in a Genbank
 format and the concatenation of all the Genbank files into one file
 called <strong>sequences&lt;Study_name&gt;.gb</strong>.</p>
-<table style="width:71%;">
+<table>
 <caption>Input-Output Execution.sh</caption>
-<colgroup>
-<col width="30%" />
-<col width="40%" />
-</colgroup>
 <thead>
 <tr class="header">
-<th align="center">Input</th>
-<th align="center">Output</th>
+<th align="left">Input</th>
+<th align="left">Output</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="center"><p>all_information.txt</p>
-<p><strong>(From user)</strong></p></td>
-<td align="center">sequences&lt;Study_name&gt;.gb</td>
+<td align="left">all_information.txt<br><strong>(From
+user)</strong></td>
+<td align="left">sequences&lt;Study_name&gt;.gb</td>
 </tr>
 </tbody>
 </table>
@@ -443,14 +440,14 @@ folders <strong>nucl</strong> and <strong>prot</strong>.</p>
 concatenated in the
 <strong><em>prot_all_&lt;Study_name&gt;.gp</em></strong> file.</li>
 </ul>
-<p>The Gp file format is very similar to the Gb file format, except that
-Gp includes the positions of the various proteins and protein domains.
-This format can be downloaded in the same way as the Gb format from the
-protein identifier record in the NCBI database or website.</p>
+<p>The Gp file format is very similar to the Genbank file format, except
+that Gp file includes the positions of the various proteins and protein
+domains. This format can be downloaded in the same way as the Genbank
+file from the protein identifier record in the NCBI database or
+website.</p>
 <ul>
 <li>Create a <strong>Metadata_files.txt</strong> that contains different
-information available in the genbank file format and the Gp file
-format.</li>
+information available in the Genbank and the Gp files.</li>
 </ul>
 <p>This file contains the following information :</p>
 <p>Study | Virus name ID for Itol tree | Taxonomy | Information |
@@ -459,23 +456,23 @@ proteins | extract_size | Nucleic accession number | Size Nucleic
 sequence | Strand | Strain | Geographical region | Host or vector |
 References</p>
 <ul>
-<li>Create a file that lists all the positions for each protein or
-domain available in the gp files format saved in the file
-<strong>pos_prot_&lt;Study_name&gt;.txt</strong>.</li>
-<li>Create the caption for the user_legend, Geographical region, and
-Host.</li>
+<li><p>Create a file <strong>pos_prot_&lt;Study_name&gt;.txt</strong>
+that lists all the positions for each protein or domain available in the
+Gp file.</p></li>
+<li><p>Create the caption for the user_legend, Geographical region, and
+Host.</p></li>
 </ul>
-<p>The caption are created based on the Itol format. One color will be
+<p>The captions are created based on the Itol format. One colour will be
 associated with the same values for all the studies.</p>
 <p>The user information caption is created using the
 <strong>user_legend.txt</strong> file. You can put in that file all the
-information you want to use to characterize you study (for example
+information you want to use to characterize your study (for example
 serogroup or precise taxonomy)</p>
-<table style="width:96%;">
+<table>
 <caption>Input-Output Genbank.py</caption>
 <colgroup>
-<col width="40%" />
-<col width="55%" />
+<col width="46%" />
+<col width="53%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -485,23 +482,57 @@ serogroup or precise taxonomy)</p>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="center"><p>sequences&lt;Study_name&gt;.gb</p>
-<p>(From Genbank_extract.py)</p>
-<p>user_legend.txt</p>
-<p><strong>(from user)</strong></p></td>
-<td align="center"><p>&lt;ID_nucl&gt;_prot.fasta</p>
-<p>&lt;ID_nucl&gt;_nucl.fasta</p>
-<p>prot_all_.fasta |</p>
-<p>All_nucleic_sequences.fasta</p>
-<p>All_protein_sequences_align.aln-fasta</p>
-<p>All_nucleic_sequences_align.aln-fasta</p>
-<p>All_protein_sequences.gp</p>
-<p><strong>Informations_caption.txt</strong></p>
-<p><strong>Geographical_caption.txt</strong></p>
-<p><strong>Host_caption.txt</strong></p>
-<p><strong>Label_caption.txt</strong></p>
-<p><strong>Metadata.txt</strong></p>
-<p><strong>pos_prot_&lt;Study_name&gt;.txt</strong></p></td>
+<td align="center">sequences&lt;Study_name&gt;.gb (From
+Genbank_extract.py)</td>
+<td align="center">&lt;ID_nucl&gt;_prot.fasta</td>
+</tr>
+<tr class="even">
+<td align="center">user_legend.txt <strong>(from user)</strong></td>
+<td align="center">&lt;ID_nucl&gt;_nucl.fasta</td>
+</tr>
+<tr class="odd">
+<td align="center"></td>
+<td align="center">prot_all_.fasta |</td>
+</tr>
+<tr class="even">
+<td align="center"></td>
+<td align="center">All_nucleic_sequences.fasta</td>
+</tr>
+<tr class="odd">
+<td align="center"></td>
+<td align="center">All_protein_sequences_align.aln-fasta</td>
+</tr>
+<tr class="even">
+<td align="center"></td>
+<td align="center">All_nucleic_sequences_align.aln-fasta</td>
+</tr>
+<tr class="odd">
+<td align="center"></td>
+<td align="center">All_protein_sequences.gp</td>
+</tr>
+<tr class="even">
+<td align="center"></td>
+<td align="center"><strong>Informations_caption.txt</strong></td>
+</tr>
+<tr class="odd">
+<td align="center"></td>
+<td align="center"><strong>Geographical_caption.txt</strong></td>
+</tr>
+<tr class="even">
+<td align="center"></td>
+<td align="center"><strong>Host_caption.txt</strong></td>
+</tr>
+<tr class="odd">
+<td align="center"></td>
+<td align="center"><strong>Label_caption.txt</strong></td>
+</tr>
+<tr class="even">
+<td align="center"></td>
+<td align="center"><strong>Metadata.txt</strong></td>
+</tr>
+<tr class="odd">
+<td align="center"></td>
+<td align="center"><strong>pos_prot_&lt;Study_name&gt;.txt</strong></td>
 </tr>
 </tbody>
 </table>
@@ -511,11 +542,11 @@ serogroup or precise taxonomy)</p>
 <ul>
 <li>Create a Blast database of all the reference virus proteins.</li>
 </ul>
-<table style="width:79%;">
+<table>
 <caption>Input-Output Execution.sh</caption>
 <colgroup>
-<col width="38%" />
-<col width="40%" />
+<col width="46%" />
+<col width="53%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -525,8 +556,8 @@ serogroup or precise taxonomy)</p>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="center"><p>&lt;Id_ref&gt;_Ref.fasta</p>
-<p>(From Genbank_extract.py)</p></td>
+<td align="center">&lt;Id_ref&gt;_Ref.fasta (From
+Genbank_extract.py)</td>
 <td align="center">protein_prot_1-n_ref.fasta</td>
 </tr>
 </tbody>
@@ -539,13 +570,13 @@ serogroup or precise taxonomy)</p>
 study.</li>
 </ul>
 <p>This file ensures that as many protein positions as possible are
-retrieved in cases where the information is not available in the Gp file
-format.</p>
+retrieved in cases where the information is not available in the Gp
+file.</p>
 <table>
 <caption>Input-Output Prot_position.py</caption>
 <colgroup>
-<col width="47%" />
-<col width="52%" />
+<col width="46%" />
+<col width="53%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -555,11 +586,13 @@ format.</p>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="center"><p><strong>pos_prot_&lt;Study_name&gt;.txt</strong></p>
-<p>(From Genbank.py)</p>
-<p>protein_prot_1-n_ref.fasta</p>
-<p>(from Execution.sh)</p></td>
+<td align="center"><strong>pos_prot_&lt;Study_name&gt;.txt</strong>
+(From Genbank.py)</td>
 <td align="center"><strong>pos_prot_final&lt;Study_name&gt;.txt</strong></td>
+</tr>
+<tr class="even">
+<td align="center">protein_prot_1-n_ref.fasta (from Execution.sh)</td>
+<td align="center"></td>
 </tr>
 </tbody>
 </table>
@@ -567,14 +600,14 @@ format.</p>
 <div id="dna_dist.sh" class="section level3">
 <h3>DNA_dist.sh</h3>
 <ul>
-<li>Lauch DNAdist from phylip and create a divergence sequence
+<li>Launch DNAdist from phylip and create a divergence sequence
 table.</li>
 </ul>
 <table>
 <caption>Input-Output DNA_dist.sh</caption>
 <colgroup>
-<col width="54%" />
-<col width="45%" />
+<col width="46%" />
+<col width="53%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -584,8 +617,8 @@ table.</li>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="center"><p>All _nucleic_sequences_align.aln-fasta</p>
-<p>(From Genbank_extract.py)</p></td>
+<td align="center">All _nucleic_sequences_align.aln-fasta (From
+Genbank_extract.py)</td>
 <td align="center"><strong>Divergence_nucleic_table.txt</strong></td>
 </tr>
 </tbody>
@@ -594,16 +627,16 @@ table.</li>
 <div id="delete_dbl.py" class="section level3">
 <h3>Delete_dbl.py</h3>
 <ul>
-<li>Delete the sequences that are considered too closely related or
+<li>Delete the sequences that are considered too closely related or too
 similar using the <strong>DNA_dist.sh</strong> output table and the user
-defined threshold from the <strong>All_information.txt (from
-user)</strong>.</li>
+defined threshold from the <strong>All_information.txt</strong>
+file.</li>
 </ul>
-<table style="width:92%;">
+<table>
 <caption>Input-Output Delete_dbl.py</caption>
 <colgroup>
-<col width="43%" />
-<col width="48%" />
+<col width="46%" />
+<col width="53%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -613,10 +646,12 @@ user)</strong>.</li>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="center"><p>Divergence_nucleic_table.txt</p>
-<p>(From DNA_dist.sh)</p></td>
-<td align="center"><p>All_nucleic_sequences_sdbl.fasta</p>
-<p>All_protein_sequences_sdbl.fasta</p></td>
+<td align="center">Divergence_nucleic_table.txt(From DNA_dist.sh)</td>
+<td align="center">All_nucleic_sequences_sdbl.fasta</td>
+</tr>
+<tr class="even">
+<td align="center"></td>
+<td align="center">All_protein_sequences_sdbl.fasta</td>
 </tr>
 </tbody>
 </table>
@@ -624,14 +659,14 @@ user)</strong>.</li>
 <div id="sep_prot.py" class="section level3">
 <h3>Sep_prot.py</h3>
 <ul>
-<li>Separate the different proteins and save them in one file for each
-protein.</li>
+<li>Separate the different proteins and save them in separated files for
+each protein.</li>
 </ul>
-<table style="width:83%;">
+<table>
 <caption>Input-Output Sep_prot.py</caption>
 <colgroup>
-<col width="48%" />
-<col width="34%" />
+<col width="43%" />
+<col width="56%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -641,14 +676,22 @@ protein.</li>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="center"><p>All_nucleic_sequences_sdbl.fasta</p>
-<p>(From Delete_dbl.py)</p>
-<p>All_protein_sequences_sdbl.fasta</p>
-<p>(From Delete_dbl.py)</p></td>
-<td align="center"><p>Nucleic_prot_1-n.fasta</p>
-<p>protein_prot_1-n.fasta</p>
-<p>Nucleic_prot_OG.fasta</p>
-<p>protein_prot_OG.fasta</p></td>
+<td align="center">All_nucleic_sequences_sdbl.fasta (From
+Delete_dbl.py)</td>
+<td align="center">Nucleic_prot_1-n.fasta</td>
+</tr>
+<tr class="even">
+<td align="center"></td>
+<td align="center">protein_prot_1-n.fasta</td>
+</tr>
+<tr class="odd">
+<td align="center">All_protein_sequences_sdbl.fasta (From
+Delete_dbl.py)</td>
+<td align="center">Nucleic_prot_OG.fasta</td>
+</tr>
+<tr class="even">
+<td align="center"></td>
+<td align="center">protein_prot_OG.fasta</td>
 </tr>
 </tbody>
 </table>
@@ -656,14 +699,15 @@ protein.</li>
 <div id="merge_spe_prot.py-optional" class="section level3">
 <h3>Merge_spe_prot.py (optional)</h3>
 <ul>
-<li>Aligns all proteins with their outgroup. Also creates a file
-containing the proteins you wish to use for the specific protein</li>
+<li>Align all proteins with their outgroup and create a file containing
+the %%%proteins you wish to use for the specific protein%%% ce n’est pas
+tres clair</li>
 </ul>
-<table style="width:85%;">
+<table>
 <caption>Input-Output Merge_spe_prot.py</caption>
 <colgroup>
-<col width="44%" />
-<col width="40%" />
+<col width="46%" />
+<col width="53%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -673,18 +717,32 @@ containing the proteins you wish to use for the specific protein</li>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="center"><p>Nucleic_prot_1-n.fasta</p>
-<p>(From Test_sript_Sep_prot.py)</p>
-<p>protein_prot_1-n.fasta</p>
-<p>(From Test_sript_Sep_prot.py)</p>
-<p>Nucleic_prot_OG.fasta</p>
-<p>(From Test_sript_Sep_prot.py)</p>
-<p>protein_prot_OG.fasta</p>
-<p>(From Test_sript_Sep_prot.py)</p></td>
-<td align="center"><p>Nucleic_prot_spe.fasta</p>
-<p>protein_prot_spe.fasta</p>
-<p>protein_prot_spe.aln-fasta</p>
-<p>protein_prot_1-n.aln-fasta</p></td>
+<td align="center">Nucleic_prot_1-n.fasta (From
+Test_sript_Sep_prot.py)</td>
+<td align="center">Nucleic_prot_spe.fasta</td>
+</tr>
+<tr class="even">
+<td align="center"></td>
+<td align="center">protein_prot_spe.fasta</td>
+</tr>
+<tr class="odd">
+<td align="center">protein_prot_1-n.fasta (From
+Test_sript_Sep_prot.py)</td>
+<td align="center">protein_prot_spe.aln-fasta</td>
+</tr>
+<tr class="even">
+<td align="center"></td>
+<td align="center">protein_prot_1-n.aln-fasta</td>
+</tr>
+<tr class="odd">
+<td align="center">Nucleic_prot_OG.fasta (From
+Test_sript_Sep_prot.py)</td>
+<td align="center"></td>
+</tr>
+<tr class="even">
+<td align="center">protein_prot_OG.fasta (From
+Test_sript_Sep_prot.py)</td>
+<td align="center"></td>
 </tr>
 </tbody>
 </table>
@@ -695,20 +753,20 @@ containing the proteins you wish to use for the specific protein</li>
 <li><p>TrimAl</p></li>
 <li><p>IQtree2</p></li>
 </ul>
-<p>Identify the best model (using iqtree2) Identify the best model
-(using IQtree2)</p>
+<p>Identify the best model (using iqtree2)</p>
 <p>IQtree2 was used because it can provide a test to identify the best
-model for the nucleic and protein sequences. If you only want to study
-the protein sequences you may used prottest instead.</p>
+model of tree reconstruction for the nucleic and protein sequences. If
+you only want to study the protein sequences you may use prottest
+instead.</p>
 <ul>
 <li>Create the phylogenetic tree using the best model identified (using
-iqtree2)</li>
+IQtree2)</li>
 </ul>
-<table style="width:85%;">
+<table>
 <caption>Input-Output Execution.sh</caption>
 <colgroup>
-<col width="40%" />
-<col width="44%" />
+<col width="46%" />
+<col width="53%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -718,12 +776,18 @@ iqtree2)</li>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="center"><p>protein_prot_1-n.aln-fasta</p>
-<p>(From Merge_spe_prot.py)</p>
-<p>protein_prot_spe.aln-fasta</p>
-<p>(From Merge_spe_prot.py)</p></td>
-<td align="center"><p><strong>protein_prot_1-n.treefile</strong></p>
-<p><strong>protein_prot_spe.treefile</strong></p></td>
+<td align="center">protein_prot_1-n.aln-fasta (From
+Merge_spe_prot.py)</td>
+<td align="center"><strong>protein_prot_1-n.treefile</strong></td>
+</tr>
+<tr class="even">
+<td align="center"></td>
+<td align="center"><strong>protein_prot_spe.treefile</strong></td>
+</tr>
+<tr class="odd">
+<td align="center">protein_prot_spe.aln-fasta (From
+Merge_spe_prot.py)</td>
+<td align="center"></td>
 </tr>
 </tbody>
 </table>
@@ -731,14 +795,14 @@ iqtree2)</li>
 <div id="protdist.py" class="section level3">
 <h3>Protdist.py</h3>
 <ul>
-<li>Lauch Protdist from phyllip and create a sequence divergence table
+<li>Launch Protdist from phylip and create a sequence divergence table
 for each protein.</li>
 </ul>
-<table style="width:86%;">
+<table>
 <caption>Input-Output Protdist.py</caption>
 <colgroup>
-<col width="38%" />
-<col width="47%" />
+<col width="46%" />
+<col width="53%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -748,23 +812,31 @@ for each protein.</li>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="center"><p>Nucleic_prot_1-n.fasta</p>
-<p>(From Sep_prot.py)</p>
-<p>protein_prot_1-n.fasta</p>
-<p>(From Sep_prot.py)</p>
-<p>Nucleic_prot_spe.fasta</p>
-<p>(From Merge_spe_prot.py)</p>
-<p>protein_prot_spe.fasta</p>
-<p>(From Merge_spe_prot.py)</p>
-<p>Label_caption.txt</p>
-<p>(From Genbank_extract.py)</p></td>
+<td align="center">Nucleic_prot_1-n.fasta (From Sep_prot.py)</td>
 <td align="center"><strong>Divergence_protein_table.py</strong></td>
+</tr>
+<tr class="even">
+<td align="center">protein_prot_1-n.fasta (From Sep_prot.py)</td>
+<td align="center"></td>
+</tr>
+<tr class="odd">
+<td align="center">Nucleic_prot_spe.fasta (From Merge_spe_prot.py)</td>
+<td align="center"></td>
+</tr>
+<tr class="even">
+<td align="center">protein_prot_spe.fasta (From Merge_spe_prot.py)</td>
+<td align="center"></td>
+</tr>
+<tr class="odd">
+<td align="center">Label_caption.txt (From Genbank_extract.py)</td>
+<td align="center"></td>
 </tr>
 </tbody>
 </table>
-<p>This step is executed at the end as it can be very long. It enables a
-pair-wise comparison of each virus for each protein or protein domain,
-and of specific proteins whenever applicable.</p>
+<p>This step is executed at the end of the pipeline because it can be
+very long to run. It enables a pairwise comparison of each virus for
+each protein or protein domain, and of specific proteins whenever
+applicable.</p>
 </div>
 </div>
 <div id="instructions-to-use" class="section level2">
@@ -779,90 +851,77 @@ information in this file in order to use the pipeline.</p>
 <h3>Separator</h3>
 <p>DO NOT USE “,” AS A SEPARATOR INSIDE EACH COLUMN USE “;” INSTEAD</p>
 </div>
-<div id="files-path" class="section level3">
-<h3>Files path</h3>
+<div id="file-paths" class="section level3">
+<h3>File paths</h3>
 <p><strong>protein_equivalent.txt</strong> must be at the root</p>
 <p><strong>species_equivalent.txt</strong> must be at the root</p>
 <p><strong>all_information.txt</strong> must be at the root</p>
 <p><strong>Virus_ids.txt</strong> must be at the root</p>
 <p><strong>user_informations.txt</strong> must be at the root</p>
 </div>
-<div id="example" class="section level3">
-<h3>Example</h3>
-<p>Example for the study of Orthobunyaviridae with a specific
-outgroup</p>
+<div id="example-of-use" class="section level3">
+<h3>Example of use</h3>
+<p>We provide here a step by step running example for the study of
+Orthobunyaviridae with a specific outgroup</p>
 <div id="a-execution-project-name" class="section level4">
 <h4>A: Execution Project name</h4>
 <p>This name will be used as the folder name. It also allows you to
 specify which project the outgroup-specific data is associated with,
 where necessary.</p>
 <p>If you wish to analyse several segments or polyproteins from the same
-family or species, you must enter two different project names;
+viral family or species, you must enter two different project names;
 otherwise, all the files produced by the pipeline for both projects will
 be stored in the same folder.</p>
-<table style="width:28%;">
+<table>
 <caption>Project name</caption>
-<colgroup>
-<col width="27%" />
-</colgroup>
 <thead>
 <tr class="header">
-<th>Project name</th>
+<th align="center">Project name</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>Orthobunyaviridae</td>
+<td align="center">Orthobunyaviridae</td>
 </tr>
 <tr class="even">
-<td>Orthobunyaviridae</td>
+<td align="center">Orthobunyaviridae</td>
 </tr>
 <tr class="odd">
-<td>Orthobunyaviridae</td>
+<td align="center">Orthobunyaviridae</td>
 </tr>
 </tbody>
 </table>
 </div>
 <div id="b-study-name-cette-partie-nest-pas-tres-claire-pour-moi" class="section level4">
 <h4>B: Study name %%cette partie n’est pas tres claire pour moi%%%</h4>
-<p>Study name permet de différencier les informations qui concernent des
-outgroup qui ne serait pas utilisé pour toutes les protéines de
-l’étude.</p>
-<p>Par exemple si vous avez une protéine spécifique, ou si vous voulez
-utiliser des outgroups différents pour chaque protéine. Si ce n’est pas
-votre cas vous pouvez ajouter l’outgroup dans la liste des identifiants
-de l’étude et saisir le nom du projet.</p>
-<p>This name is used to distinguish specific outgroups (OG).</p>
-<p>If the row ??%%terme pas clair%% does not concern a specific
-outgroup, enter the project name. Otherwise, enter a name for the
-specific outgroup (ex. name).</p>
-<p>If you wish to use different specific outgroups for the same project,
-you must have one row per outgroup.</p>
-<table style="width:56%;">
+<p>“Study name” allows you to distinguish information regarding
+outgroups that may not be used for all proteins in the study.</p>
+<p>For example, if you have a specific protein, or if you want to use
+different outgroups for each protein.</p>
+<p>If this does not apply to you, you can add the outgroup IDs to the
+list of study identifiers and enter the project name (cf A: Execution
+Project name)</p>
+<table>
 <caption>Study name : Khurdun and Pacuvirus will be used as
 outgroups</caption>
-<colgroup>
-<col width="27%" />
-<col width="27%" />
-</colgroup>
 <thead>
 <tr class="header">
-<th>A</th>
-<th>Study name</th>
+<th align="center">A</th>
+<th align="center">Study name</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>Orthobunyaviridae</td>
-<td>Khurdun</td>
+<td align="center">Orthobunyaviridae</td>
+<td align="center">Khurdun</td>
 </tr>
 <tr class="even">
-<td>Orthobunyaviridae</td>
-<td>Pacuvirus</td>
+<td align="center">Orthobunyaviridae</td>
+<td align="center">Pacuvirus</td>
 </tr>
 <tr class="odd">
-<td>Orthobunyaviridae</td>
-<td>Orthobunyaviridae</td>
+<td align="center">Orthobunyaviridae</td>
+<td align="center">Orthobunyaviridae</td>
 </tr>
 </tbody>
 </table>
@@ -871,211 +930,182 @@ outgroups</caption>
 <h4>C: ID file</h4>
 <p>The name of the file that contains the virus IDs. This file must be
 at the root.</p>
-<table style="width:96%;">
+<table>
 <caption>ID file</caption>
-<colgroup>
-<col width="27%" />
-<col width="27%" />
-<col width="40%" />
-</colgroup>
 <thead>
 <tr class="header">
-<th>A</th>
-<th>B</th>
-<th>ID files</th>
+<th align="center">A</th>
+<th align="center">B</th>
+<th align="center">ID files</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>Orthobunyaviridae</td>
-<td>Khurdun</td>
-<td>Khurdun_file.txt</td>
+<td align="center">Orthobunyaviridae</td>
+<td align="center">Khurdun</td>
+<td align="center">Khurdun_file.txt</td>
 </tr>
 <tr class="even">
-<td>Orthobunyaviridae</td>
-<td>Pacuvirus</td>
-<td>Pacuvirus_file.txt</td>
+<td align="center">Orthobunyaviridae</td>
+<td align="center">Pacuvirus</td>
+<td align="center">Pacuvirus_file.txt</td>
 </tr>
 <tr class="odd">
-<td>Orthobunyaviridae</td>
-<td>Orthobunyaviridae</td>
-<td>Orthobunyaviridae_file.txt</td>
+<td align="center">Orthobunyaviridae</td>
+<td align="center">Orthobunyaviridae</td>
+<td align="center">Orthobunyaviridae_file.txt</td>
 </tr>
 </tbody>
 </table>
 </div>
 <div id="d-outgroup-choice-yn" class="section level4">
 <h4>D: Outgroup choice (Y/N)</h4>
-<p>Permet de spécifier si ces virus doivent être considéré comme des
-outgroups ou non.</p>
-<p>%%line =&gt; terme pas clair%% Y : if this line concern a specific
-outgroup for one or multiple proteins.</p>
+<p>Allows you to specify whether these viruses should be treated as
+outgroups or not.</p>
 <p>N : Is it a outgroup.</p>
-<table style="width:85%;">
+<table>
 <caption>Outgroup Specific : Is it a specifc outgroup?</caption>
-<colgroup>
-<col width="27%" />
-<col width="27%" />
-<col width="8%" />
-<col width="20%" />
-</colgroup>
 <thead>
 <tr class="header">
-<th>A</th>
-<th>B</th>
-<th>C</th>
-<th>Outgroup Spe</th>
+<th align="center">A</th>
+<th align="center">B</th>
+<th align="center">C</th>
+<th align="center">Outgroup Spe</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>Orthobunyaviridae</td>
-<td>Khurdun</td>
-<td>IDk</td>
-<td>Y</td>
+<td align="center">Orthobunyaviridae</td>
+<td align="center">Khurdun</td>
+<td align="center">IDk</td>
+<td align="center">Y</td>
 </tr>
 <tr class="even">
-<td>Orthobunyaviridae</td>
-<td>Pacuvirus</td>
-<td>IDp</td>
-<td>Y</td>
+<td align="center">Orthobunyaviridae</td>
+<td align="center">Pacuvirus</td>
+<td align="center">IDp</td>
+<td align="center">Y</td>
 </tr>
 <tr class="odd">
-<td>Orthobunyaviridae</td>
-<td>Orthobunyaviridae</td>
-<td>IDn</td>
-<td>N</td>
+<td align="center">Orthobunyaviridae</td>
+<td align="center">Orthobunyaviridae</td>
+<td align="center">IDn</td>
+<td align="center">N</td>
 </tr>
 </tbody>
 </table>
 </div>
 <div id="e-for-which-protein" class="section level4">
 <h4>E: For which protein</h4>
-<p>Quelle protéine voulez étudier , ou pour quelle protéine cet outgroup
-sera t-il utilisé.</p>
-<p>Which proteins are concerned by this study/line?</p>
-<p>%%pas clair pour moi, surtout ce qui est écrit en dessous%%% If this
-line doesn’t concern a specific outgroup, enter the names of the
-proteins from the studied species .</p>
-<p>If this line refers to a specific outgroups, specify for which
-proteins this outgroup will be used</p>
-<table style="width:94%;">
+<p>Which protein do you want to study, or for which protein will this
+outgroup be used?</p>
+<table>
 <caption>For which proteins</caption>
-<colgroup>
-<col width="27%" />
-<col width="27%" />
-<col width="5%" />
-<col width="33%" />
-</colgroup>
 <thead>
 <tr class="header">
-<th>A</th>
-<th>B</th>
-<th>D</th>
-<th>For wich prot</th>
+<th align="center">A</th>
+<th align="center">B</th>
+<th align="center">D</th>
+<th align="center">For wich prot</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>Orthobunyaviridae</td>
-<td>Khurdun</td>
-<td>Y</td>
-<td>nsmgn</td>
+<td align="center">Orthobunyaviridae</td>
+<td align="center">Khurdun</td>
+<td align="center">Y</td>
+<td align="center">nsmgn</td>
 </tr>
 <tr class="even">
-<td>Orthobunyaviridae</td>
-<td>Pacuvirus</td>
-<td>Y</td>
-<td>polyprotein;gn;nsm;gc</td>
+<td align="center">Orthobunyaviridae</td>
+<td align="center">Pacuvirus</td>
+<td align="center">Y</td>
+<td align="center">polyprotein;gn;nsm;gc</td>
 </tr>
 <tr class="odd">
-<td>Orthobunyaviridae</td>
-<td>Orthobunyaviridae</td>
-<td>N</td>
-<td>polyprotein;gn;nsm;gc</td>
+<td align="center">Orthobunyaviridae</td>
+<td align="center">Orthobunyaviridae</td>
+<td align="center">N</td>
+<td align="center">polyprotein;gn;nsm;gc</td>
 </tr>
 </tbody>
 </table>
 </div>
 <div id="f-protein-names-in-order" class="section level4">
 <h4>F: Protein names (in order)</h4>
-<p>Protein names of the study name (col B)</p>
-<table style="width:97%;">
+<p>Protein names of the study name (col B Study name)</p>
+<table>
 <caption>Protein names (in order)</caption>
 <colgroup>
-<col width="25%" />
-<col width="25%" />
-<col width="10%" />
-<col width="35%" />
+<col width="8%" />
+<col width="8%" />
+<col width="8%" />
+<col width="74%" />
 </colgroup>
 <thead>
 <tr class="header">
-<th>A</th>
-<th>B</th>
-<th>E</th>
-<th>Proteins name (in order)</th>
+<th align="center">A</th>
+<th align="center">B</th>
+<th align="center">E</th>
+<th align="center">Proteins name (in order)</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>Orthobunyaviridae</td>
-<td>Khurdun</td>
-<td>nsmgn</td>
-<td>polyprotein;gn;gc</td>
+<td align="center">Orthobunyaviridae</td>
+<td align="center">Khurdun</td>
+<td align="center">nsmgn</td>
+<td align="center">polyprotein;gn;gc</td>
 </tr>
 <tr class="even">
-<td>Orthobunyaviridae</td>
-<td>Pacuvirus</td>
-<td>prots</td>
-<td>polyprotein;gn;nsm;gc</td>
+<td align="center">Orthobunyaviridae</td>
+<td align="center">Pacuvirus</td>
+<td align="center">prots</td>
+<td align="center">polyprotein;gn;nsm;gc</td>
 </tr>
 <tr class="odd">
-<td>Orthobunyaviridae</td>
-<td>Orthobunyaviridae</td>
-<td>prots</td>
-<td>polyprotein;gn;nsm;gc</td>
+<td align="center">Orthobunyaviridae</td>
+<td align="center">Orthobunyaviridae</td>
+<td align="center">prots</td>
+<td align="center">polyprotein;gn;nsm;gc</td>
 </tr>
 </tbody>
 </table>
 </div>
 <div id="g-specific-protein" class="section level4">
 <h4>G: specific protein</h4>
-<p>Identify the proteins that will be involved in the specific protein
-%%phrase pas claire%%</p>
-<table style="width:88%;">
+<p>Indicate which proteins are involved in the study of a specific
+protein, if applicable.</p>
+<p>For example, if you want to study the evolutionary history of two
+proteins present in the same virus.</p>
+<table>
 <caption>specific protein</caption>
-<colgroup>
-<col width="27%" />
-<col width="27%" />
-<col width="11%" />
-<col width="20%" />
-</colgroup>
 <thead>
 <tr class="header">
-<th>A</th>
-<th>B</th>
-<th>F</th>
-<th>spe prot</th>
+<th align="center">A</th>
+<th align="center">B</th>
+<th align="center">F</th>
+<th align="center">spe prot</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>Orthobunyaviridae</td>
-<td>Khurdun</td>
-<td>prots</td>
-<td>nsmgn=gn</td>
+<td align="center">Orthobunyaviridae</td>
+<td align="center">Khurdun</td>
+<td align="center">prots</td>
+<td align="center">nsmgn=gn</td>
 </tr>
 <tr class="even">
-<td>Orthobunyaviridae</td>
-<td>Pacuvirus</td>
-<td>prots</td>
-<td></td>
+<td align="center">Orthobunyaviridae</td>
+<td align="center">Pacuvirus</td>
+<td align="center">prots</td>
+<td align="center"></td>
 </tr>
 <tr class="odd">
-<td>Orthobunyaviridae</td>
-<td>Orthobunyaviridae</td>
-<td>prots</td>
-<td>nsmgn=nsm+gn</td>
+<td align="center">Orthobunyaviridae</td>
+<td align="center">Orthobunyaviridae</td>
+<td align="center">prots</td>
+<td align="center">nsmgn=nsm+gn</td>
 </tr>
 </tbody>
 </table>
@@ -1085,40 +1115,34 @@ proteins this outgroup will be used</p>
 <h4>H: TargetID</h4>
 <p>Enter a reference ID that will be used for BLAST alignment in case
 some positions are missing.</p>
-<table style="width:96%;">
+<table>
 <caption>RefID</caption>
-<colgroup>
-<col width="27%" />
-<col width="27%" />
-<col width="20%" />
-<col width="19%" />
-</colgroup>
 <thead>
 <tr class="header">
-<th>A</th>
-<th>B</th>
-<th>G</th>
-<th>RefID</th>
+<th align="center">A</th>
+<th align="center">B</th>
+<th align="center">G</th>
+<th align="center">RefID</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>Orthobunyaviridae</td>
-<td>Khurdun</td>
-<td>nsmgn=gn</td>
-<td></td>
+<td align="center">Orthobunyaviridae</td>
+<td align="center">Khurdun</td>
+<td align="center">nsmgn=gn</td>
+<td align="center"></td>
 </tr>
 <tr class="even">
-<td>Orthobunyaviridae</td>
-<td>Pacuvirus</td>
-<td></td>
-<td></td>
+<td align="center">Orthobunyaviridae</td>
+<td align="center">Pacuvirus</td>
+<td align="center"></td>
+<td align="center"></td>
 </tr>
 <tr class="odd">
-<td>Orthobunyaviridae</td>
-<td>Orthobunyaviridae</td>
-<td>nsmgn=nsm+gn</td>
-<td>NC_001926.1</td>
+<td align="center">Orthobunyaviridae</td>
+<td align="center">Orthobunyaviridae</td>
+<td align="center">nsmgn=nsm+gn</td>
+<td align="center">NC_001926.1</td>
 </tr>
 </tbody>
 </table>
@@ -1127,120 +1151,108 @@ some positions are missing.</p>
 <h4>I: reference protein positions</h4>
 <p>The positions of the proteins for the reference or the specific
 outgroup.</p>
-<table style="width:98%;">
+<table>
 <caption>RefID</caption>
 <colgroup>
-<col width="23%" />
-<col width="23%" />
-<col width="9%" />
-<col width="40%" />
+<col width="7%" />
+<col width="7%" />
+<col width="7%" />
+<col width="78%" />
 </colgroup>
 <thead>
 <tr class="header">
-<th>A</th>
-<th>B</th>
-<th>H</th>
-<th>reference /OG proteins position</th>
+<th align="center">A</th>
+<th align="center">B</th>
+<th align="center">H</th>
+<th align="center">reference /OG proteins position</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>Orthobunyaviridae</td>
-<td>Khurdun</td>
-<td></td>
-<td>23;292;526;944</td>
+<td align="center">Orthobunyaviridae</td>
+<td align="center">Khurdun</td>
+<td align="center"></td>
+<td align="center">23;292;526;944</td>
 </tr>
 <tr class="even">
-<td>Orthobunyaviridae</td>
-<td>Pacuvirus</td>
-<td></td>
-<td>1;1458;23;305;308;476;598;1386</td>
+<td align="center">Orthobunyaviridae</td>
+<td align="center">Pacuvirus</td>
+<td align="center"></td>
+<td align="center">1;1458;23;305;308;476;598;1386</td>
 </tr>
 <tr class="odd">
-<td>Orthobunyaviridae</td>
-<td>Orthobunyaviridae</td>
-<td>IDref</td>
-<td>22;302;303;476;509;1372</td>
+<td align="center">Orthobunyaviridae</td>
+<td align="center">Orthobunyaviridae</td>
+<td align="center">IDref</td>
+<td align="center">22;302;303;476;509;1372</td>
 </tr>
 </tbody>
 </table>
 </div>
 <div id="j-start-of-the-proteins-in-the-nucleic-sequence" class="section level4">
 <h4>J: Start of the proteins in the nucleic sequence</h4>
-<table style="width:98%;">
+<table>
 <caption>Start of the proteins in the nucleic sequence</caption>
-<colgroup>
-<col width="20%" />
-<col width="20%" />
-<col width="6%" />
-<col width="50%" />
-</colgroup>
 <thead>
 <tr class="header">
-<th>A</th>
-<th>B</th>
-<th>I</th>
-<th>Start of the proteins in the nucleic sequence</th>
+<th align="center">A</th>
+<th align="center">B</th>
+<th align="center">I</th>
+<th align="center">Start of the proteins in the nucleic sequence</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>Orthobunyaviridae</td>
-<td>Khurdun</td>
-<td>pos</td>
-<td>34</td>
+<td align="center">Orthobunyaviridae</td>
+<td align="center">Khurdun</td>
+<td align="center">pos</td>
+<td align="center">34</td>
 </tr>
 <tr class="even">
-<td>Orthobunyaviridae</td>
-<td>Pacuvirus</td>
-<td>pos</td>
-<td>53</td>
+<td align="center">Orthobunyaviridae</td>
+<td align="center">Pacuvirus</td>
+<td align="center">pos</td>
+<td align="center">53</td>
 </tr>
 <tr class="odd">
-<td>Orthobunyaviridae</td>
-<td>Orthobunyaviridae</td>
-<td>pos</td>
-<td>57</td>
+<td align="center">Orthobunyaviridae</td>
+<td align="center">Orthobunyaviridae</td>
+<td align="center">pos</td>
+<td align="center">57</td>
 </tr>
 </tbody>
 </table>
 <p>This position will be used as the start of the protein sequence
 within the nucleic acid sequence (for all sequences).</p>
 <p><strong>K: DNAdist Threshold</strong></p>
-<table style="width:90%;">
+<table>
 <caption>DNAdist Threshold</caption>
-<colgroup>
-<col width="27%" />
-<col width="27%" />
-<col width="6%" />
-<col width="27%" />
-</colgroup>
 <thead>
 <tr class="header">
-<th>A</th>
-<th>B</th>
-<th>J</th>
-<th>DNAdist Threshold</th>
+<th align="center">A</th>
+<th align="center">B</th>
+<th align="center">J</th>
+<th align="center">DNAdist Threshold</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>Orthobunyaviridae</td>
-<td>Khurdun</td>
-<td>34</td>
-<td>0.01</td>
+<td align="center">Orthobunyaviridae</td>
+<td align="center">Khurdun</td>
+<td align="center">34</td>
+<td align="center">0.01</td>
 </tr>
 <tr class="even">
-<td>Orthobunyaviridae</td>
-<td>Pacuvirus</td>
-<td>53</td>
-<td>0.05</td>
+<td align="center">Orthobunyaviridae</td>
+<td align="center">Pacuvirus</td>
+<td align="center">53</td>
+<td align="center">0.05</td>
 </tr>
 <tr class="odd">
-<td>Orthobunyaviridae</td>
-<td>Orthobunyaviridae</td>
-<td>57</td>
-<td>0.01</td>
+<td align="center">Orthobunyaviridae</td>
+<td align="center">Orthobunyaviridae</td>
+<td align="center">57</td>
+<td align="center">0.01</td>
 </tr>
 </tbody>
 </table>
@@ -1249,160 +1261,142 @@ within the nucleic acid sequence (for all sequences).</p>
 <h4>L: Organism to keep ID</h4>
 <p>a list of the IDs that you do not want to be deleted.</p>
 <p><strong>SEPARATED BY ‘;’</strong></p>
-<table style="width:98%;">
+<table>
 <caption>ID Organism to keep</caption>
 <colgroup>
-<col width="24%" />
-<col width="24%" />
-<col width="8%" />
-<col width="40%" />
+<col width="10%" />
+<col width="10%" />
+<col width="10%" />
+<col width="70%" />
 </colgroup>
 <thead>
 <tr class="header">
-<th>A</th>
-<th>B</th>
-<th>k</th>
-<th>Organism to keep ID</th>
+<th align="center">A</th>
+<th align="center">B</th>
+<th align="center">K</th>
+<th align="center">Organism to keep ID</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>Orthobunyaviridae</td>
-<td>Khurdun</td>
-<td>0.01</td>
-<td></td>
+<td align="center">Orthobunyaviridae</td>
+<td align="center">Khurdun</td>
+<td align="center">0.01</td>
+<td align="center"></td>
 </tr>
 <tr class="even">
-<td>Orthobunyaviridae</td>
-<td>Pacuvirus</td>
-<td>0.05</td>
-<td></td>
+<td align="center">Orthobunyaviridae</td>
+<td align="center">Pacuvirus</td>
+<td align="center">0.05</td>
+<td align="center"></td>
 </tr>
 <tr class="odd">
-<td>Orthobunyaviridae</td>
-<td>Orthobunyaviridae</td>
-<td>0.01</td>
-<td>MH484340.1;NC_005775;EF990927.1</td>
+<td align="center">Orthobunyaviridae</td>
+<td align="center">Orthobunyaviridae</td>
+<td align="center">0.01</td>
+<td align="center">MH484340.1;NC_005775;EF990927.1</td>
 </tr>
 </tbody>
 </table>
 </div>
 <div id="m-organism-without-a-particular-protein-id" class="section level4">
 <h4>M: Organism without a particular protein ID</h4>
-<table style="width:98%;">
+<table>
 <caption>Organism without a particular protein ID</caption>
-<colgroup>
-<col width="21%" />
-<col width="21%" />
-<col width="6%" />
-<col width="47%" />
-</colgroup>
 <thead>
 <tr class="header">
-<th>A</th>
-<th>B</th>
-<th>L</th>
-<th>Organism without a particular protein ID</th>
+<th align="center">A</th>
+<th align="center">B</th>
+<th align="center">L</th>
+<th align="center">Organism without a particular protein ID</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>Orthobunyaviridae</td>
-<td>Khurdun</td>
-<td></td>
-<td>OUT*NSM=NC_078560.1</td>
+<td align="center">Orthobunyaviridae</td>
+<td align="center">Khurdun</td>
+<td align="center"></td>
+<td align="center">OUT*NSM=NC_078560.1</td>
 </tr>
 <tr class="even">
-<td>Orthobunyaviridae</td>
-<td>Pacuvirus</td>
-<td></td>
-<td>NONE*NN=NN</td>
+<td align="center">Orthobunyaviridae</td>
+<td align="center">Pacuvirus</td>
+<td align="center"></td>
+<td align="center">NONE*NN=NN</td>
 </tr>
 <tr class="odd">
-<td>Orthobunyaviridae</td>
-<td>Orthobunyaviridae</td>
-<td>IDs</td>
-<td>NONE*NN=NN</td>
+<td align="center">Orthobunyaviridae</td>
+<td align="center">Orthobunyaviridae</td>
+<td align="center">IDs</td>
+<td align="center">NONE*NN=NN</td>
 </tr>
 </tbody>
 </table>
-<p>OUT*&lt;prot&gt;=list of IDs</p>
-<p>IN*&lt;prot&gt;=liste of IDs</p>
+<p>OUT*&lt;prot&gt;=list of IDs separated by “;”</p>
+<p>IN*&lt;prot&gt;=liste of IDs separated by “;”</p>
 <p><strong>N: Trimal</strong></p>
 <p>Do you want to use TrimAl for this study.</p>
-<table style="width:88%;">
+<table>
 <caption>Do you want to use TrimAl</caption>
-<colgroup>
-<col width="27%" />
-<col width="27%" />
-<col width="19%" />
-<col width="12%" />
-</colgroup>
 <thead>
 <tr class="header">
-<th>A</th>
-<th>B</th>
-<th>M</th>
-<th>Trimal</th>
+<th align="center">A</th>
+<th align="center">B</th>
+<th align="center">M</th>
+<th align="center">Trimal</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>Orthobunyaviridae</td>
-<td>Khurdun</td>
-<td>OUT*NSM=ID</td>
-<td>Yes</td>
+<td align="center">Orthobunyaviridae</td>
+<td align="center">Khurdun</td>
+<td align="center">OUT*NSM=ID</td>
+<td align="center">Yes</td>
 </tr>
 <tr class="even">
-<td>Orthobunyaviridae</td>
-<td>Pacuvirus</td>
-<td>NONE</td>
-<td>Yes</td>
+<td align="center">Orthobunyaviridae</td>
+<td align="center">Pacuvirus</td>
+<td align="center">NONE</td>
+<td align="center">Yes</td>
 </tr>
 <tr class="odd">
-<td>Orthobunyaviridae</td>
-<td>Orthobunyaviridae</td>
-<td>NONE</td>
-<td>Yes</td>
+<td align="center">Orthobunyaviridae</td>
+<td align="center">Orthobunyaviridae</td>
+<td align="center">NONE</td>
+<td align="center">Yes</td>
 </tr>
 </tbody>
 </table>
 <p><strong>O: Blast</strong></p>
 <p>Do you want to use blast in case of missing proteins positions</p>
-<table style="width:72%;">
+<table>
 <caption>Do you want to use blast?</caption>
-<colgroup>
-<col width="27%" />
-<col width="27%" />
-<col width="5%" />
-<col width="11%" />
-</colgroup>
 <thead>
 <tr class="header">
-<th>A</th>
-<th>B</th>
-<th>N</th>
-<th>Blast</th>
+<th align="center">A</th>
+<th align="center">B</th>
+<th align="center">N</th>
+<th align="center">Blast</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>Orthobunyaviridae</td>
-<td>Khurdun</td>
-<td>Y</td>
-<td>Y</td>
+<td align="center">Orthobunyaviridae</td>
+<td align="center">Khurdun</td>
+<td align="center">Y</td>
+<td align="center">Y</td>
 </tr>
 <tr class="even">
-<td>Orthobunyaviridae</td>
-<td>Pacuvirus</td>
-<td>Y</td>
-<td>Y</td>
+<td align="center">Orthobunyaviridae</td>
+<td align="center">Pacuvirus</td>
+<td align="center">Y</td>
+<td align="center">Y</td>
 </tr>
 <tr class="odd">
-<td>Orthobunyaviridae</td>
-<td>Orthobunyaviridae</td>
-<td>Y</td>
-<td>Y</td>
+<td align="center">Orthobunyaviridae</td>
+<td align="center">Orthobunyaviridae</td>
+<td align="center">Y</td>
+<td align="center">Y</td>
 </tr>
 </tbody>
 </table>
@@ -1463,8 +1457,17 @@ equivalents for the host/vector name and the scientific name in the
 <p>The Images of the various orders of hosts/vectors are available on
 another public GitHub repository. Feel free to add new illustrations,
 this GitHub repository does not yet contain all the orders.</p>
-<p>The images were generated by AI.</p>
+<p>The images %%quelles images ? celles que tu mentionnes au dessus?%%%
+were generated by AI.</p>
+<p>Oui elles sont sur un autre github publique cette fois-ci.</p>
 </div>
+</div>
+<div id="citations" class="section level2">
+<h2>Citations</h2>
+<p>If using this tool, please cite Seanna Charles, Anja Böckmann and
+Emmanuelle Lerat (2026) VERTEX: A pipeline for Viral sequence
+Extraction, Reconstruction and Tree EXploration.</p>
+<p>28 October 2026</p>
 </div>
 </div>
 
