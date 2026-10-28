@@ -154,140 +154,140 @@ logfile () {
 
 ################################################DELETE THE FOLDER OF THE STUDY#################################################
 
-# for study in "${studies[@]}"; do
+for study in "${studies[@]}"; do
 
-# rm -fr "${path}""${study:?}"/* >/dev/null 
-# mkdir -p "${path}""${study}"/nucl "${path}""${study}"/prot "${path}""${study}""${res_file}"treefolder "${path}""${study}"/legend "${path}""${study}"/blast/database/ "${path}""${study}"/Align/ "${path}""${study}"/All_table/
+rm -fr "${path}""${study:?}"/* >/dev/null 
+mkdir -p "${path}""${study}"/nucl "${path}""${study}"/prot "${path}""${study}""${res_file}"treefolder "${path}""${study}"/legend "${path}""${study}"/blast/database/ "${path}""${study}"/Align/ "${path}""${study}"/All_table/
 
-# echo -e "legend\tcolor\nNa\t#979a9a" > "${path}""${study}"/all_legend_caption.txt
-# done
+echo -e "legend\tcolor\nNa\t#979a9a" > "${path}""${study}"/all_legend_caption.txt
+done
 
-# #Common scripts for all studies
-# echo The sequences are currently being downloaded ...
+#Common scripts for all studies
+echo The sequences are currently being downloaded ...
 
 
 ###################################DOWNLOAD THE DATA IN GENBANK FORMAT FOR ALL THE ID FOR EACH STUDY####################################
 
 
-# for i in "${!NUID[@]}"; do   
-#     study="${studies[$i]}"
-#     echo Download the nucleic sequences for the study : "${study}"
+for i in "${!NUID[@]}"; do   
+    study="${studies[$i]}"
+    echo Download the nucleic sequences for the study : "${study}"
     
-#     rm -f "${path}""${study}"/sequences_"${study}".gb >/dev/null 
-#     read -ra IDprot <<< "${NUID[$i]}"
+    rm -f "${path}""${study}"/sequences_"${study}".gb >/dev/null 
+    read -ra IDprot <<< "${NUID[$i]}"
 
-#    for ID in "${IDprot[@]}"; do 
-#         esearch -db nucleotide -query "$ID" |efetch -format gb > "${path}""${study}"/"$ID".gb
-#         sleep 2
-#         cat "${path}""${study}"/"$ID".gb >> "${path}""${study}"/sequences_"${study}".gb
-#         rm -f "${path}""${study}"/"$ID".gb >/dev/null
-#     done
+   for ID in "${IDprot[@]}"; do 
+        esearch -db nucleotide -query "$ID" |efetch -format gb > "${path}""${study}"/"$ID".gb
+        sleep 2
+        cat "${path}""${study}"/"$ID".gb >> "${path}""${study}"/sequences_"${study}".gb
+        rm -f "${path}""${study}"/"$ID".gb >/dev/null
+    done
 
-#     echo -e "Downloaded sequences  : " > "${path}""${study}"/log_file_"${study}".txt
-#     awk '/^LOCUS/ {count++} END {print count}' "${path}""${study}"/sequences_"${study}".gb >> "${path}""${study}"/log_file_"${study}".txt
+    echo -e "Downloaded sequences  : " > "${path}""${study}"/log_file_"${study}".txt
+    awk '/^LOCUS/ {count++} END {print count}' "${path}""${study}"/sequences_"${study}".gb >> "${path}""${study}"/log_file_"${study}".txt
     
     
-#     Hours=$(("${SECONDS}" / 3600))
-#     Minutes=$((("${SECONDS}" % 3600) / 60))
-#     Sec=$(("${SECONDS}" % 60))
-#     echo -e "-------------------------------------------------- ${Hours} Hours ${Minutes} Minutes ${Sec} Seconds" >> "${path}""${study}"/log_file_"${study}".txt
+    Hours=$(("${SECONDS}" / 3600))
+    Minutes=$((("${SECONDS}" % 3600) / 60))
+    Sec=$(("${SECONDS}" % 60))
+    echo -e "-------------------------------------------------- ${Hours} Hours ${Minutes} Minutes ${Sec} Seconds" >> "${path}""${study}"/log_file_"${study}".txt
 
-# done
+done
 
 ######################################DOWNLOAD THE DATA IN GENBANK FORMAT FOR SPECIFIQUE OUTGROUP#######################################
 
-# if [ "$speprot_empty" = "false" ]; then
-# for i in "${!NUIDspeOG[@]}"; do   
-#     study="${studiesspeOG[$i]}"
-#     #IFS=$';' read -ra IDprotspeOG <<< "${NUIDspeOG[$i]}"
-#     echo SPe ID download en cours
-#     read -ra IDprotspeOG <<< "${NUIDspeOG[$i]}"
-#     for ID in "${IDprotspeOG[@]}"; do 
+if [ "$speprot_empty" = "false" ]; then
+for i in "${!NUIDspeOG[@]}"; do   
+    study="${studiesspeOG[$i]}"
+    #IFS=$';' read -ra IDprotspeOG <<< "${NUIDspeOG[$i]}"
+    echo SPe ID download en cours
+    read -ra IDprotspeOG <<< "${NUIDspeOG[$i]}"
+    for ID in "${IDprotspeOG[@]}"; do 
 
-#         esearch -db nucleotide -query "$ID" |efetch -format gb > "${path}""${study}"/"$ID".gb
-#          sleep 2
-#     done
+        esearch -db nucleotide -query "$ID" |efetch -format gb > "${path}""${study}"/"$ID".gb
+         sleep 2
+    done
 
-# done
-# fi
+done
+fi
 
 ##############################################EXTRACT ALL THE DATA FROM THE GENBANK FILES###############################################
 
-# echo The captions, metadata files and files containing all the sequences are currently being created.
+echo The captions, metadata files and files containing all the sequences are currently being created.
 
-# for study in "${studies[@]}"; do
-# rm -f "${path}""${study:?}/nucl/*" "${path}""${study:?}/prot/*" >/dev/null 
-# done
+for study in "${studies[@]}"; do
+rm -f "${path}""${study:?}/nucl/*" "${path}""${study:?}/prot/*" >/dev/null 
+done
 
 
-# /usr/bin/python3 "${path}""${path_script}"genbank_extract.py "${path}" "${studies[*]}" "${studiesspeOG[*]}" "${names[*]}" "${NUIDspeOG[*]}" "${email}" "${proteins[*]}"  "${proteinsspe_OG[*]}"   "${OG_prot[*]}"  "${orgaWIWO[*]}" "${INOUT[*]}" "${protINOUT[*]}" "${Allstudies[*]}" "${allID[*]}" "${namespepro[*]}" "${namespeproOG[*]}"
+/usr/bin/python3 "${path}""${path_script}"genbank_extract.py "${path}" "${studies[*]}" "${studiesspeOG[*]}" "${names[*]}" "${NUIDspeOG[*]}" "${email}" "${proteins[*]}"  "${proteinsspe_OG[*]}"   "${OG_prot[*]}"  "${orgaWIWO[*]}" "${INOUT[*]}" "${protINOUT[*]}" "${Allstudies[*]}" "${allID[*]}" "${namespepro[*]}" "${namespeproOG[*]}"
 
-# for study in "${studies[@]}"; do
-#     echo -e "After genbank_extract.py : " >> "${path}""${study}"/log_file_"${study}".txt
-#     echo -e "Number of sequences : " >> "${path}""${study}"/log_file_"${study}".txt
+for study in "${studies[@]}"; do
+    echo -e "After genbank_extract.py : " >> "${path}""${study}"/log_file_"${study}".txt
+    echo -e "Number of sequences : " >> "${path}""${study}"/log_file_"${study}".txt
 
-#     bioawk -c fastx '{print $name}' "${path}""${study}"/prot_all_align_"${study}".aln-fasta | wc -l >> "${path}""${study}"/log_file_"${study}".txt
+    bioawk -c fastx '{print $name}' "${path}""${study}"/prot_all_align_"${study}".aln-fasta | wc -l >> "${path}""${study}"/log_file_"${study}".txt
 
-#     bioawk -c fastx '{print $name}' "${path}""${study}"/prot_all_align_"${study}".aln-fasta >  "${path}""${study}"/list_id_genbank.txt 
+    bioawk -c fastx '{print $name}' "${path}""${study}"/prot_all_align_"${study}".aln-fasta >  "${path}""${study}"/list_id_genbank.txt 
 
-#     sort "${path}""${study}"/list_id_genbank.txt  > "${path}""${study}"/list_id_genbank_sort.txt
-#     rm -f "${path}""${study}"/list_id_genbank.txt
+    sort "${path}""${study}"/list_id_genbank.txt  > "${path}""${study}"/list_id_genbank_sort.txt
+    rm -f "${path}""${study}"/list_id_genbank.txt
 
-#     echo -e "length of the Alignement : " >> "${path}""${study}"/log_file_"${study}".txt
-#     bioawk -c fastx 'NR==1 {print length($seq)}' "${path}""${study}"/prot_all_align_"${study}".aln-fasta >> "${path}""${study}"/log_file_"${study}".txt
+    echo -e "length of the Alignement : " >> "${path}""${study}"/log_file_"${study}".txt
+    bioawk -c fastx 'NR==1 {print length($seq)}' "${path}""${study}"/prot_all_align_"${study}".aln-fasta >> "${path}""${study}"/log_file_"${study}".txt
 
-#     Hours=$(("${SECONDS}" / 3600))
-#     Minutes=$((("${SECONDS}" % 3600) / 60))
-#     Sec=$(("${SECONDS}" % 60))
-#     echo -e "-------------------------------------------------- ${Hours} Hours ${Minutes} Minutes ${Sec} Seconds" >> "${path}""${study}"/log_file_"${study}".txt
+    Hours=$(("${SECONDS}" / 3600))
+    Minutes=$((("${SECONDS}" % 3600) / 60))
+    Sec=$(("${SECONDS}" % 60))
+    echo -e "-------------------------------------------------- ${Hours} Hours ${Minutes} Minutes ${Sec} Seconds" >> "${path}""${study}"/log_file_"${study}".txt
 
-# done
+done
 
 
 
 ########################################COMPLETE THE MISSING PROTEIN POSTIONS##########################################
 
-# for i in "${!studies[@]}"; do
-#     IFS=$';' read -ra prot <<< "${proteins[i]}"
-#     IFS=$';' read -ra pos <<< "${position[i]}"
-#     inc=0        
-#     rm -f "${path}""${studies[i]}"/"${target_list[i]}"_ref.fasta "${path}""${studies[i]}"/"${target_list[i]}"_ref_DB >/dev/null
-#     echo "${path}""${studies[i]}"/prot/"${target_list[i]}"_prot.fasta
-#     echo "${proteins[i]}"
-#     echo "${position[i]}"
+for i in "${!studies[@]}"; do
+    IFS=$';' read -ra prot <<< "${proteins[i]}"
+    IFS=$';' read -ra pos <<< "${position[i]}"
+    inc=0        
+    rm -f "${path}""${studies[i]}"/"${target_list[i]}"_ref.fasta "${path}""${studies[i]}"/"${target_list[i]}"_ref_DB >/dev/null
+    echo "${path}""${studies[i]}"/prot/"${target_list[i]}"_prot.fasta
+    echo "${proteins[i]}"
+    echo "${position[i]}"
 
 
-#     for p in "${!prot[@]}"; do
-#         ss=${p}+${inc}
-#         inc=${inc}+1
-#         echo "${pos[ss]}"  "${pos[ss+1]}"
-#         echo "${target_list[i]}" 
-#         echo "${prot[p]}"
-#         awk -v start="${pos[ss]}" -v end="${pos[ss+1]}" -v id="${target_list[i]}" -v proteine="${prot[p]}" '
-#         !/^>/ { seq = seq $0 }         
-#         END {
-#         print ">"  id "_" proteine 
-#         print substr(seq, start, end - start + 1)
-#         }' "${path}""${studies[i]}"/prot/"${target_list[i]}"_prot.fasta >> "${path}""${studies[i]}"/"${target_list[i]}"_ref.fasta
+    for p in "${!prot[@]}"; do
+        ss=${p}+${inc}
+        inc=${inc}+1
+        echo "${pos[ss]}"  "${pos[ss+1]}"
+        echo "${target_list[i]}" 
+        echo "${prot[p]}"
+        awk -v start="${pos[ss]}" -v end="${pos[ss+1]}" -v id="${target_list[i]}" -v proteine="${prot[p]}" '
+        !/^>/ { seq = seq $0 }         
+        END {
+        print ">"  id "_" proteine 
+        print substr(seq, start, end - start + 1)
+        }' "${path}""${studies[i]}"/prot/"${target_list[i]}"_prot.fasta >> "${path}""${studies[i]}"/"${target_list[i]}"_ref.fasta
         
-#     done
-#         makeblastdb -in "${path}""${studies[i]}"/"${target_list[i]}"_ref.fasta \
-#                     -title "${target_list[i]}"_ref.fasta \
-#                     -dbtype prot \
-#                     -out "${path}""${studies[i]}"/"${target_list[i]}"_ref_DB \
-#                     -parse_seqids
-#     echo 
-# done
+    done
+        makeblastdb -in "${path}""${studies[i]}"/"${target_list[i]}"_ref.fasta \
+                    -title "${target_list[i]}"_ref.fasta \
+                    -dbtype prot \
+                    -out "${path}""${studies[i]}"/"${target_list[i]}"_ref_DB \
+                    -parse_seqids
+    echo 
+done
 
-# for study in "${studies[@]}"; do
+for study in "${studies[@]}"; do
 
-#         mkdir -p "${path}""${study}"/Align
-#         rm -f "${path}""${study}"/Align/* >/dev/null 
-#         echo "${path}""${path_script}"prot_position.py
-#         /usr/bin/python3 "${path}""${path_script}"prot_position.py "${path}" "${studies[*]}" "${studiesspeOG[*]}" "${orgaWIWO[*]}" "${INOUT[*]}" "${protINOUT[*]}" "${target_list[*]}" "${names[*]}" "${Allstudies[*]}" "${blastapprox[*]}"
+        mkdir -p "${path}""${study}"/Align
+        rm -f "${path}""${study}"/Align/* >/dev/null 
+        echo "${path}""${path_script}"prot_position.py
+        /usr/bin/python3 "${path}""${path_script}"prot_position.py "${path}" "${studies[*]}" "${studiesspeOG[*]}" "${orgaWIWO[*]}" "${INOUT[*]}" "${protINOUT[*]}" "${target_list[*]}" "${names[*]}" "${Allstudies[*]}" "${blastapprox[*]}"
     
 
-# done 
+done 
 
 
 
@@ -295,16 +295,16 @@ logfile () {
 
 #####################################MESURE THE DIVERGENCE BETWEEN ALL THE SEQUENCES FOR EACH STUDY######################################
 
-# ./"${path_script}"DNA_dist.sh "${path}" "${studies[*]}" 
+./"${path_script}"DNA_dist.sh "${path}" "${studies[*]}" 
 
 ################################################DELETE THE SEQUENCES THAT ARE TOO CLOSE#################################################
 
-# echo The duplicate sequences are being deleted
-# for study in "${studies[@]}"; do
-# rm -f "${path}""${study:?}"/nucl_sdbl_"${study}".fasta "${path}""${study:?}"/prot_sdbl_"${study}".fasta  >/dev/null 
-# echo -e "After delete_dbl.py : " >> "${path}""${study}"/log_file_"${study}".txt
-# echo -e "Deleted sequences : " >> "${path}""${study}"/log_file_"${study}".txt
-# done
+echo The duplicate sequences are being deleted
+for study in "${studies[@]}"; do
+rm -f "${path}""${study:?}"/nucl_sdbl_"${study}".fasta "${path}""${study:?}"/prot_sdbl_"${study}".fasta  >/dev/null 
+echo -e "After delete_dbl.py : " >> "${path}""${study}"/log_file_"${study}".txt
+echo -e "Deleted sequences : " >> "${path}""${study}"/log_file_"${study}".txt
+done
 
 /usr/bin/python3 "${path}""${path_script}"delete_dbl.py "${path}" "${studies[*]}" "${keep_prot[*]}" "${ths[*]}" "${target_list[*]}" 
 for study in "${studies[@]}"; do
@@ -315,25 +315,25 @@ done
 ################################################SEPERATE THE PROTEINES#################################################
 
 
-# echo the proteins are being seperated
+echo the proteins are being seperated
 
-# for study in "${studies[@]}"; do
-# # IFS=$';' read -ra sepprot <<< "${proteins[$study]}"
-# # echo "${sepprot[*]}"
-# rm -f "${path}""${study:?}""${res_file}"* >/dev/null 
-# done
+for study in "${studies[@]}"; do
+# IFS=$';' read -ra sepprot <<< "${proteins[$study]}"
+# echo "${sepprot[*]}"
+rm -f "${path}""${study:?}""${res_file}"* >/dev/null 
+done
 
-# /usr/bin/python3 "${path}""${path_script}"sep_prot.py "${path}" "${studies[*]}" "${position[*]}" "${names[*]}" "${positionspeOG[*]}" "${start[*]}" "${startspe_OG[*]}" "${proteins[*]}" "${proteinsspe_OG[*]}" "${res_file}" "${studiesspeOG[*]}" "${NUIDspeOG[*]}" "${orgaWIWO[*]}" "${INOUT[*]}" "${protINOUT[*]}"
+/usr/bin/python3 "${path}""${path_script}"sep_prot.py "${path}" "${studies[*]}" "${position[*]}" "${names[*]}" "${positionspeOG[*]}" "${start[*]}" "${startspe_OG[*]}" "${proteins[*]}" "${proteinsspe_OG[*]}" "${res_file}" "${studiesspeOG[*]}" "${NUIDspeOG[*]}" "${orgaWIWO[*]}" "${INOUT[*]}" "${protINOUT[*]}"
 
 
-# for study in "${studies[@]}"; do
-#     #echo -e "After sep_prot.py : " >> "${path}""${study}"/log_file_"${study}".txt
+for study in "${studies[@]}"; do
+    #echo -e "After sep_prot.py : " >> "${path}""${study}"/log_file_"${study}".txt
     
-#     for prot in "${sepprot[@]}"; do
-#         echo -e "${prot} : " >> "${path}""${study}"/log_file_"${study}".txt
-#         logfile  "sep_prot" "${study}" "${path}""${study}""${res_file}""${prot}"_"${study}"_prot.fasta "delete_dbl"
-#     done
-# done
+    for prot in "${sepprot[@]}"; do
+        echo -e "${prot} : " >> "${path}""${study}"/log_file_"${study}".txt
+        logfile  "sep_prot" "${study}" "${path}""${study}""${res_file}""${prot}"_"${study}"_prot.fasta "delete_dbl"
+    done
+done
 
 
 #################################################DON'T COMMENT THAT PART#################################################
@@ -351,19 +351,19 @@ for study in "${!studies[@]}"; do
             echo "The protein ${todelprot} does not have any positions and therefor will be deleted for the study ${studies[$study]}."
             echo "The protein ${todelprot} does not have any positions and therefor will be deleted for the study ${studies[$study]}." >> "${path}""${studies[$study]}"/log_file_"${studies[$study]}".txt
             newprotlist=""
-            #newprotlistsep=""
+            
             for element in "${sepprot[@]}"; do
                 if [[ "$element" != "$todelprot" ]]; then
                     if [[ -n "$newprotlist" ]]; then
                         newprotlist+=";"
-                        #newprotlistsep+=" "
+                        
                     fi
                     newprotlist+="$element"
-                    #newprotlistsep+="$element"
+                    
                 fi
             done
             proteins["$study"]="${newprotlist[*]}"
-            #sepprot[*]="${newprotlistsep[*]}"
+            
 
             newprotlist=""
             IFS=$';' read -ra sepprotspe <<< "${proteinsspe_OG[$study]}"
@@ -382,15 +382,15 @@ for study in "${!studies[@]}"; do
             newprotlist=""
             
             IFS=$';' read -ra sepprotfor <<< "${for_prot[$study]}"
-            #newprotlistsep=""
+            
             for element in "${sepprotfor[@]}"; do
                 if [[ "$element" != "$todelprot" ]]; then
                     if [[ -n "$newprotlist" ]]; then
                         newprotlist+=";"
-                        #newprotlistsep+=" "
+                        
                     fi
                     newprotlist+="$element"
-                    #newprotlistsep+="$element"
+                    
                 fi
             done
             for_prot["$study"]="${newprotlist[*]}"
@@ -414,12 +414,12 @@ done
 
 #################################################ADD THE SPECIFIC OUTGROUP IN EACH FILE#################################################
 
-# echo The outgroup of each studies are being added
-# for study in "${studies[@]}"; do
-# rm -f "${path}""${study:?}""${res_file}"*_OG.fasta "${path}""${study:?}""${res_file}"*_OG.aln-fasta  >/dev/null 
-# done
+echo The outgroup of each studies are being added
+for study in "${studies[@]}"; do
+rm -f "${path}""${study:?}""${res_file}"*_OG.fasta "${path}""${study:?}""${res_file}"*_OG.aln-fasta  >/dev/null 
+done
 
-# /usr/bin/python3 "${path}""${path_script}"merge_spe_prot.py "${path}" "${names[*]}" "${speprot[*]}" "${Type_seq[*]}" "${res_file}" "${studies[*]}" "${Allstudies[*]}" "${for_prot[*]}" 
+/usr/bin/python3 "${path}""${path_script}"merge_spe_prot.py "${path}" "${names[*]}" "${speprot[*]}" "${Type_seq[*]}" "${res_file}" "${studies[*]}" "${Allstudies[*]}" "${for_prot[*]}" 
 
 for study in "${!studies[@]}"; do
     
