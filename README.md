@@ -2,7 +2,7 @@
 ---
 ---
 
-# VERTEX
+# VERTEX (Viral sequence Extraction, Reconstruction and Tree EXploration)
 
 ## requirements
 
@@ -24,7 +24,7 @@ phylip 1:3.697+dfsg-4build1
 
 ncbi-blast+ 2.12.0+ds-4build2
 
-### Pyhton requirements
+### Python requirements
 
 Bio==1.8.4
 
@@ -72,20 +72,21 @@ The nucleic and protein sequences are extracted from the **sequences\<Study_name
 
 - The GenPept(Gp) file format for each sequence are downloaded and concatenated in the ***prot_all\_\<Study_name\>.gp*** file.
 
-The Gp file format is very similar to the Gb file format, except that Gp includes the positions of the various proteins and protein domains. This format can be downloaded in the same way as the Gb format from the protein identifier record in the NCBI database or website.
+The Gp file format is very similar to the Genbank file format, except that Gp file includes the positions of the various proteins and protein domains. This format can be downloaded in the same way as the Genbank file from the protein identifier record in the NCBI database or website.
 
-- Create a **Metadata_files.txt** that contains different information available in the genbank file format and the Gp file format.
+- Create a **Metadata_files.txt** that contains different information available in the Genbank and the Gp files.
 
 This file contains the following information :
 
 Study \| Virus name ID for Itol tree \| Taxonomy \| Information \| Protein accession number \| Size Protein sequence \| Start proteins \| End proteins \| extract_size \| Nucleic accession number \| Size Nucleic sequence \| Strand \| Strain \| Geographical region \| Host or vector \| References
 
-- Create a file that lists all the positions for each protein or domain available in the gp files format saved in the file **pos_prot\_\<Study_name\>.txt**.
+- Create a file **pos_prot\_\<Study_name\>.txt** that lists all the positions for each protein or domain available in the Gp file.
+  
 - Create the caption for the user_legend, Geographical region, and Host.
 
-The caption are created based on the Itol format. One color will be associated with the same values for all the studies.
+The captions are created based on the Itol format. One colour will be associated with the same values for all the studies.
 
-The user information caption is created using the **user_legend.txt** file. You can put in that file all the information you want to use to characterize you study (for example serogroup or precise taxonomy)
+The user information caption is created using the **user_legend.txt** file. You can put in that file all the information you want to use to characterize your study (for example serogroup or precise taxonomy)
 
 +----------------------------+---------------------------------------+
 | Input                      | Output                                |
@@ -137,7 +138,7 @@ The user information caption is created using the **user_legend.txt** file. You 
 
 - This file use blastp to complete the missing position within a study.
 
-This file ensures that as many protein positions as possible are retrieved in cases where the information is not available in the Gp file format.
+This file ensures that as many protein positions as possible are retrieved in cases where the information is not available in the Gp file.
 
 +----------------------------------+--------------------------------------+
 | Input                            | Output                               |
@@ -155,7 +156,7 @@ This file ensures that as many protein positions as possible are retrieved in ca
 
 ### DNA_dist.sh
 
-- Lauch DNAdist from phylip and create a divergence sequence table.
+- Launch DNAdist from phylip and create a divergence sequence table.
 
 +-----------------------------------------+----------------------------------+
 | Input                                   | Output                           |
@@ -169,7 +170,7 @@ This file ensures that as many protein positions as possible are retrieved in ca
 
 ### Delete_dbl.py
 
-- Delete the sequences that are considered too closely related or similar using the **DNA_dist.sh** output table and the user defined threshold from the **All_information.txt (from user)**.
+- Delete the sequences that are considered too closely related or too similar using the **DNA_dist.sh** output table and the user defined threshold from the **All_information.txt** file.
 
 +------------------------------+----------------------------------+
 | Input                        | Output                           |
@@ -183,7 +184,7 @@ This file ensures that as many protein positions as possible are retrieved in ca
 
 ### Sep_prot.py
 
-- Separate the different proteins and save them in one file for each protein.
+- Separate the different proteins and save them in separated files for each protein.
 
 +----------------------------------+------------------------+
 | Input                            | Output                 |
@@ -201,7 +202,7 @@ This file ensures that as many protein positions as possible are retrieved in ca
 
 ### Merge_spe_prot.py (optional)
 
-- Aligns all proteins with their outgroup. Also creates a file containing the proteins you wish to use for the specific protein
+- Align all proteins with their outgroup and create a file containing the %%%proteins you wish to use for the specific protein%%% ce n'est pas tres clair
 
 +-------------------------------+----------------------------+
 | Input                         | Output                     |
@@ -231,11 +232,11 @@ This file ensures that as many protein positions as possible are retrieved in ca
 
 - IQtree2
 
-Identify the best model (using iqtree2) Identify the best model (using IQtree2)
+Identify the best model (using iqtree2)
 
-IQtree2 was used because it can provide a test to identify the best model for the nucleic and protein sequences. If you only want to study the protein sequences you may used prottest instead.
+IQtree2 was used because it can provide a test to identify the best model of tree reconstruction for the nucleic and protein sequences. If you only want to study the protein sequences you may use prottest instead.
 
-- Create the phylogenetic tree using the best model identified (using iqtree2)
+- Create the phylogenetic tree using the best model identified (using IQtree2)
 
 +----------------------------+-------------------------------+
 | Input                      | Output                        |
@@ -253,7 +254,7 @@ IQtree2 was used because it can provide a test to identify the best model for th
 
 ### Protdist.py
 
-- Lauch Protdist from phyllip and create a sequence divergence table for each protein.
+- Launch Protdist from phylip and create a sequence divergence table for each protein.
 
 +---------------------------+---------------------------------+
 | Input                     | Output                          |
@@ -281,7 +282,7 @@ IQtree2 was used because it can provide a test to identify the best model for th
 
 : Input-Output Protdist.py
 
-This step is executed at the end as it can be very long. It enables a pair-wise comparison of each virus for each protein or protein domain, and of specific proteins whenever applicable.
+This step is executed at the end of the pipeline because it can be very long to run. It enables a pairwise comparison of each virus for each protein or protein domain, and of specific proteins whenever applicable.
 
 ## Instructions to use
 
@@ -295,7 +296,7 @@ This file is the execution input file. You need to fill up all the information i
 
 DO NOT USE "," AS A SEPARATOR INSIDE EACH COLUMN USE ";" INSTEAD
 
-### Files path
+### File paths
 
 **protein_equivalent.txt** must be at the root
 
@@ -307,15 +308,15 @@ DO NOT USE "," AS A SEPARATOR INSIDE EACH COLUMN USE ";" INSTEAD
 
 **user_informations.txt** must be at the root
 
-### Example
+### Example of use
 
-Example for the study of Orthobunyaviridae with a specific outgroup
+We provide here a step by step running example for the study of Orthobunyaviridae with a specific outgroup
 
 #### A: Execution Project name
 
 This name will be used as the folder name. It also allows you to specify which project the outgroup-specific data is associated with, where necessary.
 
-If you wish to analyse several segments or polyproteins from the same family or species, you must enter two different project names; otherwise, all the files produced by the pipeline for both projects will be stored in the same folder.
+If you wish to analyse several segments or polyproteins from the same viral family or species, you must enter two different project names; otherwise, all the files produced by the pipeline for both projects will be stored in the same folder.
 
 +-------------------+
 | Project name      |
@@ -613,7 +614,7 @@ The Images of the various orders of hosts/vectors are available on another publi
 
 The images %%quelles images ? celles que tu mentionnes au dessus?%%% were generated by AI.
 
-## Citations
+## Citation
 If using this tool, please cite Seanna Charles, Anja Böckmann and Emmanuelle Lerat (2026) VERTEX: A pipeline for Viral sequence Extraction, Reconstruction and Tree EXploration.
 
 28 October 2026
