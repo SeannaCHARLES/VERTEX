@@ -87,13 +87,13 @@ The user information caption is created using the **user_legend.txt** file. You 
 
 | Input                      | Output                                |
 |:--------------------------:|:-------------------------------------:|
-| sequences\<Study_name\>.gb | \<ID_nucl\>\_prot.fasta               |
+| sequences\<Study_name\>.gb (From Genbank_extract.py) | \<ID_nucl\>\_prot.fasta               |
 |                            |                                       |
-| (From Genbank_extract.py)  | \<ID_nucl\>\_nucl.fasta               |
+|                            | \<ID_nucl\>\_nucl.fasta               |
 |                            |                                       |
-| user_legend.txt            | prot_all\_.fasta \|                   |
+| user_legend.txt **(from user)** | prot_all\_.fasta \|                   |
 |                            |                                       |
-| **(from user)**            | All_nucleic_sequences.fasta           |
+|                            | All_nucleic_sequences.fasta           |
 |                            |                                       |
 |                            | All_protein_sequences_align.aln-fasta |
 |                            |                                       |
@@ -123,8 +123,8 @@ The user information caption is created using the **user_legend.txt** file. You 
 
 | Input                     | Output                     |
 |:-------------------------:|:--------------------------:|
-| \<Id_ref\>\_Ref.fasta     | protein_prot_1-n_ref.fasta |
-| (From Genbank_extract.py) |                            |
+| \<Id_ref\>\_Ref.fasta (From Genbank_extract.py) | protein_prot_1-n_ref.fasta |
+
 
 
 : Input-Output Execution.sh
@@ -138,10 +138,9 @@ This file ensures that as many protein positions as possible are retrieved in ca
 
 | Input                            | Output                               |
 |:--------------------------------:|:------------------------------------:|
-| **pos_prot\_\<Study_name\>.txt** | **pos_prot_final\<Study_name\>.txt** |
-| (From Genbank.py)                |                                      |
-| protein_prot_1-n_ref.fasta       |                                      |
-| (from Execution.sh)              |                                      |
+| **pos_prot\_\<Study_name\>.txt** (From Genbank.py)  | **pos_prot_final\<Study_name\>.txt** |
+| protein_prot_1-n_ref.fasta (from Execution.sh)   |                                      |
+
 
 
 : Input-Output Prot_position.py
@@ -153,8 +152,8 @@ This file ensures that as many protein positions as possible are retrieved in ca
 
 | Input                                   | Output                           |
 |:---------------------------------------:|:--------------------------------:|
-| All \_nucleic_sequences_align.aln-fasta | **Divergence_nucleic_table.txt** |
-| (From Genbank_extract.py)               |                                  |
+| All \_nucleic_sequences_align.aln-fasta (From Genbank_extract.py)| **Divergence_nucleic_table.txt** |
+
 
 
 : Input-Output DNA_dist.sh
@@ -166,8 +165,8 @@ This file ensures that as many protein positions as possible are retrieved in ca
 
 | Input                        | Output                           |
 |:----------------------------:|:--------------------------------:|
-| Divergence_nucleic_table.txt | All_nucleic_sequences_sdbl.fasta |
-| (From DNA_dist.sh)           | All_protein_sequences_sdbl.fasta |
+| Divergence_nucleic_table.txt(From DNA_dist.sh) | All_nucleic_sequences_sdbl.fasta |
+|            | All_protein_sequences_sdbl.fasta |
 
 
 : Input-Output Delete_dbl.py
@@ -179,10 +178,10 @@ This file ensures that as many protein positions as possible are retrieved in ca
 
 | Input                            | Output                 |
 |:--------------------------------:|:----------------------:|
-| All_nucleic_sequences_sdbl.fasta | Nucleic_prot_1-n.fasta |
-| (From Delete_dbl.py)             | protein_prot_1-n.fasta |
-| All_protein_sequences_sdbl.fasta | Nucleic_prot_OG.fasta  |
-| (From Delete_dbl.py)             | protein_prot_OG.fasta  |
+| All_nucleic_sequences_sdbl.fasta (From Delete_dbl.py)  | Nucleic_prot_1-n.fasta |
+|             | protein_prot_1-n.fasta |
+| All_protein_sequences_sdbl.fasta (From Delete_dbl.py) | Nucleic_prot_OG.fasta  |
+|              | protein_prot_OG.fasta  |
 
 
 : Input-Output Sep_prot.py
@@ -194,14 +193,13 @@ This file ensures that as many protein positions as possible are retrieved in ca
 
 | Input                         | Output                     |
 |:-----------------------------:|:--------------------------:|
-| Nucleic_prot_1-n.fasta        | Nucleic_prot_spe.fasta     |
-| (From Test_sript_Sep_prot.py) | protein_prot_spe.fasta     |
-| protein_prot_1-n.fasta        | protein_prot_spe.aln-fasta |
-| (From Test_sript_Sep_prot.py) | protein_prot_1-n.aln-fasta |
-| Nucleic_prot_OG.fasta         |                            |
-| (From Test_sript_Sep_prot.py) |                            |
-| protein_prot_OG.fasta         |                            |
-| (From Test_sript_Sep_prot.py) |                            |
+| Nucleic_prot_1-n.fasta  (From Test_sript_Sep_prot.py)      | Nucleic_prot_spe.fasta     |
+|  | protein_prot_spe.fasta     |
+| protein_prot_1-n.fasta (From Test_sript_Sep_prot.py)     | protein_prot_spe.aln-fasta |
+|                               | protein_prot_1-n.aln-fasta |
+| Nucleic_prot_OG.fasta   (From Test_sript_Sep_prot.py)       |                            |
+| protein_prot_OG.fasta   (From Test_sript_Sep_prot.py)      |                            |
+
 
 
 : Input-Output Merge_spe_prot.py
@@ -221,10 +219,10 @@ IQtree2 was used because it can provide a test to identify the best model of tre
 
 | Input                      | Output                        |
 |:--------------------------:|:-----------------------------:|
-| protein_prot_1-n.aln-fasta | **protein_prot_1-n.treefile** |
-| (From Merge_spe_prot.py)   | **protein_prot_spe.treefile** |
-| protein_prot_spe.aln-fasta |                               |
-| (From Merge_spe_prot.py)   |                               |
+| protein_prot_1-n.aln-fasta (From Merge_spe_prot.py)  | **protein_prot_1-n.treefile** |
+|   | **protein_prot_spe.treefile** |
+| protein_prot_spe.aln-fasta (From Merge_spe_prot.py) |                               |
+
 
 
 : Input-Output Execution.sh
@@ -236,16 +234,11 @@ IQtree2 was used because it can provide a test to identify the best model of tre
 
 | Input                     | Output                          |
 |:-------------------------:|:-------------------------------:|
-| Nucleic_prot_1-n.fasta    | **Divergence_protein_table.py** |
-| (From Sep_prot.py)        |                                 |
-| protein_prot_1-n.fasta    |                                 |
-| (From Sep_prot.py)        |                                 |
-| Nucleic_prot_spe.fasta    |                                 |
-| (From Merge_spe_prot.py)  |                                 |
-| protein_prot_spe.fasta    |                                 |
-| (From Merge_spe_prot.py)  |                                 |
-| Label_caption.txt         |                                 |
-| (From Genbank_extract.py) |                                 |
+| Nucleic_prot_1-n.fasta (From Sep_prot.py)      | **Divergence_protein_table.py** |
+| protein_prot_1-n.fasta (From Sep_prot.py)    |                                 |
+| Nucleic_prot_spe.fasta (From Merge_spe_prot.py)    |                                 |
+| protein_prot_spe.fasta (From Merge_spe_prot.py)   |                                 |
+| Label_caption.txt     (From Genbank_extract.py)    |                                 |
 
 
 : Input-Output Protdist.py
