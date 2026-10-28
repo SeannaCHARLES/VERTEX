@@ -332,15 +332,11 @@ If you wish to analyse several segments or polyproteins from the same viral fami
 
 #### B: Study name %%cette partie n'est pas tres claire pour moi%%%
 
-Study name permet de différencier les informations qui concernent des outgroup qui ne serait pas utilisé pour toutes les protéines de l'étude.
+“Study name” allows you to distinguish information regarding outgroups that may not be used for all proteins in the study.
 
-Par exemple si vous avez une protéine spécifique, ou si vous voulez utiliser des outgroups différents pour chaque protéine. Si ce n'est pas votre cas vous pouvez ajouter l'outgroup dans la liste des identifiants de l'étude et saisir le nom du projet.
+For example, if you have a specific protein, or if you want to use different outgroups for each protein.
 
-This name is used to distinguish specific outgroups (OG).
-
-If the row ??%%terme pas clair%% does not concern a specific outgroup, enter the project name. Otherwise, enter a name for the specific outgroup (ex. name).
-
-If you wish to use different specific outgroups for the same project, you must have one row per outgroup.
+If this does not apply to you, you can add the outgroup IDs to the list of study identifiers and enter the project name (cf A: Execution Project name)
 
 +-------------------+-------------------+
 | A                 | Study name        |
@@ -372,75 +368,69 @@ The name of the file that contains the virus IDs. This file must be at the root.
 
 #### D: Outgroup choice (Y/N)
 
-Permet de spécifier si ces virus doivent être considéré comme des outgroups ou non.
-
-%%line =\> terme pas clair%% Y : if this line concern a specific outgroup for one or multiple proteins.
+Allows you to specify whether these viruses should be treated as outgroups or not.
 
 N : Is it a outgroup.
 
-+-------------------+-------------------+-----+--------------+
-| A                 | B                 | C   | Outgroup Spe |
-+===================+===================+=====+==============+
-| Orthobunyaviridae | Khurdun           | IDk | Y            |
-+-------------------+-------------------+-----+--------------+
-| Orthobunyaviridae | Pacuvirus         | IDp | Y            |
-+-------------------+-------------------+-----+--------------+
-| Orthobunyaviridae | Orthobunyaviridae | IDn | N            |
-+-------------------+-------------------+-----+--------------+
++-------------------+-------------------+-------------+--------------+
+| A                 | B                 | C           | Outgroup Spe |
++===================+===================+=============+==============+
+| Orthobunyaviridae | Khurdun           | IDk         | Y            |
++-------------------+-------------------+-------------+--------------+
+| Orthobunyaviridae | Pacuvirus         | IDp         | Y            |
++-------------------+-------------------+-------------+--------------+
+| Orthobunyaviridae | Orthobunyaviridae | IDn         | N            |
++-------------------+-------------------+-------------+--------------+
 
 : Outgroup Specific : Is it a specifc outgroup?
 
 #### E: For which protein
 
-Quelle protéine voulez étudier , ou pour quelle protéine cet outgroup sera t-il utilisé.
+Which protein do you want to study, or for which protein will this outgroup be used?
 
-Which proteins are concerned by this study/line?
-
-%%pas clair pour moi, surtout ce qui est écrit en dessous%%% If this line doesn't concern a specific outgroup, enter the names of the proteins from the studied species .
-
-If this line refers to a specific outgroups, specify for which proteins this outgroup will be used
-
-+-------------------+-------------------+---+-----------------------+
-| A                 | B                 | D | For wich prot         |
-+===================+===================+===+=======================+
-| Orthobunyaviridae | Khurdun           | Y | nsmgn                 |
-+-------------------+-------------------+---+-----------------------+
-| Orthobunyaviridae | Pacuvirus         | Y | polyprotein;gn;nsm;gc |
-+-------------------+-------------------+---+-----------------------+
-| Orthobunyaviridae | Orthobunyaviridae | N | polyprotein;gn;nsm;gc |
-+-------------------+-------------------+---+-----------------------+
++-------------------+-------------------+-------------+-----------------------+
+| A                 | B                 | D           | For wich prot         |
++===================+===================+=============+=======================+
+| Orthobunyaviridae | Khurdun           | Y           | nsmgn                 |
++-------------------+-------------------+-------------+-----------------------+
+| Orthobunyaviridae | Pacuvirus         | Y           | polyprotein;gn;nsm;gc |
++-------------------+-------------------+-------------+-----------------------+
+| Orthobunyaviridae | Orthobunyaviridae | N           | polyprotein;gn;nsm;gc |
++-------------------+-------------------+-------------+-----------------------+
 
 : For which proteins
 
 #### F: Protein names (in order)
 
-Protein names of the study name (col B)
+Protein names of the study name (col B Study name)
 
-+-------------------+-------------------+-------+--------------------------+
-| A                 | B                 | E     | Proteins name (in order) |
-+===================+===================+=======+==========================+
-| Orthobunyaviridae | Khurdun           | nsmgn | polyprotein;gn;gc        |
-+-------------------+-------------------+-------+--------------------------+
-| Orthobunyaviridae | Pacuvirus         | prots | polyprotein;gn;nsm;gc    |
-+-------------------+-------------------+-------+--------------------------+
-| Orthobunyaviridae | Orthobunyaviridae | prots | polyprotein;gn;nsm;gc    |
-+-------------------+-------------------+-------+--------------------------+
++-------------------+-------------------+--------------+--------------------------+
+| A                 | B                 | E            | Proteins name (in order) |
++===================+===================+==============+==========================+
+| Orthobunyaviridae | Khurdun           | nsmgn        | polyprotein;gn;gc        |
++-------------------+-------------------+--------------+--------------------------+
+| Orthobunyaviridae | Pacuvirus         | prots        | polyprotein;gn;nsm;gc    |
++-------------------+-------------------+--------------+--------------------------+
+| Orthobunyaviridae | Orthobunyaviridae | prots        | polyprotein;gn;nsm;gc    |
++-------------------+-------------------+--------------+--------------------------+
 
 : Protein names (in order)
 
 #### G: specific protein
 
-Identify the proteins that will be involved in the specific protein %%phrase pas claire%%
+Indicate which proteins are involved in the study of a specific protein, if applicable.
 
-+-------------------+-------------------+-------+--------------+
-| A                 | B                 | F     | spe prot     |
-+===================+===================+=======+==============+
-| Orthobunyaviridae | Khurdun           | prots | nsmgn=gn     |
-+-------------------+-------------------+-------+--------------+
-| Orthobunyaviridae | Pacuvirus         | prots |              |
-+-------------------+-------------------+-------+--------------+
-| Orthobunyaviridae | Orthobunyaviridae | prots | nsmgn=nsm+gn |
-+-------------------+-------------------+-------+--------------+
+For example, if you want to study the evolutionary history of two proteins present in the same virus.
+
++-------------------+-------------------+-------------+--------------+
+| A                 | B                 | F           | spe prot     |
++===================+===================+=============+==============+
+| Orthobunyaviridae | Khurdun           | prots       | nsmgn=gn     |
++-------------------+-------------------+-------------+--------------+
+| Orthobunyaviridae | Pacuvirus         | prots       |              |
++-------------------+-------------------+-------------+--------------+
+| Orthobunyaviridae | Orthobunyaviridae | prots       | nsmgn=nsm+gn |
++-------------------+-------------------+-------------+--------------+
 
 : specific protein
 
@@ -450,15 +440,15 @@ The protein Gn of Khurdun will be used as the outgroup.
 
 Enter a reference ID that will be used for BLAST alignment in case some positions are missing.
 
-+-------------------+-------------------+--------------+-------------+
-| A                 | B                 | G            | RefID       |
-+===================+===================+==============+=============+
-| Orthobunyaviridae | Khurdun           | nsmgn=gn     |             |
-+-------------------+-------------------+--------------+-------------+
-| Orthobunyaviridae | Pacuvirus         |              |             |
-+-------------------+-------------------+--------------+-------------+
-| Orthobunyaviridae | Orthobunyaviridae | nsmgn=nsm+gn | NC_001926.1 |
-+-------------------+-------------------+--------------+-------------+
++-------------------+-------------------+---------------+---------------+
+| A                 | B                 | G             | RefID         |
++===================+===================+===============+===============+
+| Orthobunyaviridae | Khurdun           | nsmgn=gn      |               |
++-------------------+-------------------+---------------+---------------+
+| Orthobunyaviridae | Pacuvirus         |               |               |
++-------------------+-------------------+---------------+---------------+
+| Orthobunyaviridae | Orthobunyaviridae | nsmgn=nsm+gn  | NC_001926.1   |
++-------------------+-------------------+---------------+---------------+
 
 : RefID
 
@@ -466,15 +456,15 @@ Enter a reference ID that will be used for BLAST alignment in case some position
 
 The positions of the proteins for the reference or the specific outgroup.
 
-+-------------------+-------------------+-------+---------------------------------+
-| A                 | B                 | H     | reference /OG proteins position |
-+===================+===================+=======+=================================+
-| Orthobunyaviridae | Khurdun           |       | 23;292;526;944                  |
-+-------------------+-------------------+-------+---------------------------------+
-| Orthobunyaviridae | Pacuvirus         |       | 1;1458;23;305;308;476;598;1386  |
-+-------------------+-------------------+-------+---------------------------------+
-| Orthobunyaviridae | Orthobunyaviridae | IDref | 22;302;303;476;509;1372         |
-+-------------------+-------------------+-------+---------------------------------+
++-------------------+-------------------+-------------+---------------------------------+
+| A                 | B                 | H           | reference /OG proteins position |
++===================+===================+=============+=================================+
+| Orthobunyaviridae | Khurdun           |             | 23;292;526;944                  |
++-------------------+-------------------+-------------+---------------------------------+
+| Orthobunyaviridae | Pacuvirus         |             | 1;1458;23;305;308;476;598;1386  |
++-------------------+-------------------+-------------+---------------------------------+
+| Orthobunyaviridae | Orthobunyaviridae | IDref       | 22;302;303;476;509;1372         |
++-------------------+-------------------+-------------+---------------------------------+
 
 : RefID
 
@@ -540,9 +530,9 @@ a list of the IDs that you do not want to be deleted.
 
 : Organism without a particular protein ID
 
-OUT\*\<prot\>=list of IDs
+OUT\*\<prot\>=list of IDs separated by ";"
 
-IN\*\<prot\>=liste of IDs
+IN\*\<prot\>=liste of IDs separated by ";"
 
 **N: Trimal**
 
@@ -614,7 +604,10 @@ The Images of the various orders of hosts/vectors are available on another publi
 
 The images %%quelles images ? celles que tu mentionnes au dessus?%%% were generated by AI.
 
-## Citation
+Oui elles sont sur un autre github publique cette fois-ci.
+
+## Citations
+
 If using this tool, please cite Seanna Charles, Anja Böckmann and Emmanuelle Lerat (2026) VERTEX: A pipeline for Viral sequence Extraction, Reconstruction and Tree EXploration.
 
 28 October 2026
