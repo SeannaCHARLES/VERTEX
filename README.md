@@ -166,9 +166,9 @@ This file ensures that as many protein positions as possible are retrieved in ca
 
 | Input | Output |
 |:-----:|:-------:|
-| All_nucleic_sequences_sdbl.fasta (From Delete_dbl.py)  | Nucleic_prot_1-n.fasta |
-| | protein_prot_1-n.fasta |
-| All_protein_sequences_sdbl.fasta (From Delete_dbl.py) | Nucleic_prot_OG.fasta  |
+| All_nucleic_sequences_sdbl.fasta (From Delete_dbl.py) | Nucleic_prot_1-n.fasta |
+| All_protein_sequences_sdbl.fasta (From Delete_dbl.py)| protein_prot_1-n.fasta |
+| | Nucleic_prot_OG.fasta  |
 | | protein_prot_OG.fasta  |
 
 
@@ -181,12 +181,11 @@ This file ensures that as many protein positions as possible are retrieved in ca
 
 | Input | Output |
 |:-----:|:------:|
-| Nucleic_prot_1-n.fasta  (From Test_sript_Sep_prot.py)      | Nucleic_prot_spe.fasta     |
-|  | protein_prot_spe.fasta     |
-| protein_prot_1-n.fasta (From Test_sript_Sep_prot.py)     | protein_prot_spe.aln-fasta |
-| | protein_prot_1-n.aln-fasta |
-| Nucleic_prot_OG.fasta   (From Test_sript_Sep_prot.py)       |                            |
-| protein_prot_OG.fasta   (From Test_sript_Sep_prot.py)      |                            |
+| Nucleic_prot_1-n.fasta  (From Test_sript_Sep_prot.py) | Nucleic_prot_spe.fasta |
+| Protein_prot_1-n.fasta (From Test_sript_Sep_prot.py) | protein_prot_spe.fasta |
+| Nucleic_prot_OG.fasta   (From Test_sript_Sep_prot.py) | protein_prot_spe.aln-fasta |
+| Protein_prot_OG.fasta   (From Test_sript_Sep_prot.py)  | protein_prot_1-n.aln-fasta |
+
 
 
 
@@ -208,8 +207,7 @@ IQtree2 was used because it can provide a test to identify the best model of tre
 | Input | Output |
 |:-----:|:------:|
 | protein_prot_1-n.aln-fasta (From Merge_spe_prot.py)  | **protein_prot_1-n.treefile** |
-| | **protein_prot_spe.treefile** |
-| protein_prot_spe.aln-fasta (From Merge_spe_prot.py) |                               |
+| protein_prot_spe.aln-fasta (From Merge_spe_prot.py) | **protein_prot_spe.treefile** |
 
 
 
@@ -379,7 +377,7 @@ Enter a reference ID that will be used for BLAST alignment in case some position
 | A | B | G | RefID |
 |:-:|:-:|:-:|:------:|
 | Orthobunyaviridae | Khurdun | nsmgn=gn | |
-| Orthobunyaviridae | Pacuvirus | |  |
+| Orthobunyaviridae | Pacuvirus | | |
 | Orthobunyaviridae | Orthobunyaviridae | nsmgn=nsm+gn | NC_001926.1 |
 
 
