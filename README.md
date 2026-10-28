@@ -44,12 +44,7 @@ Requests==2.34.2
 
 ## Project description
 
-This pipeline is designed to automatically download and extract protein sequences or functional domains of viral sequences from Genbank. It enables the generation of phylogenetic trees in Newick format, for each of the protein or protein domains extracted.
-The pipeline relies on the NCBI database and is therefore dependent on both the accuracy and the uniformity of the data provided in the input sequences.
-The pipeline produces iTOL-compatible captions that can be directly uploaded to the iTOL website for interactive tree visualization and additional files (e.g., FASTA alignments, metadata tables) to support downstream analyses.
-This pipeline is designed to automatically download and extract protein sequences or functional domains of viral sequences from Genbank. It enables the generation of phylogenetic trees in Newick format, for each of the protein or protein domains extracted.
-The pipeline relies on the NCBI database and is therefore dependent on both the accuracy and the uniformity of the data provided in the input sequences.
-The pipeline produces iTOL-compatible captions that can be directly uploaded to the iTOL website for interactive tree visualization and additional files (e.g., FASTA alignments, metadata tables) to support downstream analyses.
+This pipeline is designed to automatically download and extract protein sequences or functional domains of viral sequences from Genbank. It enables the generation of phylogenetic trees in Newick format, for each of the protein or protein domains extracted. The pipeline relies on the NCBI database and is therefore dependent on both the accuracy and the uniformity of the data provided in the input sequences. The pipeline produces iTOL-compatible captions that can be directly uploaded to the iTOL website for interactive tree visualization and additional files (e.g., FASTA alignments, metadata tables) to support downstream analyses.
 
 ## Pipeline description
 
@@ -57,7 +52,6 @@ The pipeline produces iTOL-compatible captions that can be directly uploaded to 
 
 - Download all the sequences in the Genbank format.
 
-This step performs the download of all the sequences in a Genbank format and the concatenation of all the Genbank files into one file called **sequences\<Study_name\>.gb**.
 This step performs the download of all the sequences in a Genbank format and the concatenation of all the Genbank files into one file called **sequences\<Study_name\>.gb**.
 
 +---------------------+----------------------------+
@@ -72,8 +66,7 @@ This step performs the download of all the sequences in a Genbank format and the
 
 ### Genbank_extract.py
 
-- Separate all the nucleic sequences and the protein sequences into single sequence files.
-The nucleic and proteic sequences are extracted from the **sequences\<Study_name\>.gb** file and saved in 2 folders **nucl** and **prot**.
+- Separate all the nucleic sequences and the protein sequences into single sequence files. The nucleic and proteic sequences are extracted from the **sequences\<Study_name\>.gb** file and saved in 2 folders **nucl** and **prot**.
 
 The nucleic and protein sequences are extracted from the **sequences\<Study_name\>.gb** file and saved in 2 folders **nucl** and **prot**.
 
@@ -83,14 +76,16 @@ The Gp file format is very similar to the Gb file format, except that Gp include
 
 - Create a **Metadata_files.txt** that contains different information available in the genbank file format and the Gp file format.
 
-This file contains the following information : Study | Virus name ID | Itol tree | Taxonomy | Information | Protein accession number | Size Protein sequence | Startproteins | Endproteins | extract_size | Nucleic accession number | Size Nucleic sequence | Strand | Strain | Geographical region | Host or vector | References
+This file contains the following information :
+
+Study \| Virus name ID for Itol tree \| Taxonomy \| Information \| Protein accession number \| Size Protein sequence \| Start proteins \| End proteins \| extract_size \| Nucleic accession number \| Size Nucleic sequence \| Strand \| Strain \| Geographical region \| Host or vector \| References
 
 - Create a file that lists all the positions for each protein or domain available in the gp files format saved in the file **pos_prot\_\<Study_name\>.txt**.
 - Create the caption for the user_legend, Geographical region, and Host.
 
 The caption are created based on the Itol format. One color will be associated with the same values for all the studies.
 
-The personal information caption is created using the **user_legend.txt** file. You can put in that file all the information you want to use to characteristise you study (for example serogroup or precise taxonomy)
+The user information caption is created using the **user_legend.txt** file. You can put in that file all the information you want to use to characterize you study (for example serogroup or precise taxonomy)
 
 +----------------------------+---------------------------------------+
 | Input                      | Output                                |
@@ -236,8 +231,7 @@ This file ensures that as many protein positions as possible are retrieved in ca
 
 - IQtree2
 
-Identify the best model (using iqtree2)
-Identify the best model (using IQtree2)
+Identify the best model (using iqtree2) Identify the best model (using IQtree2)
 
 IQtree2 was used because it can provide a test to identify the best model for the nucleic and protein sequences. If you only want to study the protein sequences you may used prottest instead.
 
@@ -301,6 +295,18 @@ This file is the execution input file. You need to fill up all the information i
 
 DO NOT USE "," AS A SEPARATOR INSIDE EACH COLUMN USE ";" INSTEAD
 
+### Files path
+
+**protein_equivalent.txt** must be at the root
+
+**species_equivalent.txt** must be at the root
+
+**all_information.txt** must be at the root
+
+**Virus_ids.txt** must be at the root
+
+**user_informations.txt** must be at the root
+
 ### Example
 
 Example for the study of Orthobunyaviridae with a specific outgroup
@@ -311,15 +317,23 @@ This name will be used as the folder name. It also allows you to specify which p
 
 If you wish to analyse several segments or polyproteins from the same family or species, you must enter two different project names; otherwise, all the files produced by the pipeline for both projects will be stored in the same folder.
 
++-------------------+
 | Project name      |
-|-------------------|
++===================+
 | Orthobunyaviridae |
++-------------------+
 | Orthobunyaviridae |
++-------------------+
 | Orthobunyaviridae |
++-------------------+
 
 : Project name
 
-#### B: Study name (if specific OG) %%cette partie n'est pas tres claire pour moi%%%
+#### B: Study name %%cette partie n'est pas tres claire pour moi%%%
+
+Study name permet de différencier les informations qui concernent des outgroup qui ne serait pas utilisé pour toutes les protéines de l'étude.
+
+Par exemple si vous avez une protéine spécifique, ou si vous voulez utiliser des outgroups différents pour chaque protéine. Si ce n'est pas votre cas vous pouvez ajouter l'outgroup dans la liste des identifiants de l'étude et saisir le nom du projet.
 
 This name is used to distinguish specific outgroups (OG).
 
@@ -327,55 +341,73 @@ If the row ??%%terme pas clair%% does not concern a specific outgroup, enter the
 
 If you wish to use different specific outgroups for the same project, you must have one row per outgroup.
 
++-------------------+-------------------+
 | A                 | Study name        |
-|-------------------|-------------------|
++===================+===================+
 | Orthobunyaviridae | Khurdun           |
++-------------------+-------------------+
 | Orthobunyaviridae | Pacuvirus         |
++-------------------+-------------------+
 | Orthobunyaviridae | Orthobunyaviridae |
++-------------------+-------------------+
 
 : Study name : Khurdun and Pacuvirus will be used as outgroups
 
 #### C: ID file
 
-The name of the file that contains the virus IDs. This file must be in the same folder as the pipeline.
+The name of the file that contains the virus IDs. This file must be at the root.
 
++-------------------+-------------------+----------------------------+
 | A                 | B                 | ID files                   |
-|-------------------|-------------------|----------------------------|
++===================+===================+============================+
 | Orthobunyaviridae | Khurdun           | Khurdun_file.txt           |
++-------------------+-------------------+----------------------------+
 | Orthobunyaviridae | Pacuvirus         | Pacuvirus_file.txt         |
++-------------------+-------------------+----------------------------+
 | Orthobunyaviridae | Orthobunyaviridae | Orthobunyaviridae_file.txt |
++-------------------+-------------------+----------------------------+
 
 : ID file
 
 #### D: Outgroup choice (Y/N)
 
-%%line => terme pas clair%%
-Y : if this line concern a specific outgroup for one or multiple proteins.
+Permet de spécifier si ces virus doivent être considéré comme des outgroups ou non.
 
-N : If this line doesn't concern a specific outgroup.
+%%line =\> terme pas clair%% Y : if this line concern a specific outgroup for one or multiple proteins.
 
+N : Is it a outgroup.
+
++-------------------+-------------------+-----+--------------+
 | A                 | B                 | C   | Outgroup Spe |
-|-------------------|-------------------|-----|--------------|
++===================+===================+=====+==============+
 | Orthobunyaviridae | Khurdun           | IDk | Y            |
++-------------------+-------------------+-----+--------------+
 | Orthobunyaviridae | Pacuvirus         | IDp | Y            |
++-------------------+-------------------+-----+--------------+
 | Orthobunyaviridae | Orthobunyaviridae | IDn | N            |
++-------------------+-------------------+-----+--------------+
 
 : Outgroup Specific : Is it a specifc outgroup?
 
 #### E: For which protein
 
+Quelle protéine voulez étudier , ou pour quelle protéine cet outgroup sera t-il utilisé.
+
 Which proteins are concerned by this study/line?
 
-%%pas clair pour moi, surtout ce qui est écrit en dessous%%%
-If this line doesn't concern a specific outgroup, enter the names of the proteins from the studied species .
+%%pas clair pour moi, surtout ce qui est écrit en dessous%%% If this line doesn't concern a specific outgroup, enter the names of the proteins from the studied species .
 
 If this line refers to a specific outgroups, specify for which proteins this outgroup will be used
 
-| A                 | B                 | D   | For wich prot         |
-|-------------------|-------------------|-----|-----------------------|
-| Orthobunyaviridae | Khurdun           | Y   | nsmgn                 |
-| Orthobunyaviridae | Pacuvirus         | Y   | polyprotein;gn;nsm;gc |
-| Orthobunyaviridae | Orthobunyaviridae | N   | polyprotein;gn;nsm;gc |
++-------------------+-------------------+---+-----------------------+
+| A                 | B                 | D | For wich prot         |
++===================+===================+===+=======================+
+| Orthobunyaviridae | Khurdun           | Y | nsmgn                 |
++-------------------+-------------------+---+-----------------------+
+| Orthobunyaviridae | Pacuvirus         | Y | polyprotein;gn;nsm;gc |
++-------------------+-------------------+---+-----------------------+
+| Orthobunyaviridae | Orthobunyaviridae | N | polyprotein;gn;nsm;gc |
++-------------------+-------------------+---+-----------------------+
 
 : For which proteins
 
@@ -383,15 +415,15 @@ If this line refers to a specific outgroups, specify for which proteins this out
 
 Protein names of the study name (col B)
 
-+-------------------+-------------------+--------------+--------------------------+
-| A                 | B                 | E            | Proteins name (in order) |
-+===================+===================+==============+==========================+
-| Orthobunyaviridae | Khurdun           | nsmgn        | polyprotein;gn;gc        |
-+-------------------+-------------------+--------------+--------------------------+
-| Orthobunyaviridae | Pacuvirus         | prots        | polyprotein;gn;nsm;gc    |
-+-------------------+-------------------+--------------+--------------------------+
-| Orthobunyaviridae | Orthobunyaviridae | prots        | polyprotein;gn;nsm;gc    |
-+-------------------+-------------------+--------------+--------------------------+
++-------------------+-------------------+-------+--------------------------+
+| A                 | B                 | E     | Proteins name (in order) |
++===================+===================+=======+==========================+
+| Orthobunyaviridae | Khurdun           | nsmgn | polyprotein;gn;gc        |
++-------------------+-------------------+-------+--------------------------+
+| Orthobunyaviridae | Pacuvirus         | prots | polyprotein;gn;nsm;gc    |
++-------------------+-------------------+-------+--------------------------+
+| Orthobunyaviridae | Orthobunyaviridae | prots | polyprotein;gn;nsm;gc    |
++-------------------+-------------------+-------+--------------------------+
 
 : Protein names (in order)
 
@@ -399,11 +431,15 @@ Protein names of the study name (col B)
 
 Identify the proteins that will be involved in the specific protein %%phrase pas claire%%
 
++-------------------+-------------------+-------+--------------+
 | A                 | B                 | F     | spe prot     |
-|-------------------|-------------------|-------|--------------|
++===================+===================+=======+==============+
 | Orthobunyaviridae | Khurdun           | prots | nsmgn=gn     |
++-------------------+-------------------+-------+--------------+
 | Orthobunyaviridae | Pacuvirus         | prots |              |
++-------------------+-------------------+-------+--------------+
 | Orthobunyaviridae | Orthobunyaviridae | prots | nsmgn=nsm+gn |
++-------------------+-------------------+-------+--------------+
 
 : specific protein
 
@@ -413,11 +449,15 @@ The protein Gn of Khurdun will be used as the outgroup.
 
 Enter a reference ID that will be used for BLAST alignment in case some positions are missing.
 
++-------------------+-------------------+--------------+-------------+
 | A                 | B                 | G            | RefID       |
-|-------------------|-------------------|--------------|-------------|
++===================+===================+==============+=============+
 | Orthobunyaviridae | Khurdun           | nsmgn=gn     |             |
++-------------------+-------------------+--------------+-------------+
 | Orthobunyaviridae | Pacuvirus         |              |             |
++-------------------+-------------------+--------------+-------------+
 | Orthobunyaviridae | Orthobunyaviridae | nsmgn=nsm+gn | NC_001926.1 |
++-------------------+-------------------+--------------+-------------+
 
 : RefID
 
@@ -425,25 +465,29 @@ Enter a reference ID that will be used for BLAST alignment in case some position
 
 The positions of the proteins for the reference or the specific outgroup.
 
-+-------------------+-------------------+-------------+---------------------------------+
-| A                 | B                 | H           | reference /OG proteins position |
-+===================+===================+=============+=================================+
-| Orthobunyaviridae | Khurdun           |             | 23;292;526;944                  |
-+-------------------+-------------------+-------------+---------------------------------+
-| Orthobunyaviridae | Pacuvirus         |             | 1;1458;23;305;308;476;598;1386  |
-+-------------------+-------------------+-------------+---------------------------------+
-| Orthobunyaviridae | Orthobunyaviridae | IDref       | 22;302;303;476;509;1372         |
-+-------------------+-------------------+-------------+---------------------------------+
++-------------------+-------------------+-------+---------------------------------+
+| A                 | B                 | H     | reference /OG proteins position |
++===================+===================+=======+=================================+
+| Orthobunyaviridae | Khurdun           |       | 23;292;526;944                  |
++-------------------+-------------------+-------+---------------------------------+
+| Orthobunyaviridae | Pacuvirus         |       | 1;1458;23;305;308;476;598;1386  |
++-------------------+-------------------+-------+---------------------------------+
+| Orthobunyaviridae | Orthobunyaviridae | IDref | 22;302;303;476;509;1372         |
++-------------------+-------------------+-------+---------------------------------+
 
 : RefID
 
 #### J: Start of the proteins in the nucleic sequence
 
-| A | B | I | Start of the proteins in the nucleic sequence |
-|----|----|----|----|
-| Orthobunyaviridae | Khurdun | pos | 34 |
-| Orthobunyaviridae | Pacuvirus | pos | 53 |
-| Orthobunyaviridae | Orthobunyaviridae | pos | 57 |
++-------------------+-------------------+-----+-----------------------------------------------+
+| A                 | B                 | I   | Start of the proteins in the nucleic sequence |
++===================+===================+=====+===============================================+
+| Orthobunyaviridae | Khurdun           | pos | 34                                            |
++-------------------+-------------------+-----+-----------------------------------------------+
+| Orthobunyaviridae | Pacuvirus         | pos | 53                                            |
++-------------------+-------------------+-----+-----------------------------------------------+
+| Orthobunyaviridae | Orthobunyaviridae | pos | 57                                            |
++-------------------+-------------------+-----+-----------------------------------------------+
 
 : Start of the proteins in the nucleic sequence
 
@@ -451,11 +495,15 @@ This position will be used as the start of the protein sequence within the nucle
 
 **K: DNAdist Threshold**
 
-| A                 | B                 | J   | DNAdist Threshold |
-|-------------------|-------------------|-----|-------------------|
-| Orthobunyaviridae | Khurdun           | 34  | 0.01              |
-| Orthobunyaviridae | Pacuvirus         | 53  | 0.05              |
-| Orthobunyaviridae | Orthobunyaviridae | 57  | 0.01              |
++-------------------+-------------------+----+-------------------+
+| A                 | B                 | J  | DNAdist Threshold |
++===================+===================+====+===================+
+| Orthobunyaviridae | Khurdun           | 34 | 0.01              |
++-------------------+-------------------+----+-------------------+
+| Orthobunyaviridae | Pacuvirus         | 53 | 0.05              |
++-------------------+-------------------+----+-------------------+
+| Orthobunyaviridae | Orthobunyaviridae | 57 | 0.01              |
++-------------------+-------------------+----+-------------------+
 
 : DNAdist Threshold
 
@@ -465,25 +513,29 @@ a list of the IDs that you do not want to be deleted.
 
 **SEPARATED BY ‘;’**
 
-+-------------------+-------------------+-------------+---------------------------------+
-| A                 | B                 | k           | Organism to keep ID             |
-+===================+===================+=============+=================================+
-| Orthobunyaviridae | Khurdun           | 0.01        |                                 |
-+-------------------+-------------------+-------------+---------------------------------+
-| Orthobunyaviridae | Pacuvirus         | 0.05        |                                 |
-+-------------------+-------------------+-------------+---------------------------------+
-| Orthobunyaviridae | Orthobunyaviridae | 0.01        | MH484340.1;NC_005775;EF990927.1 |
-+-------------------+-------------------+-------------+---------------------------------+
++-------------------+-------------------+------+---------------------------------+
+| A                 | B                 | k    | Organism to keep ID             |
++===================+===================+======+=================================+
+| Orthobunyaviridae | Khurdun           | 0.01 |                                 |
++-------------------+-------------------+------+---------------------------------+
+| Orthobunyaviridae | Pacuvirus         | 0.05 |                                 |
++-------------------+-------------------+------+---------------------------------+
+| Orthobunyaviridae | Orthobunyaviridae | 0.01 | MH484340.1;NC_005775;EF990927.1 |
++-------------------+-------------------+------+---------------------------------+
 
 : ID Organism to keep
 
 #### M: Organism without a particular protein ID
 
-| A | B | L | Organism without a particular protein ID  |
-|----|----|----|----|
-| Orthobunyaviridae | Khurdun |  | OUT\*NSM=NC_078560.1 |
-| Orthobunyaviridae | Pacuvirus |  | NONE\*NN=NN |
-| Orthobunyaviridae | Orthobunyaviridae | IDs | NONE\*NN=NN |
++-------------------+-------------------+-----+------------------------------------------+
+| A                 | B                 | L   | Organism without a particular protein ID |
++===================+===================+=====+==========================================+
+| Orthobunyaviridae | Khurdun           |     | OUT\*NSM=NC_078560.1                     |
++-------------------+-------------------+-----+------------------------------------------+
+| Orthobunyaviridae | Pacuvirus         |     | NONE\*NN=NN                              |
++-------------------+-------------------+-----+------------------------------------------+
+| Orthobunyaviridae | Orthobunyaviridae | IDs | NONE\*NN=NN                              |
++-------------------+-------------------+-----+------------------------------------------+
 
 : Organism without a particular protein ID
 
@@ -495,11 +547,15 @@ IN\*\<prot\>=liste of IDs
 
 Do you want to use TrimAl for this study.
 
++-------------------+-------------------+-------------+--------+
 | A                 | B                 | M           | Trimal |
-|-------------------|-------------------|-------------|--------|
++===================+===================+=============+========+
 | Orthobunyaviridae | Khurdun           | OUT\*NSM=ID | Yes    |
++-------------------+-------------------+-------------+--------+
 | Orthobunyaviridae | Pacuvirus         | NONE        | Yes    |
++-------------------+-------------------+-------------+--------+
 | Orthobunyaviridae | Orthobunyaviridae | NONE        | Yes    |
++-------------------+-------------------+-------------+--------+
 
 : Do you want to use TrimAl
 
@@ -507,28 +563,23 @@ Do you want to use TrimAl for this study.
 
 Do you want to use blast in case of missing proteins positions
 
-| A                 | B                 | N   | Blast |
-|-------------------|-------------------|-----|-------|
-| Orthobunyaviridae | Khurdun           | Y   | Y     |
-| Orthobunyaviridae | Pacuvirus         | Y   | Y     |
-| Orthobunyaviridae | Orthobunyaviridae | Y   | Y     |
++-------------------+-------------------+---+-------+
+| A                 | B                 | N | Blast |
++===================+===================+===+=======+
+| Orthobunyaviridae | Khurdun           | Y | Y     |
++-------------------+-------------------+---+-------+
+| Orthobunyaviridae | Pacuvirus         | Y | Y     |
++-------------------+-------------------+---+-------+
+| Orthobunyaviridae | Orthobunyaviridae | Y | Y     |
++-------------------+-------------------+---+-------+
 
 : Do you want to use blast?
 
 ## Additional Instructions and warnings
 
-### Files path
-
-**protein_equivalent.txt** must be at the root
-
-**species_equivalent.txt** must be at the root
-
-**all_information.txt** must be at the root
-
 ### Proteins positions
 
-Please pay attention to the ***Final_pos_prot.txt*** file. The blast alignment is only an approximation
-Please pay attention to the ***Final_pos_prot.txt*** file. The blast alignment is only an approximation
+Please pay attention to the ***Final_pos_prot.txt*** file. The blast alignment is only an approximation Please pay attention to the ***Final_pos_prot.txt*** file. The blast alignment is only an approximation
 
 This is not a completely reliable solution. We strongly advise against using VERTEX if you have very few virus with records in the databases.
 
