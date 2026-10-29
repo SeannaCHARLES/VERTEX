@@ -1,0 +1,13 @@
+#Species tab Scientific Species name
+Culex	Diptera
+Oryzomys	Rodentia
+Culicidae	Diptera
+Oxymycterus	Rodentia
+Porcine	Artiodactyla
+Florida panther	Carnivora
+squirrel	Rodentia
+tick	Ixodida
+hamster	Rodentia
+bat	Chiroptera
+mosquito	Culicidae
+chilli	Capsicum
