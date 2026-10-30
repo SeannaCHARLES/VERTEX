@@ -1,12 +1,14 @@
+# VERTEX 
+
+# (Viral sequence Extraction, Reconstruction and Tree EXploration)
+
 ---
 ---
 ---
 
-# VERTEX (Viral sequence Extraction, Reconstruction and Tree EXploration)
+# Requirements
 
-## requirements
-
-### Bash requirements
+## Bash requirements
 
 python3 3.12.3-0ubuntu2.1
 
@@ -24,7 +26,7 @@ phylip 1:3.697+dfsg-4build1
 
 ncbi-blast+ 2.12.0+ds-4build2
 
-### Python requirements
+## Python requirements
 
 Bio==1.8.4
 
@@ -42,7 +44,7 @@ Requests==2.34.2
 
 ![VERTEX Workflow](images/Workflow_V8.pdf)
 
-## Project description
+# Project description
 
 This pipeline is designed to automatically download and extract protein sequences or functional domains of viral sequences from Genbank. It enables the generation of phylogenetic trees in Newick format, for each of the protein or protein domains extracted. The pipeline relies on the NCBI database and is therefore dependent on both the accuracy and the uniformity of the data provided in the input sequences. The pipeline produces iTOL-compatible captions that can be directly uploaded to the iTOL website for interactive tree visualization and additional files (e.g., FASTA alignments, metadata tables) to support downstream analyses.
 
@@ -85,7 +87,7 @@ The captions are created based on the Itol format. One colour will be associated
 The user information caption is created using the **user_legend.txt** file. You can put in that file all the information you want to use to characterize your study (for example serogroup or precise taxonomy)
 
 | Input | Output |
-|:-------------------------------:|:-------------------------------------:|
+|:----------------------------------:|:----------------------------------:|
 | sequences\<Study_name\>.gb (From Genbank_extract.py) | \<ID_nucl\>\_prot.fasta |
 | user_legend.txt **(from user)** | \<ID_nucl\>\_nucl.fasta |
 |  | prot_all\_.fasta \| |
@@ -107,7 +109,7 @@ The user information caption is created using the **user_legend.txt** file. You 
 - Create a Blast database of all the reference virus proteins.
 
 | Input | Output |
-|:--------------------------------:|:------------------------------------:|
+|:----------------------------------:|:----------------------------------:|
 | \<Id_ref\>\_Ref.fasta (From Genbank_extract.py) | protein_prot_1-n_ref.fasta |
 
 : Input-Output Execution.sh
@@ -119,7 +121,7 @@ The user information caption is created using the **user_legend.txt** file. You 
 This file ensures that as many protein positions as possible are retrieved in cases where the information is not available in the Gp file.
 
 | Input | Output |
-|:--------------------------------:|:------------------------------------:|
+|:----------------------------------:|:----------------------------------:|
 | **pos_prot\_\<Study_name\>.txt** (From Genbank.py) | **pos_prot_final\<Study_name\>.txt** |
 | protein_prot_1-n_ref.fasta (from Execution.sh) |  |
 
@@ -130,7 +132,7 @@ This file ensures that as many protein positions as possible are retrieved in ca
 - Launch DNAdist from phylip and create a divergence sequence table.
 
 | Input | Output |
-|:--------------------------------:|:------------------------------------:|
+|:----------------------------------:|:----------------------------------:|
 | All \_nucleic_sequences_align.aln-fasta (From Genbank_extract.py) | **Divergence_nucleic_table.txt** |
 
 : Input-Output DNA_dist.sh
@@ -140,7 +142,7 @@ This file ensures that as many protein positions as possible are retrieved in ca
 - Delete the sequences that are considered too closely related or too similar using the **DNA_dist.sh** output table and the user defined threshold from the **All_information.txt** file.
 
 | Input | Output |
-|:--------------------------------:|:------------------------------------:|
+|:----------------------------------:|:----------------------------------:|
 | Divergence_nucleic_table.txt(From DNA_dist.sh) | All_nucleic_sequences_sdbl.fasta |
 |  | All_protein_sequences_sdbl.fasta |
 
@@ -151,7 +153,7 @@ This file ensures that as many protein positions as possible are retrieved in ca
 - Separate the different proteins and save them in separated files for each protein.
 
 | Input | Output |
-|:------------------------------:|:--------------------------------------:|
+|:----------------------------------:|:----------------------------------:|
 | All_nucleic_sequences_sdbl.fasta (From Delete_dbl.py) | Nucleic_prot_1-n.fasta |
 | All_protein_sequences_sdbl.fasta (From Delete_dbl.py) | protein_prot_1-n.fasta |
 |  | Nucleic_prot_OG.fasta |
@@ -168,7 +170,7 @@ This file ensures that as many protein positions as possible are retrieved in ca
 - Aligns all the previous files.
 
 | Input | Output |
-|:--------------------------------:|:------------------------------------:|
+|:----------------------------------:|:----------------------------------:|
 | Nucleic_prot_1-n.fasta (From Test_sript_Sep_prot.py) | Nucleic_prot_spe.fasta |
 | Protein_prot_1-n.fasta (From Test_sript_Sep_prot.py) | protein_prot_spe.fasta |
 | Nucleic_prot_OG.fasta (From Test_sript_Sep_prot.py) | protein_prot_spe.aln-fasta |
@@ -189,7 +191,7 @@ IQtree2 was used because it can provide a test to identify the best model of tre
 - Create the phylogenetic tree using the best model identified (using IQtree2)
 
 | Input | Output |
-|:--------------------------------:|:------------------------------------:|
+|:----------------------------------:|:----------------------------------:|
 | protein_prot_1-n.aln-fasta (From Merge_spe_prot.py) | **protein_prot_1-n.treefile** |
 | protein_prot_spe.aln-fasta (From Merge_spe_prot.py) | **protein_prot_spe.treefile** |
 
@@ -200,7 +202,7 @@ IQtree2 was used because it can provide a test to identify the best model of tre
 - Launch Protdist from phylip and create a sequence divergence table for each protein.
 
 | Input | Output |
-|:--------------------------------:|:------------------------------------:|
+|:----------------------------------:|:----------------------------------:|
 | Nucleic_prot_1-n.fasta (From Sep_prot.py) | **Divergence_protein_table.py** |
 | protein_prot_1-n.fasta (From Sep_prot.py) |  |
 | Nucleic_prot_spe.fasta (From Merge_spe_prot.py) |  |
@@ -211,19 +213,19 @@ IQtree2 was used because it can provide a test to identify the best model of tre
 
 This step is executed at the end of the pipeline because it can be very long to run. It enables a pairwise comparison of each virus for each protein or protein domain, and of specific proteins whenever applicable.
 
-## Instructions to use
+# Instructions to use
 
-### Informations_file.txt
+## Informations_file.txt
 
 This file is the execution input file. You need to fill up all the information in this file in order to use the pipeline.
 
 **!If an information is missing it may not work!**
 
-### Separator
+## Separator
 
 DO NOT USE "," AS A SEPARATOR INSIDE EACH COLUMN USE ";" INSTEAD
 
-### File paths
+## File paths
 
 **protein_equivalent.txt** must be at the root
 
@@ -235,11 +237,11 @@ DO NOT USE "," AS A SEPARATOR INSIDE EACH COLUMN USE ";" INSTEAD
 
 **user_informations.txt** must be at the root
 
-### Example of use
+## Example of use
 
 We provide here a step by step running example for the study of Orthobunyaviridae with a specific outgroup
 
-#### A: Execution Project name
+### A: Execution Project name
 
 This name will be used as the folder name. It also allows you to specify which project the outgroup-specific data is associated with, where necessary.
 
@@ -253,7 +255,7 @@ If you wish to analyse several segments or polyproteins from the same viral fami
 
 : Project name
 
-#### B: Study name %%cette partie n'est pas tres claire pour moi%%%
+### B: Study name %%cette partie n'est pas tres claire pour moi%%%
 
 “Study name” allows you to distinguish information regarding outgroups that may not be used for all proteins in the study.
 
@@ -269,7 +271,7 @@ If this does not apply to you, you can add the outgroup IDs to the list of study
 
 : Study name : Khurdun and Pacuvirus will be used as outgroups
 
-#### C: ID file
+### C: ID file
 
 The name of the file that contains the virus IDs. This file must be at the root.
 
@@ -281,7 +283,7 @@ The name of the file that contains the virus IDs. This file must be at the root.
 
 : ID file
 
-#### D: Outgroup choice (Y/N)
+### D: Outgroup choice (Y/N)
 
 Allows you to specify whether these viruses should be treated as outgroups or not.
 
@@ -295,7 +297,7 @@ N : Is it a outgroup.
 
 : Outgroup Specific : Is it a specifc outgroup?
 
-#### E: For which protein
+### E: For which protein
 
 Which protein do you want to study, or for which protein will this outgroup be used?
 
@@ -307,7 +309,7 @@ Which protein do you want to study, or for which protein will this outgroup be u
 
 : For which proteins
 
-#### F: Protein names (in order)
+### F: Protein names (in order)
 
 Protein names of the study name (col B Study name)
 
@@ -319,7 +321,7 @@ Protein names of the study name (col B Study name)
 
 : Protein names (in order)
 
-#### G: specific protein
+### G: specific protein
 
 Indicate which proteins are involved in the study of a specific protein, if applicable.
 
@@ -335,7 +337,7 @@ For example, if you want to study the evolutionary history of two proteins prese
 
 The protein Gn of Khurdun will be used as the outgroup.
 
-#### H: TargetID
+### H: TargetID
 
 Enter a reference ID that will be used for BLAST alignment in case some positions are missing.
 
@@ -347,19 +349,19 @@ Enter a reference ID that will be used for BLAST alignment in case some position
 
 : RefID
 
-#### I: reference protein positions
+### I: reference protein positions
 
 The positions of the proteins for the reference or the specific outgroup.
 
 |         A         |         B         |   H   | reference /OG proteins position |
-|:-------:|:-------:|:-------:|:-------------------------------------------:|
+|:-------------:|:-------------:|:-------------:|:-------------------------:|
 | Orthobunyaviridae |      Khurdun      |       |         23;292;526;944          |
 | Orthobunyaviridae |     Pacuvirus     |       | 1;1458;23;305;308;476;598;1386  |
 | Orthobunyaviridae | Orthobunyaviridae | IDref |     22;302;303;476;509;1372     |
 
 : RefID
 
-#### J: Start of the proteins in the nucleic sequence
+### J: Start of the proteins in the nucleic sequence
 
 | A | B | I | Start of the proteins in the nucleic sequence |
 |:--:|:--:|:--:|:--:|
@@ -371,7 +373,7 @@ The positions of the proteins for the reference or the specific outgroup.
 
 This position will be used as the start of the protein sequence within the nucleic acid sequence (for all sequences).
 
-**K: DNAdist Threshold**
+### **K: DNAdist Threshold**
 
 |         A         |         B         |  J  | DNAdist Threshold |
 |:-----------------:|:-----------------:|:---:|:-----------------:|
@@ -381,21 +383,21 @@ This position will be used as the start of the protein sequence within the nucle
 
 : DNAdist Threshold
 
-#### L: Organism to keep ID
+### L: Organism to keep ID
 
 a list of the IDs that you do not want to be deleted.
 
 **SEPARATED BY ‘;’**
 
 |         A         |         B         |  K   |       Organism to keep ID       |
-|:---------:|:---------:|:---------:|:---------------------------------------:|
+|:-------------:|:-------------:|:-------------:|:-------------------------:|
 | Orthobunyaviridae |      Khurdun      | 0.01 |                                 |
 | Orthobunyaviridae |     Pacuvirus     | 0.05 |                                 |
 | Orthobunyaviridae | Orthobunyaviridae | 0.01 | MH484340.1;NC_005775;EF990927.1 |
 
 : ID Organism to keep
 
-#### M: Organism without a particular protein ID
+### M: Organism without a particular protein ID
 
 | A | B | L | Organism without a particular protein ID |
 |:--:|:--:|:--:|:--:|
@@ -409,7 +411,7 @@ OUT\*\<prot\>=list of IDs separated by ";"
 
 IN\*\<prot\>=liste of IDs separated by ";"
 
-**N: Trimal**
+### **N: Trimal**
 
 Do you want to use TrimAl for this study.
 
@@ -421,7 +423,7 @@ Do you want to use TrimAl for this study.
 
 : Do you want to use TrimAl
 
-**O: Blast**
+### **O: Blast**
 
 Do you want to use blast in case of missing proteins positions
 
@@ -473,8 +475,10 @@ These images %%quelles images ? celles que tu mentionnes au dessus?%%% were gene
 
 Oui elles sont sur un autre github publique cette fois-ci.
 
-## Citations
+# Citations
 
 If using this tool, please cite Seanna Charles, Anja Böckmann and Emmanuelle Lerat (2026) VERTEX: A pipeline for Viral sequence Extraction, Reconstruction and Tree EXploration.
 
 28 October 2026
+
+# Contact

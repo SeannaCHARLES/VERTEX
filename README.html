@@ -352,14 +352,18 @@ display: none;
 </div>
 
 
-<hr />
-<div id="vertex-viral-sequence-extraction-reconstruction-and-tree-exploration" class="section level1">
-<h1>VERTEX (Viral sequence Extraction, Reconstruction and Tree
+<div id="vertex" class="section level1">
+<h1>VERTEX</h1>
+</div>
+<div id="viral-sequence-extraction-reconstruction-and-tree-exploration" class="section level1">
+<h1>(Viral sequence Extraction, Reconstruction and Tree
 EXploration)</h1>
-<div id="requirements" class="section level2">
-<h2>requirements</h2>
-<div id="bash-requirements" class="section level3">
-<h3>Bash requirements</h3>
+<hr />
+</div>
+<div id="requirements" class="section level1">
+<h1>Requirements</h1>
+<div id="bash-requirements" class="section level2">
+<h2>Bash requirements</h2>
 <p>python3 3.12.3-0ubuntu2.1</p>
 <p>bioawk 1.0-4</p>
 <p>iqtree2 2.0.7</p>
@@ -369,8 +373,8 @@ EXploration)</h1>
 <p>phylip 1:3.697+dfsg-4build1</p>
 <p>ncbi-blast+ 2.12.0+ds-4build2</p>
 </div>
-<div id="python-requirements" class="section level3">
-<h3>Python requirements</h3>
+<div id="python-requirements" class="section level2">
+<h2>Python requirements</h2>
 <p>Bio==1.8.4</p>
 <p>geopy==2.5.0</p>
 <p>matplotlib==3.11.2</p>
@@ -384,8 +388,8 @@ EXploration)</h1>
 </div>
 </div>
 </div>
-<div id="project-description" class="section level2">
-<h2>Project description</h2>
+<div id="project-description" class="section level1">
+<h1>Project description</h1>
 <p>This pipeline is designed to automatically download and extract
 protein sequences or functional domains of viral sequences from Genbank.
 It enables the generation of phylogenetic trees in Newick format, for
@@ -396,7 +400,6 @@ produces iTOL-compatible captions that can be directly uploaded to the
 iTOL website for interactive tree visualization and additional files
 (e.g., FASTA alignments, metadata tables) to support downstream
 analyses.</p>
-</div>
 <div id="pipeline-description" class="section level2">
 <h2>Pipeline description</h2>
 <div id="execution.sh" class="section level3">
@@ -471,8 +474,8 @@ serogroup or precise taxonomy)</p>
 <table>
 <caption>Input-Output Genbank.py</caption>
 <colgroup>
-<col width="45%" />
-<col width="54%" />
+<col width="50%" />
+<col width="50%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -545,8 +548,8 @@ Genbank_extract.py)</td>
 <table>
 <caption>Input-Output Execution.sh</caption>
 <colgroup>
-<col width="47%" />
-<col width="52%" />
+<col width="50%" />
+<col width="50%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -575,8 +578,8 @@ file.</p>
 <table>
 <caption>Input-Output Prot_position.py</caption>
 <colgroup>
-<col width="47%" />
-<col width="52%" />
+<col width="50%" />
+<col width="50%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -606,8 +609,8 @@ table.</li>
 <table>
 <caption>Input-Output DNA_dist.sh</caption>
 <colgroup>
-<col width="47%" />
-<col width="52%" />
+<col width="50%" />
+<col width="50%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -635,8 +638,8 @@ file.</li>
 <table>
 <caption>Input-Output Delete_dbl.py</caption>
 <colgroup>
-<col width="47%" />
-<col width="52%" />
+<col width="50%" />
+<col width="50%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -665,8 +668,8 @@ each protein.</li>
 <table>
 <caption>Input-Output Sep_prot.py</caption>
 <colgroup>
-<col width="44%" />
-<col width="55%" />
+<col width="50%" />
+<col width="50%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -709,8 +712,8 @@ evolutionary history, if applicable.</p></li>
 <table>
 <caption>Input-Output Merge_spe_prot.py</caption>
 <colgroup>
-<col width="47%" />
-<col width="52%" />
+<col width="50%" />
+<col width="50%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -760,8 +763,8 @@ IQtree2)</li>
 <table>
 <caption>Input-Output Execution.sh</caption>
 <colgroup>
-<col width="47%" />
-<col width="52%" />
+<col width="50%" />
+<col width="50%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -792,8 +795,8 @@ for each protein.</li>
 <table>
 <caption>Input-Output Protdist.py</caption>
 <colgroup>
-<col width="47%" />
-<col width="52%" />
+<col width="50%" />
+<col width="50%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -830,32 +833,33 @@ each protein or protein domain, and of specific proteins whenever
 applicable.</p>
 </div>
 </div>
-<div id="instructions-to-use" class="section level2">
-<h2>Instructions to use</h2>
-<div id="informations_file.txt" class="section level3">
-<h3>Informations_file.txt</h3>
+</div>
+<div id="instructions-to-use" class="section level1">
+<h1>Instructions to use</h1>
+<div id="informations_file.txt" class="section level2">
+<h2>Informations_file.txt</h2>
 <p>This file is the execution input file. You need to fill up all the
 information in this file in order to use the pipeline.</p>
 <p><strong>!If an information is missing it may not work!</strong></p>
 </div>
-<div id="separator" class="section level3">
-<h3>Separator</h3>
+<div id="separator" class="section level2">
+<h2>Separator</h2>
 <p>DO NOT USE “,” AS A SEPARATOR INSIDE EACH COLUMN USE “;” INSTEAD</p>
 </div>
-<div id="file-paths" class="section level3">
-<h3>File paths</h3>
+<div id="file-paths" class="section level2">
+<h2>File paths</h2>
 <p><strong>protein_equivalent.txt</strong> must be at the root</p>
 <p><strong>species_equivalent.txt</strong> must be at the root</p>
 <p><strong>all_information.txt</strong> must be at the root</p>
 <p><strong>Virus_ids.txt</strong> must be at the root</p>
 <p><strong>user_informations.txt</strong> must be at the root</p>
 </div>
-<div id="example-of-use" class="section level3">
-<h3>Example of use</h3>
+<div id="example-of-use" class="section level2">
+<h2>Example of use</h2>
 <p>We provide here a step by step running example for the study of
 Orthobunyaviridae with a specific outgroup</p>
-<div id="a-execution-project-name" class="section level4">
-<h4>A: Execution Project name</h4>
+<div id="a-execution-project-name" class="section level3">
+<h3>A: Execution Project name</h3>
 <p>This name will be used as the folder name. It also allows you to
 specify which project the outgroup-specific data is associated with,
 where necessary.</p>
@@ -883,8 +887,8 @@ be stored in the same folder.</p>
 </tbody>
 </table>
 </div>
-<div id="b-study-name-cette-partie-nest-pas-tres-claire-pour-moi" class="section level4">
-<h4>B: Study name %%cette partie n’est pas tres claire pour moi%%%</h4>
+<div id="b-study-name-cette-partie-nest-pas-tres-claire-pour-moi" class="section level3">
+<h3>B: Study name %%cette partie n’est pas tres claire pour moi%%%</h3>
 <p>“Study name” allows you to distinguish information regarding
 outgroups that may not be used for all proteins in the study.</p>
 <p>For example, if you have a specific protein, or if you want to use
@@ -917,8 +921,8 @@ outgroups</caption>
 </tbody>
 </table>
 </div>
-<div id="c-id-file" class="section level4">
-<h4>C: ID file</h4>
+<div id="c-id-file" class="section level3">
+<h3>C: ID file</h3>
 <p>The name of the file that contains the virus IDs. This file must be
 at the root.</p>
 <table>
@@ -949,8 +953,8 @@ at the root.</p>
 </tbody>
 </table>
 </div>
-<div id="d-outgroup-choice-yn" class="section level4">
-<h4>D: Outgroup choice (Y/N)</h4>
+<div id="d-outgroup-choice-yn" class="section level3">
+<h3>D: Outgroup choice (Y/N)</h3>
 <p>Allows you to specify whether these viruses should be treated as
 outgroups or not.</p>
 <p>N : Is it a outgroup.</p>
@@ -986,8 +990,8 @@ outgroups or not.</p>
 </tbody>
 </table>
 </div>
-<div id="e-for-which-protein" class="section level4">
-<h4>E: For which protein</h4>
+<div id="e-for-which-protein" class="section level3">
+<h3>E: For which protein</h3>
 <p>Which protein do you want to study, or for which protein will this
 outgroup be used?</p>
 <table>
@@ -1022,8 +1026,8 @@ outgroup be used?</p>
 </tbody>
 </table>
 </div>
-<div id="f-protein-names-in-order" class="section level4">
-<h4>F: Protein names (in order)</h4>
+<div id="f-protein-names-in-order" class="section level3">
+<h3>F: Protein names (in order)</h3>
 <p>Protein names of the study name (col B Study name)</p>
 <table>
 <caption>Protein names (in order)</caption>
@@ -1063,8 +1067,8 @@ outgroup be used?</p>
 </tbody>
 </table>
 </div>
-<div id="g-specific-protein" class="section level4">
-<h4>G: specific protein</h4>
+<div id="g-specific-protein" class="section level3">
+<h3>G: specific protein</h3>
 <p>Indicate which proteins are involved in the study of a specific
 protein, if applicable.</p>
 <p>For example, if you want to study the evolutionary history of two
@@ -1102,8 +1106,8 @@ proteins present in the same virus.</p>
 </table>
 <p>The protein Gn of Khurdun will be used as the outgroup.</p>
 </div>
-<div id="h-targetid" class="section level4">
-<h4>H: TargetID</h4>
+<div id="h-targetid" class="section level3">
+<h3>H: TargetID</h3>
 <p>Enter a reference ID that will be used for BLAST alignment in case
 some positions are missing.</p>
 <table>
@@ -1138,17 +1142,17 @@ some positions are missing.</p>
 </tbody>
 </table>
 </div>
-<div id="i-reference-protein-positions" class="section level4">
-<h4>I: reference protein positions</h4>
+<div id="i-reference-protein-positions" class="section level3">
+<h3>I: reference protein positions</h3>
 <p>The positions of the proteins for the reference or the specific
 outgroup.</p>
 <table>
 <caption>RefID</caption>
 <colgroup>
-<col width="12%" />
-<col width="12%" />
-<col width="12%" />
-<col width="62%" />
+<col width="20%" />
+<col width="20%" />
+<col width="20%" />
+<col width="37%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -1180,8 +1184,8 @@ outgroup.</p>
 </tbody>
 </table>
 </div>
-<div id="j-start-of-the-proteins-in-the-nucleic-sequence" class="section level4">
-<h4>J: Start of the proteins in the nucleic sequence</h4>
+<div id="j-start-of-the-proteins-in-the-nucleic-sequence" class="section level3">
+<h3>J: Start of the proteins in the nucleic sequence</h3>
 <table>
 <caption>Start of the proteins in the nucleic sequence</caption>
 <thead>
@@ -1215,7 +1219,9 @@ outgroup.</p>
 </table>
 <p>This position will be used as the start of the protein sequence
 within the nucleic acid sequence (for all sequences).</p>
-<p><strong>K: DNAdist Threshold</strong></p>
+</div>
+<div id="k-dnadist-threshold" class="section level3">
+<h3><strong>K: DNAdist Threshold</strong></h3>
 <table>
 <caption>DNAdist Threshold</caption>
 <thead>
@@ -1248,17 +1254,17 @@ within the nucleic acid sequence (for all sequences).</p>
 </tbody>
 </table>
 </div>
-<div id="l-organism-to-keep-id" class="section level4">
-<h4>L: Organism to keep ID</h4>
+<div id="l-organism-to-keep-id" class="section level3">
+<h3>L: Organism to keep ID</h3>
 <p>a list of the IDs that you do not want to be deleted.</p>
 <p><strong>SEPARATED BY ‘;’</strong></p>
 <table>
 <caption>ID Organism to keep</caption>
 <colgroup>
-<col width="14%" />
-<col width="14%" />
-<col width="14%" />
-<col width="55%" />
+<col width="20%" />
+<col width="20%" />
+<col width="20%" />
+<col width="37%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -1290,8 +1296,8 @@ within the nucleic acid sequence (for all sequences).</p>
 </tbody>
 </table>
 </div>
-<div id="m-organism-without-a-particular-protein-id" class="section level4">
-<h4>M: Organism without a particular protein ID</h4>
+<div id="m-organism-without-a-particular-protein-id" class="section level3">
+<h3>M: Organism without a particular protein ID</h3>
 <table>
 <caption>Organism without a particular protein ID</caption>
 <thead>
@@ -1325,7 +1331,9 @@ within the nucleic acid sequence (for all sequences).</p>
 </table>
 <p>OUT*&lt;prot&gt;=list of IDs separated by “;”</p>
 <p>IN*&lt;prot&gt;=liste of IDs separated by “;”</p>
-<p><strong>N: Trimal</strong></p>
+</div>
+<div id="n-trimal" class="section level3">
+<h3><strong>N: Trimal</strong></h3>
 <p>Do you want to use TrimAl for this study.</p>
 <table>
 <caption>Do you want to use TrimAl</caption>
@@ -1358,7 +1366,9 @@ within the nucleic acid sequence (for all sequences).</p>
 </tr>
 </tbody>
 </table>
-<p><strong>O: Blast</strong></p>
+</div>
+<div id="o-blast" class="section level3">
+<h3><strong>O: Blast</strong></h3>
 <p>Do you want to use blast in case of missing proteins positions</p>
 <table>
 <caption>Do you want to use blast?</caption>
@@ -1391,7 +1401,6 @@ within the nucleic acid sequence (for all sequences).</p>
 </tr>
 </tbody>
 </table>
-</div>
 </div>
 </div>
 <div id="additional-instructions-and-warnings" class="section level2">
@@ -1453,13 +1462,16 @@ dessus?%%% were generated by AI.</p>
 <p>Oui elles sont sur un autre github publique cette fois-ci.</p>
 </div>
 </div>
-<div id="citations" class="section level2">
-<h2>Citations</h2>
+</div>
+<div id="citations" class="section level1">
+<h1>Citations</h1>
 <p>If using this tool, please cite Seanna Charles, Anja Böckmann and
 Emmanuelle Lerat (2026) VERTEX: A pipeline for Viral sequence
 Extraction, Reconstruction and Tree EXploration.</p>
 <p>28 October 2026</p>
 </div>
+<div id="contact" class="section level1">
+<h1>Contact</h1>
 </div>
 
 
