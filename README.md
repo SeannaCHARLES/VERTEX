@@ -1,4 +1,4 @@
-# VERTEX 
+# VERTEX
 
 # (Viral sequence Extraction, Reconstruction and Tree EXploration)
 
@@ -87,7 +87,7 @@ The captions are created based on the Itol format. One colour will be associated
 The user information caption is created using the **user_legend.txt** file. You can put in that file all the information you want to use to characterize your study (for example serogroup or precise taxonomy)
 
 | Input | Output |
-|:----------------------------------:|:----------------------------------:|
+|:--:|:--:|
 | sequences\<Study_name\>.gb (From Genbank_extract.py) | \<ID_nucl\>\_prot.fasta |
 | user_legend.txt **(from user)** | \<ID_nucl\>\_nucl.fasta |
 |  | prot_all\_.fasta \| |
@@ -109,7 +109,7 @@ The user information caption is created using the **user_legend.txt** file. You 
 - Create a Blast database of all the reference virus proteins.
 
 | Input | Output |
-|:----------------------------------:|:----------------------------------:|
+|:--:|:--:|
 | \<Id_ref\>\_Ref.fasta (From Genbank_extract.py) | protein_prot_1-n_ref.fasta |
 
 : Input-Output Execution.sh
@@ -121,7 +121,7 @@ The user information caption is created using the **user_legend.txt** file. You 
 This file ensures that as many protein positions as possible are retrieved in cases where the information is not available in the Gp file.
 
 | Input | Output |
-|:----------------------------------:|:----------------------------------:|
+|:--:|:--:|
 | **pos_prot\_\<Study_name\>.txt** (From Genbank.py) | **pos_prot_final\<Study_name\>.txt** |
 | protein_prot_1-n_ref.fasta (from Execution.sh) |  |
 
@@ -132,7 +132,7 @@ This file ensures that as many protein positions as possible are retrieved in ca
 - Launch DNAdist from phylip and create a divergence sequence table.
 
 | Input | Output |
-|:----------------------------------:|:----------------------------------:|
+|:--:|:--:|
 | All \_nucleic_sequences_align.aln-fasta (From Genbank_extract.py) | **Divergence_nucleic_table.txt** |
 
 : Input-Output DNA_dist.sh
@@ -142,7 +142,7 @@ This file ensures that as many protein positions as possible are retrieved in ca
 - Delete the sequences that are considered too closely related or too similar using the **DNA_dist.sh** output table and the user defined threshold from the **All_information.txt** file.
 
 | Input | Output |
-|:----------------------------------:|:----------------------------------:|
+|:--:|:--:|
 | Divergence_nucleic_table.txt(From DNA_dist.sh) | All_nucleic_sequences_sdbl.fasta |
 |  | All_protein_sequences_sdbl.fasta |
 
@@ -153,7 +153,7 @@ This file ensures that as many protein positions as possible are retrieved in ca
 - Separate the different proteins and save them in separated files for each protein.
 
 | Input | Output |
-|:----------------------------------:|:----------------------------------:|
+|:--:|:--:|
 | All_nucleic_sequences_sdbl.fasta (From Delete_dbl.py) | Nucleic_prot_1-n.fasta |
 | All_protein_sequences_sdbl.fasta (From Delete_dbl.py) | protein_prot_1-n.fasta |
 |  | Nucleic_prot_OG.fasta |
@@ -170,7 +170,7 @@ This file ensures that as many protein positions as possible are retrieved in ca
 - Aligns all the previous files.
 
 | Input | Output |
-|:----------------------------------:|:----------------------------------:|
+|:--:|:--:|
 | Nucleic_prot_1-n.fasta (From Test_sript_Sep_prot.py) | Nucleic_prot_spe.fasta |
 | Protein_prot_1-n.fasta (From Test_sript_Sep_prot.py) | protein_prot_spe.fasta |
 | Nucleic_prot_OG.fasta (From Test_sript_Sep_prot.py) | protein_prot_spe.aln-fasta |
@@ -191,7 +191,7 @@ IQtree2 was used because it can provide a test to identify the best model of tre
 - Create the phylogenetic tree using the best model identified (using IQtree2)
 
 | Input | Output |
-|:----------------------------------:|:----------------------------------:|
+|:--:|:--:|
 | protein_prot_1-n.aln-fasta (From Merge_spe_prot.py) | **protein_prot_1-n.treefile** |
 | protein_prot_spe.aln-fasta (From Merge_spe_prot.py) | **protein_prot_spe.treefile** |
 
@@ -202,7 +202,7 @@ IQtree2 was used because it can provide a test to identify the best model of tre
 - Launch Protdist from phylip and create a sequence divergence table for each protein.
 
 | Input | Output |
-|:----------------------------------:|:----------------------------------:|
+|:--:|:--:|
 | Nucleic_prot_1-n.fasta (From Sep_prot.py) | **Divergence_protein_table.py** |
 | protein_prot_1-n.fasta (From Sep_prot.py) |  |
 | Nucleic_prot_spe.fasta (From Merge_spe_prot.py) |  |
@@ -354,7 +354,7 @@ Enter a reference ID that will be used for BLAST alignment in case some position
 The positions of the proteins for the reference or the specific outgroup.
 
 |         A         |         B         |   H   | reference /OG proteins position |
-|:-------------:|:-------------:|:-------------:|:-------------------------:|
+|:-----------------:|:-----------------:|:-----:|:-------------------------------:|
 | Orthobunyaviridae |      Khurdun      |       |         23;292;526;944          |
 | Orthobunyaviridae |     Pacuvirus     |       | 1;1458;23;305;308;476;598;1386  |
 | Orthobunyaviridae | Orthobunyaviridae | IDref |     22;302;303;476;509;1372     |
@@ -390,7 +390,7 @@ a list of the IDs that you do not want to be deleted.
 **SEPARATED BY ‘;’**
 
 |         A         |         B         |  K   |       Organism to keep ID       |
-|:-------------:|:-------------:|:-------------:|:-------------------------:|
+|:-----------------:|:-----------------:|:----:|:-------------------------------:|
 | Orthobunyaviridae |      Khurdun      | 0.01 |                                 |
 | Orthobunyaviridae |     Pacuvirus     | 0.05 |                                 |
 | Orthobunyaviridae | Orthobunyaviridae | 0.01 | MH484340.1;NC_005775;EF990927.1 |
