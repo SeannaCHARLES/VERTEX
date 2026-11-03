@@ -71,13 +71,13 @@ This step performs the download of all the sequences in a Genbank format and the
 
 ### Genbank_extract.py
 
-- Separate all the nucleic sequences and the protein sequences into single sequence files. The nucleic and proteic sequences are extracted from the **sequences\<Study_name\>.gb** file and saved in 2 folders **nucl** and **prot**.
+- Separate all the nucleic sequences and the protein sequences into single sequence files. 
 
-The nucleic and protein sequences are extracted from the **sequences\<Study_name\>.gb** file and saved in 2 folders **nucl** and **prot**.
+The nucleic and protein sequences are extracted from the **sequences\<Study_name\>.gb** file and saved in 2 folders: **nucl** and **prot**.
 
 - The GenPept(Gp) file format for each sequence are downloaded and concatenated in the ***prot_all\_\<Study_name\>.gp*** file.
 
-The Gp file format is very similar to the Genbank file format, except that Gp file includes the positions of the various proteins and protein domains. This format can be downloaded in the same way as the Genbank file from the protein identifier record in the NCBI database or website.
+The Gp file format is very similar to the Genbank file format, except that a Gp file includes the positions of the various proteins and protein domains. This format can be downloaded in the same way as the Genbank file from the protein identifier record in the NCBI database or website.
 
 - Create a **Metadata_files.txt** that contains different information available in the Genbank and the Gp files.
 
@@ -123,9 +123,9 @@ The user information caption is created using the **user_legend.txt** file. You 
 
 ### Prot_position.py (optional)
 
-- This file use blastp to complete the missing position within a study.
+- This file uses blastp to complete the missing position within a study.
 
-This file ensures that as many protein positions as possible are retrieved in cases where the information is not available in the Gp file.
+This step ensures that as many protein positions as possible are retrieved in cases where the information is not available in the Gp file.
 
 | Input | Output |
 |:--:|:--:|
@@ -170,11 +170,11 @@ This file ensures that as many protein positions as possible are retrieved in ca
 
 ### Merge_spe_prot.py (optional)
 
-- Concatenates the outgroups with their corresponding proteins, if you have chosen to use different outgroups for the proteins studied.
+- Concatenate the outgroups with their corresponding proteins, if you have chosen to use different outgroups for the studied proteins.
 
-- Concatenates the two proteins of which you want to study the evolutionary history, if applicable.
+- Concatenate the two proteins whose evolutionary history you want to study, if applicable.
 
-- Aligns all the previous files.
+- Align all the previous files.
 
 | Input | Output |
 |:--:|:--:|
@@ -191,7 +191,7 @@ This file ensures that as many protein positions as possible are retrieved in ca
 
 - IQtree2
 
-Identify the best model (using iqtree2)
+Identify the best model (using IQtree2)
 
 IQtree2 was used because it can provide a test to identify the best model of tree reconstruction for the nucleic and protein sequences. If you only want to study the protein sequences you may use prottest instead.
 
@@ -294,7 +294,7 @@ The name of the file that contains the virus IDs. This file must be at the root.
 
 Allows you to specify whether these viruses should be treated as outgroups or not.
 
-N : Is it a outgroup.
+N : Is it an outgroup.
 
 |         A         |         B         |  C  | Outgroup Spe |
 |:-----------------:|:-----------------:|:---:|:------------:|
@@ -448,7 +448,7 @@ Do you want to use blast in case of missing proteins positions
 
 Please pay attention to the ***Final_pos_prot.txt*** file. The blast alignment is only an approximation Please pay attention to the ***Final_pos_prot.txt*** file. The blast alignment is only an approximation
 
-This is not a completely reliable solution. We strongly advise against using VERTEX if you have very few virus with records in the databases.
+This is not a completely reliable solution. We strongly advise not to use VERTEX if you have very few virus with records in the databases.
 
 It is also strongly recommended that you check the consistency between the actual positions of the proteins and the predicted positions. The **Pos_prot.txt** file contains all the positions extracted from the database.
 
@@ -456,7 +456,7 @@ If you are not satisfied with the positions, you can change them manually. After
 
 ### Region name in the database
 
-The same proteins may have different region names from one virus to another. If a protein returns very few results and you know this is unexpected, its name may not have been recognised. You can use the file ***prot_all\_\<Study\>.gp*** to help you identified the different region names.
+The same proteins may have different region names from one virus to another. If a protein returns very few results and you know this is unexpected, its name may not have been recognised. You can use the file ***prot_all\_\<Study\>.gp*** to help you identify the different region names.
 
 Whether it differs from the name you entered in the various protein names (red rectangle).
 
@@ -484,7 +484,7 @@ Oui elles sont sur un autre github publique cette fois-ci.
 
 # Citations
 
-If using this tool, please cite Seanna Charles, Anja Böckmann and Emmanuelle Lerat (2026) VERTEX: A pipeline for Viral sequence Extraction, Reconstruction and Tree EXploration.
+If using this tool, please cite Seanna Charles, Anja Böckmann and Emmanuelle Lerat (2026) VERTEX: A pipeline for Viral sequence Extraction, Reconstruction and Tree EXploration. %%mettre ici la ref bioRxiv quand on l'aura%%%
 
 28 October 2026
 
