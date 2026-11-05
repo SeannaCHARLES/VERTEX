@@ -44,6 +44,14 @@ Requests==2.34.2
 
 ![VERTEX Workflow](images/Workflow_V8.pdf)
 
+## Mandatory input files
+%%il faudrait indiquer ici les fichiers d'entrée indispensables
+
+## Launch the pipeline
+
+%% il faudrait indiquer ici la commande ligne pour lancer le pipeline (avec la description des éventuelles options
+
+
 # Project description
 
 This pipeline is designed to automatically download and extract protein sequences or functional domains of viral sequences from Genbank. It enables the generation of phylogenetic trees in Newick format, for each of the protein or protein domains extracted. The pipeline relies on the NCBI database and is therefore dependent on both the accuracy and the uniformity of the data provided in the input sequences. The pipeline produces iTOL-compatible captions that can be directly uploaded to the iTOL website for interactive tree visualization and additional files (e.g., FASTA alignments, metadata tables) to support downstream analyses.
