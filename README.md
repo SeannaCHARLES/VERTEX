@@ -2,13 +2,9 @@
 
 # (Viral sequence Extraction, Reconstruction and Tree EXploration)
 
----
----
----
+# Requirements {#sec-requirements}
 
-# Requirements
-
-## Bash requirements
+## Bash requirements {#sec-bash-requirements}
 
 python3 3.12.3-0ubuntu2.1
 
@@ -26,7 +22,7 @@ phylip 1:3.697+dfsg-4build1
 
 ncbi-blast+ 2.12.0+ds-4build2
 
-## Python requirements
+## Python requirements {#sec-python-requirements}
 
 Bio==1.8.4
 
@@ -44,21 +40,41 @@ Requests==2.34.2
 
 ![VERTEX Workflow](images/Workflow_V8.pdf)
 
-## Mandatory input files
-%%il faudrait indiquer ici les fichiers d'entrée indispensables
+## Mandatory input files {#sec-mandatory-input-files}
 
-## Launch the pipeline
+- all_information.txt **can not be empty**
 
-%% il faudrait indiquer ici la commande ligne pour lancer le pipeline (avec la description des éventuelles options
+(Contains all the information required for the pipeline to run correctly.)
 
+- **\<IDs_file_name\>.txt** **can not be empty**
 
-# Project description
+(Must contain the list of IDs you are interested in)
+
+- user_legend.txt can be empty
+
+(User provided captions **must be in the Interactive Tree of Life (ITOL) caption format.**
+
+- **species_equivalent.txt** can be empty
+
+(See [host vector section](#sec-hostvectors-caption) for further information)
+
+- **protein_equivalent.txt** can be empty
+
+(See [section region name](#sec-region-name-in-the-database){#sec-region-name-in-the-database} for further information)
+
+## Launch the pipeline {#sec-launch-the-pipeline}
+
+Enter **./\<path\>/VERTEX/Scripts/execution.sh** in you terminal.
+
+Where \<path\> is the absolute path to the VERTEX folder that you have downloaded from the [GitHub](https://github.com/SeannaCHARLES/VERTEX/tree/main) and decompressed.
+
+# Project description {#sec-project-description}
 
 This pipeline is designed to automatically download and extract protein sequences or functional domains of viral sequences from Genbank. It enables the generation of phylogenetic trees in Newick format, for each of the protein or protein domains extracted. The pipeline relies on the NCBI database and is therefore dependent on both the accuracy and the uniformity of the data provided in the input sequences. The pipeline produces iTOL-compatible captions that can be directly uploaded to the iTOL website for interactive tree visualization and additional files (e.g., FASTA alignments, metadata tables) to support downstream analyses.
 
-## Pipeline description
+## Pipeline description {#sec-pipeline-description}
 
-### Execution.sh
+### Execution.sh {#sec-execution.sh}
 
 - Download all the sequences in the Genbank format.
 
@@ -70,7 +86,7 @@ This step performs the download of all the sequences in a Genbank format and the
 
 : Input-Output Execution.sh
 
-### Genbank_extract.py
+### Genbank_extract.py {#sec-genbank_extract.py}
 
 - Separate all the nucleic sequences and the protein sequences into single sequence files. The nucleic and proteic sequences are extracted from the **sequences\<Study_name\>.gb** file and saved in 2 folders **nucl** and **prot**.
 
@@ -122,7 +138,7 @@ The user information caption is created using the **user_legend.txt** file. You 
 
 : Input-Output Execution.sh
 
-### Prot_position.py (optional)
+### Prot_position.py (optional) {#sec-prot_position.py-optional}
 
 - This file use blastp to complete the missing position within a study.
 
@@ -135,7 +151,7 @@ This file ensures that as many protein positions as possible are retrieved in ca
 
 : Input-Output Prot_position.py
 
-### DNA_dist.sh
+### DNA_dist.sh {#sec-dna_dist.sh}
 
 - Launch DNAdist from phylip and create a divergence sequence table.
 
@@ -145,7 +161,7 @@ This file ensures that as many protein positions as possible are retrieved in ca
 
 : Input-Output DNA_dist.sh
 
-### Delete_dbl.py
+### Delete_dbl.py {#sec-delete_dbl.py}
 
 - Delete the sequences that are considered too closely related or too similar using the **DNA_dist.sh** output table and the user defined threshold from the **All_information.txt** file.
 
@@ -156,7 +172,7 @@ This file ensures that as many protein positions as possible are retrieved in ca
 
 : Input-Output Delete_dbl.py
 
-### Sep_prot.py
+### Sep_prot.py {#sec-sep_prot.py}
 
 - Separate the different proteins and save them in separated files for each protein.
 
@@ -169,7 +185,7 @@ This file ensures that as many protein positions as possible are retrieved in ca
 
 : Input-Output Sep_prot.py
 
-### Merge_spe_prot.py (optional)
+### Merge_spe_prot.py (optional) {#sec-merge_spe_prot.py-optional}
 
 - Concatenates the outgroups with their corresponding proteins, if you have chosen to use different outgroups for the proteins studied.
 
@@ -186,7 +202,7 @@ This file ensures that as many protein positions as possible are retrieved in ca
 
 : Input-Output Merge_spe_prot.py
 
-### Execution.sh
+### Execution.sh {#sec-execution.sh2}
 
 - TrimAl
 
@@ -205,7 +221,7 @@ IQtree2 was used because it can provide a test to identify the best model of tre
 
 : Input-Output Execution.sh
 
-### Protdist.py
+### Protdist.py {#sec-protdist.py}
 
 - Launch Protdist from phylip and create a sequence divergence table for each protein.
 
@@ -221,35 +237,39 @@ IQtree2 was used because it can provide a test to identify the best model of tre
 
 This step is executed at the end of the pipeline because it can be very long to run. It enables a pairwise comparison of each virus for each protein or protein domain, and of specific proteins whenever applicable.
 
-# Instructions to use
+# Instructions to use {#sec-instructions-to-use}
 
-## Informations_file.txt
+## Informations_file.txt {#sec-informations_file.txt}
 
 This file is the execution input file. You need to fill up all the information in this file in order to use the pipeline.
 
 **!If an information is missing it may not work!**
 
-## Separator
+## Separator {#sec-separator}
 
 DO NOT USE "," AS A SEPARATOR INSIDE EACH COLUMN USE ";" INSTEAD
 
-## File paths
+## File paths {#sec-file-paths}
 
-**protein_equivalent.txt** must be at the root
+protein_equivalent.txt **must be at the root**
 
-**species_equivalent.txt** must be at the root
+species_equivalent.txt **must be at the root**
 
-**all_information.txt** must be at the root
+all_information.txt **must be at the root**
 
-**Virus_ids.txt** must be at the root
+\<IDs_file_name\>.txt **must be at the root**
 
-**user_informations.txt** must be at the root
+user_legend.txt **must be at the root**
 
-## Example of use
+## Skip steps {#sec-s-steps}
+
+If you do not want to run certain steps, you must comment out the section for these steps (indicated by comment lines in **Execution.sh**). Please note that some sections must not be commented out. Also ensure that the output files for the steps you are skipping are present.
+
+## Example  {#sec-example-of-use}
 
 We provide here a step by step running example for the study of Orthobunyaviridae with a specific outgroup
 
-### A: Execution Project name
+### A: Execution Project name {#sec-a-execution-project-name}
 
 This name will be used as the folder name. It also allows you to specify which project the outgroup-specific data is associated with, where necessary.
 
@@ -263,13 +283,13 @@ If you wish to analyse several segments or polyproteins from the same viral fami
 
 : Project name
 
-### B: Study name %%cette partie n'est pas tres claire pour moi%%%
+### B: Study name %%cette partie n'est pas tres claire pour moi%%% {#sec-b-study-name}
 
 “Study name” allows you to distinguish information regarding outgroups that may not be used for all proteins in the study.
 
 For example, if you have a specific protein, or if you want to use different outgroups for each protein.
 
-If this does not apply to you, you can add the outgroup IDs to the list of study identifiers and enter the project name (cf A: Execution Project name)
+If this does not apply to you, you can add the outgroup IDs to the list of study identifiers and enter the project name (cf [Execution Project name](#sec-a-execution-project-name))
 
 |         A         |    Study name     |
 |:-----------------:|:-----------------:|
@@ -279,7 +299,7 @@ If this does not apply to you, you can add the outgroup IDs to the list of study
 
 : Study name : Khurdun and Pacuvirus will be used as outgroups
 
-### C: ID file
+### C: ID file {#sec-c-id-file}
 
 The name of the file that contains the virus IDs. This file must be at the root.
 
@@ -291,7 +311,7 @@ The name of the file that contains the virus IDs. This file must be at the root.
 
 : ID file
 
-### D: Outgroup choice (Y/N)
+### D: Outgroup choice (Y/N) {#sec-d-outgroup-choice-yn}
 
 Allows you to specify whether these viruses should be treated as outgroups or not.
 
@@ -305,7 +325,7 @@ N : Is it a outgroup.
 
 : Outgroup Specific : Is it a specifc outgroup?
 
-### E: For which protein
+### E: For which protein {#sec-e-for-which-protein}
 
 Which protein do you want to study, or for which protein will this outgroup be used?
 
@@ -317,7 +337,7 @@ Which protein do you want to study, or for which protein will this outgroup be u
 
 : For which proteins
 
-### F: Protein names (in order)
+### F: Protein names (in order) {#sec-f-protein-names-in-order}
 
 Protein names of the study name (col B Study name)
 
@@ -329,7 +349,7 @@ Protein names of the study name (col B Study name)
 
 : Protein names (in order)
 
-### G: specific protein
+### G: specific protein {#sec-g-specific-protein}
 
 Indicate which proteins are involved in the study of a specific protein, if applicable.
 
@@ -345,7 +365,7 @@ For example, if you want to study the evolutionary history of two proteins prese
 
 The protein Gn of Khurdun will be used as the outgroup.
 
-### H: TargetID
+### H: TargetID {#sec-h-targetid}
 
 Enter a reference ID that will be used for BLAST alignment in case some positions are missing.
 
@@ -357,19 +377,19 @@ Enter a reference ID that will be used for BLAST alignment in case some position
 
 : RefID
 
-### I: reference protein positions
+### I: reference protein positions {#sec-i-reference-protein-positions}
 
 The positions of the proteins for the reference or the specific outgroup.
 
 |         A         |         B         |   H   | reference /OG proteins position |
-|:-------------:|:-------------:|:-------------:|:-------------------------:|
+|:--------------:|:--------------:|:--------------:|:-----------------------:|
 | Orthobunyaviridae |      Khurdun      |       |         23;292;526;944          |
 | Orthobunyaviridae |     Pacuvirus     |       | 1;1458;23;305;308;476;598;1386  |
 | Orthobunyaviridae | Orthobunyaviridae | IDref |     22;302;303;476;509;1372     |
 
 : RefID
 
-### J: Start of the proteins in the nucleic sequence
+### J: Start of the proteins in the nucleic sequence {#sec-j-start-of-the-proteins-in-the-nucleic-sequence}
 
 | A | B | I | Start of the proteins in the nucleic sequence |
 |:--:|:--:|:--:|:--:|
@@ -381,7 +401,7 @@ The positions of the proteins for the reference or the specific outgroup.
 
 This position will be used as the start of the protein sequence within the nucleic acid sequence (for all sequences).
 
-### **K: DNAdist Threshold**
+### K: DNAdist Threshold {#sec-k-dnadist-threshold}
 
 |         A         |         B         |  J  | DNAdist Threshold |
 |:-----------------:|:-----------------:|:---:|:-----------------:|
@@ -391,21 +411,21 @@ This position will be used as the start of the protein sequence within the nucle
 
 : DNAdist Threshold
 
-### L: Organism to keep ID
+### L: Organism to keep ID {#sec-l-organism-to-keep-id}
 
 a list of the IDs that you do not want to be deleted.
 
 **SEPARATED BY ‘;’**
 
 |         A         |         B         |  K   |       Organism to keep ID       |
-|:-------------:|:-------------:|:-------------:|:-------------------------:|
+|:--------------:|:--------------:|:--------------:|:-----------------------:|
 | Orthobunyaviridae |      Khurdun      | 0.01 |                                 |
 | Orthobunyaviridae |     Pacuvirus     | 0.05 |                                 |
 | Orthobunyaviridae | Orthobunyaviridae | 0.01 | MH484340.1;NC_005775;EF990927.1 |
 
 : ID Organism to keep
 
-### M: Organism without a particular protein ID
+### M: Organism without a particular protein ID {#sec-m-organism-without-a-particular-protein-id}
 
 | A | B | L | Organism without a particular protein ID |
 |:--:|:--:|:--:|:--:|
@@ -419,7 +439,7 @@ OUT\*\<prot\>=list of IDs separated by ";"
 
 IN\*\<prot\>=liste of IDs separated by ";"
 
-### **N: Trimal**
+### N: Trimal {#sec-n-trimal}
 
 Do you want to use TrimAl for this study.
 
@@ -431,7 +451,7 @@ Do you want to use TrimAl for this study.
 
 : Do you want to use TrimAl
 
-### **O: Blast**
+### O: Blast {#sec-o-blast}
 
 Do you want to use blast in case of missing proteins positions
 
@@ -443,9 +463,9 @@ Do you want to use blast in case of missing proteins positions
 
 : Do you want to use blast?
 
-## Additional Instructions and warnings
+## Additional Instructions and warnings {#sec-additional-instructions-and-warnings}
 
-### Proteins positions
+### Proteins positions {#sec-proteins-positions}
 
 Please pay attention to the ***Final_pos_prot.txt*** file. The blast alignment is only an approximation Please pay attention to the ***Final_pos_prot.txt*** file. The blast alignment is only an approximation
 
@@ -457,7 +477,7 @@ If you are not satisfied with the positions, you can change them manually. After
 
 ### Region name in the database
 
-The same proteins may have different region names from one virus to another. If a protein returns very few results and you know this is unexpected, its name may not have been recognised. You can use the file ***prot_all\_\<Study\>.gp*** to help you identified the different region names.
+The same proteins may have different region names from one virus to another. If a protein returns very few results and you know this is unexpected, its name may not have been recognized. You can use the file ***prot_all\_\<Study\>.gp*** to help you identified the different region names.
 
 Whether it differs from the name you entered in the various protein names (red rectangle).
 
@@ -471,7 +491,7 @@ You can add protein name equivalents to the file **protein_equivalent.txt**
 
 such as: ***glycoproteinprecursor\<\\t\>polyprotein***
 
-### Host/vectors caption
+### Host/vectors caption {#sec-hostvectors-caption}
 
 The names of the hosts/vectors are not all uniform and some are not recognized by the NCBI database. To get pass this, you can add equivalents for the host/vector name and the scientific name in the **species_equivalent.txt**
 
@@ -479,10 +499,10 @@ such as: ***mosquito\<\\t\> Culicidae***
 
 The Images of the various orders of hosts/vectors are available on another public GitHub repository [Host/vector images](https://github.com/SeannaCHARLES/Images "Host/vector images").
 
-# Citations
+# Citations {#sec-citations}
 
 If using this tool, please cite Seanna Charles, Anja Böckmann and Emmanuelle Lerat (2026) VERTEX: A pipeline for Viral sequence Extraction, Reconstruction and Tree EXploration.
 
 28 October 2026
 
-# Contact
+# Contact {#sec-contact}
