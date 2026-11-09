@@ -1,0 +1,70 @@
+Virus name|Serogroup 
+Human endogenous retro HCML-ARV|ERV
+Drosophila virilis|Ty3/Gypsy
+Drosophila melanogaster|Ty3/Gypsy
+Drosophila melanogaster|Ty3/Gypsy
+Drosophila buzzatii|Ty3/Gypsy
+Drosophila melanogaster|Ty3/Gypsy
+Trichoplusia ni TED|Ty3/Gypsy
+Ceratitis capitata|Ty3/Gypsy
+Drosophila subobscura|Ty3/Gypsy
+Drosophila ananassae|Ty3/Gypsy
+Rous sarcoma|Alpharetrovirus
+Avian leukosis|Alpharetrovirus
+Exogenous mouse mammary tumor|Betaretrovirus
+Mason-Pfizer monkey|Betaretrovirus
+Squirrel monkey retro-H|Betaretrovirus
+Jaagsiekte sheep retro|Betaretrovirus
+Simian T-lymphotropic  3|Deltaretrovirus
+Human T-lymphotropic  3|Deltaretrovirus
+Human T-lymphotropic  2|Deltaretrovirus
+Bovine leukemia|Deltaretrovirus
+Primate T-lymphotropic  1|Deltaretrovirus
+Simian T-lymphotropic  2|Deltaretrovirus
+Walleye dermal sarcoma|Epsilonretrovirus
+Moloney murine leukemia|Gammaretrovirus
+Reticuloendotheliosis|Gammaretrovirus
+Porcine endogenous retro|Gammaretrovirus
+Gibbon ape leukemia|Gammaretrovirus
+Woolly monkey sarcoma|Gammaretrovirus
+Feline leukemia|Gammaretrovirus
+Moloney murine sarcoma|Gammaretrovirus
+Finkel-Biskis-Jinkins murine sarcoma|Gammaretrovirus
+Human immunodeficiency  1|Lentivirus
+Caprine arthritis encephalitis|Lentivirus
+Human immunodeficiency  2|Lentivirus
+Equine infectious anemia|Lentivirus
+Feline immunodeficiency|Lentivirus
+Simian immunodeficiency|Lentivirus
+Puma lenti|Lentivirus
+Visna-maedi|Lentivirus
+Bovine immunodeficiency|Lentivirus
+Jembrana disease|Lentivirus
+Bovine foamy|Spumavirus
+equine foamy  Equus caballus|Spumavirus
+Feline foamy|Spumavirus
+Brown greater galago prosimian foamy|Spumavirus
+Japanese macaque simian foamy|Spumavirus
+Simian foamy  Pongo pygmaeus pygmaeus|Spumavirus
+Spider monkey simian foamy|Spumavirus
+Squirrel monkey simian foamy|Spumavirus
+White-tufted-ear marmoset simian foamy|Spumavirus
+Western lowland gorilla simian foamy|Spumavirus
+simian foamy  Pan troglodytes troglodytes|Spumavirus
+Guenon simian foamy|Spumavirus
+Macaque simian foamy|Spumavirus
+Yellow-breasted capuchin simian foamy|Spumavirus
+Eastern chimpanzee simian foamy|Spumavirus
+Simiispuma macfas|Spumavirus
+Grivet simian foamy|Spumavirus
+Rhesus macaque simian foamy|Spumavirus
+Western chimpanzee simian foamy|Spumavirus
+Orthobunya akabaneense|Simbu CladeB
+Oropouche|Simbu CladeA
+Orthobunya oropoucheense|Simbu CladeA
+Akabane|Simbu CladeB
+Glycine max|Ty1-copia
+Baboon endogenous  strain M7|ERV
+Koala retro|Gammaretrovirus
+Cladosporium fulvum T-1 |Ty3/GypsyAcadem
+

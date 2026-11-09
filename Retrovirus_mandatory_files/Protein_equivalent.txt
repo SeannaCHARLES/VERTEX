@@ -1,0 +1,11 @@
+#Protein Database protein name
+reversetranscriptase	rvt
+in_	integrase
+rt_rnase	rnase
+gag-pro-pol	gag+pol
+rve	integrase
+rp_rtvl_h_like	rvt
+rt_zfrev_like	rvt
+rvt_thumb	rvt 
+rt_rtv	rvt
+rt_zfrev_like	rvt
