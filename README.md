@@ -44,13 +44,14 @@ Requests==2.34.2
 
 - **all_information.txt** **cannot be empty**
 
-This file ontains all the information required for the pipeline to run correctly.
+This file contains all the information required for the pipeline to run correctly. 
+##il faut nommer clairement les ifnormations que doit contenir ce fichier en les listant ainsi que le format que ça doit avoir; le fichier exemple n'est pas simple à comprendre, un utilisateur doit pouvoir construire ce fichier là de zero###
 
 - **\<IDs_file_name\>.txt** **cannot be empty**
 
-This file must contain the list of IDs of the studied sequences
+This file must contain the list of Genbank IDs of the studied sequences %%il faut donner le format attendu : un ID par ligne ou bien sur une ligne séparée par des tab ou autres séparateurs etc.%%
 
-## Other input files
+## Other input files %%est-ce que ces fichiers doivent etre présents ou bien seront-ils crées par le pipeline si ils ne sont pas deja là ?
 - **user_legend.txt** (can be empty)
 
 This file contains the user-provided captions.
