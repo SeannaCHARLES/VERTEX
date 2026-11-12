@@ -42,29 +42,30 @@ Requests==2.34.2
 
 ## Mandatory input files {#sec-mandatory-input-files}
 
-- all_information.txt **can not be empty**
+- all_information.txt **cannot be empty**
 
-(Contains all the information required for the pipeline to run correctly.)
+This file ontains all the information required for the pipeline to run correctly.
 
-- **\<IDs_file_name\>.txt** **can not be empty**
+- **\<IDs_file_name\>.txt** **cannot be empty**
 
-(Must contain the list of IDs you are interested in)
+This file must contain the list of IDs of the studied sequences
 
-- user_legend.txt can be empty
+## Other input files
+- user_legend.txt (can be empty)
 
-(User provided captions)
+This file contains the user-provided captions.
 
-- **species_equivalent.txt** can be empty
+- **species_equivalent.txt** (can be empty)
 
-(See [host vector section](#sec-hostvectors-caption) for further information)
+See [host vector section](#sec-hostvectors-caption) for further information
 
-- **protein_equivalent.txt** can be empty
+- **protein_equivalent.txt** (can be empty)
 
-(See [section region name](#sec-region-name-in-the-database){#sec-region-name-in-the-database} for further information)
+See [section region name](#sec-region-name-in-the-database){#sec-region-name-in-the-database} for further information
 
 ## Launch the pipeline {#sec-launch-the-pipeline}
 
-Enter **./\<path\>/VERTEX/Scripts/execution.sh** in you terminal.
+Enter **./\<path\>/VERTEX/Scripts/execution.sh** in your terminal.
 
 Where \<path\> is the absolute path to the VERTEX folder that you have downloaded from the [GitHub](https://github.com/SeannaCHARLES/VERTEX/tree/main) and decompressed.
 
@@ -477,7 +478,7 @@ If you are not satisfied with the positions, you can change them manually. After
 
 ### Region name in the database
 
-The same proteins may have different region names from one virus to another. If a protein returns very few results and you know this is unexpected, its name may not have been recognized. You can use the file ***prot_all\_\<Study\>.gp*** to help you identified the different region names.
+The same proteins may have different region names from one virus to another. If a protein returns very few results and you know this is unexpected, its name may not have been recognised. You can use the file ***prot_all\_\<Study\>.gp*** to help you identified the different region names.
 
 Whether it differs from the name you entered in the various protein names (red rectangle).
 
@@ -493,16 +494,14 @@ such as: ***glycoproteinprecursor\<\\t\>polyprotein***
 
 ### Host/vectors caption {#sec-hostvectors-caption}
 
-The names of the hosts/vectors are not all uniform and some are not recognized by the NCBI database. To get pass this, you can add equivalents for the host/vector name and the scientific name in the **species_equivalent.txt**
+The names of the hosts/vectors are not all uniform and some are not recognised by the NCBI database. To get pass this, you can add equivalents for the host/vector name and the scientific name in the **species_equivalent.txt**, such as: ***mosquito\<\\t\> Culicidae***
 
-such as: ***mosquito\<\\t\> Culicidae***
-
-The Images of the various orders of hosts/vectors are available on another public GitHub repository [Host/vector images](https://github.com/SeannaCHARLES/Images "Host/vector images").
+The images of the various orders of hosts/vectors are available on another public GitHub repository [Host/vector images](https://github.com/SeannaCHARLES/Images "Host/vector images").
 
 # Citations {#sec-citations}
 
 If using this tool, please cite Seanna Charles, Anja Böckmann and Emmanuelle Lerat (2026) VERTEX: A pipeline for Viral sequence Extraction, Reconstruction and Tree EXploration.
 
-28 October 2026
+12 November 2026
 
 # Contact {#sec-contact}
