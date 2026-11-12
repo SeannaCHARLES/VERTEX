@@ -42,7 +42,7 @@ Requests==2.34.2
 
 ## Mandatory input files {#sec-mandatory-input-files}
 
-- all_information.txt **cannot be empty**
+- **all_information.txt** **cannot be empty**
 
 This file ontains all the information required for the pipeline to run correctly.
 
@@ -51,7 +51,7 @@ This file ontains all the information required for the pipeline to run correctly
 This file must contain the list of IDs of the studied sequences
 
 ## Other input files
-- user_legend.txt (can be empty)
+- **user_legend.txt** (can be empty)
 
 This file contains the user-provided captions.
 
