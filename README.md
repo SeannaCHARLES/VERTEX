@@ -62,13 +62,14 @@ See [host vector section](#sec-hostvectors-caption) for further information
 
 - **protein_equivalent.txt** (can be empty)
 
-See [section region name](#sec-region-name-in-the-database){#sec-region-name-in-the-database} for further information
+(See [section region name](#sec-region-name-in-the-database) for further information)
 
 ## Launch the pipeline {#sec-launch-the-pipeline}
 
 Enter **./\<path\>/VERTEX/Scripts/execution.sh** in your terminal.
+Enter **./\<path\>/VERTEX/Scripts/execution.sh** in your terminal.
 
-Where \<path\> is the absolute path to the VERTEX folder that you have downloaded from the [GitHub](https://github.com/SeannaCHARLES/VERTEX/tree/main) and decompressed.
+Where \<path\> is the absolute path to the VERTEX folder that you have downloaded and decompressed from the [GitHub](https://github.com/SeannaCHARLES/VERTEX/tree/main).
 
 # Project description {#sec-project-description}
 
@@ -267,7 +268,7 @@ user_legend.txt **must be at the root**
 
 If you do not want to run certain steps, you must comment out the section for these steps (indicated by comment lines in **Execution.sh**). Please note that some sections must not be commented out. Also ensure that the output files for the steps you are skipping are present.
 
-## Example {#sec-example-of-use}
+## How to fill All_information.txt {#sec-example-of-use}
 
 We provide here a step by step running example for the study of Orthobunyaviridae with a specific outgroup
 
@@ -384,7 +385,7 @@ Enter a reference ID that will be used for BLAST alignment in case some position
 The positions of the proteins for the reference or the specific outgroup.
 
 |         A         |         B         |   H   | reference /OG proteins position |
-|:---------------:|:---------------:|:---------------:|:---------------------:|
+|:----------------:|:----------------:|:----------------:|:------------------:|
 | Orthobunyaviridae |      Khurdun      |       |         23;292;526;944          |
 | Orthobunyaviridae |     Pacuvirus     |       | 1;1458;23;305;308;476;598;1386  |
 | Orthobunyaviridae | Orthobunyaviridae | IDref |     22;302;303;476;509;1372     |
@@ -420,7 +421,7 @@ a list of the IDs that you do not want to be deleted.
 **SEPARATED BY ‘;’**
 
 |         A         |         B         |  K   |       Organism to keep ID       |
-|:---------------:|:---------------:|:---------------:|:---------------------:|
+|:----------------:|:----------------:|:----------------:|:------------------:|
 | Orthobunyaviridae |      Khurdun      | 0.01 |                                 |
 | Orthobunyaviridae |     Pacuvirus     | 0.05 |                                 |
 | Orthobunyaviridae | Orthobunyaviridae | 0.01 | MH484340.1;NC_005775;EF990927.1 |
