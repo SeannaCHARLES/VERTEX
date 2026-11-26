@@ -451,6 +451,7 @@ This step performs the download of all the sequences in a Genbank format and the
 | Input                              | Output                                                |
 |:-----------------------------------|:------------------------------------------------------|
 | all_information.txt**(From user)** | *`<Project absolute path>`*sequences\<Study_name\>.gb |
+
 : Input-Output Execution.sh
 
 ### Genbank_extract.py {#sec-genbank_extract.py}
@@ -500,6 +501,7 @@ The user information caption is created using the **user_legend.txt** file. You 
 |                                                      |                                                                  |                                                                           |
 |                                                      |                                                                  | see [genbank extract](#sec-genbank_extract.py)                            |
 |                                                      | *`<Project absolute path>`***pos_prot\_\<Study_name\>.txt**      | All the position in the Gp files for each virus and each studied protein. |
+
 : Input-Output Genbank.py
 
 ### Execution.sh
@@ -509,6 +511,7 @@ The user information caption is created using the **user_legend.txt** file. You 
 | Input                                                     | Output                                                     | File description                                                |
 |:---------------------------------------------------------:|:----------------------------------------------------------:|-----------------------------------------------------------------|
 | \<Id_TargetID\>\_TargetID.fasta (From Genbank_extract.py) | *`<Project absolute path>`*protein_prot_1-n_TargetID.fasta | Fasta file with all the studied protein of the \<TargetID**\>** |
+
 : Input-Output Execution.sh
 
 ### Prot_position.py (optional) {#sec-prot_position.py-optional}
@@ -523,6 +526,7 @@ This file ensures that as many protein positions as possible are retrieved in ca
 |                                                     |                                                                 |                                                                                                                      |
 |                                                     |                                                                 | If you enter "Yes" in [Blast ?](#sec-o-blast)                                                                        |
 | protein_prot_1-n_TargetID.fasta (from Execution.sh) |                                                                 |                                                                                                                      |
+
 : Input-Output Prot_position.py
 
 ### DNA_dist.sh {#sec-dna_dist.sh}
@@ -532,6 +536,7 @@ This file ensures that as many protein positions as possible are retrieved in ca
 | Input                                                             | Output                                                      | File description                                                         |
 |:-----------------------------------------------------------------:|:-----------------------------------------------------------:|--------------------------------------------------------------------------|
 | All \_nucleic_sequences_align.aln-fasta (From Genbank_extract.py) | *`<Project absolute path>`***Divergence_nucleic_table.txt** | A kimura distance matrix of the alignement of all the nucleic sequences  |
+
 : Input-Output DNA_dist.sh
 
 ### Delete_dbl.py {#sec-delete_dbl.py}
@@ -542,6 +547,7 @@ This file ensures that as many protein positions as possible are retrieved in ca
 |:----------------------------------------------:|:-----------------------------------------------------------:|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | Divergence_nucleic_table.txt(From DNA_dist.sh) | *`<Project absolute path>`*All_nucleic_sequences_sdbl.fasta | All the nucleic sequences without the sequences that were judged too close (based on the output of [DNA_dist.sh](#sec-dna_dist.sh) and the threshold [DNAdist threshold](#sec-k-dnadist-threshold)) |
 |                                                | *`<Project absolute path>`*All_protein_sequences_sdbl.fasta | All the protein sequences without the sequences that were judged too close (based on the output of [DNA_dist.sh](#sec-dna_dist.sh) and the threshold [DNAdist threshold](#sec-k-dnadist-threshold)) |
+
 : Input-Output Delete_dbl.py
 
 ### Sep_prot.py {#sec-sep_prot.py}
@@ -554,6 +560,7 @@ This file ensures that as many protein positions as possible are retrieved in ca
 | All_protein_sequences_sdbl.fasta (From Delete_dbl.py) | *`<Project absolute path><Res folder>`*protein_prot_1-n.fasta | All the protein sequences after the separation of the proteins (one file for each protein) |
 |                                                       | *`<Project absolute path><Res folder>`*Nucleic_prot_OG.fasta  | All the nucleic sequences after the separation of the proteins and the chosen outgroup     |
 |                                                       | *`<Project absolute path><Res folder>`*protein_prot_OG.fasta  | All the protein sequences after theseparation of the proteins chosen outgroup              |
+
 : Input-Output Sep_prot.py
 
 ### Merge_spe_prot.py (optional) {#sec-merge_spe_prot.py-optional}
@@ -571,6 +578,7 @@ This file ensures that as many protein positions as possible are retrieved in ca
 | Protein_prot_1-n.fasta (From sript_Sep_prot.py) | *`<Project absolute path><Res folder>`*protein_prot_spe.fasta     | All the protein sequences of the chosen protein to create the specific protein (if you filled up the section [Specific protein](#sec-g-specific-protein))  |
 | Nucleic_prot_OG.fasta (From sript_Sep_prot.py)  | *`<Project absolute path><Res folder>`*protein_prot_spe.aln-fasta | Alignment of all the nucleic sequences of the chosen protein to create the specific protein                                                                |
 | Protein_prot_OG.fasta (From sript_Sep_prot.py)  | *`<Project absolute path><Res folder>`*protein_prot_1-n.aln-fasta | Alignment of all the protein sequences of the chosen protein to create the specific protein                                                                |
+
 : Input-Output Merge_spe_prot.py
 
 ### Execution.sh {#sec-execution.sh2}
@@ -590,6 +598,7 @@ IQtree2 was used because it can provide a test to identify the best model of tre
 |:---------------------------------------------------:|:---------------------------------------------------------------------------------:|----------------------------------------------------------------------------------------------------------------------------------------------|
 | protein_prot_1-n.aln-fasta (From Merge_spe_prot.py) | *`<Project absolute path>/<Res folder>/treefolder/`***protein_prot_1-n.treefile** | Phylogenetic tree file in newick format. One file for each protein                                                                           |
 | protein_prot_spe.aln-fasta (From Merge_spe_prot.py) | *`<Project absolute path><Res folder>/treefolder/`***protein_prot_spe.treefile**  | Phylogenetic tree file in newick format for the specific protein. (if you filled up the section [Specific protein](#sec-g-specific-protein)) |
+
 : Input-Output Execution.sh
 
 ### Protdist.py {#sec-protdist.py}
@@ -604,6 +613,7 @@ IQtree2 was used because it can provide a test to identify the best model of tre
 | Nucleic_prot_spe.fasta (From Merge_spe_prot.py) |                                                            |                                                                                          |
 | protein_prot_spe.fasta (From Merge_spe_prot.py) |                                                            |                                                                                          |
 | Label_caption.txt (From Genbank_extract.py)     |                                                            |                                                                                          |
+
 : Input-Output Protdist.py
 
 This step is executed at the end of the pipeline because it can be very long to run. It enables a pairwise comparison of each virus for each protein or protein domain, and of specific proteins whenever applicable.
