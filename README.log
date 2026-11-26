@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025/Debian) (preloaded format=pdflatex 2026.10.13)  26 NOV 2026 13:14
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025/Debian) (preloaded format=pdflatex 2026.10.13)  26 NOV 2026 14:46
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -577,35 +577,195 @@ File: t1lmtt.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 ) [3] [4] [5] [6]
 
 LaTeX Warning: Hyper reference `sec-region-name-in-the-database' on page 7 unde
-fined on input line 658.
+fined on input line 667.
 
 [7]
 LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 7
-15.
+24.
 (/usr/share/texmf/tex/latex/lm/ts1lmr.fd
 File: ts1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
-Underfull \hbox (badness 1552) in paragraph at lines 756--759
+Underfull \hbox (badness 1552) in paragraph at lines 775--778
 []\T1/lmr/m/n/10 (+20) The Gen-Pept(Gp) file for-mat for each se-quence are dow
 n-loaded and con-cate-nated in the
  []
 
-[8{/usr/share/texmf/fonts/enc/dvips/lm/lm-ts1.enc}] [9]
-ignored error: Infinite glue shrinkage found in box being split [10] [11]
-<README_files/images/Diff_G1_G2.pdf, id=246, 425.33907pt x 432.11438pt>
+[8{/usr/share/texmf/fonts/enc/dvips/lm/lm-ts1.enc}]
+Overfull \hbox (1.85378pt too wide) in paragraph at lines 846--847
+ []|\T1/lmr/m/n/10 (-20) sequences<Study_name>.gb 
+ []
+
+
+Overfull \hbox (22.54977pt too wide) in paragraph at lines 860--861
+ \T1/lmtt/m/it/10 path>\T1/lmr/m/n/10 (-20) All_protein_sequences_align.aln- 
+ []
+
+
+Overfull \hbox (21.15587pt too wide) in paragraph at lines 863--864
+ \T1/lmtt/m/it/10 path>\T1/lmr/m/n/10 (-20) All_nucleic_sequences_align.aln- 
+ []
+
+
+Overfull \hbox (40.15062pt too wide) in paragraph at lines 869--870
+ \T1/lmtt/m/it/10 path>legend/\T1/lmr/bx/n/10 (-20) Informations_caption.txt| 
+ []
+
+
+Overfull \hbox (41.85829pt too wide) in paragraph at lines 872--873
+ \T1/lmtt/m/it/10 path>legend/\T1/lmr/bx/n/10 (-20) Geographical_caption.txt| 
+ []
+
+
+Overfull \hbox (4.30524pt too wide) in paragraph at lines 882--883
+ \T1/lmtt/m/it/10 path>legend/\T1/lmr/bx/n/10 (-20) Label_caption.txt| 
+ []
+
+
+Overfull \hbox (31.82616pt too wide) in paragraph at lines 892--893
+ \T1/lmtt/m/it/10 path>\T1/lmr/bx/n/10 (-20) pos_prot_<Study_name>.txt| 
+ []
+
+[9]
+Overfull \hbox (53.62843pt too wide) in paragraph at lines 979--980
+ []|\T1/lmr/bx/n/10 (-20) pos_prot_<Study_name>.txt 
+ []
+
+
+Overfull \hbox (80.46344pt too wide) in paragraph at lines 981--982
+ \T1/lmtt/m/it/10 path>\T1/lmr/bx/n/10 (-20) pos_prot_final<Study_name>.txt| 
+ []
+
+
+Overfull \hbox (41.21048pt too wide) in paragraph at lines 1025--1026
+ \T1/lmtt/m/it/10 path>\T1/lmr/bx/n/10 (-20) Divergence_nucleic_table.txt| 
+ []
+
+
+Overfull \hbox (83.08879pt too wide) in paragraph at lines 1067--1067
+ []|\T1/lmr/m/n/10 (-20) Divergence_nucleic_table.txt(From 
+ []
+
+
+Overfull \hbox (84.6879pt too wide) in paragraph at lines 1068--1069
+ \T1/lmtt/m/it/10 path>\T1/lmr/m/n/10 (-20) All_nucleic_sequences_sdbl.fasta| 
+ []
+
+
+Overfull \hbox (86.0818pt too wide) in paragraph at lines 1074--1075
+ \T1/lmtt/m/it/10 path>\T1/lmr/m/n/10 (-20) All_protein_sequences_sdbl.fasta| 
+ []
+
+[10]
+Overfull \hbox (29.19586pt too wide) in paragraph at lines 1117--1117
+ []|\T1/lmr/m/n/10 (-20) All_nucleic_sequences_sdbl.fasta 
+ []
+
+
+Overfull \hbox (30.58977pt too wide) in paragraph at lines 1121--1121
+ []|\T1/lmr/m/n/10 (-20) All_protein_sequences_sdbl.fasta 
+ []
+
+
+Overfull \hbox (7.66495pt too wide) in paragraph at lines 1126--1127
+ \T1/lmtt/m/it/10 folder>\T1/lmr/m/n/10 (-20) Nucleic_prot_OG.fasta| 
+ []
+
+
+Overfull \hbox (6.87544pt too wide) in paragraph at lines 1130--1131
+ \T1/lmtt/m/it/10 folder>\T1/lmr/m/n/10 (-20) protein_prot_OG.fasta| 
+ []
+
+
+Overfull \hbox (3.72258pt too wide) in paragraph at lines 1174--1174
+ \T1/lmr/m/n/10 (-20) sript_Sep_prot.py)| 
+ []
+
+
+Overfull \hbox (29.78885pt too wide) in paragraph at lines 1175--1176
+ \T1/lmtt/m/it/10 folder>\T1/lmr/m/n/10 (-20) Nucleic_prot_spe.fasta| 
+ []
+
+
+Overfull \hbox (3.72258pt too wide) in paragraph at lines 1179--1179
+ \T1/lmr/m/n/10 (-20) sript_Sep_prot.py)| 
+ []
+
+
+Overfull \hbox (28.99934pt too wide) in paragraph at lines 1180--1181
+ \T1/lmtt/m/it/10 folder>\T1/lmr/m/n/10 (-20) protein_prot_spe.fasta| 
+ []
+
+
+Overfull \hbox (21.73553pt too wide) in paragraph at lines 1184--1184
+ []|\T1/lmr/m/n/10 (-20) Nucleic_prot_OG.fasta 
+ []
+
+
+Overfull \hbox (3.72258pt too wide) in paragraph at lines 1184--1184
+ \T1/lmr/m/n/10 (-20) sript_Sep_prot.py)| 
+ []
+
+
+Overfull \hbox (23.19138pt too wide) in paragraph at lines 1185--1186
+ \T1/lmtt/m/it/10 folder>\T1/lmr/m/n/10 (-20) protein_prot_spe.aln- 
+ []
+
+
+Overfull \hbox (22.17104pt too wide) in paragraph at lines 1188--1188
+ []|\T1/lmr/m/n/10 (-20) Protein_prot_OG.fasta 
+ []
+
+
+Overfull \hbox (3.72258pt too wide) in paragraph at lines 1188--1188
+ \T1/lmr/m/n/10 (-20) sript_Sep_prot.py)| 
+ []
+
+[11]
+Overfull \hbox (4.58192pt too wide) in paragraph at lines 1244--1244
+ \T1/lmr/m/n/10 (-20) Merge_spe_prot.py)| 
+ []
+
+
+Overfull \hbox (51.52594pt too wide) in paragraph at lines 1245--1246
+ \T1/lmtt/m/it/10 folder>/treefolder/\T1/lmr/bx/n/10 (-20) protein_prot_1- 
+ []
+
+
+Overfull \hbox (9.17783pt too wide) in paragraph at lines 1247--1247
+ []|\T1/lmr/m/n/10 (-20) protein_prot_spe.aln- 
+ []
+
+
+Overfull \hbox (4.58192pt too wide) in paragraph at lines 1247--1247
+ \T1/lmr/m/n/10 (-20) Merge_spe_prot.py)| 
+ []
+
+
+Overfull \hbox (95.3688pt too wide) in paragraph at lines 1248--1249
+ \T1/lmtt/m/it/10 folder>/treefolder/\T1/lmr/bx/n/10 (-20) protein_prot_spe.tre
+efile| 
+ []
+
+
+Overfull \hbox (40.4433pt too wide) in paragraph at lines 1291--1292
+ \T1/lmtt/m/it/10 path>\T1/lmr/bx/n/10 (-20) Divergence_protein_table.py| 
+ []
+
+[12]
+<README_files/images/Diff_G1_G2.pdf, id=264, 425.33907pt x 432.11438pt>
 File: README_files/images/Diff_G1_G2.pdf Graphic file (type pdf)
 <use README_files/images/Diff_G1_G2.pdf>
 Package pdftex.def Info: README_files/images/Diff_G1_G2.pdf  used on input line
- 1233.
+ 1373.
 (pdftex.def)             Requested size: 425.33801pt x 432.11331pt.
-<README_files/images/diff_nom_polyprot.pdf, id=247, 496.10344pt x 397.485pt>
+<README_files/images/diff_nom_polyprot.pdf, id=265, 496.10344pt x 397.485pt>
 File: README_files/images/diff_nom_polyprot.pdf Graphic file (type pdf)
 <use README_files/images/diff_nom_polyprot.pdf>
 Package pdftex.def Info: README_files/images/diff_nom_polyprot.pdf  used on inp
-ut line 1242.
+ut line 1382.
 (pdftex.def)             Requested size: 496.10222pt x 397.48402pt.
-[12] [13 <./README_files/images/Diff_G1_G2.pdf>] [14 <./README_files/images/dif
-f_nom_polyprot.pdf>] [15] (./README.aux)
+[13] [14 <./README_files/images/Diff_G1_G2.pdf>] [15 <./README_files/images/dif
+f_nom_polyprot.pdf>] [16] (./README.aux)
  ***********
 LaTeX2e <2025-11-01>
 L3 programming layer <2026-01-19>
@@ -615,22 +775,23 @@ LaTeX Warning: There were undefined references.
 
  ) 
 Here is how much of TeX's memory you used:
- 14562 strings out of 467533
- 227012 string characters out of 5422137
- 695206 words of memory out of 5000000
- 43071 multiletter control sequences out of 15000+600000
- 671565 words of font info for 121 fonts, out of 8000000 for 9000
+ 14582 strings out of 467533
+ 227271 string characters out of 5422137
+ 696367 words of memory out of 5000000
+ 43076 multiletter control sequences out of 15000+600000
+ 676739 words of font info for 129 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 83i,7n,93p,1003b,610s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 83i,7n,93p,1003b,566s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/share/texmf/fonts/type1/public/lm/lmbx10.pfb></usr/share/texmf/fonts/ty
 pe1/public/lm/lmbx12.pfb></usr/share/texmf/fonts/type1/public/lm/lmbxi10.pfb></
 usr/share/texmf/fonts/type1/public/lm/lmr10.pfb></usr/share/texmf/fonts/type1/p
 ublic/lm/lmr12.pfb></usr/share/texmf/fonts/type1/public/lm/lmr17.pfb></usr/shar
-e/texmf/fonts/type1/public/lm/lmtt10.pfb>
-Output written on README.pdf (15 pages, 382940 bytes).
+e/texmf/fonts/type1/public/lm/lmtt10.pfb></usr/share/texmf/fonts/type1/public/l
+m/lmtti10.pfb>
+Output written on README.pdf (16 pages, 402299 bytes).
 PDF statistics:
- 447 PDF objects out of 1000 (max. 8388607)
- 405 compressed objects within 5 object streams
- 81 named destinations out of 1000 (max. 500000)
- 24872 words of extra memory for PDF output out of 24883 (max. 10000000)
+ 468 PDF objects out of 1000 (max. 8388607)
+ 423 compressed objects within 5 object streams
+ 82 named destinations out of 1000 (max. 500000)
+ 26920 words of extra memory for PDF output out of 29859 (max. 10000000)
 
