@@ -329,7 +329,7 @@ Trimal => Yes
 Do you want to use blast in case of missing positions.
 
 ``` text
-Blast => Yes
+Blast => No
 ```
 
 **format**
@@ -337,6 +337,13 @@ Blast => Yes
 **Blast =\> \<Y/N\>**
 
 **[String] Yes or Y or No or N, no space**
+
+Your file should look like this :
+
+``` text
+#Name of theproject,OG_Project,ID file,Outgroup Spe (Y/N),For wich prot,proteins name (in order),spe prot,TargetID,Target/OG Proteins position,Start of the proteins in the nucleic sequence,DNAdist Threshold,Organism to keep ID,ORGANISM WITH(OUT) A PARTICULAR PROTEIN ID,Trimal,blast
+Retrovirus_EL_Rtarticle_25,Retrovirus_EL_Rtarticle_25,Retrovirus_EL_Rtarticle.txt,N,gag;pol;rvt;rnase;integrase,gag;pol;rvt;rnase;integrase,,NC_001802.1,2;429;605;1006;1024;1144;1157;1415,1631,0.25,,NONE*NN=NN,Yes,No
+```
 
 il faut nommer clairement les ifnormations que doit contenir ce fichier en les listant ainsi que le format que ça doit avoir; le fichier exemple n'est pas simple à comprendre, un utilisateur doit pouvoir construire ce fichier là de zero; il faut aussi indiquer à quel endroit doit se trouver le fichier (et les autres) et indiquer si il faut creer un dossier qui recevra les outputs et où il doit se trouver (j'ai un probleme à se niveau pour faire tourner; j'ai l'impression que la connexion à genbank fonctionne mais où sont les fichiers récupérés ? ils ne sont pas la ou le script les attend et je ne vois pas de dossier qui les contiendrait###
 
@@ -388,12 +395,12 @@ It is a tabular file with, in the first column, the name as it appears in the Ge
 See [host vector section](#sec-hostvectors-caption) for further information.
 
 ``` text
-#Species	Scientific Species name
-Culex	Diptera
-Oryzomys	Rodentia
-Culicidae	Diptera
-Oxymycterus	Rodentia
-Porcine	Artiodactyla
+#Species    Scientific Species name
+Culex   Diptera
+Oryzomys    Rodentia
+Culicidae   Diptera
+Oxymycterus Rodentia
+Porcine Artiodactyla
 ```
 
 ### **protein_equivalent.txt**
@@ -406,16 +413,16 @@ This is a tabular file with, in the first column, the name of the protein as it 
 
 ``` text
 #Protein Database protein name
-reversetranscriptase	rvt
-in_	integrase
-rt_rnase	rnase
-gag-pro-pol	gag+pol
-rve	integrase
-rp_rtvl_h_like	rvt
-rt_zfrev_like	rvt
-rvt_thumb	rvt 
-rt_rtv	rvt
-rt_zfrev_like	rvt
+reversetranscriptase    rvt
+in_ integrase
+rt_rnase    rnase
+gag-pro-pol gag+pol
+rve integrase
+rp_rtvl_h_like  rvt
+rt_zfrev_like   rvt
+rvt_thumb   rvt 
+rt_rtv  rvt
+rt_zfrev_like   rvt
 ```
 
 ## Launch the pipeline {#sec-launch-the-pipeline}
@@ -440,9 +447,9 @@ This pipeline is designed to automatically download and extract protein sequence
 
 This step performs the download of all the sequences in a Genbank format and the concatenation of all the Genbank files into one file called **sequences\<Study_name\>.gb**.
 
-| Input                              | Output                         |
-|:-----------------------------------|:-------------------------------|
-| all_information.txt**(From user)** | \<\>sequences\<Study_name\>.gb |
+| Input | Output |
+|:-------------------------|:------------------------------------------|
+| all_information.txt**(From user)** | *`<Project absolute path>`*sequences\<Study_name\>.gb |
 
 : Input-Output Execution.sh
 
@@ -471,20 +478,20 @@ The captions are created based on the Itol format. One colour will be associated
 The user information caption is created using the **user_legend.txt** file. You can put in that file all the information you want to use to characterize your study (for example serogroup or precise taxonomy)
 
 | Input | Output |
-|:----------------------------------:|:----------------------------------:|
-| sequences\<Study_name\>.gb (From Genbank_extract.py) | \<ID_nucl\>\_prot.fasta |
-| user_legend.txt **(from user)** | \<ID_nucl\>\_nucl.fasta |
-|  | prot_all\_.fasta \| |
-|  | All_nucleic_sequences.fasta |
-|  | All_protein_sequences_align.aln-fasta |
-|  | All_nucleic_sequences_align.aln-fasta |
-|  | All_protein_sequences.gp |
-|  | **Informations_caption.txt** |
-|  | **Geographical_caption.txt** |
-|  | **Host_caption.txt** |
-|  | **Label_caption.txt** |
-|  | **Metadata.txt** |
-|  | **pos_prot\_\<Study_name\>.txt** |
+|:-------------------------:|:-------------------------------------------:|
+| sequences\<Study_name\>.gb (From Genbank_extract.py) | *`<Project absolute path>`*\<ID_nucl\>\_prot.fasta |
+| user_legend.txt **(from user)** | *`<Project absolute path>`*\<ID_nucl\>\_nucl.fasta |
+|  | *`<Project absolute path>`*prot_all\_.fasta \| |
+|  | *`<Project absolute path>`*All_nucleic_sequences.fasta |
+|  | *`<Project absolute path>`*All_protein_sequences_align.aln-fasta |
+|  | *`<Project absolute path>`*All_nucleic_sequences_align.aln-fasta |
+|  | *`<Project absolute path>`*All_protein_sequences.gp |
+|  | *`<Project absolute path>legend/`***Informations_caption.txt** |
+|  | *`<Project absolute path>legend/`***Geographical_caption.txt** |
+|  | *`<Project absolute path>legend/`***Host_caption.txt** |
+|  | *`<Project absolute path>legend/`***Label_caption.txt** |
+|  | *`<Project absolute path>legend/`***Metadata.txt** |
+|  | *`<Project absolute path>`***pos_prot\_\<Study_name\>.txt** |
 
 : Input-Output Genbank.py
 
@@ -493,8 +500,8 @@ The user information caption is created using the **user_legend.txt** file. You 
 - Create a Blast database of all the reference virus proteins.
 
 | Input | Output |
-|:----------------------------------:|:----------------------------------:|
-| \<Id_ref\>\_Ref.fasta (From Genbank_extract.py) | protein_prot_1-n_ref.fasta |
+|:--------------------:|:-------------------------------------:|
+| \<Id_ref\>\_Ref.fasta (From Genbank_extract.py) | *`<Project absolute path>`*protein_prot_1-n_ref.fasta |
 
 : Input-Output Execution.sh
 
@@ -505,8 +512,8 @@ The user information caption is created using the **user_legend.txt** file. You 
 This file ensures that as many protein positions as possible are retrieved in cases where the information is not available in the Gp file.
 
 | Input | Output |
-|:----------------------------------:|:----------------------------------:|
-| **pos_prot\_\<Study_name\>.txt** (From Genbank.py) | **pos_prot_final\<Study_name\>.txt** |
+|:--------------------------:|:---------------------------------:|
+| **pos_prot\_\<Study_name\>.txt** (From Genbank.py) | *`<Project absolute path>`***pos_prot_final\<Study_name\>.txt** |
 | protein_prot_1-n_ref.fasta (from Execution.sh) |  |
 
 : Input-Output Prot_position.py
@@ -516,8 +523,8 @@ This file ensures that as many protein positions as possible are retrieved in ca
 - Launch DNAdist from phylip and create a divergence sequence table.
 
 | Input | Output |
-|:----------------------------------:|:----------------------------------:|
-| All \_nucleic_sequences_align.aln-fasta (From Genbank_extract.py) | **Divergence_nucleic_table.txt** |
+|:------------------------------:|:------------------------------:|
+| All \_nucleic_sequences_align.aln-fasta (From Genbank_extract.py) | *`<Project absolute path>`***Divergence_nucleic_table.txt** |
 
 : Input-Output DNA_dist.sh
 
@@ -526,9 +533,9 @@ This file ensures that as many protein positions as possible are retrieved in ca
 - Delete the sequences that are considered too closely related or too similar using the **DNA_dist.sh** output table and the user defined threshold from the **All_information.txt** file.
 
 | Input | Output |
-|:----------------------------------:|:----------------------------------:|
-| Divergence_nucleic_table.txt(From DNA_dist.sh) | All_nucleic_sequences_sdbl.fasta |
-|  | All_protein_sequences_sdbl.fasta |
+|:----------------------:|:-------------------------------------------:|
+| Divergence_nucleic_table.txt(From DNA_dist.sh) | *`<Project absolute path>`*All_nucleic_sequences_sdbl.fasta |
+|  | *`<Project absolute path>`*All_protein_sequences_sdbl.fasta |
 
 : Input-Output Delete_dbl.py
 
@@ -537,11 +544,11 @@ This file ensures that as many protein positions as possible are retrieved in ca
 - Separate the different proteins and save them in separated files for each protein.
 
 | Input | Output |
-|:----------------------------------:|:----------------------------------:|
-| All_nucleic_sequences_sdbl.fasta (From Delete_dbl.py) | Nucleic_prot_1-n.fasta |
-| All_protein_sequences_sdbl.fasta (From Delete_dbl.py) | protein_prot_1-n.fasta |
-|  | Nucleic_prot_OG.fasta |
-|  | protein_prot_OG.fasta |
+|:-------------------------:|:-------------------------------------:|
+| All_nucleic_sequences_sdbl.fasta (From Delete_dbl.py) | *`<Project absolute path><Res folder>`*Nucleic_prot_1-n.fasta |
+| All_protein_sequences_sdbl.fasta (From Delete_dbl.py) | *`<Project absolute path><Res folder>`*protein_prot_1-n.fasta |
+|  | *`<Project absolute path><Res folder>`*Nucleic_prot_OG.fasta |
+|  | *`<Project absolute path><Res folder>`*protein_prot_OG.fasta |
 
 : Input-Output Sep_prot.py
 
@@ -554,11 +561,11 @@ This file ensures that as many protein positions as possible are retrieved in ca
 - Aligns all the previous files.
 
 | Input | Output |
-|:----------------------------------:|:----------------------------------:|
-| Nucleic_prot_1-n.fasta (From Test_sript_Sep_prot.py) | Nucleic_prot_spe.fasta |
-| Protein_prot_1-n.fasta (From Test_sript_Sep_prot.py) | protein_prot_spe.fasta |
-| Nucleic_prot_OG.fasta (From Test_sript_Sep_prot.py) | protein_prot_spe.aln-fasta |
-| Protein_prot_OG.fasta (From Test_sript_Sep_prot.py) | protein_prot_1-n.aln-fasta |
+|:----------------------:|:--------------------------:|
+| Nucleic_prot_1-n.fasta (From Test_sript_Sep_prot.py) | *`<Project absolute path><Res folder>`*Nucleic_prot_spe.fasta |
+| Protein_prot_1-n.fasta (From Test_sript_Sep_prot.py) | *`<Project absolute path><Res folder>`*protein_prot_spe.fasta |
+| Nucleic_prot_OG.fasta (From Test_sript_Sep_prot.py) | *`<Project absolute path><Res folder>`*protein_prot_spe.aln-fasta |
+| Protein_prot_OG.fasta (From Test_sript_Sep_prot.py) | *`<Project absolute path><Res folder>`*protein_prot_1-n.aln-fasta |
 
 : Input-Output Merge_spe_prot.py
 
@@ -575,9 +582,9 @@ IQtree2 was used because it can provide a test to identify the best model of tre
 - Create the phylogenetic tree using the best model identified (using IQtree2)
 
 | Input | Output |
-|:----------------------------------:|:----------------------------------:|
-| protein_prot_1-n.aln-fasta (From Merge_spe_prot.py) | **protein_prot_1-n.treefile** |
-| protein_prot_spe.aln-fasta (From Merge_spe_prot.py) | **protein_prot_spe.treefile** |
+|:------------------------:|:------------------------------------:|
+| protein_prot_1-n.aln-fasta (From Merge_spe_prot.py) | *`<Project absolute path>/<Res folder>/treefolder/`***protein_prot_1-n.treefile** |
+| protein_prot_spe.aln-fasta (From Merge_spe_prot.py) | *`<Project absolute path><Res folder>/treefolder/`***protein_prot_spe.treefile** |
 
 : Input-Output Execution.sh
 
@@ -586,8 +593,8 @@ IQtree2 was used because it can provide a test to identify the best model of tre
 - Launch Protdist from phylip and create a sequence divergence table for each protein.
 
 | Input | Output |
-|:----------------------------------:|:----------------------------------:|
-| Nucleic_prot_1-n.fasta (From Sep_prot.py) | **Divergence_protein_table.py** |
+|:--------------------:|:-----------------------------:|
+| Nucleic_prot_1-n.fasta (From Sep_prot.py) | *`<Project absolute path>`***Divergence_protein_table.py** |
 | protein_prot_1-n.fasta (From Sep_prot.py) |  |
 | Nucleic_prot_spe.fasta (From Merge_spe_prot.py) |  |
 | protein_prot_spe.fasta (From Merge_spe_prot.py) |  |

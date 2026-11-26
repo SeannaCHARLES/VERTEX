@@ -344,7 +344,7 @@ Trimal => Yes
 Do you want to use blast in case of missing positions.
 
 ``` text
-Blast => Yes
+Blast => No
 ```
 
 **format**
@@ -352,6 +352,13 @@ Blast => Yes
 **Blast =\> \<Y/N\>**
 
 **[String] Yes or Y or No or N, no space**
+
+Your file should look like this :
+
+``` text
+#Name of theproject,OG_Project,ID file,Outgroup Spe (Y/N),For wich prot,proteins name (in order),spe prot,TargetID,Target/OG Proteins position,Start of the proteins in the nucleic sequence,DNAdist Threshold,Organism to keep ID,ORGANISM WITH(OUT) A PARTICULAR PROTEIN ID,Trimal,blast
+Retrovirus_EL_Rtarticle_25,Retrovirus_EL_Rtarticle_25,Retrovirus_EL_Rtarticle.txt,N,gag;pol;rvt;rnase;integrase,gag;pol;rvt;rnase;integrase,,NC_001802.1,2;429;605;1006;1024;1144;1157;1415,1631,0.25,,NONE*NN=NN,Yes,No
+```
 
 il faut nommer clairement les ifnormations que doit contenir ce fichier en les listant ainsi que le format que ça doit avoir; le fichier exemple n'est pas simple à comprendre, un utilisateur doit pouvoir construire ce fichier là de zero; il faut aussi indiquer à quel endroit doit se trouver le fichier (et les autres) et indiquer si il faut creer un dossier qui recevra les outputs et où il doit se trouver (j'ai un probleme à se niveau pour faire tourner; j'ai l'impression que la connexion à genbank fonctionne mais où sont les fichiers récupérés ? ils ne sont pas la ou le script les attend et je ne vois pas de dossier qui les contiendrait###
 
@@ -403,12 +410,12 @@ It is a tabular file with, in the first column, the name as it appears in the Ge
 See [host vector section](#sec-hostvectors-caption) for further information.
 
 ``` text
-#Species	Scientific Species name
-Culex	Diptera
-Oryzomys	Rodentia
-Culicidae	Diptera
-Oxymycterus	Rodentia
-Porcine	Artiodactyla
+#Species    Scientific Species name
+Culex   Diptera
+Oryzomys    Rodentia
+Culicidae   Diptera
+Oxymycterus Rodentia
+Porcine Artiodactyla
 ```
 
 ### **protein_equivalent.txt**
@@ -421,16 +428,16 @@ This is a tabular file with, in the first column, the name of the protein as it 
 
 ``` text
 #Protein Database protein name
-reversetranscriptase	rvt
-in_	integrase
-rt_rnase	rnase
-gag-pro-pol	gag+pol
-rve	integrase
-rp_rtvl_h_like	rvt
-rt_zfrev_like	rvt
-rvt_thumb	rvt 
-rt_rtv	rvt
-rt_zfrev_like	rvt
+reversetranscriptase    rvt
+in_ integrase
+rt_rnase    rnase
+gag-pro-pol gag+pol
+rve integrase
+rp_rtvl_h_like  rvt
+rt_zfrev_like   rvt
+rvt_thumb   rvt 
+rt_rtv  rvt
+rt_zfrev_like   rvt
 ```
 
 ## Launch the pipeline {#sec-launch-the-pipeline}
