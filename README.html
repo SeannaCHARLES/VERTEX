@@ -388,31 +388,519 @@ EXploration)</h1>
 </div>
 <div id="sec-mandatory-input-files" class="section level2">
 <h2>Mandatory input files</h2>
-<ul>
-<li>all_information.txt <strong>can not be empty</strong></li>
-</ul>
-<p>(Contains all the information required for the pipeline to run
-correctly.)</p>
-<p>#Décrire clairement</p>
-<ul>
-<li><strong>&lt;IDs_file_name&gt;.txt</strong> <strong>can not be
-empty</strong></li>
-</ul>
-<p>(Must contain the list of IDs you are interested in)</p>
-<ul>
-<li>user_legend.txt can be empty</li>
-</ul>
-<p>(User provided captions)</p>
-<ul>
-<li><strong>species_equivalent.txt</strong> can be empty</li>
-</ul>
-<p>(See <a href="#sec-hostvectors-caption">host vector section</a> for
-further information)</p>
-<ul>
-<li><strong>protein_equivalent.txt</strong> can be empty</li>
-</ul>
+<div id="sec-example-of-use" class="section level3">
+<h3>All_information.txt</h3>
+<p><strong>all_information.txt</strong> <strong>cannot be
+empty.</strong></p>
+<p>This file contains all the information required for the pipeline to
+run correctly.</p>
+<p><strong>all_information.txt</strong> is a text file separated with
+<strong>“,” not tabulation</strong>.</p>
+<p>This file is split into two parts.</p>
+<div id="path-and-e-mail-adresse" class="section level4">
+<h4>path and e-mail adresse</h4>
+<p>The first seven lines are preceded by ‘#’; <strong>it is important
+not to remove them.</strong></p>
+<p>The first line is simply a reminder to read the README and is not
+essential.</p>
+<p>The following five lines must be completed.</p>
+<p>The first column indicates what information is required in the second
+column.</p>
+<p>The rows are organized as follows:</p>
+<p>&lt;information_ask&gt;,&lt;your_value&gt;</p>
+<p>You must not enter &lt;your_value&gt; in the first column. The
+pipeline only extracts information from the second column for all rows
+beginning with ‘#’.</p>
+<p>First line :</p>
+<p>Second line :</p>
+<p>You must enter the absolute path to the folder in which the project
+folders will be created.</p>
+<p>Third line :</p>
+<p>You must specify a folder name surrounded by ‘/’ which will be used
+to save the output files after the protein separation. (This will make
+it easier for you to find your files later.)</p>
+<p>Fourth line :</p>
+<p>You must specify the absolute path to the VERTEX pipeline script
+folder that you downloaded from the <a href="https://github.com/SeannaCHARLES/VERTEX/tree/main">GitHub</a>.</p>
+<p>Fifth line :</p>
+<p>You must specify the type of sequence you wish to analyse, either
+‘nucl’ or ‘prot’, or both; the order does not matter.Sixth line :</p>
+<p>You must enter your email address. It is essential for submitting
+requests to the NCBI database.</p>
+</div>
+<div id="your-study-informations" class="section level4">
+<h4>Your study informations</h4>
+<p>The seventh row contains headers that explain what to write in each
+column.</p>
+<p>We provide here a step by step running example for the study of
+Orthobunyaviridae with 2 differents outgroups.</p>
+<div id="sec-a-execution-project-name" class="section level5">
+<h5>A: Name of the project</h5>
+<p>This name will be used as the folder name.</p>
+<p>It also allows you to specify which project each outgroup is
+associated with (if necessary).</p>
+<p>If you wish to analyse several segments or polyproteins from the same
+viral family or species, you must enter two different project names;
+otherwise, all the files produced by the pipeline for both projects will
+be stored in the same folder.</p>
+<table>
+<tbody>
+<tr class="odd">
+<td>#Name of the project,</td>
+</tr>
+<tr class="even">
+<td>Orthobunyaviridae,</td>
+</tr>
+<tr class="odd">
+<td>Orthobunyaviridae,</td>
+</tr>
+<tr class="even">
+<td>Orthobunyaviridae,</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="sec-b-study-name" class="section level5">
+<h5>B: OG_Project</h5>
+<p>“OG_Project” This column is useful for differentiated outgroups from
+the list of identifiers for the viral species you wish to study.</p>
+<p>If this does not apply to you, you can add the outgroup IDs to the
+list of study identifiers and enter the project name (cf.<a href="#sec-a-execution-project-name">Project name</a>).</p>
+<table>
+<tbody>
+<tr class="odd">
+<td>#Name of the project,OG_Project,</td>
+</tr>
+<tr class="even">
+<td>Orthobunyaviridae,Khurdun,</td>
+</tr>
+<tr class="odd">
+<td>Orthobunyaviridae,Pacuvirus,</td>
+</tr>
+<tr class="even">
+<td>Orthobunyaviridae,Orthobunyaviridae,</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="sec-c-id-file" class="section level5">
+<h5>C: ID file</h5>
+<p>The name of the file that contains the virus IDs. This file must be
+at your root.</p>
+<p>See</p>
+<table>
+<tbody>
+<tr class="odd">
+<td>#Name of the project,OG_Project,ID file,</td>
+</tr>
+<tr class="even">
+<td>Orthobunyaviridae,Khurdun,Khurdun_file.txt,</td>
+</tr>
+<tr class="odd">
+<td>Orthobunyaviridae,Pacuvirus,Pacuvirus_file.txt,</td>
+</tr>
+<tr class="even">
+<td>Orthobunyaviridae,Orthobunyaviridae,Orthobunyaviridae_file.txt,</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="sec-d-outgroup-choice-yn" class="section level5">
+<h5>D: Outgroup(Y/N)</h5>
+<p>Allows you to specify whether these viruses should be treated as
+outgroups or not.</p>
+<table>
+<tbody>
+<tr class="odd">
+<td>#Name of the project,OG_Project,ID file,Outgroup,</td>
+</tr>
+<tr class="even">
+<td>Orthobunyaviridae,Khurdun,Khurdun_file.txt,Y,</td>
+</tr>
+<tr class="odd">
+<td>Orthobunyaviridae,Pacuvirus,Pacuvirus_file.txt,Y,</td>
+</tr>
+<tr class="even">
+<td>Orthobunyaviridae,Orthobunyaviridae,Orthobunyaviridae_file.txt,N,</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="sec-e-for-which-protein" class="section level5">
+<h5>E: For which protein</h5>
+<p>Which protein do you want to study, or for which protein will this
+outgroup be used?</p>
+<table>
+<tbody>
+<tr class="odd">
+<td>#Name of the project,OG_Project,ID file,Outgroup,For wich prot,</td>
+</tr>
+<tr class="even">
+<td>Orthobunyaviridae,Khurdun,Khurdun_file.txt,Y,nsmgn,</td>
+</tr>
+<tr class="odd">
+<td>Orthobunyaviridae,Pacuvirus,Pacuvirus_file.txt,Y,polyprotein;gn;nsm;gc,</td>
+</tr>
+<tr class="even">
+<td>Orthobunyaviridae,Orthobunyaviridae,Orthobunyaviridae_file.txt,N,polyprotein;gn;nsm;gc,</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="sec-f-protein-names-in-order" class="section level5">
+<h5>F: Protein names (in order)</h5>
+<p>Protein names of the <a href="#sec-b-study-name">OG_Project</a></p>
+<table>
+<tbody>
+<tr class="odd">
+<td>#…,ID file,Outgroup,For wich prot,</td>
+</tr>
+<tr class="even">
+<td>…,Khurdun_file.txt,Y,nsmgn,polyprotein;gn;gc</td>
+</tr>
+<tr class="odd">
+<td>…,Pacuvirus_file.txt,Y,polyprotein;gn;nsm;gc,polyprotein;gn;nsm;gc</td>
+</tr>
+<tr class="even">
+<td>…,Orthobunyaviridae_file.txt,N,polyprotein;gn;nsm;gc,polyprotein;gn;nsm;gc</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="sec-g-specific-protein" class="section level5">
+<h5>G: specific protein</h5>
+<p>Indicate which proteins are involved in the study of a specific
+protein, if applicable.</p>
+<p>For example, if you want to study the evolutionary history of two
+proteins present in the same virus.</p>
+<p>The protein Gn of Khurdun will be used as the outgroup.</p>
+<table>
+<tbody>
+<tr class="odd">
+<td>#…,ID file,Outgroup,For wich prot,spe prot,</td>
+</tr>
+<tr class="even">
+<td>…,Khurdun_file.txt,Y,nsmgn,polyprotein;gn;gc,nsmgn=gn,</td>
+</tr>
+<tr class="odd">
+<td>…,Pacuvirus_file.txt,Y,polyprotein;gn;nsm;gc,polyprotein;gn;nsm;gc,,</td>
+</tr>
+<tr class="even">
+<td>…,Orthobunyaviridae_file.txt,N,polyprotein;gn;nsm;gc,polyprotein;gn;nsm;gc,nsmgn=nsm+gn</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="sec-h-targetid" class="section level5">
+<h5>H: TargetID</h5>
+<p>Enter a reference ID that will be used for BLAST alignment in case
+some positions are missing.</p>
+<table>
+<tbody>
+<tr class="odd">
+<td>#…,,For wich prot,spe prot,TargetID,</td>
+</tr>
+<tr class="even">
+<td>…,nsmgn,polyprotein;gn;gc,nsmgn=gn,,</td>
+</tr>
+<tr class="odd">
+<td>…,polyprotein;gn;nsm;gc,polyprotein;gn;nsm;gc,,,</td>
+</tr>
+<tr class="even">
+<td>…,polyprotein;gn;nsm;gc,polyprotein;gn;nsm;gc,nsmgn=nsm+gn,NC_001926.1</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="sec-i-reference-protein-positions" class="section level5">
+<h5>I: Target/OG Proteins position</h5>
+<p>The positions of the proteins for the reference or the proteins
+outgroup.</p>
+<table>
+<tbody>
+<tr class="odd">
+<td>#…,For wich prot,spe prot,TargetID,Target/OG Proteins position,</td>
+</tr>
+<tr class="even">
+<td>…,nsmgn,polyprotein;gn;gc,nsmgn=gn,,23;292;526;944,</td>
+</tr>
+<tr class="odd">
+<td>…,polyprotein;gn;nsm;gc,polyprotein;gn;nsm;gc,,,1;1458;23;305;308;476;598;1386,</td>
+</tr>
+<tr class="even">
+<td>…,polyprotein;gn;nsm;gc,polyprotein;gn;nsm;gc,nsmgn=nsm+gn,NC_001926.1,22;302;303;476;509;1372,</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="sec-j-start-of-the-proteins-in-the-nucleic-sequence" class="section level5">
+<h5>J: Start of the proteins in the nucleic sequence</h5>
+<p>Start of the proteins in the nucleic sequence</p>
+<p>This position will be used as the start of the protein sequence
+within the nucleic acid sequence (for all sequences).</p>
+<table>
+<tbody>
+<tr class="odd">
+<td>#…,Target/OG Proteins position,Start of the proteins in the nucleic
+sequence,</td>
+</tr>
+<tr class="even">
+<td>…,23;292;526;944,34,</td>
+</tr>
+<tr class="odd">
+<td>…,1;1458;23;305;308;476;598;1386,53,</td>
+</tr>
+<tr class="even">
+<td>…,22;302;303;476;509;1372,57,</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="sec-k-dnadist-threshold" class="section level5">
+<h5>K: DNAdist Threshold</h5>
+<p>Which threshold for the kimura distance do you want to use?</p>
+<table>
+<tbody>
+<tr class="odd">
+<td>#…,Start of the proteins in the nucleic sequence,DNAdist
+Threshold,</td>
+</tr>
+<tr class="even">
+<td>…,34,,</td>
+</tr>
+<tr class="odd">
+<td>…,53,,</td>
+</tr>
+<tr class="even">
+<td>…57,0.25,</td>
+</tr>
+</tbody>
+</table>
+<p>DNAdist Threshold</p>
+</div>
+<div id="sec-l-organism-to-keep-id" class="section level5">
+<h5>L: Organism to keep ID</h5>
+<p>A list of the IDs that you <strong>do not want</strong> to be
+deleted.</p>
+<p><strong>SEPARATED BY ‘;’</strong></p>
+<table>
+<tbody>
+<tr class="odd">
+<td>#…,Start of the proteins in the nucleic sequence,DNAdist
+Threshold,Organism to keep ID,</td>
+</tr>
+<tr class="even">
+<td>…,34,,,</td>
+</tr>
+<tr class="odd">
+<td>…,53,,,</td>
+</tr>
+<tr class="even">
+<td>…57,0.25,MH484340.1;NC_005775;EF990927.1</td>
+</tr>
+</tbody>
+</table>
+<p>ID Organism to keep</p>
+</div>
+<div id="sec-m-organism-without-a-particular-protein-id" class="section level5">
+<h5>M: Organism without a particular protein ID</h5>
+<table>
+<tbody>
+<tr class="odd">
+<td>#…,DNAdist Threshold,Organism to keep ID,Organism without a
+particular protein ID</td>
+</tr>
+<tr class="even">
+<td>…,,,OUT*NSM=NC_078560.1,</td>
+</tr>
+<tr class="odd">
+<td>…,,,NONE*NN=NN,</td>
+</tr>
+<tr class="even">
+<td>…,0.25,MH484340.1;NC_005775;EF990927.1,NONE*NN=NN,</td>
+</tr>
+</tbody>
+</table>
+<p>Organism without a particular protein ID</p>
+<p>OUT*&lt;prot&gt;=list of IDs separated by “;”</p>
+<p>IN*&lt;prot&gt;=liste of IDs separated by “;”</p>
+</div>
+<div id="sec-n-trimal" class="section level5">
+<h5>N: Trimal</h5>
+<p>Do you want to use TrimAl for this study.</p>
+<table>
+<tbody>
+<tr class="odd">
+<td>#…,DNAdist Threshold,Organism to keep ID,Organism without a
+particular protein ID,Trimal</td>
+</tr>
+<tr class="even">
+<td>…,,,OUT*NSM=NC_078560.1,Yes,</td>
+</tr>
+<tr class="odd">
+<td>…,,,NONE*NN=NN,Yes,</td>
+</tr>
+<tr class="even">
+<td>…,0.25,MH484340.1;NC_005775;EF990927.1,NONE*NN=NN,Yes,</td>
+</tr>
+</tbody>
+</table>
+<p>Do you want to use TrimAl</p>
+</div>
+<div id="sec-o-blast" class="section level5">
+<h5>O: Blast</h5>
+<p>Do you want to use blast in case of missing positions.</p>
+<table>
+<tbody>
+<tr class="odd">
+<td>#…,Organism without a particular protein ID,Trimal,Blast</td>
+</tr>
+<tr class="even">
+<td>…,OUT*NSM=NC_078560.1,Yes,Yes</td>
+</tr>
+<tr class="odd">
+<td>…,NONE*NN=NN,Yes,Yes</td>
+</tr>
+<tr class="even">
+<td>…,NONE*NN=NN,Yes,Yes</td>
+</tr>
+</tbody>
+</table>
+<p>il faut nommer clairement les ifnormations que doit contenir ce
+fichier en les listant ainsi que le format que ça doit avoir; le fichier
+exemple n’est pas simple à comprendre, un utilisateur doit pouvoir
+construire ce fichier là de zero; il faut aussi indiquer à quel endroit
+doit se trouver le fichier (et les autres) et indiquer si il faut creer
+un dossier qui recevra les outputs et où il doit se trouver (j’ai un
+probleme à se niveau pour faire tourner; j’ai l’impression que la
+connexion à genbank fonctionne mais où sont les fichiers récupérés ? ils
+ne sont pas la ou le script les attend et je ne vois pas de dossier qui
+les contiendrait###</p>
+</div>
+</div>
+</div>
+<div id="viruses-ids-list-ids_file_name.txt" class="section level3">
+<h3>Viruses IDs List (<strong>&lt;IDs_file_name&gt;.txt)</strong></h3>
+<p>This file must contain the list of Genbank IDs of the studied
+sequences. Ce fichier est essentiel au bon fonctionnement du
+pipeline.C’est une liste d’Ids. en colonne (un ids par ligne) sans
+entête.</p>
+<p>Ce fichier must be at the root.</p>
+<table>
+<tbody>
+<tr class="odd">
+<td>AF033808.1</td>
+</tr>
+<tr class="even">
+<td>AF228552.1</td>
+</tr>
+<tr class="odd">
+<td>M23385.1</td>
+</tr>
+<tr class="even">
+<td>M80216.1</td>
+</tr>
+<tr class="odd">
+<td>NC_000858.1</td>
+</tr>
+<tr class="even">
+<td>AF033811.1</td>
+</tr>
+<tr class="odd">
+<td>AF151794.2</td>
+</tr>
+<tr class="even">
+<td>GU980187.1</td>
+</tr>
+<tr class="odd">
+<td>KT724050.1</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="user_legend.txt" class="section level3">
+<h3><strong>User_legend.txt</strong></h3>
+<p>This file contains the user-provided captions.</p>
+<p>This file must be present and will not be created by the pipeline but
+it can be empty.</p>
+<p>It is a text file seperated with “|” avec une entête.</p>
+<table>
+<tbody>
+<tr class="odd">
+<td>Virus name|Serogroup</td>
+</tr>
+<tr class="even">
+<td>Bovine immunodeficiency|Lentivirus</td>
+</tr>
+<tr class="odd">
+<td>Jembrana disease|Lentivirus</td>
+</tr>
+<tr class="even">
+<td>Bovine foamy|Spumavirus</td>
+</tr>
+<tr class="odd">
+<td>equine foamy Equus caballus|Spumavirus</td>
+</tr>
+<tr class="even">
+<td>Primate T-lymphotropic 1|Deltaretrovirus</td>
+</tr>
+<tr class="odd">
+<td>Simian T-lymphotropic 2|Deltaretrovirus</td>
+</tr>
+<tr class="even">
+<td>Walleye dermal sarcoma|Epsilonretrovirus</td>
+</tr>
+<tr class="odd">
+<td>Moloney murine leukemia|Gammaretrovirus</td>
+</tr>
+<tr class="even">
+<td>Reticuloendotheliosis|Gammaretrovirus</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="species_equivalent.txt-can-be-empty" class="section level3">
+<h3><strong>species_equivalent.txt</strong> (can be empty)</h3>
+<p>This file is used to modify the names of hosts/vectors that are not
+recognised by the NCBI databases.</p>
+<p>It is a tabular file with, in the first column, the name as it
+appears in the GenBank file, and in the second column, the scientific
+name recognised by the NCBI databases.</p>
+<p>See <a href="#sec-hostvectors-caption">host vector section</a> for
+further information</p>
+<table>
+<tbody>
+<tr class="odd">
+<td>#Species Scientific Species name</td>
+</tr>
+<tr class="even">
+<td>Culex Diptera</td>
+</tr>
+<tr class="odd">
+<td>Oryzomys Rodentia</td>
+</tr>
+<tr class="even">
+<td>Culicidae Diptera</td>
+</tr>
+<tr class="odd">
+<td>Oxymycterus Rodentia</td>
+</tr>
+<tr class="even">
+<td>Porcine Artiodactyla</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="protein_equivalent.txt" class="section level3">
+<h3><strong>protein_equivalent.txt</strong></h3>
+<p>This file is used to enable the pipeline to recognise the various
+names of the proteins contained in the NCBI databases</p>
 <p>(See <a href="#sec-region-name-in-the-database">section region
 name</a> for further information)</p>
+<p>This is a tabular file with, in the first column, the name of the
+protein as it appears in the GenBank file, and in the second column, the
+name of that same protein as you wrote it in the section (cf.<a href="#sec-f-protein-names-in-order">#sec-f-protein-names-in-order</a>).</p>
+</div>
 </div>
 <div id="sec-launch-the-pipeline" class="section level2">
 <h2>Launch the pipeline</h2>
@@ -896,554 +1384,6 @@ section for these steps (indicated by comment lines in
 be commented out. Also ensure that the output files for the steps you
 are skipping are present.</p>
 </div>
-<div id="sec-example-of-use" class="section level2">
-<h2>How to fill All_information.txt</h2>
-<p>We provide here a step by step running example for the study of
-Orthobunyaviridae with a specific outgroup</p>
-<div id="sec-a-execution-project-name" class="section level3">
-<h3>A: Execution Project name</h3>
-<p>This name will be used as the folder name. It also allows you to
-specify which project the outgroup-specific data is associated with,
-where necessary.</p>
-<p>If you wish to analyse several segments or polyproteins from the same
-viral family or species, you must enter two different project names;
-otherwise, all the files produced by the pipeline for both projects will
-be stored in the same folder.</p>
-<table>
-<caption>Project name</caption>
-<thead>
-<tr class="header">
-<th align="center">Project name</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="center">Orthobunyaviridae</td>
-</tr>
-<tr class="even">
-<td align="center">Orthobunyaviridae</td>
-</tr>
-<tr class="odd">
-<td align="center">Orthobunyaviridae</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div id="sec-b-study-name" class="section level3">
-<h3>B: Study name %%cette partie n’est pas tres claire pour moi%%%</h3>
-<p>“Study name” allows you to distinguish information regarding
-outgroups that may not be used for all proteins in the study.</p>
-<p>For example, if you have a specific protein, or if you want to use
-different outgroups for each protein.</p>
-<p>If this does not apply to you, you can add the outgroup IDs to the
-list of study identifiers and enter the project name (cf <a href="#sec-a-execution-project-name">Execution Project name</a>)</p>
-<table>
-<caption>Study name : Khurdun and Pacuvirus will be used as
-outgroups</caption>
-<thead>
-<tr class="header">
-<th align="center">A</th>
-<th align="center">Study name</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="center">Orthobunyaviridae</td>
-<td align="center">Khurdun</td>
-</tr>
-<tr class="even">
-<td align="center">Orthobunyaviridae</td>
-<td align="center">Pacuvirus</td>
-</tr>
-<tr class="odd">
-<td align="center">Orthobunyaviridae</td>
-<td align="center">Orthobunyaviridae</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div id="sec-c-id-file" class="section level3">
-<h3>C: ID file</h3>
-<p>The name of the file that contains the virus IDs. This file must be
-at the root.</p>
-<table>
-<caption>ID file</caption>
-<thead>
-<tr class="header">
-<th align="center">A</th>
-<th align="center">B</th>
-<th align="center">ID files</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="center">Orthobunyaviridae</td>
-<td align="center">Khurdun</td>
-<td align="center">Khurdun_file.txt</td>
-</tr>
-<tr class="even">
-<td align="center">Orthobunyaviridae</td>
-<td align="center">Pacuvirus</td>
-<td align="center">Pacuvirus_file.txt</td>
-</tr>
-<tr class="odd">
-<td align="center">Orthobunyaviridae</td>
-<td align="center">Orthobunyaviridae</td>
-<td align="center">Orthobunyaviridae_file.txt</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div id="sec-d-outgroup-choice-yn" class="section level3">
-<h3>D: Outgroup choice (Y/N)</h3>
-<p>Allows you to specify whether these viruses should be treated as
-outgroups or not.</p>
-<p>N : Is it a outgroup.</p>
-<table>
-<caption>Outgroup Specific : Is it a specifc outgroup?</caption>
-<thead>
-<tr class="header">
-<th align="center">A</th>
-<th align="center">B</th>
-<th align="center">C</th>
-<th align="center">Outgroup Spe</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="center">Orthobunyaviridae</td>
-<td align="center">Khurdun</td>
-<td align="center">IDk</td>
-<td align="center">Y</td>
-</tr>
-<tr class="even">
-<td align="center">Orthobunyaviridae</td>
-<td align="center">Pacuvirus</td>
-<td align="center">IDp</td>
-<td align="center">Y</td>
-</tr>
-<tr class="odd">
-<td align="center">Orthobunyaviridae</td>
-<td align="center">Orthobunyaviridae</td>
-<td align="center">IDn</td>
-<td align="center">N</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div id="sec-e-for-which-protein" class="section level3">
-<h3>E: For which protein</h3>
-<p>Which protein do you want to study, or for which protein will this
-outgroup be used?</p>
-<table>
-<caption>For which proteins</caption>
-<thead>
-<tr class="header">
-<th align="center">A</th>
-<th align="center">B</th>
-<th align="center">D</th>
-<th align="center">For wich prot</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="center">Orthobunyaviridae</td>
-<td align="center">Khurdun</td>
-<td align="center">Y</td>
-<td align="center">nsmgn</td>
-</tr>
-<tr class="even">
-<td align="center">Orthobunyaviridae</td>
-<td align="center">Pacuvirus</td>
-<td align="center">Y</td>
-<td align="center">polyprotein;gn;nsm;gc</td>
-</tr>
-<tr class="odd">
-<td align="center">Orthobunyaviridae</td>
-<td align="center">Orthobunyaviridae</td>
-<td align="center">N</td>
-<td align="center">polyprotein;gn;nsm;gc</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div id="sec-f-protein-names-in-order" class="section level3">
-<h3>F: Protein names (in order)</h3>
-<p>Protein names of the study name (col B Study name)</p>
-<table>
-<caption>Protein names (in order)</caption>
-<colgroup>
-<col width="26%" />
-<col width="26%" />
-<col width="9%" />
-<col width="36%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th align="center">A</th>
-<th align="center">B</th>
-<th align="center">E</th>
-<th align="center">Proteins name (in order)</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="center">Orthobunyaviridae</td>
-<td align="center">Khurdun</td>
-<td align="center">nsmgn</td>
-<td align="center">polyprotein;gn;gc</td>
-</tr>
-<tr class="even">
-<td align="center">Orthobunyaviridae</td>
-<td align="center">Pacuvirus</td>
-<td align="center">prots</td>
-<td align="center">polyprotein;gn;nsm;gc</td>
-</tr>
-<tr class="odd">
-<td align="center">Orthobunyaviridae</td>
-<td align="center">Orthobunyaviridae</td>
-<td align="center">prots</td>
-<td align="center">polyprotein;gn;nsm;gc</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div id="sec-g-specific-protein" class="section level3">
-<h3>G: specific protein</h3>
-<p>Indicate which proteins are involved in the study of a specific
-protein, if applicable.</p>
-<p>For example, if you want to study the evolutionary history of two
-proteins present in the same virus.</p>
-<table>
-<caption>specific protein</caption>
-<thead>
-<tr class="header">
-<th align="center">A</th>
-<th align="center">B</th>
-<th align="center">F</th>
-<th align="center">spe prot</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="center">Orthobunyaviridae</td>
-<td align="center">Khurdun</td>
-<td align="center">prots</td>
-<td align="center">nsmgn=gn</td>
-</tr>
-<tr class="even">
-<td align="center">Orthobunyaviridae</td>
-<td align="center">Pacuvirus</td>
-<td align="center">prots</td>
-<td align="center"></td>
-</tr>
-<tr class="odd">
-<td align="center">Orthobunyaviridae</td>
-<td align="center">Orthobunyaviridae</td>
-<td align="center">prots</td>
-<td align="center">nsmgn=nsm+gn</td>
-</tr>
-</tbody>
-</table>
-<p>The protein Gn of Khurdun will be used as the outgroup.</p>
-</div>
-<div id="sec-h-targetid" class="section level3">
-<h3>H: TargetID</h3>
-<p>Enter a reference ID that will be used for BLAST alignment in case
-some positions are missing.</p>
-<table>
-<caption>RefID</caption>
-<thead>
-<tr class="header">
-<th align="center">A</th>
-<th align="center">B</th>
-<th align="center">G</th>
-<th align="center">RefID</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="center">Orthobunyaviridae</td>
-<td align="center">Khurdun</td>
-<td align="center">nsmgn=gn</td>
-<td align="center"></td>
-</tr>
-<tr class="even">
-<td align="center">Orthobunyaviridae</td>
-<td align="center">Pacuvirus</td>
-<td align="center"></td>
-<td align="center"></td>
-</tr>
-<tr class="odd">
-<td align="center">Orthobunyaviridae</td>
-<td align="center">Orthobunyaviridae</td>
-<td align="center">nsmgn=nsm+gn</td>
-<td align="center">NC_001926.1</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div id="sec-i-reference-protein-positions" class="section level3">
-<h3>I: reference protein positions</h3>
-<p>The positions of the proteins for the reference or the specific
-outgroup.</p>
-<table>
-<caption>RefID</caption>
-<colgroup>
-<col width="24%" />
-<col width="24%" />
-<col width="24%" />
-<col width="27%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th align="center">A</th>
-<th align="center">B</th>
-<th align="center">H</th>
-<th align="center">reference /OG proteins position</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="center">Orthobunyaviridae</td>
-<td align="center">Khurdun</td>
-<td align="center"></td>
-<td align="center">23;292;526;944</td>
-</tr>
-<tr class="even">
-<td align="center">Orthobunyaviridae</td>
-<td align="center">Pacuvirus</td>
-<td align="center"></td>
-<td align="center">1;1458;23;305;308;476;598;1386</td>
-</tr>
-<tr class="odd">
-<td align="center">Orthobunyaviridae</td>
-<td align="center">Orthobunyaviridae</td>
-<td align="center">IDref</td>
-<td align="center">22;302;303;476;509;1372</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div id="sec-j-start-of-the-proteins-in-the-nucleic-sequence" class="section level3">
-<h3>J: Start of the proteins in the nucleic sequence</h3>
-<table>
-<caption>Start of the proteins in the nucleic sequence</caption>
-<thead>
-<tr class="header">
-<th align="center">A</th>
-<th align="center">B</th>
-<th align="center">I</th>
-<th align="center">Start of the proteins in the nucleic sequence</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="center">Orthobunyaviridae</td>
-<td align="center">Khurdun</td>
-<td align="center">pos</td>
-<td align="center">34</td>
-</tr>
-<tr class="even">
-<td align="center">Orthobunyaviridae</td>
-<td align="center">Pacuvirus</td>
-<td align="center">pos</td>
-<td align="center">53</td>
-</tr>
-<tr class="odd">
-<td align="center">Orthobunyaviridae</td>
-<td align="center">Orthobunyaviridae</td>
-<td align="center">pos</td>
-<td align="center">57</td>
-</tr>
-</tbody>
-</table>
-<p>This position will be used as the start of the protein sequence
-within the nucleic acid sequence (for all sequences).</p>
-</div>
-<div id="sec-k-dnadist-threshold" class="section level3">
-<h3>K: DNAdist Threshold</h3>
-<table>
-<caption>DNAdist Threshold</caption>
-<thead>
-<tr class="header">
-<th align="center">A</th>
-<th align="center">B</th>
-<th align="center">J</th>
-<th align="center">DNAdist Threshold</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="center">Orthobunyaviridae</td>
-<td align="center">Khurdun</td>
-<td align="center">34</td>
-<td align="center">0.01</td>
-</tr>
-<tr class="even">
-<td align="center">Orthobunyaviridae</td>
-<td align="center">Pacuvirus</td>
-<td align="center">53</td>
-<td align="center">0.05</td>
-</tr>
-<tr class="odd">
-<td align="center">Orthobunyaviridae</td>
-<td align="center">Orthobunyaviridae</td>
-<td align="center">57</td>
-<td align="center">0.01</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div id="sec-l-organism-to-keep-id" class="section level3">
-<h3>L: Organism to keep ID</h3>
-<p>a list of the IDs that you do not want to be deleted.</p>
-<p><strong>SEPARATED BY ‘;’</strong></p>
-<table>
-<caption>ID Organism to keep</caption>
-<colgroup>
-<col width="24%" />
-<col width="24%" />
-<col width="24%" />
-<col width="27%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th align="center">A</th>
-<th align="center">B</th>
-<th align="center">K</th>
-<th align="center">Organism to keep ID</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="center">Orthobunyaviridae</td>
-<td align="center">Khurdun</td>
-<td align="center">0.01</td>
-<td align="center"></td>
-</tr>
-<tr class="even">
-<td align="center">Orthobunyaviridae</td>
-<td align="center">Pacuvirus</td>
-<td align="center">0.05</td>
-<td align="center"></td>
-</tr>
-<tr class="odd">
-<td align="center">Orthobunyaviridae</td>
-<td align="center">Orthobunyaviridae</td>
-<td align="center">0.01</td>
-<td align="center">MH484340.1;NC_005775;EF990927.1</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div id="sec-m-organism-without-a-particular-protein-id" class="section level3">
-<h3>M: Organism without a particular protein ID</h3>
-<table>
-<caption>Organism without a particular protein ID</caption>
-<thead>
-<tr class="header">
-<th align="center">A</th>
-<th align="center">B</th>
-<th align="center">L</th>
-<th align="center">Organism without a particular protein ID</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="center">Orthobunyaviridae</td>
-<td align="center">Khurdun</td>
-<td align="center"></td>
-<td align="center">OUT*NSM=NC_078560.1</td>
-</tr>
-<tr class="even">
-<td align="center">Orthobunyaviridae</td>
-<td align="center">Pacuvirus</td>
-<td align="center"></td>
-<td align="center">NONE*NN=NN</td>
-</tr>
-<tr class="odd">
-<td align="center">Orthobunyaviridae</td>
-<td align="center">Orthobunyaviridae</td>
-<td align="center">IDs</td>
-<td align="center">NONE*NN=NN</td>
-</tr>
-</tbody>
-</table>
-<p>OUT*&lt;prot&gt;=list of IDs separated by “;”</p>
-<p>IN*&lt;prot&gt;=liste of IDs separated by “;”</p>
-</div>
-<div id="sec-n-trimal" class="section level3">
-<h3>N: Trimal</h3>
-<p>Do you want to use TrimAl for this study.</p>
-<table>
-<caption>Do you want to use TrimAl</caption>
-<thead>
-<tr class="header">
-<th align="center">A</th>
-<th align="center">B</th>
-<th align="center">M</th>
-<th align="center">Trimal</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="center">Orthobunyaviridae</td>
-<td align="center">Khurdun</td>
-<td align="center">OUT*NSM=ID</td>
-<td align="center">Yes</td>
-</tr>
-<tr class="even">
-<td align="center">Orthobunyaviridae</td>
-<td align="center">Pacuvirus</td>
-<td align="center">NONE</td>
-<td align="center">Yes</td>
-</tr>
-<tr class="odd">
-<td align="center">Orthobunyaviridae</td>
-<td align="center">Orthobunyaviridae</td>
-<td align="center">NONE</td>
-<td align="center">Yes</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div id="sec-o-blast" class="section level3">
-<h3>O: Blast</h3>
-<p>Do you want to use blast in case of missing proteins positions</p>
-<table>
-<caption>Do you want to use blast?</caption>
-<thead>
-<tr class="header">
-<th align="center">A</th>
-<th align="center">B</th>
-<th align="center">N</th>
-<th align="center">Blast</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="center">Orthobunyaviridae</td>
-<td align="center">Khurdun</td>
-<td align="center">Y</td>
-<td align="center">Y</td>
-</tr>
-<tr class="even">
-<td align="center">Orthobunyaviridae</td>
-<td align="center">Pacuvirus</td>
-<td align="center">Y</td>
-<td align="center">Y</td>
-</tr>
-<tr class="odd">
-<td align="center">Orthobunyaviridae</td>
-<td align="center">Orthobunyaviridae</td>
-<td align="center">Y</td>
-<td align="center">Y</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
 <div id="sec-additional-instructions-and-warnings" class="section level2">
 <h2>Additional Instructions and warnings</h2>
 <div id="sec-proteins-positions" class="section level3">
@@ -1468,7 +1408,7 @@ manually. After that, simply restart the pipeline from the
 <h3>Region name in the database</h3>
 <p>The same proteins may have different region names from one virus to
 another. If a protein returns very few results and you know this is
-unexpected, its name may not have been recognized. You can use the file
+unexpected, its name may not have been recognised. You can use the file
 <strong><em>prot_all_&lt;Study&gt;.gp</em></strong> to help you
 identified the different region names.</p>
 <p>Whether it differs from the name you entered in the various protein
@@ -1491,11 +1431,11 @@ rectangle)</p>
 <div id="sec-hostvectors-caption" class="section level3">
 <h3>Host/vectors caption</h3>
 <p>The names of the hosts/vectors are not all uniform and some are not
-recognized by the NCBI database. To get pass this, you can add
+recognised by the NCBI database. To get pass this, you can add
 equivalents for the host/vector name and the scientific name in the
-<strong>species_equivalent.txt</strong></p>
-<p>such as: <strong><em>mosquito&lt;\t&gt; Culicidae</em></strong></p>
-<p>The Images of the various orders of hosts/vectors are available on
+<strong>species_equivalent.txt</strong>, such as:
+<strong><em>mosquito&lt;\t&gt; Culicidae</em></strong></p>
+<p>The images of the various orders of hosts/vectors are available on
 another public GitHub repository <a href="https://github.com/SeannaCHARLES/Images" title="Host/vector images">Host/vector images</a>.</p>
 </div>
 </div>
@@ -1505,7 +1445,7 @@ another public GitHub repository <a href="https://github.com/SeannaCHARLES/Image
 <p>If using this tool, please cite Seanna Charles, Anja Böckmann and
 Emmanuelle Lerat (2026) VERTEX: A pipeline for Viral sequence
 Extraction, Reconstruction and Tree EXploration.</p>
-<p>28 October 2026</p>
+<p>12 November 2026</p>
 </div>
 <div id="sec-contact" class="section level1">
 <h1>Contact</h1>
