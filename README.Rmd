@@ -3,8 +3,8 @@ title: "VERTEX (Viral sequence Extraction, Reconstruction and Tree EXploration)"
 author: "CHARLES Seanna"
 date: "2026-10-28"
 output:
-  pdf_document: default
   word_document: default
+  pdf_document: default
   html_document:
     df_print: paged
 ---
@@ -71,7 +71,7 @@ This file is split into two parts.
 
 The first seven lines are preceded by ‘#’; **it is important not to remove them.**
 
----
+``` text
 #All the information will be used in the script .......please read the read_me file for further informations                                                                
 #Path,<Project Absolute path>
 #res_file,/<result_folder>/
@@ -79,23 +79,23 @@ The first seven lines are preceded by ‘#’; **it is important not to remove t
 #type_seq,nucl;prot
 #Email_adress=,<your email adresse>
 #Name of theproject,OG_Project,ID file,Outgroup Spe (Y/N),For wich prot,proteins name (in order),spe prot,TargetID,Target/OG Proteins position,Start of the proteins in the nucleic sequence,DNAdist Threshold,Organism to keep ID,ORGANISM WITH(OUT) A PARTICULAR PROTEIN ID,Trimal,blast
----
+```
 
 The first line is simply a reminder to read the README and is not essential.
 
----
+``` text
 #All the information will be used in the script .......please read the read_me file for further informations
----
+```
 
 The following five lines must be completed.
 
----
+``` text
 #Path,<Project Absolute path>
 #res_file,/<result_folder>/
 #path_script,<VERTEX Absolute path>VERTEX/Script/
 #type_seq,nucl;prot
 #Email_adress=,<your email adresse>
----
+```
 
 The first column indicates what information is required in the second column.
 
@@ -105,25 +105,17 @@ The rows are organized as follows:
 
 You must not enter \<your_value\> in the first column. The pipeline only extracts information from the second column for all rows beginning with ‘#’.
 
-First line :
-
----
-#All the information will be used in the script .......please read the read_me file for further informations
----
-
-Second line :
-
----
+``` text
 #Path,<Project Absolute path>
----
+```
 
 You must enter the absolute path to the folder in which the project folders will be created.
 
 Third line :
 
----
+``` text
 #res_file,/<result_folder>/
----
+```
 
 You must specify a folder name surrounded by ‘/’ which will be used to save the output files after the protein separation. (This will make it easier for you to find your files later.)
 
@@ -131,23 +123,23 @@ No absolute path needed
 
 Fourth line :
 
----
+``` text
 #path_script,<VERTEX Absolute path>VERTEX/Script/ 
----
+```
 
 You must specify the absolute path to the VERTEX pipeline script folder that you downloaded from the [GitHub](https://github.com/SeannaCHARLES/VERTEX/tree/main).
 
 Fifth line :
 
----
+``` text
 #type_seq,nucl;prot
----
+```
 
 You must specify the type of sequence you wish to analyse, either ‘nucl’ or ‘prot’, or both; the order does not matter.Sixth line :
 
----
+``` text
 #Email_adress=,<your email adresse>
----
+```
 
 You must enter your email address. It is essential for submitting requests to the NCBI database.
 
@@ -155,9 +147,9 @@ You must enter your email address. It is essential for submitting requests to th
 
 The seventh row contains headers that explain what to write in each column.
 
----
+``` text
 #Name of the project,Species or family,List of ID,Outgroup Spe (Y/N),for quel prot,proteins name (in order),spe prot,TargetID,Target/OG Proteins position,Start of the proteins in the nucleic sequence,DNAdist Threshold,Organism to keep ID,ORGANISM WITH(OUT) A PARTICULAR PROTEIN ID,Trimal,blast
----
+```
 
 We provide here a step by step running example for the study of Orthobunyaviridae with 2 differents outgroups.
 
@@ -169,108 +161,115 @@ It also allows you to specify which project each outgroup is associated with (if
 
 If you wish to analyse several segments or polyproteins from the same viral family or species, you must enter two different project names; otherwise, all the files produced by the pipeline for both projects will be stored in the same folder.
 
----
-#Name of the project,
-Orthobunyaviridae,
-Orthobunyaviridae,
-Orthobunyaviridae,
----
+**Name of the project =\> \<Project name\>**
+
+**format : [string] no space**
+
+``` text
+Name of the project => Retrovirus_EL_Rtarticle_25
+```
 
 ##### B: OG_Project {#sec-b-study-name}
 
-“OG_Project” This column is useful for differentiated outgroups from the list of identifiers for the viral species you wish to study.
+“OG_Project” enter the name of the outgroup if you want to use different outgroup for all or a few proteins.
 
 If this does not apply to you, you can add the outgroup IDs to the list of study identifiers and enter the project name (cf.[Project name](#sec-a-execution-project-name)).
 
----
-#Name of the project,OG_Project,
-Orthobunyaviridae,Khurdun,
-Orthobunyaviridae,Pacuvirus,
-Orthobunyaviridae,Orthobunyaviridae,
----
+**OG_Project** **=\> \<Project name or OG name\>**
+
+**format : [string] no space**
+
+``` text
+OG_Project => Retrovirus_EL_Rtarticle_25
+```
 
 ##### C: ID file {#sec-c-id-file}
 
-The name of the file that contains the virus IDs. This file must be at your root.
+The name of the file that contains the virus IDs. **This file must be at your root**.
 
-See
+**ID file** **=\> \<name of the IDs file\>**
 
----
-#Name of the project,OG_Project,ID file,
-Orthobunyaviridae,Khurdun,Khurdun_file.txt,
-Orthobunyaviridae,Pacuvirus,Pacuvirus_file.txt,
-Orthobunyaviridae,Orthobunyaviridae,Orthobunyaviridae_file.txt,
----
+**format : [string] no space, no absolute path**
 
-##### D: Outgroup(Y/N) {#sec-d-outgroup-choice-yn}
+``` text
+ID file => Retrovirus_EL_Rtarticle.txt
+```
+
+##### D: Outgroup {#sec-d-outgroup-choice-yn}
 
 Allows you to specify whether these viruses should be treated as outgroups or not.
 
----
-#Name of the project,OG_Project,ID file,Outgroup,
-Orthobunyaviridae,Khurdun,Khurdun_file.txt,Y,
-Orthobunyaviridae,Pacuvirus,Pacuvirus_file.txt,Y,
-Orthobunyaviridae,Orthobunyaviridae,Orthobunyaviridae_file.txt,N,
----
+**Outgroup** **=\> \<Y/N\>**
+
+**format : [String] Yes or Y or No or N, no space**
+
+``` text
+Outgroup => N
+```
 
 ##### E: For which protein {#sec-e-for-which-protein}
 
-Which protein do you want to study, or for which protein will this outgroup be used?
+Which protein do you want to study, or for which protein will this outgroup be used.
 
----
-#Name of the project,OG_Project,ID file,Outgroup,For wich prot,
-Orthobunyaviridae,Khurdun,Khurdun_file.txt,Y,nsmgn,
-Orthobunyaviridae,Pacuvirus,Pacuvirus_file.txt,Y,polyprotein;gn;nsm;gc,
-Orthobunyaviridae,Orthobunyaviridae,Orthobunyaviridae_file.txt,N,polyprotein;gn;nsm;gc,
----
+**For wich prot** **=\> \<prot1;...;protn\>**
+
+**format : [string] separate with ";" no space**
+
+``` text
+For wich prot => gag;pol;rvt;rnase;integrase
+```
 
 ##### F: Protein names (in order) {#sec-f-protein-names-in-order}
 
 Protein names of the [OG_Project](#sec-b-study-name)
 
----
-#...,ID file,Outgroup,For wich prot,
-...,Khurdun_file.txt,Y,nsmgn,polyprotein;gn;gc
-...,Pacuvirus_file.txt,Y,polyprotein;gn;nsm;gc,polyprotein;gn;nsm;gc
-...,Orthobunyaviridae_file.txt,N,polyprotein;gn;nsm;gc,polyprotein;gn;nsm;gc
----
+``` text
+proteins name (in order) => gag;pol;rvt;rnase;integrase
+```
 
-##### G: specific protein {#sec-g-specific-protein}
+**proteins name (in order)** **=\> \<prot1;...;protn\>**
+
+**format : [string] separate with ";" no space**
+
+##### G: specific protein
 
 Indicate which proteins are involved in the study of a specific protein, if applicable.
 
 For example, if you want to study the evolutionary history of two proteins present in the same virus.
 
-The protein Gn of Khurdun will be used as the outgroup.
+You can leave this part empty if you do not want to study the evolutionary history.
 
----
-#...,ID file,Outgroup,For wich prot,spe prot,
-...,Khurdun_file.txt,Y,nsmgn,polyprotein;gn;gc,nsmgn=gn,
-...,Pacuvirus_file.txt,Y,polyprotein;gn;nsm;gc,polyprotein;gn;nsm;gc,,
-...,Orthobunyaviridae_file.txt,N,polyprotein;gn;nsm;gc,polyprotein;gn;nsm;gc,nsmgn=nsm+gn
----
+**spe prot** **=\> \<speprot=prot1+prot2\>**
+
+**format : [string] name of the specific protein = Protein1 +Protein2, no space**
+
+``` text
+spe prot => 
+```
 
 ##### H: TargetID {#sec-h-targetid}
 
 Enter a reference ID that will be used for BLAST alignment in case some positions are missing.
 
----
-#...,,For wich prot,spe prot,TargetID,
-...,nsmgn,polyprotein;gn;gc,nsmgn=gn,,
-...,polyprotein;gn;nsm;gc,polyprotein;gn;nsm;gc,,,
-...,polyprotein;gn;nsm;gc,polyprotein;gn;nsm;gc,nsmgn=nsm+gn,NC_001926.1
----
+**TargetID** **=\> \<ID\>**
+
+**format : [string] One Genbank ID, no space**
+
+``` text
+TargetID => NC_001802.1
+```
 
 ##### I: Target/OG Proteins position {#sec-i-reference-protein-positions}
 
-The positions of the proteins for the reference or the proteins outgroup.
+The positions of the proteins for the TargetID or the proteins outgroup.
 
----
-#...,For wich prot,spe prot,TargetID,Target/OG Proteins position,
-...,nsmgn,polyprotein;gn;gc,nsmgn=gn,,23;292;526;944,
-...,polyprotein;gn;nsm;gc,polyprotein;gn;nsm;gc,,,1;1458;23;305;308;476;598;1386,
-...,polyprotein;gn;nsm;gc,polyprotein;gn;nsm;gc,nsmgn=nsm+gn,NC_001926.1,22;302;303;476;509;1372,
----
+**Target/OG Proteins position** **=\> \<posprot1;...;posprotn\>**
+
+**format : [integer] positions of each protein, separate with ";" ,no space**
+
+``` text
+Target/OG Proteins position => 2;429;605;1006;1024;1144;1157;1415
+```
 
 ##### J: Start of the proteins in the nucleic sequence {#sec-j-start-of-the-proteins-in-the-nucleic-sequence}
 
@@ -278,89 +277,91 @@ Start of the proteins in the nucleic sequence
 
 This position will be used as the start of the protein sequence within the nucleic acid sequence (for all sequences).
 
----
-#...,Target/OG Proteins position,Start of the proteins in the nucleic sequence,
-...,23;292;526;944,34,
-...,1;1458;23;305;308;476;598;1386,53,
-...,22;302;303;476;509;1372,57,
----
+**Target/OG Proteins position** **=\> \<start\>**
+
+**format : [integer] ,no space**
+
+``` text
+Start of the proteins in the nucleic sequence => 1631
+```
 
 ##### K: DNAdist Threshold {#sec-k-dnadist-threshold}
 
-Which threshold for the kimura distance do you want to use?
+Which threshold for the kimura distance do you want to use.
 
----
-#...,Start of the proteins in the nucleic sequence,DNAdist Threshold,
-...,34,,
-...,53,,
-...57,0.25,
----
+**DNAdist Threshold =\> \<Threshold\>**
 
-DNAdist Threshold
+**format : [float] decimal separation with "." ,no space**
+
+``` text
+DNAdist Threshold => 0.25
+```
 
 ##### L: Organism to keep ID {#sec-l-organism-to-keep-id}
 
 A list of the IDs that you **do not want** to be deleted.
 
-**SEPARATED BY ‘;’**
+**format :**
 
----
-#...,Start of the proteins in the nucleic sequence,DNAdist Threshold,Organism to keep ID,
-...,34,,,
-...,53,,,
-...57,0.25,MH484340.1;NC_005775;EF990927.1
----
+**Organism to keep ID =\> \<ID1;...;IDn\>**
 
-ID Organism to keep
+**[string] separate with ";"**
+
+``` text
+Organism to keep ID => NONE*NN=NN
+```
 
 ##### M: Organism without a particular protein ID {#sec-m-organism-without-a-particular-protein-id}
 
----
-#...,DNAdist Threshold,Organism to keep ID,Organism without a particular protein ID
-...,,,OUT*NSM=NC_078560.1,
-...,,,NONE*NN=NN,
-...,0.25,MH484340.1;NC_005775;EF990927.1,NONE*NN=NN,
----
+This information is usefull is there is certain virus that does not have certain protein.
 
 Organism without a particular protein ID
 
-OUT\*\<prot\>=list of IDs separated by ";"
+**format :**
 
-IN\*\<prot\>=liste of IDs separated by ";"
+**OUT\*\<prot\>=ID1;...;ID2**
+
+**IN\*\<prot\>=ID1;...;ID2**
+
+**[string] separate with ";" ,no space**
 
 ##### N: Trimal {#sec-n-trimal}
 
 Do you want to use TrimAl for this study.
 
----
-#...,DNAdist Threshold,Organism to keep ID,Organism without a particular protein ID,Trimal
-...,,,OUT*NSM=NC_078560.1,Yes,
-...,,,NONE*NN=NN,Yes,
-...,0.25,MH484340.1;NC_005775;EF990927.1,NONE*NN=NN,Yes,
----
+``` text
+Trimal => Yes
+```
 
-Do you want to use TrimAl
+**format**
+
+**Trimal =\> \<Y/N\>**
+
+**[String] Yes or Y or No or N, no space**
 
 ##### O: Blast {#sec-o-blast}
 
 Do you want to use blast in case of missing positions.
 
----
-#...,Organism without a particular protein ID,Trimal,Blast
-...,OUT*NSM=NC_078560.1,Yes,Yes
-...,NONE*NN=NN,Yes,Yes
-...,NONE*NN=NN,Yes,Yes
----
+``` text
+Blast => Yes
+```
+
+**format**
+
+**Blast =\> \<Y/N\>**
+
+**[String] Yes or Y or No or N, no space**
 
 il faut nommer clairement les ifnormations que doit contenir ce fichier en les listant ainsi que le format que ça doit avoir; le fichier exemple n'est pas simple à comprendre, un utilisateur doit pouvoir construire ce fichier là de zero; il faut aussi indiquer à quel endroit doit se trouver le fichier (et les autres) et indiquer si il faut creer un dossier qui recevra les outputs et où il doit se trouver (j'ai un probleme à se niveau pour faire tourner; j'ai l'impression que la connexion à genbank fonctionne mais où sont les fichiers récupérés ? ils ne sont pas la ou le script les attend et je ne vois pas de dossier qui les contiendrait###
 
-### Viruses IDs List (**\<IDs_file_name\>.txt)** 
+### Viruses IDs List (**\<IDs_file_name\>.txt)**
 
 This file must contain the list of Genbank IDs of the studied sequences. Ce fichier est essentiel au bon fonctionnement du pipeline.C'est une liste d'Ids. en colonne (un ids par ligne) sans entête.
 
 Ce fichier must be at the root.
 
----
+``` text
 AF033808.1
 AF228552.1
 M23385.1
@@ -370,9 +371,9 @@ AF033811.1
 AF151794.2
 GU980187.1
 KT724050.1
----
+```
 
-###  **User_legend.txt** 
+### **User_legend.txt**
 
 This file contains the user-provided captions.
 
@@ -380,7 +381,7 @@ This file must be present and will not be created by the pipeline but it can be 
 
 It is a text file seperated with "\|" avec une entête.
 
----
+``` text
 Virus name|Serogroup 
 Bovine immunodeficiency|Lentivirus
 Jembrana disease|Lentivirus
@@ -391,7 +392,7 @@ Simian T-lymphotropic  2|Deltaretrovirus
 Walleye dermal sarcoma|Epsilonretrovirus
 Moloney murine leukemia|Gammaretrovirus
 Reticuloendotheliosis|Gammaretrovirus
----
+```
 
 ### **species_equivalent.txt** (can be empty)
 
@@ -399,24 +400,38 @@ This file is used to modify the names of hosts/vectors that are not recognised b
 
 It is a tabular file with, in the first column, the name as it appears in the GenBank file, and in the second column, the scientific name recognised by the NCBI databases.
 
-See [host vector section](#sec-hostvectors-caption) for further information
+See [host vector section](#sec-hostvectors-caption) for further information.
 
----
+``` text
 #Species	Scientific Species name
 Culex	Diptera
 Oryzomys	Rodentia
 Culicidae	Diptera
 Oxymycterus	Rodentia
 Porcine	Artiodactyla
----
+```
 
-### **protein_equivalent.txt** 
+### **protein_equivalent.txt**
 
-This file is used to enable the pipeline to recognise the various names of the proteins contained in the NCBI databases
+This file is used to enable the pipeline to recognize the various names of the proteins contained in the NCBI databases
 
 (See [section region name](#sec-region-name-in-the-database) for further information)
 
-This is a tabular file with, in the first column, the name of the protein as it appears in the GenBank file, and in the second column, the name of that same protein as you wrote it in the section (cf.[#sec-f-protein-names-in-order](#sec-f-protein-names-in-order)).
+This is a tabular file with, in the first column, the name of the protein as it appears in the GenBank file, and in the second column, the name of that same protein as you wrote it in the section (cf.[protein names in order](#sec-f-protein-names-in-order "protein names in order")).
+
+``` text
+#Protein Database protein name
+reversetranscriptase	rvt
+in_	integrase
+rt_rnase	rnase
+gag-pro-pol	gag+pol
+rve	integrase
+rp_rtvl_h_like	rvt
+rt_zfrev_like	rvt
+rvt_thumb	rvt 
+rt_rtv	rvt
+rt_zfrev_like	rvt
+```
 
 ## Launch the pipeline {#sec-launch-the-pipeline}
 
@@ -440,9 +455,9 @@ This pipeline is designed to automatically download and extract protein sequence
 
 This step performs the download of all the sequences in a Genbank format and the concatenation of all the Genbank files into one file called **sequences\<Study_name\>.gb**.
 
-| Input                                  | Output                     |
-|:---------------------------------------|:---------------------------|
-| all_information.txt<br>**(From user)** | sequences\<Study_name\>.gb |
+| Input                              | Output                         |
+|:-----------------------------------|:-------------------------------|
+| all_information.txt**(From user)** | \<\>sequences\<Study_name\>.gb |
 
 : Input-Output Execution.sh
 
