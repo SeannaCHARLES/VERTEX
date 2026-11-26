@@ -238,39 +238,27 @@ You must not enter \<your_value\> in the first column. The pipeline only extract
 ``` text
 #Path,<Project Absolute path>
 ```
-
-You must enter the absolute path to the folder in which the project folders will be created.
-
-Third line :
+You must enter the absolute path to the folder in which the project (result) folders will be created.
 
 ``` text
 #res_file,/<result_folder>/
 ```
-
-You must specify a folder name surrounded by ‘/’ which will be used to save the output files after the protein separation. (This will make it easier for you to find your files later.)
-
-No absolute path needed
-
-Fourth line :
+You must specify a folder name surrounded by ‘/’ which will be used to save the output files after the protein separation. 
+No absolute path is needed
 
 ``` text
 #path_script,<VERTEX Absolute path>VERTEX/Script/ 
 ```
-
-You must specify the absolute path to the VERTEX pipeline script folder that you downloaded from the [GitHub](https://github.com/SeannaCHARLES/VERTEX/tree/main).
-
-Fifth line :
+You must specify the **absolute path** to the VERTEX pipeline **script folder** that you downloaded from the [GitHub](https://github.com/SeannaCHARLES/VERTEX/tree/main).
 
 ``` text
 #type_seq,nucl;prot
 ```
-
-You must specify the type of sequence you wish to analyse, either ‘nucl’ or ‘prot’, or both; the order does not matter.Sixth line :
+You must specify the type of sequence you wish to analyse, either ‘nucl’ or ‘prot’, or both; the order does not matter.
 
 ``` text
-#Email_adress=,<your email adresse>
+#Email_adress=,<your email address>
 ```
-
 You must enter your email address. It is essential for submitting requests to the NCBI database.
 
 #### Your study informations
@@ -281,15 +269,13 @@ The seventh row contains headers that explain what to write in each column.
 #Name of the project,Species or family,List of ID,Outgroup Spe (Y/N),for quel prot,proteins name (in order),spe prot,TargetID,Target/OG Proteins position,Start of the proteins in the nucleic sequence,DNAdist Threshold,Organism to keep ID,ORGANISM WITH(OUT) A PARTICULAR PROTEIN ID,Trimal,blast
 ```
 
-We provide here a step by step running example for the study of Orthobunyaviridae with 2 differents outgroups.
+We provide here a step by step running example for the study of Orthobunyaviridae with 2 different outgroups.
 
 ##### A: Name of the project {#sec-a-execution-project-name}
 
-This name will be used as the folder name.
+This name will be used as the folder name. It also allows you to specify which project each outgroup is associated with (if necessary).
 
-It also allows you to specify which project each outgroup is associated with (if necessary).
-
-If you wish to analyse several segments or polyproteins from the same viral family or species, you must enter two different project names; otherwise, all the files produced by the pipeline for both projects will be stored in the same folder.
+If you wish to analyse several segments or polyproteins from the same viral family or species, you must enter different project names; otherwise, all the files produced by the pipeline for all projects will be stored in the same folder.
 
 **Name of the project =\> \<Project name\>**
 
@@ -301,9 +287,9 @@ Name of the project => Retrovirus_EL_Rtarticle_25
 
 ##### B: OG_Project {#sec-b-study-name}
 
-“OG_Project” enter the name of the outgroup if you want to use different outgroup for all or a few proteins.
+“OG_Project” put the name of the outgroup if you want to use different outgroups for all or a few proteins.
 
-If this does not apply to you, you can add the outgroup IDs to the list of study identifiers and enter the project name (cf.[Project name](#sec-a-execution-project-name)).
+If this does not apply to you, you can add the outgroup IDs to the list of studied organisms and enter the project name (cf.[Project name](#sec-a-execution-project-name)).
 
 **OG_Project** **=\> \<Project name or OG name\>**
 
@@ -315,7 +301,7 @@ OG_Project => Retrovirus_EL_Rtarticle_25
 
 ##### C: ID file {#sec-c-id-file}
 
-The name of the file that contains the virus IDs. **This file must be at your root**.
+The name of the file that contains the virus IDs. **This file must be at the root of the working directory**.
 
 **ID file** **=\> \<name of the IDs file\>**
 
@@ -363,11 +349,7 @@ proteins name (in order) => gag;pol;rvt;rnase;integrase
 
 ##### G: specific protein {#sec-g-specific-protein}
 
-Indicate which proteins are involved in the study of a specific protein, if applicable.
-
-For example, if you want to study the evolutionary history of two proteins present in the same virus.
-
-You can leave this part empty if you do not want to study the evolutionary history.
+Indicates which proteins are involved in the study of a specific protein, if applicable. For example, if you want to study the evolutionary history of two proteins present in the same virus. This part can be empty.
 
 **spe prot** **=\> \<speprot=prot1+prot2\>**
 
@@ -379,7 +361,7 @@ spe prot =>
 
 ##### H: TargetID {#sec-h-targetid}
 
-Enter a reference ID that will be used for BLAST alignment in case some positions are missing.
+Indicate a reference ID that will be used for BLAST alignment in case some positions are missing.
 
 **TargetID** **=\> \<ID\>**
 
@@ -391,7 +373,7 @@ TargetID => NC_001802.1
 
 ##### I: Target/OG Proteins position {#sec-i-reference-protein-positions}
 
-The positions of the proteins for the TargetID or the proteins outgroup.
+The positions of the proteins for the TargetID or the protein from the outgroup.
 
 **Target/OG Proteins position** **=\> \<posprot1;...;posprotn\>**
 
@@ -402,8 +384,6 @@ Target/OG Proteins position => 2;429;605;1006;1024;1144;1157;1415
 ```
 
 ##### J: Start of the proteins in the nucleic sequence {#sec-j-start-of-the-proteins-in-the-nucleic-sequence}
-
-Start of the proteins in the nucleic sequence
 
 This position will be used as the start of the protein sequence within the nucleic acid sequence (for all sequences).
 
@@ -443,9 +423,7 @@ Organism to keep ID => NONE*NN=NN
 
 ##### M: Organism without a particular protein ID {#sec-m-organism-without-a-particular-protein-id}
 
-This information is usefull is there is certain virus that does not have certain protein.
-
-Organism without a particular protein ID
+This information is useful when certain virus do not have some proteins. You indicate the virus ID without a particular protein.
 
 **format :**
 
@@ -457,7 +435,7 @@ Organism without a particular protein ID
 
 ##### N: Trimal {#sec-n-trimal}
 
-Do you want to use TrimAl for this study.
+Do you want to use TrimAl for this study (Yes or No).
 
 ``` text
 Trimal => Yes
@@ -471,7 +449,7 @@ Trimal => Yes
 
 ##### O: Blast {#sec-o-blast}
 
-Do you want to use blast in case of missing positions.
+Do you want to use blast in case of missing positions (Yes or No).
 
 ``` text
 Blast => No
@@ -483,20 +461,16 @@ Blast => No
 
 **[String] Yes or Y or No or N, no space**
 
-Your file should look like this :
+Your file should look like this when filled:
 
 ``` text
 #Name of theproject,OG_Project,ID file,Outgroup Spe (Y/N),For wich prot,proteins name (in order),spe prot,TargetID,Target/OG Proteins position,Start of the proteins in the nucleic sequence,DNAdist Threshold,Organism to keep ID,ORGANISM WITH(OUT) A PARTICULAR PROTEIN ID,Trimal,blast
 Retrovirus_EL_Rtarticle_25,Retrovirus_EL_Rtarticle_25,Retrovirus_EL_Rtarticle.txt,N,gag;pol;rvt;rnase;integrase,gag;pol;rvt;rnase;integrase,,NC_001802.1,2;429;605;1006;1024;1144;1157;1415,1631,0.25,,NONE*NN=NN,Yes,No
 ```
 
-il faut nommer clairement les ifnormations que doit contenir ce fichier en les listant ainsi que le format que ça doit avoir; le fichier exemple n'est pas simple à comprendre, un utilisateur doit pouvoir construire ce fichier là de zero; il faut aussi indiquer à quel endroit doit se trouver le fichier (et les autres) et indiquer si il faut creer un dossier qui recevra les outputs et où il doit se trouver (j'ai un probleme à se niveau pour faire tourner; j'ai l'impression que la connexion à genbank fonctionne mais où sont les fichiers récupérés ? ils ne sont pas la ou le script les attend et je ne vois pas de dossier qui les contiendrait###
-
 ### Viruses IDs List (**\<IDs_file_name\>.txt)**
 
-This file must contain the list of Genbank IDs of the studied sequences. Ce fichier est essentiel au bon fonctionnement du pipeline.C'est une liste d'Ids. en colonne (un ids par ligne) sans entête.
-
-Ce fichier must be at the root.
+This file must contain the list of Genbank IDs of the studied sequences. This file is mandatory and must be at the root of the working directory. 
 
 ``` text
 AF033808.1
@@ -510,13 +484,10 @@ GU980187.1
 KT724050.1
 ```
 
-### **User_legend.txt**
+### **User_legend.txt** (can be empty)
 
-This file contains the user-provided captions.
-
-This file must be present and will not be created by the pipeline but it can be empty.
-
-It is a text file seperated with "\|" avec une entête.
+This file contains the user-provided captions. It is mandatory but will not be created by the pipeline but The file can be empty.
+It is a text file separated with "\|" with a header.
 
 ``` text
 Virus name|Serogroup 
@@ -533,9 +504,7 @@ Reticuloendotheliosis|Gammaretrovirus
 
 ### **species_equivalent.txt** (can be empty)
 
-This file is used to modify the names of hosts/vectors that are not recognised by the NCBI databases.
-
-It is a tabular file with, in the first column, the name as it appears in the GenBank file, and in the second column, the scientific name recognised by the NCBI databases.
+This file is used to modify the names of hosts/vectors that are not recognised by the NCBI databases. It is a tabular file with, in the first column, the name as it appears in the GenBank file, and in the second column, the scientific name recognised by the NCBI databases.
 
 See [host vector section](#sec-hostvectors-caption) for further information.
 
@@ -572,9 +541,11 @@ rt_zfrev_like   rvt
 
 ## Launch the pipeline {#sec-launch-the-pipeline}
 
-S'assurer que le fichier est exécxutable
+Make sure that the script is an executable file.
 
 chmod -ux
+
+When in your working directory
 
 Enter **./\<path\>/VERTEX/Scripts/execution.sh** in your terminal.
 
@@ -594,17 +565,17 @@ DO NOT USE "," AS A SEPARATOR INSIDE EACH COLUMN USE ";" INSTEAD
 
 ## File paths {#sec-file-paths}
 
-protein_equivalent.txt **must be at the root**
+protein_equivalent.txt **must be at the root of the working directory**
 
-species_equivalent.txt **must be at the root**
+species_equivalent.txt **must be at the root of the working directory**
 
-all_information.txt **must be at the root**
+all_information.txt **must be at the root of the working directory**
 
-\<IDs_file_name\>.txt **must be at the root**
+\<IDs_file_name\>.txt **must be at the root of the working directory**
 
-user_legend.txt **must be at the root**
+user_legend.txt **must be at the root of the working directory**
 
-## Skip steps {#sec-s-steps}
+## Skipped steps {#sec-s-steps}
 
 If you do not want to run certain steps, you must comment out the section for these steps (indicated by comment lines in **Execution.sh**). Please note that some sections must not be commented out. Also ensure that the output files for the steps you are skipping are present.
 
@@ -646,6 +617,8 @@ The images of the various orders of hosts/vectors are available on another publi
 
 If using this tool, please cite Seanna Charles, Anja Böckmann and Emmanuelle Lerat (2026) VERTEX: A pipeline for Viral sequence Extraction, Reconstruction and Tree EXploration.
 
-12 November 2026
+26 November 2026
 
 # Contact {#sec-contact}
+emmanuelle.lerat@univ-lyon1.fr
+seanna.charles@univ-lyon1.fr
