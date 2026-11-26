@@ -66,6 +66,16 @@ The first seven lines are preceded by ‘#’; **it is important not to remove t
 #Name of theproject,OG_Project,ID file,Outgroup Spe (Y/N),For wich prot,proteins name (in order),spe prot,TargetID,Target/OG Proteins position,Start of the proteins in the nucleic sequence,DNAdist Threshold,Organism to keep ID,ORGANISM WITH(OUT) A PARTICULAR PROTEIN ID,Trimal,blast
 ---
 
+``` texinfo
+#All the information will be used in the script .......please read the read_me file for further informations                                                                
+#Path,<Project Absolute path>
+#res_file,/<result_folder>/
+#path_script,<VERTEX Absolute path>VERTEX/Script/
+#type_seq,nucl;prot
+#Email_adress=,<your email adresse>
+#Name of theproject,OG_Project,ID file,Outgroup Spe (Y/N),For wich prot,proteins name (in order),spe prot,TargetID,Target/OG Proteins position,Start of the proteins in the nucleic sequence,DNAdist Threshold,Organism to keep ID,ORGANISM WITH(OUT) A PARTICULAR PROTEIN ID,Trimal,blast
+```
+
 The first line is simply a reminder to read the README and is not essential.
 
 ---
@@ -111,6 +121,8 @@ Third line :
 ---
 
 You must specify a folder name surrounded by ‘/’ which will be used to save the output files after the protein separation. (This will make it easier for you to find your files later.)
+
+No absolute path needed
 
 Fourth line :
 
@@ -337,7 +349,7 @@ Do you want to use blast in case of missing positions.
 
 il faut nommer clairement les ifnormations que doit contenir ce fichier en les listant ainsi que le format que ça doit avoir; le fichier exemple n'est pas simple à comprendre, un utilisateur doit pouvoir construire ce fichier là de zero; il faut aussi indiquer à quel endroit doit se trouver le fichier (et les autres) et indiquer si il faut creer un dossier qui recevra les outputs et où il doit se trouver (j'ai un probleme à se niveau pour faire tourner; j'ai l'impression que la connexion à genbank fonctionne mais où sont les fichiers récupérés ? ils ne sont pas la ou le script les attend et je ne vois pas de dossier qui les contiendrait###
 
-### Viruses IDs List (**\<IDs_file_name\>.txt)** 
+### Viruses IDs List (**\<IDs_file_name\>.txt)**
 
 This file must contain the list of Genbank IDs of the studied sequences. Ce fichier est essentiel au bon fonctionnement du pipeline.C'est une liste d'Ids. en colonne (un ids par ligne) sans entête.
 
@@ -355,7 +367,7 @@ GU980187.1
 KT724050.1
 ---
 
-###  **User_legend.txt** 
+### **User_legend.txt**
 
 This file contains the user-provided captions.
 
@@ -393,7 +405,7 @@ Oxymycterus	Rodentia
 Porcine	Artiodactyla
 ---
 
-### **protein_equivalent.txt** 
+### **protein_equivalent.txt**
 
 This file is used to enable the pipeline to recognise the various names of the proteins contained in the NCBI databases
 
@@ -402,6 +414,10 @@ This file is used to enable the pipeline to recognise the various names of the p
 This is a tabular file with, in the first column, the name of the protein as it appears in the GenBank file, and in the second column, the name of that same protein as you wrote it in the section (cf.[#sec-f-protein-names-in-order](#sec-f-protein-names-in-order)).
 
 ## Launch the pipeline {#sec-launch-the-pipeline}
+
+S'assurer que le fichier est exécxutable
+
+chmod -ux
 
 Enter **./\<path\>/VERTEX/Scripts/execution.sh** in your terminal.
 
@@ -419,9 +435,9 @@ This pipeline is designed to automatically download and extract protein sequence
 
 This step performs the download of all the sequences in a Genbank format and the concatenation of all the Genbank files into one file called **sequences\<Study_name\>.gb**.
 
-| Input                                  | Output                     |
-|:---------------------------------------|:---------------------------|
-| all_information.txt<br>**(From user)** | sequences\<Study_name\>.gb |
+| Input                              | Output                         |
+|:-----------------------------------|:-------------------------------|
+| all_information.txt**(From user)** | \<\>sequences\<Study_name\>.gb |
 
 : Input-Output Execution.sh
 

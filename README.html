@@ -401,6 +401,13 @@ run correctly.</p>
 <h4>path and e-mail adresse</h4>
 <p>The first seven lines are preceded by ‘#’; <strong>it is important
 not to remove them.</strong></p>
+<pre class="texinfo"><code>#All the information will be used in the script .......please read the read_me file for further informations                                                                
+#Path,&lt;Project Absolute path&gt;
+#res_file,/&lt;result_folder&gt;/
+#path_script,&lt;VERTEX Absolute path&gt;VERTEX/Script/
+#type_seq,nucl;prot
+#Email_adress=,&lt;your email adresse&gt;
+#Name of theproject,OG_Project,ID file,Outgroup Spe (Y/N),For wich prot,proteins name (in order),spe prot,TargetID,Target/OG Proteins position,Start of the proteins in the nucleic sequence,DNAdist Threshold,Organism to keep ID,ORGANISM WITH(OUT) A PARTICULAR PROTEIN ID,Trimal,blast</code></pre>
 <p>The first line is simply a reminder to read the README and is not
 essential.</p>
 <p>The following five lines must be completed.</p>
@@ -419,6 +426,7 @@ folders will be created.</p>
 <p>You must specify a folder name surrounded by ‘/’ which will be used
 to save the output files after the protein separation. (This will make
 it easier for you to find your files later.)</p>
+<p>No absolute path needed</p>
 <p>Fourth line :</p>
 <p>You must specify the absolute path to the VERTEX pipeline script
 folder that you downloaded from the <a href="https://github.com/SeannaCHARLES/VERTEX/tree/main">GitHub</a>.</p>
@@ -904,6 +912,8 @@ name of that same protein as you wrote it in the section (cf.<a href="#sec-f-pro
 </div>
 <div id="sec-launch-the-pipeline" class="section level2">
 <h2>Launch the pipeline</h2>
+<p>S’assurer que le fichier est exécxutable</p>
+<p>chmod -ux</p>
 <p>Enter <strong>./&lt;path&gt;/VERTEX/Scripts/execution.sh</strong> in
 your terminal.</p>
 <p>Where &lt;path&gt; is the absolute path to the VERTEX folder that you
@@ -942,9 +952,8 @@ called <strong>sequences&lt;Study_name&gt;.gb</strong>.</p>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="left">all_information.txt<br><strong>(From
-user)</strong></td>
-<td align="left">sequences&lt;Study_name&gt;.gb</td>
+<td align="left">all_information.txt<strong>(From user)</strong></td>
+<td align="left">&lt;&gt;sequences&lt;Study_name&gt;.gb</td>
 </tr>
 </tbody>
 </table>

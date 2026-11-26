@@ -3,8 +3,8 @@ title: "VERTEX (Viral sequence Extraction, Reconstruction and Tree EXploration)"
 author: "CHARLES Seanna"
 date: "2026-10-28"
 output:
-  word_document: default
   pdf_document: default
+  word_document: default
   html_document:
     df_print: paged
 ---
@@ -57,31 +57,376 @@ Requests==2.34.2
 
 ## Mandatory input files {#sec-mandatory-input-files}
 
-- all_information.txt **can not be empty**
+### All_information.txt {#sec-example-of-use}
 
-(Contains all the information required for the pipeline to run correctly.)
+**all_information.txt** **cannot be empty.**
 
-- **\<IDs_file_name\>.txt** **can not be empty**
+This file contains all the information required for the pipeline to run correctly.
 
-(Must contain the list of IDs you are interested in)
+**all_information.txt** is a text file separated with **"," not tabulation**.
 
-- user_legend.txt can be empty
+This file is split into two parts.
 
-(User provided captions **must be in the Interactive Tree of Life (ITOL) caption format.**
+#### path and e-mail adresse
 
-- **species_equivalent.txt** can be empty
+The first seven lines are preceded by ‘#’; **it is important not to remove them.**
 
-(See [host vector section](#sec-hostvectors-caption) for further information)
+---
+#All the information will be used in the script .......please read the read_me file for further informations                                                                
+#Path,<Project Absolute path>
+#res_file,/<result_folder>/
+#path_script,<VERTEX Absolute path>VERTEX/Script/
+#type_seq,nucl;prot
+#Email_adress=,<your email adresse>
+#Name of theproject,OG_Project,ID file,Outgroup Spe (Y/N),For wich prot,proteins name (in order),spe prot,TargetID,Target/OG Proteins position,Start of the proteins in the nucleic sequence,DNAdist Threshold,Organism to keep ID,ORGANISM WITH(OUT) A PARTICULAR PROTEIN ID,Trimal,blast
+---
 
-- **protein_equivalent.txt** can be empty
+The first line is simply a reminder to read the README and is not essential.
 
-(See [section region name](#sec-region-name-in-the-database){#sec-region-name-in-the-database} for further information)
+---
+#All the information will be used in the script .......please read the read_me file for further informations
+---
+
+The following five lines must be completed.
+
+---
+#Path,<Project Absolute path>
+#res_file,/<result_folder>/
+#path_script,<VERTEX Absolute path>VERTEX/Script/
+#type_seq,nucl;prot
+#Email_adress=,<your email adresse>
+---
+
+The first column indicates what information is required in the second column.
+
+The rows are organized as follows:
+
+\<information_ask\>,\<your_value\>
+
+You must not enter \<your_value\> in the first column. The pipeline only extracts information from the second column for all rows beginning with ‘#’.
+
+First line :
+
+---
+#All the information will be used in the script .......please read the read_me file for further informations
+---
+
+Second line :
+
+---
+#Path,<Project Absolute path>
+---
+
+You must enter the absolute path to the folder in which the project folders will be created.
+
+Third line :
+
+---
+#res_file,/<result_folder>/
+---
+
+You must specify a folder name surrounded by ‘/’ which will be used to save the output files after the protein separation. (This will make it easier for you to find your files later.)
+
+No absolute path needed
+
+Fourth line :
+
+---
+#path_script,<VERTEX Absolute path>VERTEX/Script/ 
+---
+
+You must specify the absolute path to the VERTEX pipeline script folder that you downloaded from the [GitHub](https://github.com/SeannaCHARLES/VERTEX/tree/main).
+
+Fifth line :
+
+---
+#type_seq,nucl;prot
+---
+
+You must specify the type of sequence you wish to analyse, either ‘nucl’ or ‘prot’, or both; the order does not matter.Sixth line :
+
+---
+#Email_adress=,<your email adresse>
+---
+
+You must enter your email address. It is essential for submitting requests to the NCBI database.
+
+#### Your study informations
+
+The seventh row contains headers that explain what to write in each column.
+
+---
+#Name of the project,Species or family,List of ID,Outgroup Spe (Y/N),for quel prot,proteins name (in order),spe prot,TargetID,Target/OG Proteins position,Start of the proteins in the nucleic sequence,DNAdist Threshold,Organism to keep ID,ORGANISM WITH(OUT) A PARTICULAR PROTEIN ID,Trimal,blast
+---
+
+We provide here a step by step running example for the study of Orthobunyaviridae with 2 differents outgroups.
+
+##### A: Name of the project {#sec-a-execution-project-name}
+
+This name will be used as the folder name.
+
+It also allows you to specify which project each outgroup is associated with (if necessary).
+
+If you wish to analyse several segments or polyproteins from the same viral family or species, you must enter two different project names; otherwise, all the files produced by the pipeline for both projects will be stored in the same folder.
+
+---
+#Name of the project,
+Orthobunyaviridae,
+Orthobunyaviridae,
+Orthobunyaviridae,
+---
+
+##### B: OG_Project {#sec-b-study-name}
+
+“OG_Project” This column is useful for differentiated outgroups from the list of identifiers for the viral species you wish to study.
+
+If this does not apply to you, you can add the outgroup IDs to the list of study identifiers and enter the project name (cf.[Project name](#sec-a-execution-project-name)).
+
+---
+#Name of the project,OG_Project,
+Orthobunyaviridae,Khurdun,
+Orthobunyaviridae,Pacuvirus,
+Orthobunyaviridae,Orthobunyaviridae,
+---
+
+##### C: ID file {#sec-c-id-file}
+
+The name of the file that contains the virus IDs. This file must be at your root.
+
+See
+
+---
+#Name of the project,OG_Project,ID file,
+Orthobunyaviridae,Khurdun,Khurdun_file.txt,
+Orthobunyaviridae,Pacuvirus,Pacuvirus_file.txt,
+Orthobunyaviridae,Orthobunyaviridae,Orthobunyaviridae_file.txt,
+---
+
+##### D: Outgroup(Y/N) {#sec-d-outgroup-choice-yn}
+
+Allows you to specify whether these viruses should be treated as outgroups or not.
+
+---
+#Name of the project,OG_Project,ID file,Outgroup,
+Orthobunyaviridae,Khurdun,Khurdun_file.txt,Y,
+Orthobunyaviridae,Pacuvirus,Pacuvirus_file.txt,Y,
+Orthobunyaviridae,Orthobunyaviridae,Orthobunyaviridae_file.txt,N,
+---
+
+##### E: For which protein {#sec-e-for-which-protein}
+
+Which protein do you want to study, or for which protein will this outgroup be used?
+
+---
+#Name of the project,OG_Project,ID file,Outgroup,For wich prot,
+Orthobunyaviridae,Khurdun,Khurdun_file.txt,Y,nsmgn,
+Orthobunyaviridae,Pacuvirus,Pacuvirus_file.txt,Y,polyprotein;gn;nsm;gc,
+Orthobunyaviridae,Orthobunyaviridae,Orthobunyaviridae_file.txt,N,polyprotein;gn;nsm;gc,
+---
+
+##### F: Protein names (in order) {#sec-f-protein-names-in-order}
+
+Protein names of the [OG_Project](#sec-b-study-name)
+
+---
+#...,ID file,Outgroup,For wich prot,
+...,Khurdun_file.txt,Y,nsmgn,polyprotein;gn;gc
+...,Pacuvirus_file.txt,Y,polyprotein;gn;nsm;gc,polyprotein;gn;nsm;gc
+...,Orthobunyaviridae_file.txt,N,polyprotein;gn;nsm;gc,polyprotein;gn;nsm;gc
+---
+
+##### G: specific protein {#sec-g-specific-protein}
+
+Indicate which proteins are involved in the study of a specific protein, if applicable.
+
+For example, if you want to study the evolutionary history of two proteins present in the same virus.
+
+The protein Gn of Khurdun will be used as the outgroup.
+
+---
+#...,ID file,Outgroup,For wich prot,spe prot,
+...,Khurdun_file.txt,Y,nsmgn,polyprotein;gn;gc,nsmgn=gn,
+...,Pacuvirus_file.txt,Y,polyprotein;gn;nsm;gc,polyprotein;gn;nsm;gc,,
+...,Orthobunyaviridae_file.txt,N,polyprotein;gn;nsm;gc,polyprotein;gn;nsm;gc,nsmgn=nsm+gn
+---
+
+##### H: TargetID {#sec-h-targetid}
+
+Enter a reference ID that will be used for BLAST alignment in case some positions are missing.
+
+---
+#...,,For wich prot,spe prot,TargetID,
+...,nsmgn,polyprotein;gn;gc,nsmgn=gn,,
+...,polyprotein;gn;nsm;gc,polyprotein;gn;nsm;gc,,,
+...,polyprotein;gn;nsm;gc,polyprotein;gn;nsm;gc,nsmgn=nsm+gn,NC_001926.1
+---
+
+##### I: Target/OG Proteins position {#sec-i-reference-protein-positions}
+
+The positions of the proteins for the reference or the proteins outgroup.
+
+---
+#...,For wich prot,spe prot,TargetID,Target/OG Proteins position,
+...,nsmgn,polyprotein;gn;gc,nsmgn=gn,,23;292;526;944,
+...,polyprotein;gn;nsm;gc,polyprotein;gn;nsm;gc,,,1;1458;23;305;308;476;598;1386,
+...,polyprotein;gn;nsm;gc,polyprotein;gn;nsm;gc,nsmgn=nsm+gn,NC_001926.1,22;302;303;476;509;1372,
+---
+
+##### J: Start of the proteins in the nucleic sequence {#sec-j-start-of-the-proteins-in-the-nucleic-sequence}
+
+Start of the proteins in the nucleic sequence
+
+This position will be used as the start of the protein sequence within the nucleic acid sequence (for all sequences).
+
+---
+#...,Target/OG Proteins position,Start of the proteins in the nucleic sequence,
+...,23;292;526;944,34,
+...,1;1458;23;305;308;476;598;1386,53,
+...,22;302;303;476;509;1372,57,
+---
+
+##### K: DNAdist Threshold {#sec-k-dnadist-threshold}
+
+Which threshold for the kimura distance do you want to use?
+
+---
+#...,Start of the proteins in the nucleic sequence,DNAdist Threshold,
+...,34,,
+...,53,,
+...57,0.25,
+---
+
+DNAdist Threshold
+
+##### L: Organism to keep ID {#sec-l-organism-to-keep-id}
+
+A list of the IDs that you **do not want** to be deleted.
+
+**SEPARATED BY ‘;’**
+
+---
+#...,Start of the proteins in the nucleic sequence,DNAdist Threshold,Organism to keep ID,
+...,34,,,
+...,53,,,
+...57,0.25,MH484340.1;NC_005775;EF990927.1
+---
+
+ID Organism to keep
+
+##### M: Organism without a particular protein ID {#sec-m-organism-without-a-particular-protein-id}
+
+---
+#...,DNAdist Threshold,Organism to keep ID,Organism without a particular protein ID
+...,,,OUT*NSM=NC_078560.1,
+...,,,NONE*NN=NN,
+...,0.25,MH484340.1;NC_005775;EF990927.1,NONE*NN=NN,
+---
+
+Organism without a particular protein ID
+
+OUT\*\<prot\>=list of IDs separated by ";"
+
+IN\*\<prot\>=liste of IDs separated by ";"
+
+##### N: Trimal {#sec-n-trimal}
+
+Do you want to use TrimAl for this study.
+
+---
+#...,DNAdist Threshold,Organism to keep ID,Organism without a particular protein ID,Trimal
+...,,,OUT*NSM=NC_078560.1,Yes,
+...,,,NONE*NN=NN,Yes,
+...,0.25,MH484340.1;NC_005775;EF990927.1,NONE*NN=NN,Yes,
+---
+
+Do you want to use TrimAl
+
+##### O: Blast {#sec-o-blast}
+
+Do you want to use blast in case of missing positions.
+
+---
+#...,Organism without a particular protein ID,Trimal,Blast
+...,OUT*NSM=NC_078560.1,Yes,Yes
+...,NONE*NN=NN,Yes,Yes
+...,NONE*NN=NN,Yes,Yes
+---
+
+il faut nommer clairement les ifnormations que doit contenir ce fichier en les listant ainsi que le format que ça doit avoir; le fichier exemple n'est pas simple à comprendre, un utilisateur doit pouvoir construire ce fichier là de zero; il faut aussi indiquer à quel endroit doit se trouver le fichier (et les autres) et indiquer si il faut creer un dossier qui recevra les outputs et où il doit se trouver (j'ai un probleme à se niveau pour faire tourner; j'ai l'impression que la connexion à genbank fonctionne mais où sont les fichiers récupérés ? ils ne sont pas la ou le script les attend et je ne vois pas de dossier qui les contiendrait###
+
+### Viruses IDs List (**\<IDs_file_name\>.txt)** 
+
+This file must contain the list of Genbank IDs of the studied sequences. Ce fichier est essentiel au bon fonctionnement du pipeline.C'est une liste d'Ids. en colonne (un ids par ligne) sans entête.
+
+Ce fichier must be at the root.
+
+---
+AF033808.1
+AF228552.1
+M23385.1
+M80216.1
+NC_000858.1
+AF033811.1
+AF151794.2
+GU980187.1
+KT724050.1
+---
+
+###  **User_legend.txt** 
+
+This file contains the user-provided captions.
+
+This file must be present and will not be created by the pipeline but it can be empty.
+
+It is a text file seperated with "\|" avec une entête.
+
+---
+Virus name|Serogroup 
+Bovine immunodeficiency|Lentivirus
+Jembrana disease|Lentivirus
+Bovine foamy|Spumavirus
+equine foamy  Equus caballus|Spumavirus
+Primate T-lymphotropic  1|Deltaretrovirus
+Simian T-lymphotropic  2|Deltaretrovirus
+Walleye dermal sarcoma|Epsilonretrovirus
+Moloney murine leukemia|Gammaretrovirus
+Reticuloendotheliosis|Gammaretrovirus
+---
+
+### **species_equivalent.txt** (can be empty)
+
+This file is used to modify the names of hosts/vectors that are not recognised by the NCBI databases.
+
+It is a tabular file with, in the first column, the name as it appears in the GenBank file, and in the second column, the scientific name recognised by the NCBI databases.
+
+See [host vector section](#sec-hostvectors-caption) for further information
+
+---
+#Species	Scientific Species name
+Culex	Diptera
+Oryzomys	Rodentia
+Culicidae	Diptera
+Oxymycterus	Rodentia
+Porcine	Artiodactyla
+---
+
+### **protein_equivalent.txt** 
+
+This file is used to enable the pipeline to recognise the various names of the proteins contained in the NCBI databases
+
+(See [section region name](#sec-region-name-in-the-database) for further information)
+
+This is a tabular file with, in the first column, the name of the protein as it appears in the GenBank file, and in the second column, the name of that same protein as you wrote it in the section (cf.[#sec-f-protein-names-in-order](#sec-f-protein-names-in-order)).
 
 ## Launch the pipeline {#sec-launch-the-pipeline}
 
-Enter **./\<path\>/VERTEX/Scripts/execution.sh** in you terminal.
+S'assurer que le fichier est exécxutable
 
-Where \<path\> is the absolute path to the VERTEX folder that you have downloaded from the [GitHub](https://github.com/SeannaCHARLES/VERTEX/tree/main) and decompressed.
+chmod -ux
+
+Enter **./\<path\>/VERTEX/Scripts/execution.sh** in your terminal.
+
+Where \<path\> is the absolute path to the VERTEX folder that you have downloaded and decompressed from the [GitHub](https://github.com/SeannaCHARLES/VERTEX/tree/main).
 
 # Project description {#sec-project-description}
 
@@ -280,204 +625,6 @@ user_legend.txt **must be at the root**
 
 If you do not want to run certain steps, you must comment out the section for these steps (indicated by comment lines in **Execution.sh**). Please note that some sections must not be commented out. Also ensure that the output files for the steps you are skipping are present.
 
-## Example  {#sec-example-of-use}
-
-We provide here a step by step running example for the study of Orthobunyaviridae with a specific outgroup
-
-### A: Execution Project name {#sec-a-execution-project-name}
-
-This name will be used as the folder name. It also allows you to specify which project the outgroup-specific data is associated with, where necessary.
-
-If you wish to analyse several segments or polyproteins from the same viral family or species, you must enter two different project names; otherwise, all the files produced by the pipeline for both projects will be stored in the same folder.
-
-|   Project name    |
-|:-----------------:|
-| Orthobunyaviridae |
-| Orthobunyaviridae |
-| Orthobunyaviridae |
-
-: Project name
-
-### B: Study name %%cette partie n'est pas tres claire pour moi%%% {#sec-b-study-name}
-
-“Study name” allows you to distinguish information regarding outgroups that may not be used for all proteins in the study.
-
-For example, if you have a specific protein, or if you want to use different outgroups for each protein.
-
-If this does not apply to you, you can add the outgroup IDs to the list of study identifiers and enter the project name (cf [Execution Project name](#sec-a-execution-project-name))
-
-|         A         |    Study name     |
-|:-----------------:|:-----------------:|
-| Orthobunyaviridae |      Khurdun      |
-| Orthobunyaviridae |     Pacuvirus     |
-| Orthobunyaviridae | Orthobunyaviridae |
-
-: Study name : Khurdun and Pacuvirus will be used as outgroups
-
-### C: ID file {#sec-c-id-file}
-
-The name of the file that contains the virus IDs. This file must be at the root.
-
-|         A         |         B         |          ID files          |
-|:-----------------:|:-----------------:|:--------------------------:|
-| Orthobunyaviridae |      Khurdun      |      Khurdun_file.txt      |
-| Orthobunyaviridae |     Pacuvirus     |     Pacuvirus_file.txt     |
-| Orthobunyaviridae | Orthobunyaviridae | Orthobunyaviridae_file.txt |
-
-: ID file
-
-### D: Outgroup choice (Y/N) {#sec-d-outgroup-choice-yn}
-
-Allows you to specify whether these viruses should be treated as outgroups or not.
-
-N : Is it a outgroup.
-
-|         A         |         B         |  C  | Outgroup Spe |
-|:-----------------:|:-----------------:|:---:|:------------:|
-| Orthobunyaviridae |      Khurdun      | IDk |      Y       |
-| Orthobunyaviridae |     Pacuvirus     | IDp |      Y       |
-| Orthobunyaviridae | Orthobunyaviridae | IDn |      N       |
-
-: Outgroup Specific : Is it a specifc outgroup?
-
-### E: For which protein {#sec-e-for-which-protein}
-
-Which protein do you want to study, or for which protein will this outgroup be used?
-
-|         A         |         B         |  D  |     For wich prot     |
-|:-----------------:|:-----------------:|:---:|:---------------------:|
-| Orthobunyaviridae |      Khurdun      |  Y  |         nsmgn         |
-| Orthobunyaviridae |     Pacuvirus     |  Y  | polyprotein;gn;nsm;gc |
-| Orthobunyaviridae | Orthobunyaviridae |  N  | polyprotein;gn;nsm;gc |
-
-: For which proteins
-
-### F: Protein names (in order) {#sec-f-protein-names-in-order}
-
-Protein names of the study name (col B Study name)
-
-|         A         |         B         |   E   | Proteins name (in order) |
-|:-----------------:|:-----------------:|:-----:|:------------------------:|
-| Orthobunyaviridae |      Khurdun      | nsmgn |    polyprotein;gn;gc     |
-| Orthobunyaviridae |     Pacuvirus     | prots |  polyprotein;gn;nsm;gc   |
-| Orthobunyaviridae | Orthobunyaviridae | prots |  polyprotein;gn;nsm;gc   |
-
-: Protein names (in order)
-
-### G: specific protein {#sec-g-specific-protein}
-
-Indicate which proteins are involved in the study of a specific protein, if applicable.
-
-For example, if you want to study the evolutionary history of two proteins present in the same virus.
-
-|         A         |         B         |   F   |   spe prot   |
-|:-----------------:|:-----------------:|:-----:|:------------:|
-| Orthobunyaviridae |      Khurdun      | prots |   nsmgn=gn   |
-| Orthobunyaviridae |     Pacuvirus     | prots |              |
-| Orthobunyaviridae | Orthobunyaviridae | prots | nsmgn=nsm+gn |
-
-: specific protein
-
-The protein Gn of Khurdun will be used as the outgroup.
-
-### H: TargetID {#sec-h-targetid}
-
-Enter a reference ID that will be used for BLAST alignment in case some positions are missing.
-
-|         A         |         B         |      G       |    RefID    |
-|:-----------------:|:-----------------:|:------------:|:-----------:|
-| Orthobunyaviridae |      Khurdun      |   nsmgn=gn   |             |
-| Orthobunyaviridae |     Pacuvirus     |              |             |
-| Orthobunyaviridae | Orthobunyaviridae | nsmgn=nsm+gn | NC_001926.1 |
-
-: RefID
-
-### I: reference protein positions {#sec-i-reference-protein-positions}
-
-The positions of the proteins for the reference or the specific outgroup.
-
-|         A         |         B         |   H   | reference /OG proteins position |
-|:--------------:|:--------------:|:--------------:|:-----------------------:|
-| Orthobunyaviridae |      Khurdun      |       |         23;292;526;944          |
-| Orthobunyaviridae |     Pacuvirus     |       | 1;1458;23;305;308;476;598;1386  |
-| Orthobunyaviridae | Orthobunyaviridae | IDref |     22;302;303;476;509;1372     |
-
-: RefID
-
-### J: Start of the proteins in the nucleic sequence {#sec-j-start-of-the-proteins-in-the-nucleic-sequence}
-
-| A | B | I | Start of the proteins in the nucleic sequence |
-|:--:|:--:|:--:|:--:|
-| Orthobunyaviridae | Khurdun | pos | 34 |
-| Orthobunyaviridae | Pacuvirus | pos | 53 |
-| Orthobunyaviridae | Orthobunyaviridae | pos | 57 |
-
-: Start of the proteins in the nucleic sequence
-
-This position will be used as the start of the protein sequence within the nucleic acid sequence (for all sequences).
-
-### K: DNAdist Threshold {#sec-k-dnadist-threshold}
-
-|         A         |         B         |  J  | DNAdist Threshold |
-|:-----------------:|:-----------------:|:---:|:-----------------:|
-| Orthobunyaviridae |      Khurdun      | 34  |       0.01        |
-| Orthobunyaviridae |     Pacuvirus     | 53  |       0.05        |
-| Orthobunyaviridae | Orthobunyaviridae | 57  |       0.01        |
-
-: DNAdist Threshold
-
-### L: Organism to keep ID {#sec-l-organism-to-keep-id}
-
-a list of the IDs that you do not want to be deleted.
-
-**SEPARATED BY ‘;’**
-
-|         A         |         B         |  K   |       Organism to keep ID       |
-|:--------------:|:--------------:|:--------------:|:-----------------------:|
-| Orthobunyaviridae |      Khurdun      | 0.01 |                                 |
-| Orthobunyaviridae |     Pacuvirus     | 0.05 |                                 |
-| Orthobunyaviridae | Orthobunyaviridae | 0.01 | MH484340.1;NC_005775;EF990927.1 |
-
-: ID Organism to keep
-
-### M: Organism without a particular protein ID {#sec-m-organism-without-a-particular-protein-id}
-
-| A | B | L | Organism without a particular protein ID |
-|:--:|:--:|:--:|:--:|
-| Orthobunyaviridae | Khurdun |  | OUT\*NSM=NC_078560.1 |
-| Orthobunyaviridae | Pacuvirus |  | NONE\*NN=NN |
-| Orthobunyaviridae | Orthobunyaviridae | IDs | NONE\*NN=NN |
-
-: Organism without a particular protein ID
-
-OUT\*\<prot\>=list of IDs separated by ";"
-
-IN\*\<prot\>=liste of IDs separated by ";"
-
-### N: Trimal {#sec-n-trimal}
-
-Do you want to use TrimAl for this study.
-
-|         A         |         B         |      M      | Trimal |
-|:-----------------:|:-----------------:|:-----------:|:------:|
-| Orthobunyaviridae |      Khurdun      | OUT\*NSM=ID |  Yes   |
-| Orthobunyaviridae |     Pacuvirus     |    NONE     |  Yes   |
-| Orthobunyaviridae | Orthobunyaviridae |    NONE     |  Yes   |
-
-: Do you want to use TrimAl
-
-### O: Blast {#sec-o-blast}
-
-Do you want to use blast in case of missing proteins positions
-
-|         A         |         B         |  N  | Blast |
-|:-----------------:|:-----------------:|:---:|:-----:|
-| Orthobunyaviridae |      Khurdun      |  Y  |   Y   |
-| Orthobunyaviridae |     Pacuvirus     |  Y  |   Y   |
-| Orthobunyaviridae | Orthobunyaviridae |  Y  |   Y   |
-
-: Do you want to use blast?
-
 ## Additional Instructions and warnings {#sec-additional-instructions-and-warnings}
 
 ### Proteins positions {#sec-proteins-positions}
@@ -492,7 +639,7 @@ If you are not satisfied with the positions, you can change them manually. After
 
 ### Region name in the database
 
-The same proteins may have different region names from one virus to another. If a protein returns very few results and you know this is unexpected, its name may not have been recognized. You can use the file ***prot_all\_\<Study\>.gp*** to help you identified the different region names.
+The same proteins may have different region names from one virus to another. If a protein returns very few results and you know this is unexpected, its name may not have been recognised. You can use the file ***prot_all\_\<Study\>.gp*** to help you identified the different region names.
 
 Whether it differs from the name you entered in the various protein names (red rectangle).
 
@@ -508,16 +655,14 @@ such as: ***glycoproteinprecursor\<\\t\>polyprotein***
 
 ### Host/vectors caption {#sec-hostvectors-caption}
 
-The names of the hosts/vectors are not all uniform and some are not recognized by the NCBI database. To get pass this, you can add equivalents for the host/vector name and the scientific name in the **species_equivalent.txt**
+The names of the hosts/vectors are not all uniform and some are not recognised by the NCBI database. To get pass this, you can add equivalents for the host/vector name and the scientific name in the **species_equivalent.txt**, such as: ***mosquito\<\\t\> Culicidae***
 
-such as: ***mosquito\<\\t\> Culicidae***
-
-The Images of the various orders of hosts/vectors are available on another public GitHub repository [Host/vector images](https://github.com/SeannaCHARLES/Images "Host/vector images").
+The images of the various orders of hosts/vectors are available on another public GitHub repository [Host/vector images](https://github.com/SeannaCHARLES/Images "Host/vector images").
 
 # Citations {#sec-citations}
 
 If using this tool, please cite Seanna Charles, Anja Böckmann and Emmanuelle Lerat (2026) VERTEX: A pipeline for Viral sequence Extraction, Reconstruction and Tree EXploration.
 
-28 October 2026
+12 November 2026
 
 # Contact {#sec-contact}
