@@ -116,13 +116,13 @@ The Gp file format is very similar to the Genbank file format, except that Gp fi
 
 This file contains the following information:
 
-Study \| Virus name ID for Itol tree \| Taxonomy \| Information \| Protein accession number \| Size Protein sequence \| Start proteins \| End proteins \| extract_size \| Nucleic accession number \| Size Nucleic sequence \| Strand \| Strain \| Geographical region \| Host or vector \| References
+Study \| Virus name ID for iTOL tree \| Taxonomy \| Information \| Protein accession number \| Size Protein sequence \| Start proteins \| End proteins \| extract_size \| Nucleic accession number \| Size Nucleic sequence \| Strand \| Strain \| Geographical region \| Host or vector \| References
 
 - Creates a file **pos_prot\_\<Study_name\>.txt** that lists all the positions for each protein or domain available in the Gp file.
 
 - Creates the caption for the user_legend, Geographical region, and Host.
 
-The captions are created based on the Itol format. One colour will be associated with the same values for all the studies.
+The captions are created based on the iTOL format. One colour will be associated with the same values for all the studies.
 
 The user-information caption is created using the **user_legend.txt** file. You can put in that file all the information you want to use to characterize your study (for example serogroup or precise taxonomy)
 
@@ -135,10 +135,10 @@ The user-information caption is created using the **user_legend.txt** file. You 
 |  | `<Project absolute path>`All_protein_sequences_align.aln-fasta | Alignment of all protein sequences |
 |  | `<Project absolute path>`All_nucleic_sequences_align.aln-fasta | Alignment of all nucleic sequences |
 |  | `<Project absolute path>`All_protein_sequences.gp | Concatenated gp files. |
-|  | `<Project absolute path>legend/`**Informations_caption.txt** | User caption in Itol format |
-|  | `<Project absolute path>legend/`**Geographical_caption.txt** | Geographical caption in Itol format (geographical region from where the virus were isolated) |
-|  | `<Project absolute path>legend/`**Host_caption.txt** | Host/vector caption in Itol format (order of the host/vector) |
-|  | `<Project absolute path>legend/`**Label_caption.txt** | Virus name caption in Itol format. Changes the Itol ID into full virus name. |
+|  | `<Project absolute path>legend/`**Informations_caption.txt** | User caption in iTOL format |
+|  | `<Project absolute path>legend/`**Geographical_caption.txt** | Geographical caption in iTOL format (geographical region from where the virus were isolated) |
+|  | `<Project absolute path>legend/`**Host_caption.txt** | Host/vector caption in iTOL format (order of the host/vector) |
+|  | `<Project absolute path>legend/`**Label_caption.txt** | Virus name caption in iTOL format. Changes the iTOL ID into full virus name. |
 |  | `<Project absolute path>legend/`**Metadata.txt** | File containing all the extracted metadata. See [genbank extract](#sec-genbank_extract.py) |
 |  | `<Project absolute path>`**pos_prot\_\<Study_name\>.txt** | All the positions in the Gp files for each virus and each studied protein. |
 
