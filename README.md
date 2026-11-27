@@ -62,9 +62,13 @@ Where \<path\> is the absolute path to the VERTEX folder that you have downloade
 **these files must be in the working directory**
 
 protein_equivalent.txt
+
 species_equivalent.txt
+
 all_information.txt
+
 \<IDs_file_name\>.txt
+
 user_legend.txt
 
 ## Pipeline description {#sec-pipeline-description}
@@ -445,12 +449,17 @@ This information is useful when certain virus do not have some proteins. You can
 **format :**
 
 IDs where the protein is lacking
+
 **OUT\*\<prot\>=ID1;...;ID2**
+
 or
+
 IDs where the protein is present
+
 **IN\*\<prot\>=ID1;...;ID2**
 
 otherwise
+
 **NONE\*NN=NN**
 
 **[string] separate with ";" ,no space**
