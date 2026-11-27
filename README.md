@@ -205,7 +205,7 @@ The user-information caption is created using the **user_legend.txt** file. You 
 |  |  |  |
 | <Project absolute path><res_file><concatenate protein><study name>.fasta |  |  |
 | Label_caption.txt |  |  |
-{path}{name}{resfile}{proteins[1].lower()}_{name}_prot.fasta
+
 This step is executed at the end of the pipeline because it can be very long to run. It enables a pairwise comparison of each virus for each protein or protein domain, and of specific proteins whenever applicable.
 
 ## Mandatory input files {#sec-mandatory-input-files}
