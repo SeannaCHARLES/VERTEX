@@ -50,131 +50,21 @@ Requests==2.34.2
 
 - Download all the sequences in the Genbank format.
 
-This step performs the download of all the sequences in a Genbank format and the concatenation of all the Genbank files into one file called **sequences\<Study_name\>.gb**.
+This step performs the download of all the sequences in a Genbank format and the concatenation of all the Genbank files into one file called **sequences\<Project name\>.gb**.
 
 | Input | Output |
 |:----------------------------|:------------------------------------------|
-| all_information.txt**(From user)** | *`<Project absolute path>`*sequences\<Study_name\>.gb |
+| *`<Working directory absolute path>`*all_information.txt**(From user)** | *`<Project absolute path>`*sequences\<Project name\>.gb |
 
 Input-Output Execution.sh
-
-### Genbank_extract.py {#sec-genbank_extract.py}
-
-- Separate all the nucleic sequences and the protein sequences into single sequence files. The nucleic and proteic sequences are extracted from the **sequences\<Study_name\>.gb** file and saved in 2 folders **nucl** and **prot**.
-
-The nucleic and protein sequences are extracted from the **sequences\<Study_name\>.gb** file and saved in 2 folders **nucl** and **prot**.
-
-- The GenPept(Gp) file format for each sequence are downloaded and concatenated in the ***prot_all\_\<Study_name\>.gp*** file.
-
-The Gp file format is very similar to the Genbank file format, except that Gp file includes the positions of the various proteins and protein domains. This format can be downloaded in the same way as the Genbank file from the protein identifier record in the NCBI database or website.
-
-- Create a **Metadata_files.txt** that contains different information available in the Genbank and the Gp files.
-
-This file contains the following information :
-
-Study \| Virus name ID for iTOL tree \| Taxonomy \| Information \| Protein accession number \| Size Protein sequence \| Start proteins \| End proteins \| extract_size \| Nucleic accession number \| Size Nucleic sequence \| Strand \| Strain \| Geographical region \| Host or vector \| References
-
-- Create a file **pos_prot\_\<Study_name\>.txt** that lists all the positions for each protein or domain available in the Gp file.
-
-- Create the caption for the user_legend, Geographical region, and Host.
-
-The captions are created based on the iTOL format. One colour will be associated with the same values for all the studies.
-
-The user information caption is created using the **user_legend.txt** file. You can put in that file all the information you want to use to characterize your study (for example serogroup or precise taxonomy)
-
-| Input | Output | File description |
-|:--------------------:|:----------------------:|----------------------------|
-| sequences\<Study_name\>.gb (From Genbank_extract.py) | *`<Project absolute path>`*\<ID_nucl\>\_prot.fasta | \<ID_nucl\> protein sequence |
-| user_legend.txt **(from user)** | *`<Project absolute path>`*\<ID_nucl\>\_nucl.fasta | \<ID_nucl\> nucleic sequence |
-|  | *`<Project absolute path>`*prot_all\_.fasta | All protein sequences |
-|  | *`<Project absolute path>`*All_nucleic_sequences.fasta | All nucleic sequences |
-|  | *`<Project absolute path>`*All_protein_sequences_align.aln-fasta | Alignement of all protein sequences |
-|  | *`<Project absolute path>`*All_nucleic_sequences_align.aln-fasta | Alignement of all nucleic sequences |
-|  | *`<Project absolute path>`*All_protein_sequences.gp | All gp files. |
-|  | *`<Project absolute path>legend/`***Informations_caption.txt** | User caption in itol format |
-|  | *`<Project absolute path>legend/`***Geographical_caption.txt** | Geographical caption in itol format (geographical region where the virus were isolate) |
-|  | *`<Project absolute path>legend/`***Host_caption.txt** | Host/vector caption in itol format (order of the host/verctor) |
-|  | *`<Project absolute path>legend/`***Label_caption.txt** | virus name caption in itol format. change the itol Id in virus name. |
-|  | *`<Project absolute path>legend/`***Metadata.txt** | File contaning all the extracted metadata. see [genbank extract](#sec-genbank_extract.py) |
-|  | *`<Project absolute path>`***pos_prot\_\<Study_name\>.txt** | All the position in the Gp files for each virus and each studied protein. |
-
-Input-Output Genbank.py
-
-### Execution.sh
 
 - Create a Blast database of all the reference virus proteins.
 
 | Input | Output | File description |
-|:---------------------:|:----------------------:|-------------------------|
-| \<Id_TargetID\>\_TargetID.fasta (From Genbank_extract.py) | *`<Project absolute path>`*protein_prot_1-n_TargetID.fasta | Fasta file with all the studied protein of the \<TargetID**\>** |
+|:----------------------:|:---------------------:|-------------------------|
+| *`<Project absolute path>`*\<ReferenceID\>.fasta | *`<Project absolute path>`*\<ReferenceID\>\_ref.fasta | Fasta file with all the studied protein of the \<ReferenceID**\>** |
 
-Input-Output Execution.sh
-
-### Prot_position.py (optional) {#sec-prot_position.py-optional}
-
-- This file use blastp to complete the missing position within a study.
-
-This file ensures that as many protein positions as possible are retrieved in cases where the information is not available in the Gp file.
-
-| Input | Output | File description |
-|:-----------------:|:------------------:|---------------------------------|
-| **pos_prot\_\<Study_name\>.txt** (From Genbank.py) | *`<Project absolute path>`***pos_prot_final\<Study_name\>.txt** | All the position found in the Gp files and the estimate position with blast for each virus and each studied protein. If you enter "Yes" in [Blast ?](#sec-o-blast) |
-| protein_prot_1-n_TargetID.fasta (from Execution.sh) |  |  |
-
-Input-Output Prot_position.py
-
-### DNA_dist.sh {#sec-dna_dist.sh}
-
-- Launch DNAdist from phylip and create a divergence sequence table.
-
-| Input | Output | File description |
-|:----------------------:|:--------------------:|--------------------------|
-| All \_nucleic_sequences_align.aln-fasta (From Genbank_extract.py) | *`<Project absolute path>`***Divergence_nucleic_table.txt** | A kimura distance matrix of the alignement of all the nucleic sequences |
-
-Input-Output DNA_dist.sh
-
-### Delete_dbl.py {#sec-delete_dbl.py}
-
-- Delete the sequences that are considered too closely related or too similar using the **DNA_dist.sh** output table and the user defined threshold from the **All_information.txt** file.
-
-| Input | Output | File description |
-|:----------------:|:----------------:|-----------------------------------|
-| Divergence_nucleic_table.txt(From DNA_dist.sh) | *`<Project absolute path>`*All_nucleic_sequences_sdbl.fasta | All the nucleic sequences without the sequences that were judged too close (based on the output of [DNA_dist.sh](#sec-dna_dist.sh) and the threshold [DNAdist threshold](#sec-k-dnadist-threshold)) |
-|  | *`<Project absolute path>`*All_protein_sequences_sdbl.fasta | All the protein sequences without the sequences that were judged too close (based on the output of [DNA_dist.sh](#sec-dna_dist.sh) and the threshold [DNAdist threshold](#sec-k-dnadist-threshold)) |
-
-Input-Output Delete_dbl.py
-
-### Sep_prot.py {#sec-sep_prot.py}
-
-- Separate the different proteins and save them in separated files for each protein.
-
-| Input | Output | File description |
-|:-----------------:|:--------------------:|-------------------------------|
-| All_nucleic_sequences_sdbl.fasta (From Delete_dbl.py) | *`<Project absolute path><Res folder>`*Nucleic_prot_1-n.fasta | All the nucleic sequences after the separation of the proteins (one file for each protein) |
-| All_protein_sequences_sdbl.fasta (From Delete_dbl.py) | *`<Project absolute path><Res folder>`*protein_prot_1-n.fasta | All the protein sequences after the separation of the proteins (one file for each protein) |
-|  | *`<Project absolute path><Res folder>`*Nucleic_prot_OG.fasta | All the nucleic sequences after the separation of the proteins and the chosen outgroup |
-|  | *`<Project absolute path><Res folder>`*protein_prot_OG.fasta | All the protein sequences after theseparation of the proteins chosen outgroup |
-
-Input-Output Sep_prot.py
-
-### Merge_spe_prot.py (optional) {#sec-merge_spe_prot.py-optional}
-
-- Concatenates the outgroups with their corresponding proteins, if you have chosen to use different outgroups for the proteins studied.
-
-- Concatenates the two proteins of which you want to study the evolutionary history, if applicable.
-
-- Aligns all the previous files.
-
-| Input | Output |   |
-|:----------------:|:----------------:|-----------------------------------|
-| Nucleic_prot_1-n.fasta (From sript_Sep_prot.py) | *`<Project absolute path><Res folder>`*Nucleic_prot_spe.fasta | All the nucleic sequences of the chosen protein to create the specific protein (if you filled up the section [Specific protein](#sec-g-specific-protein)) |
-| Protein_prot_1-n.fasta (From sript_Sep_prot.py) | *`<Project absolute path><Res folder>`*protein_prot_spe.fasta | All the protein sequences of the chosen protein to create the specific protein (if you filled up the section [Specific protein](#sec-g-specific-protein)) |
-| Nucleic_prot_OG.fasta (From sript_Sep_prot.py) | *`<Project absolute path><Res folder>`*protein_prot_spe.aln-fasta | Alignment of all the nucleic sequences of the chosen protein to create the specific protein |
-| Protein_prot_OG.fasta (From sript_Sep_prot.py) | *`<Project absolute path><Res folder>`*protein_prot_1-n.aln-fasta | Alignment of all the protein sequences of the chosen protein to create the specific protein |
-
-Input-Output Merge_spe_prot.py
-
-### Execution.sh {#sec-execution.sh2}
+: Input-Output Execution.sh
 
 - TrimAl
 
@@ -187,20 +77,126 @@ IQtree2 was used because it can provide a test to identify the best model of tre
 - Create the phylogenetic tree using the best model identified (using IQtree2)
 
 | Input | Output | File description |
-|:-----------------:|:------------------:|---------------------------------|
-| protein_prot_1-n.aln-fasta (From Merge_spe_prot.py) | *`<Project absolute path>/<Res folder>/treefolder/`***protein_prot_1-n.treefile** | Phylogenetic tree file in newick format. One file for each protein |
-| protein_prot_spe.aln-fasta (From Merge_spe_prot.py) | *`<Project absolute path><Res folder>/treefolder/`***protein_prot_spe.treefile** | Phylogenetic tree file in newick format for the specific protein. (if you filled up the section [Specific protein](#sec-g-specific-protein)) |
+|:----------------:|:------------------------:|----------------------------|
+| *`<Project absolute path><Res folder>`*\<concatenate protein name\>\<Project name\>\_prot_OG.aln-fasta | *`<Project absolute path>/<Res folder>/treefolder/`***\<prot_1-n\>*\<Project name\>*prot_trimal.fasta.treefile** | Phylogenetic tree file in newick format. One file for each protein |
+| *`<Project absolute path><Res folder>`*\<prot_1-n\>\<Project name\>\_prot.aln-fasta | *`<Project absolute path>/<Res folder>/treefolder/`***\<Concatenate protein name\>*\<Project name\>*prot_trimal.fasta.treefile** | Phylogenetic tree file in newick format for the specific protein. (if you filled up the section [Specific protein](#sec-g-specific-protein)) |
 
 Input-Output Execution.sh
+
+### Genbank_extract.py {#sec-genbank_extract.py}
+
+- Separate all the nucleic sequences and the protein sequences into single sequence files. The nucleic and proteic sequences are extracted from the **sequences\<Project name\>.gb** file and saved in 2 folders **nucl** and **prot**.
+
+The nucleic and protein sequences are extracted from the **sequences\<Project name\>.gb** file and saved in 2 folders **nucl** and **prot**.
+
+- The GenPept(Gp) file format for each sequence are downloaded and concatenated in the ***prot_all\_\<Project name\>.gp*** file.
+
+The Gp file format is very similar to the Genbank file format, except that Gp file includes the positions of the various proteins and protein domains. This format can be downloaded in the same way as the Genbank file from the protein identifier record in the NCBI database or website.
+
+- Create a **Metadata_files.txt** that contains different information available in the Genbank and the Gp files.
+
+This file contains the following information :
+
+Study \| Virus name ID for iTOL tree \| Taxonomy \| Information \| Protein accession number \| Size Protein sequence \| Start proteins \| End proteins \| extract_size \| Nucleic accession number \| Size Nucleic sequence \| Strand \| Strain \| Geographical region \| Host or vector \| References
+
+- Create a file **pos_prot\_\<Project name\>.txt** that lists all the positions for each protein or domain available in the Gp file.
+
+- Create the caption for the user_legend, Geographical region, and Host.
+
+The captions are created based on the iTOL format. One colour will be associated with the same values for all the studies.
+
+The user information caption is created using the **user_legend.txt** file. You can put in that file all the information you want to use to characterize your study (for example serogroup or precise taxonomy)
+
+| Input | Output | File description |
+|:--------------------:|:----------------------:|------------------------|
+| *`<Project absolute path>`*sequences\<Project name\>.gb | *`<Project absolute path>prot/`*\<ID_nucl\>\_prot.fasta | \<ID_nucl\> protein sequence |
+| *`<Working directory absolute path>`*user_legend.txt **(from user)** | *`<Project absolute path>nucl/`*\<ID_nucl\>\_nucl.fasta | \<ID_nucl\> nucleic sequence |
+|  | *`<Project absolute path>`*prot_all\_\<Project name\>.fasta | All protein sequences |
+|  | *`<Project absolute path>`*nucl_all\_\<Project name\>.fasta | All nucleic sequences |
+|  | *`<Project absolute path>`*prot_all_align\_\<Project name\>.aln-fasta | Alignement of all protein sequences |
+|  | *`<Project absolute path>`*nucl_all_align\_\<Project name\>.aln-fasta | Alignement of all nucleic sequences |
+|  | *`<Project absolute path>`*prot_all\_.\<Project name\>gp | All gp files. |
+|  | *`<Project absolute path>legend/`***Informations\_\<Project name\>.txt** | User caption in itol format |
+|  | *`<Project absolute path>legend/`***Geographical\_\<Project name\>.txt** | Geographical caption in itol format (geographical region where the virus were isolate) |
+|  | *`<Project absolute path>legend/`***Host\_\<Project name\>.txt** | Host/vector caption in itol format (order of the host/verctor) |
+|  | *`<Project absolute path>legend/`***Label\_\<Project name\>.txt** | virus name caption in itol format. change the itol Id in virus name. |
+|  | *`<Project absolute path>legend/`***Metadata\_\<Project name\>.txt** | File contaning all the extracted metadata. see [genbank extract](#sec-genbank_extract.py) |
+|  | *`<Project absolute path>`***pos_prot\_\<Project name\>.txt** | All the position in the Gp files for each virus and each studied protein. |
+
+Input-Output Genbank.py
+
+### Prot_position.py (optional) {#sec-prot_position.py-optional}
+
+- This file use blastp to complete the missing position within a study.
+
+This file ensures that as many protein positions as possible are retrieved in cases where the information is not available in the Gp file.
+
+| Input | Output | File description |
+|:-----------------:|:------------------:|---------------------------------|
+| *`<Project absolute path>`***pos_prot\_\<Project name\>.txt** | *`<Project absolute path>`***pos_prot_final\<Project name\>.txt** | All the position found in the Gp files and the estimate position with blast for each virus and each studied protein. If you enter "Yes" in [Blast ?](#sec-o-blast) |
+| \<ReferenceID\>\_ref.fasta |  |  |
+
+Input-Output Prot_position.py
+
+### DNA_dist.sh {#sec-dna_dist.sh}
+
+- Launch DNAdist from phylip and create a divergence sequence table.
+
+| Input | Output | File description |
+|:---------------------:|:--------------------:|--------------------------|
+| *`<Project absolute path>`*nucl_all_align\_\<Project name\>.aln-fasta | *`<Project absolute path>`***\<Project name\>*dnadist*\_filter.txt** | A kimura distance matrix of the alignement of all the nucleic sequences |
+
+Input-Output DNA_dist.sh
+
+### Delete_dbl.py {#sec-delete_dbl.py}
+
+- Delete the sequences that are considered too closely related or too similar using the **DNA_dist.sh** output table and the user defined threshold from the **All_information.txt** file.
+
+| Input | Output | File description |
+|:-----------------:|:-----------------:|-----------------------------------|
+| *`<Project absolute path>`***\<Project name\>*dnadist*\_filter.txt** | *`<Project absolute path>`*nucl\<Project name\>\_sdbl.fasta | All the nucleic sequences without the sequences that were judged too close (based on the output of [DNA_dist.sh](#sec-dna_dist.sh) and the threshold [DNAdist threshold](#sec-k-dnadist-threshold)) |
+|  | *`<Project absolute path>`*prot\<Project name\>\_sdbl.fasta | All the protein sequences without the sequences that were judged too close (based on the output of [DNA_dist.sh](#sec-dna_dist.sh) and the threshold [DNAdist threshold](#sec-k-dnadist-threshold)) |
+
+Input-Output Delete_dbl.py
+
+### Sep_prot.py {#sec-sep_prot.py}
+
+- Separate the different proteins and save them in separated files for each protein.
+
+| Input | Output | File description |
+|:-----------------:|:--------------------:|-------------------------------|
+| *`<Project absolute path>`*nucl\<Project name\>\_sdbl.fasta | *`<Project absolute path><Res folder>`*\<prot_1-n\>\<Project name\>\_nucl.fasta | All the nucleic sequences after the separation of the proteins (one file for each protein) |
+| *`<Project absolute path>`*prot\<Project name\>\_sdbl.fasta | *`<Project absolute path><Res folder>`*\<prot_1-n\>\<Project name\>\_prot.fasta | All the protein sequences after the separation of the proteins (one file for each protein) |
+|  | *`<Project absolute path><Res folder>`*\<prot_1-n\>\<Project name\>nucl_OG.fasta | All the nucleic sequences after the separation of the proteins and the chosen outgroup |
+|  | *`<Project absolute path><Res folder>`*\<prot_1-n\>\<Project name\>prot_OG.fasta | All the protein sequences after theseparation of the proteins chosen outgroup |
+
+Input-Output Sep_prot.py
+
+### Merge_spe_prot.py (optional) {#sec-merge_spe_prot.py-optional}
+
+- Concatenates the outgroups with their corresponding proteins, if you have chosen to use different outgroups for the proteins studied.
+
+- Concatenates the two proteins of which you want to study the evolutionary history, if applicable.
+
+- Aligns all the previous files.
+
+| Input | Output |   |
+|:--------------------:|:------------------:|-----------------------------------|
+| *`<Project absolute path><Res folder>`*\<prot_1-n\>\<Project name\>\_nucl.fasta | *`<Project absolute path><Res folder>`*\<concatenate protein name\>\<Project name\>\_nucl_OG.fasta | All the nucleic sequences of the chosen protein to create the specific protein (if you filled up the section [Specific protein](#sec-g-specific-protein)) |
+| *`<Project absolute path><Res folder>`*\<prot_1-n\>\<Project name\>\_prot.fasta | *`<Project absolute path><Res folder>`*\<concatenate protein name\>\<Project name\>\_prot_OG.fasta | All the protein sequences of the chosen protein to create the specific protein (if you filled up the section [Specific protein](#sec-g-specific-protein)) |
+| *`<Project absolute path><Res folder>`*\<prot_1-n\>\<Project name\>nucl_OG.fasta | *`<Project absolute path><Res folder>`*\<concatenate protein name\>\<Project name\>\_prot_OG.aln-fasta | Alignment of all the nucleic sequences of the chosen protein to create the specific protein |
+| *`<Project absolute path><Res folder>`*\<prot_1-n\>\<Project name\>prot_OG.fasta | *`<Project absolute path><Res folder>`*\<prot_1-n\>\<Project name\>\_prot.aln-fasta | Alignment of all the protein sequences of the chosen protein to create the specific protein |
+
+Input-Output Merge_spe_prot.py
 
 ### Protdist.py {#sec-protdist.py}
 
 - Launch Protdist from phylip and create a sequence divergence table for each protein.
 
 | Input | Output | File description |
-|:-----------------:|:--------------------:|--------------------------------|
-| *`<Project absolute path>`<res_file><prot_1-n><study name>.fasta' | *`<Project absolute path>`<Study name>_protdist_*.txt | Distance matrix table for each protein |
-|  *`<Project absolute path>`<res_file><concatenate protein><study name>.fasta' |  |  |
+|:-----------------:|:--------------------:|-------------------------------|
+| \*`<Project absolute path><res_file><prot_1-n><study name>.`fasta' | *`<Project absolute path>`*`<Study name>`*protdist*.txt | Distance matrix table for each protein |
+| \*`<Project absolute path><res_file><concatenate protein><study name>`.fasta' |  |  |
 | Label_caption.txt |  |  |
 
 This step is executed at the end of the pipeline because it can be very long to run. It enables a pairwise comparison of each virus for each protein or protein domain, and of specific proteins whenever applicable.
@@ -228,7 +224,7 @@ The first seven lines are preceded by ‘#’; **it is important not to remove t
 #path_script,<VERTEX Absolute path>VERTEX/Script/
 #type_seq,nucl;prot
 #Email_adress=,<your email adresse>
-#Name of theproject,OG_Project,ID file,Outgroup Spe (Y/N),For wich prot,proteins name (in order),spe prot,TargetID,Target/OG Proteins position,Start of the proteins in the nucleic sequence,DNAdist Threshold,Organism to keep ID,ORGANISM WITH(OUT) A PARTICULAR PROTEIN ID,Trimal,blast
+#Name of theproject,OG_Project,ID file,Outgroup Spe (Y/N),For wich prot,proteins name (in order),spe prot,ReferenceID,Target/OG Proteins position,Start of the proteins in the nucleic sequence,DNAdist Threshold,Organism to keep ID,ORGANISM WITH(OUT) A PARTICULAR PROTEIN ID,Trimal,blast
 ```
 
 The first line is simply a reminder to read the README and is not essential.
@@ -298,7 +294,7 @@ You must enter your email address. It is essential for submitting requests to th
 The seventh row contains headers that explain what to write in each column.
 
 ``` text
-#Name of the project,Species or family,List of ID,Outgroup Spe (Y/N),for quel prot,proteins name (in order),spe prot,TargetID,Target/OG Proteins position,Start of the proteins in the nucleic sequence,DNAdist Threshold,Organism to keep ID,ORGANISM WITH(OUT) A PARTICULAR PROTEIN ID,Trimal,blast
+#Name of the project,Species or family,List of ID,Outgroup Spe (Y/N),for quel prot,proteins name (in order),spe prot,ReferenceID,Target/OG Proteins position,Start of the proteins in the nucleic sequence,DNAdist Threshold,Organism to keep ID,ORGANISM WITH(OUT) A PARTICULAR PROTEIN ID,Trimal,blast
 ```
 
 We provide here a step by step running example for the study of Orthobunyaviridae with 2 differents outgroups.
@@ -397,21 +393,21 @@ You can leave this part empty if you do not want to study the evolutionary histo
 spe prot => 
 ```
 
-##### H: TargetID {#sec-h-targetid}
+##### H: ReferenceID {#sec-h-targetid}
 
 Enter a reference ID that will be used for BLAST alignment in case some positions are missing.
 
-**TargetID** **=\> \<ID\>**
+**ReferenceID** **=\> \<ID\>**
 
 **format : [string] One Genbank ID, no space**
 
 ``` text
-TargetID => NC_001802.1
+ReferenceID => NC_001802.1
 ```
 
 ##### I: Target/OG Proteins position {#sec-i-reference-protein-positions}
 
-The positions of the proteins for the TargetID or the proteins outgroup.
+The positions of the proteins for the ReferenceID or the proteins outgroup.
 
 **Target/OG Proteins position** **=\> \<posprot1;...;posprotn\>**
 
@@ -506,7 +502,7 @@ Blast => No
 Your file should look like this :
 
 ``` text
-#Name of theproject,OG_Project,ID file,Outgroup Spe (Y/N),For wich prot,proteins name (in order),spe prot,TargetID,Target/OG Proteins position,Start of the proteins in the nucleic sequence,DNAdist Threshold,Organism to keep ID,ORGANISM WITH(OUT) A PARTICULAR PROTEIN ID,Trimal,blast
+#Name of theproject,OG_Project,ID file,Outgroup Spe (Y/N),For wich prot,proteins name (in order),spe prot,ReferenceID,Target/OG Proteins position,Start of the proteins in the nucleic sequence,DNAdist Threshold,Organism to keep ID,ORGANISM WITH(OUT) A PARTICULAR PROTEIN ID,Trimal,blast
 Retrovirus_EL_Rtarticle_25,Retrovirus_EL_Rtarticle_25,Retrovirus_EL_Rtarticle.txt,N,gag;pol;rvt;rnase;integrase,gag;pol;rvt;rnase;integrase,,NC_001802.1,2;429;605;1006;1024;1144;1157;1415,1631,0.25,,NONE*NN=NN,Yes,No
 ```
 
