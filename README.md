@@ -44,6 +44,29 @@ Requests==2.34.2
 
 ![VERTEX Workflow](images/Workflow_V8.pdf)
 
+
+## Launch the pipeline {#sec-launch-the-pipeline}
+
+Make sure that the script is an executable file.
+
+chmod -ux
+
+When in your working directory
+
+Enter **./\<path\>/VERTEX/Scripts/execution.sh** in your terminal.
+
+Where \<path\> is the absolute path to the VERTEX folder that you have downloaded and decompressed from the [GitHub](https://github.com/SeannaCHARLES/VERTEX/tree/main).
+
+## File paths {#sec-file-paths}
+
+**these files must be in the working directory**
+
+protein_equivalent.txt
+species_equivalent.txt
+all_information.txt
+\<IDs_file_name\>.txt
+user_legend.txt
+
 ## Pipeline description {#sec-pipeline-description}
 
 ### Execution.sh {#sec-execution.sh}
@@ -543,27 +566,6 @@ rt_rtv  rvt
 rt_zfrev_like   rvt
 ```
 
-## Launch the pipeline {#sec-launch-the-pipeline}
-
-Make sure that the script is an executable file.
-
-chmod -ux
-
-When in your working directory
-
-Enter **./\<path\>/VERTEX/Scripts/execution.sh** in your terminal.
-
-Where \<path\> is the absolute path to the VERTEX folder that you have downloaded and decompressed from the [GitHub](https://github.com/SeannaCHARLES/VERTEX/tree/main).
-
-## File paths {#sec-file-paths}
-
-**these files must be in the working directory**
-
-protein_equivalent.txt
-species_equivalent.txt
-all_information.txt
-\<IDs_file_name\>.txt
-user_legend.txt
 
 ## Skipped steps {#sec-s-steps}
 
