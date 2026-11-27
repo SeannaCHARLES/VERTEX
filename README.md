@@ -56,7 +56,14 @@ This step performs the download of all the sequences in a Genbank format and the
 |:----------------------------|:------------------------------------------|
 | all_information.txt**(From user)** | *`<Project absolute path>`*sequences\<Study_name\>.gb |
 
-- Execution of all the subsequent scripts
+- Creates a Blast database of all the reference virus proteins.
+
+| Input | Output | File description |
+|:---------------------:|:----------------------:|-------------------------|
+| \<Id_TargetID\>\_TargetID.fasta (From Genbank_extract.py) | `<Project absolute path>`protein_prot_1-n_TargetID.fasta | Fasta file with all the studied proteins of the \<TargetID**\>** |
+
+
+- Executes of all the subsequent scripts
   
 ### Genbank_extract.py {#sec-genbank_extract.py}
 
@@ -82,54 +89,44 @@ The user-information caption is created using the **user_legend.txt** file. You 
 
 | Input | Output | File description |
 |:------------------:|:----------------------:|----------------------------|
-| sequences\<Study_name\>.gb (From Genbank_extract.py) | *`<Project absolute path>`*\<ID_nucl\>\_prot.fasta | \<ID_nucl\> protein sequence |
+| sequences\<Study_name\>.gb | *`<Project absolute path>`*\<ID_nucl\>\_prot.fasta | \<ID_nucl\> protein sequence |
 | user_legend.txt **(from user)** | *`<Project absolute path>`*\<ID_nucl\>\_nucl.fasta | \<ID_nucl\> nucleic sequence |
-|  | *`<Project absolute path>`*prot_all\_.fasta | All protein sequences |
-|  | *`<Project absolute path>`*All_nucleic_sequences.fasta | All nucleic sequences |
-|  | *`<Project absolute path>`*All_protein_sequences_align.aln-fasta | Alignment of all protein sequences |
-|  | *`<Project absolute path>`*All_nucleic_sequences_align.aln-fasta | Alignment of all nucleic sequences |
-|  | *`<Project absolute path>`*All_protein_sequences.gp | All gp files. |
-|  | *`<Project absolute path>legend/`***Informations_caption.txt** | User caption in Itol format |
-|  | *`<Project absolute path>legend/`***Geographical_caption.txt** | Geographical caption in Itol format (geographical region where the virus were isolate) |
-|  | *`<Project absolute path>legend/`***Host_caption.txt** | Host/vector caption in Itol format (order of the host/verctor) |
-|  | *`<Project absolute path>legend/`***Label_caption.txt** | Virus name caption in Itol format. Changes the Itol Id into virus name. |
-|  | *`<Project absolute path>legend/`***Metadata.txt** | File containing all the extracted metadata. see [genbank extract](#sec-genbank_extract.py) |
-|  | *`<Project absolute path>`***pos_prot\_\<Study_name\>.txt** | All the position in the Gp files for each virus and each studied protein. |
-
-### Execution.sh
-
-- Create a Blast database of all the reference virus proteins.
-
-| Input | Output | File description |
-|:---------------------:|:----------------------:|-------------------------|
-| \<Id_TargetID\>\_TargetID.fasta (From Genbank_extract.py) | *`<Project absolute path>`*protein_prot_1-n_TargetID.fasta | Fasta file with all the studied protein of the \<TargetID**\>** |
+|  | `<Project absolute path>`prot_all\_.fasta | All protein sequences |
+|  | `<Project absolute path>`All_nucleic_sequences.fasta | All nucleic sequences |
+|  | `<Project absolute path>`All_protein_sequences_align.aln-fasta | Alignment of all protein sequences |
+|  | `<Project absolute path>`All_nucleic_sequences_align.aln-fasta | Alignment of all nucleic sequences |
+|  | `<Project absolute path>`All_protein_sequences.gp | Concatenated gp files. |
+|  | `<Project absolute path>legend/`**Informations_caption.txt** | User caption in Itol format |
+|  | `<Project absolute path>legend/`**Geographical_caption.txt** | Geographical caption in Itol format (geographical region from where the virus were isolated) |
+|  | `<Project absolute path>legend/`**Host_caption.txt** | Host/vector caption in Itol format (order of the host/vector) |
+|  | `<Project absolute path>legend/`**Label_caption.txt** | Virus name caption in Itol format. Changes the Itol ID into full virus name. |
+|  | `<Project absolute path>legend/`**Metadata.txt** | File containing all the extracted metadata. See [genbank extract](#sec-genbank_extract.py) |
+|  | `<Project absolute path>`**pos_prot\_\<Study_name\>.txt** | All the positions in the Gp files for each virus and each studied protein. |
 
 ### Prot_position.py (optional) {#sec-prot_position.py-optional}
 
-- This file uses BlastP to complete the missing position within a study.
-
-This file ensures that as many protein positions as possible are retrieved in cases where the information is not available in the Gp file.
+- This file uses BlastP to complete the missing position within a study. It ensures that as many protein positions as possible are retrieved in cases where the information is not available in the Gp file.
 
 | Input | Output | File description |
 |:-----------------:|:------------------:|----------------------------------|
-| **pos_prot\_\<Study_name\>.txt** (From Genbank.py) | *`<Project absolute path>`***pos_prot_final\<Study_name\>.txt** | All the position found in the Gp files and the estimate position with blast for each virus and each studied protein. If you enter "Yes" in [Blast ?](#sec-o-blast) |
+| **pos_prot\_\<Study_name\>.txt** | `<Project absolute path>`**pos_prot_final\<Study_name\>.txt** | All the positions found in the Gp files and the estimate positions using blast for each virus and each studied protein. If you have indicated "Yes" in [Blast?](#sec-o-blast) in the all_information.txt file |
 | protein_prot_1-n_TargetID.fasta (from Execution.sh) |  |  |
 
 ### DNA_dist.sh {#sec-dna_dist.sh}
 
-- Launchs DNAdist from phylip and creates a divergence sequence table.
+- Launches DNAdist from phylip and creates a divergence sequence table (`<Project absolute path>`\<Study_name\>_dnadist.txt)
 
 | Input | Output | File description |
 |:----------------------:|:--------------------:|--------------------------|
-| All \_nucleic_sequences_align.aln-fasta (From Genbank_extract.py) | *`<Project absolute path>`***Divergence_nucleic_table.txt** | A kimura distance matrix of the alignment of all the nucleic sequences |
+| All \_nucleic_sequences_align.aln-fasta | `<Project absolute path>`**\<Study_name\>_dnadist.txt** | A Kimura distance matrix computed from the alignment of all the nucleic sequences |
 
 ### Delete_dbl.py {#sec-delete_dbl.py}
 
-- Deletes the sequences that are considered too closely related or too similar using the **DNA_dist.sh** output table and the user defined threshold from the **All_information.txt** file.
+- Deletes the sequences that are considered too closely related or too similar using the `<Project absolute path>`\<Study_name\>_dnadist.txt output table and the user defined threshold from the **all_information.txt** file.
 
 | Input | Output | File description |
 |:----------------:|:----------------:|------------------------------------|
-| Divergence_nucleic_table.txt(From DNA_dist.sh) | *`<Project absolute path>`*All_nucleic_sequences_sdbl.fasta | All the nucleic sequences without the sequences that were judged too close (based on the output of [DNA_dist.sh](#sec-dna_dist.sh) and the threshold [DNAdist threshold](#sec-k-dnadist-threshold)) |
+| \<Study_name\>_dnadist.txt | *`<Project absolute path>`*All_nucleic_sequences_sdbl.fasta | All the nucleic sequences without the removed sequences |
 |  | *`<Project absolute path>`*All_protein_sequences_sdbl.fasta | All the protein sequences without the sequences that were judged too close (based on the output of [DNA_dist.sh](#sec-dna_dist.sh) and the threshold [DNAdist threshold](#sec-k-dnadist-threshold)) |
 
 ### Sep_prot.py {#sec-sep_prot.py}
